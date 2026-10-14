@@ -59,9 +59,9 @@
     "unit": "constitution",
     "e2e": "story",
     "regression": "end",
-    "evidence": "local",
+    "evidence": "ci",
     "ci": {
-      "workflow": null,
+      "workflow": "acceptance.yml",
       "artifact": "og-test-results"
     }
   },
