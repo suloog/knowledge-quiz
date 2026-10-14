@@ -574,14 +574,14 @@
 - **Resolves:** —
 - **Status:** accepted
 
-## [DEC-47] 3+ questions with a possible near-miss answer are asked as either/or
+## [DEC-47] 3+ questions stay open, each checked for a near miss recorded per question
 
 - **Date:** 2026-10-14
-- **Decided by:** developer (delivery loop)
+- **Decided by:** product owner (delivery loop, confirmed 2026-10-14)
 - **Source:** implementation (`US-01-02`)
 - **Affects:** `US-01-02`, `US-01-03`, `US-01-04`, `MOD-01-F06`, `MOD-01-F14`, `MOD-03-U02`, `DSC-04-04`, `SRC-01-17`, `SRC-01-18`
-- **Decision:** A 3+ question passes the `Q29` point "one unambiguous answer" as an open question only when no other correct answer can be named (a count, a counting order, what a hen lays); every other question is asked as an either/or between the answer and one clearly wrong option, with the answer first in some questions and second in others. In the 3+ deck 46 questions are either/or (the answer second in 24) and 4 stay open (`3p-02`, `3p-07`, `3p-13`, `3p-36`); the record `docs/delivery/content-checks/US-01-02-3-plus.md` says why each of the four stays open. The content data format (`DEC-46`) does not change.
-- **Why:** Three review rounds each found another open question a 3-year-old could answer correctly with a synonym or a near miss (a neck warmer for a scarf, a hood for an umbrella, a balloon for a ball); fixing them one by one did not converge. An either/or with one clearly wrong option admits one answer by construction, and varying the side keeps "always pick the first" from winning. Critical: putting two options into the question text is a reading of the `must` `MOD-03-U02` ("no buttons, choices or score on it") and of `DSC-04-04` / `SRC-01-17` / `SRC-01-18` (no answer choices, not a classic quiz), so the form is put to the product owner before it is confirmed.
+- **Decision:** Option c — Back to open questions for 3+, under a stricter near-miss rule. No 3+ question names answer options (no either/or): every one is an open question with one answer. Each is attacked, in Polish and in English, for any other answer a child or a parent reading aloud could give that is also correct — another thing that fits the question, a near miss (a neck warmer for a scarf, a hood for an umbrella, fire for candles); where one exists the question is reworded (a distinguishing detail, a more specific question, or another fact) until none does. A synonym naming the same thing (a puppy for a dog) is the same answer. The record `docs/delivery/content-checks/US-01-02-3-plus.md` names, for every question, the near misses checked and why each is ruled out; `AC-01-02-4` fails on a row without them and on any 3+ question that offers options. The 4+ and 5+ decks (`US-01-03`, `US-01-04`) are open questions under the same rule. The content data format (`DEC-46`) does not change.
+- **Why:** The product owner's answer to the question put in the delivery loop. It reads the `must` `MOD-03-U02` ("no buttons, choices or score on it"), `DSC-04-04` (no answer choices) and the `SRC-01-17` / `SRC-01-18` non-goals (no A/B/C answers, not a classic quiz) as written, and keeps the questions worth asking: an either/or against an absurd option is a 50% guess. The near misses three review rounds found are handled question by question in the record instead. Critical: it settles how a `must` requirement is read, so it was the product owner's to decide.
 - **Scope effect:** within scope
 - **Resolves:** —
-- **Status:** to confirm with the client
+- **Status:** accepted
