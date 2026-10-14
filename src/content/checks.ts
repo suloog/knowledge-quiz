@@ -71,7 +71,8 @@ export const checkDeck = (deck: Deck): string[] => {
 };
 
 // Across decks: every category once, every question id once — a question belongs to exactly one
-// age category (MOD-01-F02) and saved deck orders can refer to it.
+// age category (MOD-01-F02) and saved deck orders can refer to it — and every question text once
+// per language, so no question is asked twice.
 export const checkDecks = (decks: Deck[]): string[] => {
   const problems = decks.flatMap(checkDeck);
   const seen = (values: string[]) =>
@@ -81,6 +82,13 @@ export const checkDecks = (decks: Deck[]): string[] => {
   );
   seen(decks.flatMap(deck => deck.questions.map(q => q.id))).forEach(id =>
     problems.push(`question id ${id} appears more than once`),
+  );
+  LANGUAGES.forEach(language =>
+    seen(
+      decks.flatMap(deck => deck.questions.map(q => q[language]?.question)),
+    ).forEach(text =>
+      problems.push(`${language} question "${text}" appears more than once`),
+    ),
   );
   return problems;
 };
