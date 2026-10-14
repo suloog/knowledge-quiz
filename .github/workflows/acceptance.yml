@@ -9,10 +9,46 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # The fast gates first: a broken format, lint, type or unit test fails here in about a
+  # minute, before the emulator job spends a quarter of an hour on a head that cannot pass.
+  checks:
+    name: Gates (format, lint, types, unit tests)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Format
+        run: yarn format:check
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Types
+        run: yarn tsc
+
+      - name: Unit tests
+        run: yarn test
+
   acceptance:
     name: Acceptance tests (Android 12 emulator)
+    needs: checks
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    env:
+      # The emulator is x86_64: build the native code for that one ABI instead of all four,
+      # for the debug build `expo run:android` makes and the release build the tests sign.
+      ORG_GRADLE_PROJECT_reactNativeArchitectures: x86_64
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,19 +65,46 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Cache Gradle
-        uses: actions/cache@v4
+      # Restored here and saved at the end whatever the tests say, so a red run still warms
+      # the next one (actions/cache alone saves only after a green job).
+      - name: Restore the Gradle cache
+        id: gradle-cache
+        uses: actions/cache/restore@v4
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          key: gradle-${{ runner.os }}-${{ hashFiles('yarn.lock', 'app.json', 'plugins/**') }}
+          restore-keys: gradle-${{ runner.os }}-
 
       - name: Enable KVM for the emulator
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
+
+      # A booted Android 12 emulator kept as a snapshot: later runs resume it instead of a cold
+      # boot. Made once per cache key, with nothing of the app on it.
+      - name: Restore the emulator snapshot
+        id: avd-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-31-google_apis-x86_64-v1
+
+      - name: Create the emulator snapshot
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 31
+          arch: x86_64
+          target: google_apis
+          force-avd-creation: false
+          disable-animations: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: echo "Emulator snapshot made for the cache."
 
       - name: Install Maestro
         run: |
@@ -62,9 +125,19 @@ jobs:
           api-level: 31
           arch: x86_64
           target: google_apis
+          force-avd-creation: false
           disable-animations: true
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot-save
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot-save
           script: yarn test:acceptance
+
+      - name: Save the Gradle cache
+        if: always() && steps.gradle-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('yarn.lock', 'app.json', 'plugins/**') }}
 
       - name: Upload the results the delivery loop reads
         if: always()
