@@ -1,4 +1,5 @@
 import app from './app.json';
+import { decks } from './decks';
 
 export type AppContent = {
   title: string;
@@ -6,5 +7,12 @@ export type AppContent = {
 
 export const appContent: AppContent = app;
 
-export { decks } from './decks';
+// The age categories the content data holds, youngest first — 3+, 4+, 5+ — whatever order the
+// decks are registered in (MOD-02-F02, F03; DEC-48). The label is the same in both languages.
+const youngestAge = (category: string) => Number.parseInt(category, 10);
+export const categories = decks
+  .map(deck => deck.category)
+  .sort((a, b) => youngestAge(a) - youngestAge(b));
+
+export { decks };
 export type { ContentKind, Deck, Language, Question } from './deck';
