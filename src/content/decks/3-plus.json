@@ -42,11 +42,11 @@
       "id": "3p-04",
       "kind": "educational",
       "pl": {
-        "question": "Jaki kształt ma moneta?",
+        "question": "Jaki kształt ma koło samochodu?",
         "answer": "Okrągły."
       },
       "en": {
-        "question": "What shape is a coin?",
+        "question": "What shape is a car wheel?",
         "answer": "Round."
       }
     },
@@ -186,12 +186,12 @@
       "id": "3p-16",
       "kind": "popular-science",
       "pl": {
-        "question": "Co spada z chmur, gdy pada deszcz?",
-        "answer": "Krople wody."
+        "question": "Jak nazywamy wodę, która spada z chmur?",
+        "answer": "Deszcz."
       },
       "en": {
-        "question": "What falls from the clouds when it rains?",
-        "answer": "Drops of water."
+        "question": "What do we call water that falls from the clouds?",
+        "answer": "Rain."
       }
     },
     {
@@ -246,7 +246,7 @@
       "id": "3p-21",
       "kind": "popular-science",
       "pl": {
-        "question": "Co ciemnego idzie obok ciebie w słoneczny dzień?",
+        "question": "Co ciemnego chodzi za tobą w słoneczny dzień?",
         "answer": "Twój cień."
       },
       "en": {
@@ -342,11 +342,11 @@
       "id": "3p-29",
       "kind": "nature",
       "pl": {
-        "question": "Co robią pszczoły?",
+        "question": "Jaki słodki przysmak robią pszczoły?",
         "answer": "Miód."
       },
       "en": {
-        "question": "What do bees make?",
+        "question": "What sweet food do bees make?",
         "answer": "Honey."
       }
     },
@@ -390,12 +390,12 @@
       "id": "3p-33",
       "kind": "nature",
       "pl": {
-        "question": "Co rośnie na jabłoni?",
-        "answer": "Jabłka."
+        "question": "Które zwierzę skacze i robi kum kum?",
+        "answer": "Żaba."
       },
       "en": {
-        "question": "What grows on an apple tree?",
-        "answer": "Apples."
+        "question": "Which animal jumps and says ribbit?",
+        "answer": "A frog."
       }
     },
     {
@@ -462,12 +462,12 @@
       "id": "3p-39",
       "kind": "trivia",
       "pl": {
-        "question": "Ile dni ma tydzień?",
-        "answer": "Siedem."
+        "question": "Co zakładamy na stopy przed butami?",
+        "answer": "Skarpetki."
       },
       "en": {
-        "question": "How many days are there in a week?",
-        "answer": "Seven."
+        "question": "What do we put on our feet before our shoes?",
+        "answer": "Socks."
       }
     },
     {
@@ -510,12 +510,12 @@
       "id": "3p-43",
       "kind": "trivia",
       "pl": {
-        "question": "W czym śpimy w nocy?",
-        "answer": "W łóżku."
+        "question": "Jaka zabawka jest okrągła i odbija się od podłogi?",
+        "answer": "Piłka."
       },
       "en": {
-        "question": "What do we sleep in at night?",
-        "answer": "A bed."
+        "question": "Which toy is round and bounces on the floor?",
+        "answer": "A ball."
       }
     },
     {
@@ -546,11 +546,11 @@
       "id": "3p-46",
       "kind": "trivia",
       "pl": {
-        "question": "Czego potrzebujesz, żeby otworzyć drzwi zamknięte na klucz?",
-        "answer": "Klucza."
+        "question": "Czym otwieramy zamek w drzwiach?",
+        "answer": "Kluczem."
       },
       "en": {
-        "question": "What do you need to open a locked door?",
+        "question": "What do we open a door lock with?",
         "answer": "A key."
       }
     },
