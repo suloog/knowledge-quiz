@@ -1,0 +1,98 @@
+{
+  "story": "US-01-03",
+  "attempt": 1,
+  "round": 1,
+  "sha": "11fc8197964d00a190119a089b3cb15768fadf1f",
+  "reviewer": "code",
+  "ts": "2026-10-14T22:52:40Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-01-03",
+    "impact": "The 4+ deck is data-only and meets all six acceptance criteria. All 78 unit tests pass, and the AC-01-02 tests keep their ids and their strength after the refactor into shared helpers. No blocking issue; the open points are small wording choices in the content (4p-13, 4p-14, 4p-22, 4p-23, 4p-32, 4p-43) and one weak test step, all for the owner's pre-release content review.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/4-plus.json:4p-23 — \"huge animals, like the T. rex, that lived very long ago\" is also correctly answered by \"prehistoric / extinct animals\" (pl \"wymarłe zwierzęta\"), and the record's near-miss row checks only mammoths, lizards and dragons → ask \"What kind of animal is a T. rex?\" / \"Jakim zwierzęciem jest tyranozaur?\" (or add \"with scales, ... 65 million years ago\") and record \"extinct animals\" as ruled out"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/4-plus.json:4p-13 (pl) — \"Co bije w naszej piersi\" uses \"pierś\", a word a 4-year-old does not use for the chest and which also means breast, so the known-words and nothing-adult checks are doubtful → reword to \"Co bije w środku nas i bije szybciej, gdy biegamy?\" or \"…pod ręką na klatce piersiowej…\", and update the record row"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/4-plus.json:4p-22 — pl \"szkiełko z rączką\" drops the en \"round glass\", so the two languages describe slightly different objects → add \"okrągłe\" to the pl or drop \"round\" from the en"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/4-plus.json:4p-32 — pl answer \"Korzeń.\" (singular) against en \"The roots.\" (plural) → make both singular (\"The root.\") or both plural (\"Korzenie.\")"
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/4-plus.json:4p-14 — \"white cloud\" of steam: strictly steam is the invisible vapour and the visible cloud is condensing droplets, though \"para\" is the common word, so a strict parent could object to \"verifiable\" → accept as is, or reword to \"the thing that comes out of a boiling kettle\""
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/4-plus.json:4p-43 — \"piecze … w piekarni\" / \"bakes … in a bakery\" repeat the answer's root (piekarz / baker), so the question gives the answer away → ask \"Kto robi chleb i bułki w piekarni?\" or drop \"w piekarni\"; low priority"
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/unit/AC-01-03-6-no-3-plus-repeat.test.ts:35 — step 2 compares only exact English answers, so a 4+ question reworded to a 3+ answer in a different form (plural vs singular, \"Water\" vs \"The water\") would pass; this is by design in DEC-50 and holds for the current data, and step 3 only re-proves the existing checkDecks duplicate-text check → optional: also compare Polish answers"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 6,
+        "verdict": "met",
+        "note": ""
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Review of PR #8 (US-01-03, 4+ deck), round 1, head 11fc819. No blocking findings. Seven non-blocking ones, mostly 4+ content wording.\n\nVerified in my own detached worktree (since removed), with node_modules symlinked:\n- `jest tests/unit`: 78 passed, 0 failed, 14 suites.\n- `tsc` and prettier are clean.\n- CI: the Gates job passed. The Acceptance (emulator) job was still pending when I looked. It carries the AC-01-02-7 step 2 bundle check, which the PR says finds the 4+ texts in the release bundle. That check is external to this review.\n\n**Shared-helper refactor (AC-01-02 tests)**\n- I ran the unit suite on origin/main and on the PR head. All 38 AC-01-02-* test full-names are identical, so the CI/JUnit id matching is preserved.\n- I compared the old and new logic hunk by hunk.\n  - The 13 mutations, the step 3 duplicate scenarios (a 3+ Polish text taken into another category), the one-answer and kind checks, and the age-suitability steps 1–5 (nine-cell row, `czy`/`or` regex) are unchanged.\n  - The only differences are parameterisation by category, record path and `3p-`/`4p-` prefix, and `'category 3+ …'` becoming a template string.\n- The AC-01-02 tests still prove what they proved, and the 4+ tests have the same strength. For example, the \"fewer than 5 kind\" mutation still fails on 4+: 12 trivia minus 8 leaves 4.\n- `deck-criteria.ts` and `age-suitability-record.js` are not collected as suites, which is correct.\n\n**4+ content (50 questions, pl and en)**\n- No genuinely correct second answer found.\n- Every answer is the standard fact. There are no options in the text. The deck contains no `czy` or `or`, and AC-01-03-4 step 5 enforces that.\n- The deck counts are 12 educational, 12 popular-science, 14 nature and 12 trivia, as the PR says.\n- I found no 4+ text or answer that repeats a 3+ one.\n- The findings are below. N1 is the nearest to a real second answer. N2 and N3 are age-suitability and pl/en mismatches, the rest small wording points.\n\n**Acceptance criteria**\n- #1: met (AC-01-03-1; deck has exactly 50 questions, each with non-empty pl and en answers).\n- #2: met (AC-01-03-2).\n- #3: met (AC-01-03-3; 12/12/14/12).\n- #4: met. The record has 50 rows matching the deck exactly (AC-01-03-4, 5 steps), and no row has an empty near-miss cell.\n- #5: met (AC-01-03-5; 16 tests, including 13 break-one-check mutations on the 4+ deck).\n- #6: met (AC-01-03-6, text and answer per DEC-50).\n- The decisions DEC-49 and DEC-50 are consistent with the code. The story and backlog status changes are fine.\n\n```\nREVIEW: findings\nSTORY: US-01-03\nIMPACT: The 4+ deck is data-only and meets all six acceptance criteria. All 78 unit tests pass, and the AC-01-02 tests keep their ids and their strength after the refactor into shared helpers. No blocking issue; the open points are small wording choices in the content (4p-13, 4p-14, 4p-22, 4p-23, 4p-32, 4p-43) and one weak test step, all for the owner's pre-release content review.\nFINDINGS:\n  N1 src/content/decks/4-plus.json:4p-23 — \"huge animals, like the T. rex, that lived very long ago\" is also correctly answered by \"prehistoric / extinct animals\" (pl \"wymarłe zwierzęta\"), and the record's near-miss row checks only mammoths, lizards and dragons → ask \"What kind of animal is a T. rex?\" / \"Jakim zwierzęciem jest tyranozaur?\" (or add \"with scales, ... 65 million years ago\") and record \"extinct animals\" as ruled out\n  N2 src/content/decks/4-plus.json:4p-13 (pl) — \"Co bije w naszej piersi\" uses \"pierś\", a word a 4-year-old does not use for the chest and which also means breast, so the known-words and nothing-adult checks are doubtful → reword to \"Co bije w środku nas i bije szybciej, gdy biegamy?\" or \"…pod ręką na klatce piersiowej…\", and update the record row\n  N3 src/content/decks/4-plus.json:4p-22 — pl \"szkiełko z rączką\" drops the en \"round glass\", so the two languages describe slightly different objects → add \"okrągłe\" to the pl or drop \"round\" from the en\n  N4 src/content/decks/4-plus.json:4p-32 — pl answer \"Korzeń.\" (singular) against en \"The roots.\" (plural) → make both singular (\"The root.\") or both plural (\"Korzenie.\")\n  N5 src/content/decks/4-plus.json:4p-14 — \"white cloud\" of steam: strictly steam is the invisible vapour and the visible cloud is condensing droplets, though \"para\" is the common word, so a strict parent could object to \"verifiable\" → accept as is, or reword to \"the thing that comes out of a boiling kettle\"\n  N6 src/content/decks/4-plus.json:4p-43 — \"piecze … w piekarni\" / \"bakes … in a bakery\" repeat the answer's root (piekarz / baker), so the question gives the answer away → ask \"Kto robi chleb i bułki w piekarni?\" or drop \"w piekarni\"; low priority\n  N7 tests/unit/AC-01-03-6-no-3-plus-repeat.test.ts:35 — step 2 compares only exact English answers, so a 4+ question reworded to a 3+ answer in a different form (plural vs singular, \"Water\" vs \"The water\") would pass; this is by design in DEC-50 and holds for the current data, and step 3 only re-proves the existing checkDecks duplicate-text check → optional: also compare Polish answers\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 met\n  #5 met\n  #6 met\n```\n"
+}

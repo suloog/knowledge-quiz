@@ -1,0 +1,79 @@
+{
+  "n": 3,
+  "attempt": 1,
+  "ts": "2026-10-14T22:54:17Z",
+  "story": "US-02-01",
+  "mode": "fix",
+  "parsed": {
+    "result": "ready",
+    "story": "US-02-01",
+    "branch": "feature/US-02-01",
+    "commits": [
+      "e6b2747 fix(categories): rules in even whole device pixels [US-02-01]",
+      "5ae68f0 test(categories): check the screen's pixels on the device [US-02-01]",
+      "ecc6635 test(categories): labels of every shipped deck, by age [US-02-01]",
+      "6c4a842 chore(categories): wip, waiting for DEC-48 [US-02-01]",
+      "ae16e5d docs(specs): DEC-48 confirmed by the product owner [US-02-01]"
+    ],
+    "decisions": [
+      "DEC-48 critical Category screen: order by age",
+      "4+ and 5+ on screen, and the full TC-02-01/02 check, deferred to US-01-03 and US-01-04"
+    ],
+    "evidence": [
+      "#1 Every launch opens on the category screen — TC-02-01 step 1 (maestro/report.xml, pass); TC-02-14 pass",
+      "#2 Lists the content data's categories in order 3+, 4+, 5+ — TC-02-01 pass for the shipped decks (3+ only on main; 4+ and 5+ checked by the same flow when US-01-03 and US-01-04 land, per DEC-48 option a); AC-02-01-3 and src/content/__tests__/categories.test.ts prove age order (junit/unit.xml, pass)",
+      "#3 A category added to the content data appears with no screen change — AC-02-01-3 steps 1-3 (junit/unit.xml, pass)",
+      "#4 Only pure black and white; a test fails on any other colour — AC-02-01-4 steps 1-3 (junit/unit.xml, pass) and step 4 on the device (junit/screen-colours.xml, pass)",
+      "#5 Nothing animates; a test fails if an animation is enabled — AC-02-01-5 steps 1-3 (junit/unit.xml, pass)",
+      "#6 Each category entry spans the full width — TC-02-02 flow pass for the shipped decks (per DEC-48) and TC-02-02 step 2 (junit/screen.xml, pass)",
+      "#7 Screen within 3 s on the Mudita Kompakt — MANUAL: TC-02-03 is manual-only"
+    ],
+    "tests": {
+      "run": "/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-15_005113",
+      "pass": 7,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 1,
+      "manual_tests": [
+        "TC-02-03"
+      ]
+    },
+    "derived_tests": [
+      "AC-02-01-3",
+      "AC-02-01-4",
+      "AC-02-01-5"
+    ],
+    "preexisting": "criteria #1-#6 implemented in earlier commits on this branch (ad39b69..ecc6635); this round only confirmed DEC-48",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn jest ok (65 tests passed)",
+      "commit hook ok"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "findings": [
+      "spec-B1 fixed 6c4a842 + ae16e5d (DEC-48 put to the owner, who took option a",
+      "entry written as accepted, critical, reduction (deferred))",
+      "spec-B2 fixed e6b2747 + 5ae68f0 (rules in an even whole number of device pixels",
+      "device check junit/screen-colours.xml passes on this run)"
+    ],
+    "notes": "The local run.json shows AC-02-01-3/4/5 as skipped because the local collector reads only the Maestro reports; their Jest cases (junit/unit.xml) and junit/screen-colours.xml pass and carry the AC ids for CI. The US-01-03 (PR #8) and US-01-04 implementers must make TC-02-01/02 pass with their deck shown (DEC-48). The PR body must list TC-02-03 and TC-02-04 as not verified by the loop.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [
+        "#7 Screen within 3 s on the Mudita Kompakt — MANUAL: TC-02-03 is manual-only"
+      ],
+      "blocked": []
+    },
+    "critical_decisions": [
+      "DEC-48 critical Category screen: order by age"
+    ]
+  },
+  "raw": "I wrote the confirmed DEC-48 entry and committed it as ae16e5d. The gates and the whole acceptance suite then passed on that commit with a clean tree. Nothing is pushed.\n\n**Decision entry.** DEC-48 in /Users/sulo/workspace/knowledge-quiz/docs/specs/DECISIONS.md now reads:\n- Decided by: product owner (delivery loop, confirmed 2026-10-15)\n- Decision: \"Option a — Merge now with 3+ only; full check when 4+ and 5+ land\"\n- It notes that CI runs TC-02-01/02 on every PR, so the 4+ and 5+ PRs cannot merge unless their deck shows, and that the 4+ deck is in PR #8 (feature/US-01-03, not yet merged).\n- Scope effect: reduction (deferred). Status: accepted.\n\nThe entry only exists on this branch, so the diff from main stays append-only. I did not touch the US-01-03 or US-01-04 spec files.\n\n**Test run.** I started the local emulator (Medium_Phone, API 32) and stopped it after the run. The run is in /Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-15_005113 and was snapshotted on ae16e5d (clean tree, not changed during the run). `scripts/test-acceptance.sh` exited 0:\n- 6 of 6 Maestro flows passed on the debug build, and the 1 release flow passed.\n- The device checks screen.xml and screen-colours.xml passed (0 failures, 0 skipped).\n- 65 Jest tests passed.\n\nRESULT: ready\nSTORY: US-02-01\nBRANCH: feature/US-02-01\nCOMMITS: e6b2747 fix(categories): rules in even whole device pixels [US-02-01]; 5ae68f0 test(categories): check the screen's pixels on the device [US-02-01]; ecc6635 test(categories): labels of every shipped deck, by age [US-02-01]; 6c4a842 chore(categories): wip, waiting for DEC-48 [US-02-01]; ae16e5d docs(specs): DEC-48 confirmed by the product owner [US-02-01]\nDECISIONS: DEC-48 critical Category screen: order by age; 4+ and 5+ on screen, and the full TC-02-01/02 check, deferred to US-01-03 and US-01-04\nEVIDENCE:\n  #1 Every launch opens on the category screen — TC-02-01 step 1 (maestro/report.xml, pass); TC-02-14 pass\n  #2 Lists the content data's categories in order 3+, 4+, 5+ — TC-02-01 pass for the shipped decks (3+ only on main; 4+ and 5+ checked by the same flow when US-01-03 and US-01-04 land, per DEC-48 option a); AC-02-01-3 and src/content/__tests__/categories.test.ts prove age order (junit/unit.xml, pass)\n  #3 A category added to the content data appears with no screen change — AC-02-01-3 steps 1-3 (junit/unit.xml, pass)\n  #4 Only pure black and white; a test fails on any other colour — AC-02-01-4 steps 1-3 (junit/unit.xml, pass) and step 4 on the device (junit/screen-colours.xml, pass)\n  #5 Nothing animates; a test fails if an animation is enabled — AC-02-01-5 steps 1-3 (junit/unit.xml, pass)\n  #6 Each category entry spans the full width — TC-02-02 flow pass for the shipped decks (per DEC-48) and TC-02-02 step 2 (junit/screen.xml, pass)\n  #7 Screen within 3 s on the Mudita Kompakt — MANUAL: TC-02-03 is manual-only\nTESTS: run=/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-15_005113 pass=7 fail=0 blocked=0 manual=1 manual_tests=TC-02-03\nDERIVED_TESTS: AC-02-01-3; AC-02-01-4; AC-02-01-5\nPREEXISTING: criteria #1-#6 implemented in earlier commits on this branch (ad39b69..ecc6635); this round only confirmed DEC-48\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn jest ok (65 tests passed); commit hook ok\nENV_KEYS: none\nMIGRATION: no\nFINDINGS: spec-B1 fixed 6c4a842 + ae16e5d (DEC-48 put to the owner, who took option a; entry written as accepted, critical, reduction (deferred)); spec-B2 fixed e6b2747 + 5ae68f0 (rules in an even whole number of device pixels; device check junit/screen-colours.xml passes on this run)\nNOTES: The local run.json shows AC-02-01-3/4/5 as skipped because the local collector reads only the Maestro reports; their Jest cases (junit/unit.xml) and junit/screen-colours.xml pass and carry the AC ids for CI. The US-01-03 (PR #8) and US-01-04 implementers must make TC-02-01/02 pass with their deck shown (DEC-48). The PR body must list TC-02-03 and TC-02-04 as not verified by the loop.\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}

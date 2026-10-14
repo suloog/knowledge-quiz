@@ -1,0 +1,103 @@
+{
+  "story": "US-02-01",
+  "attempt": 1,
+  "round": 2,
+  "sha": "ae16e5d10159a1259193b101513440f7d6beb825",
+  "reviewer": "code",
+  "ts": "2026-10-14T22:57:07Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-02-01",
+    "impact": "Both round-1 blockers are fixed. The 2 dp borders are now an even whole number of device pixels, and the new device pixel check passed on the API 32 emulator. DEC-48 is classified critical and owner-confirmed, so the 3+-only merge is an accepted deferral, not a gap. Only non-blocking items remain, chiefly that the new unit test would not fail if the border fix were reverted.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/__tests__/theme.test.ts:11 — jest PixelRatio is 2, so the old borderBottomWidth 2 (4 px, even) passes the new test and a revert of ruleWidth fails nothing at unit level → mock PixelRatio.get to 2.625/2.75/3.5 via jest.isolateModules and assert integer even pixels"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/DECISIONS.md:589 — DEC-48 was rewritten in place (Decided by changed developer → product owner) although DECISIONS.md is append-only → keep as is (entry unmerged) or record the owner confirmation in a superseding entry"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:44 — expected labels tie-break by filename but the app by registration order in decks/index.ts, so equal-age or no-age labels could be ordered differently and fail TC-02-01 on a correct screen (not reachable with today's decks) → note it in the comment or derive both from one order"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/maestro/TC-02-01-opens-on-categories.yaml:24 — CATEGORIES.split(',') breaks for a label containing a comma (not reachable with 3+/4+/5+) → use a separator not found in labels"
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/check-black-and-white.js:60 — rows above the first text element are not checked and a node without bounds would throw; deliberate and commented, uiautomator always emits bounds → no action needed"
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/check-full-width.js:5 — uiautomator clips bounds to the display so an entry wider than the screen still reads 0–width and the check cannot detect overflow (existing limit, now documented) → add a screenshot-based check if overflow matters"
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/check-black-and-white.js:128 — a skipped result does not fail the script, so on a GPU-less runner NFR-07 on the device goes unevidenced without failing the run → read the skip in the CI results when it occurs"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "external",
+        "note": "3+ met on the device; 4+/5+ deferred to US-01-03/US-01-04 by DEC-48 (owner-confirmed)"
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 6,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 7,
+        "verdict": "external",
+        "note": "manual measurement on the Mudita Kompakt"
+      }
+    ],
+    "stray": []
+  },
+  "raw": "## Review of PR #6 (US-02-01), round 2. Diff: 558d8ac..ae16e5d, with origin/main...ae16e5d as context.\n\nBoth round-1 blockers are fixed, with one weakness in the unit-level guard for B2 (N1). Nothing broke. I did not re-run the emulator. I read local run `test-runs/2026-10-15_005113` (API 32): 6/6 Maestro flows passed, 65 unit tests passed, and `screen-colours.xml` shows `failures=0 skipped=0`. CI at review time: Gates passed, the Acceptance (Android 12 emulator) job still pending. My scratch worktree is removed and the main checkout is untouched.\n\n### Round-1 findings verified\n- **B2 (grey rows at the 2 dp borders): fixed.**\n  - `ruleWidth = 2*max(1, round(ratio))/ratio` in `src/theme.ts` gives an even whole number of device pixels. I computed ratios 1, 1.5, 2, 2.625, 2.75, 3, 3.375, 3.5 and 2.8125: the pixel count is 4, 6 or 8 and an integer in every case, including 6 px at 2.625.\n  - It is used for all four borders in `src/app/index.tsx`.\n  - The device check `scripts/check-black-and-white.js` ran on real pixels and passed: 1080x2400, rows 63–2273, glyph margin 21 px (= 8 dp at 420 dpi).\n  - I looked at the kept screenshot `AC-02-01-4-step-04-screen.png`. Rules are crisp black, background white, and the title and \"3+\" are rendered.\n  - The check reads every pixel from the top of the first text element down to the navigation bar. It allows grey only inside text elements shrunk by 8 dp. The rules sit on the element's bottom edge, so grey beside a rule is still caught.\n  - A one-colour frame is reported as skipped/blocked, not as a pass.\n  - Pre-existing weakness unrelated to the fix: the check cannot prove the fix is still needed, because it can only be run on a device.\n- **B1 (DEC-48 classification): fixed.** DEC-48 is now owner-confirmed, option a. It states the scope effect as \"reduction (deferred)\". It lists US-01-03 and US-01-04 as affected and explains how CI will force the 4+ and 5+ decks to show.\n- **Other round-1 fixes: all confirmed.**\n  - Labels come from every `*.json` in the decks directory, sorted by age, with labels that have no age last, matching `src/content/index.ts`. The regex escaping and the `categories.test.ts` case ('Extra' last) are fine.\n  - The hierarchy file is removed before polling.\n  - `check-full-width` fails when 0 categories are expected.\n\n### Findings\nBLOCKING: none.\n\nNON-BLOCKING:\n- **N1** `src/__tests__/theme.test.ts:11` — The new unit test does not guard the B2 fix. Jest's `PixelRatio.get()` is 2, so the pre-fix `borderBottomWidth: 2` (4 px, even) passes it too. A revert of `ruleWidth` would not fail any unit test. Only the device step covers it, and that step can skip in CI. Fix: use `jest.isolateModules` with `PixelRatio.get` mocked to 2.625, 2.75 and 3.5, and assert the integer, even pixel count for each.\n- **N2** `docs/specs/DECISIONS.md` (DEC-48) — The entry was rewritten in place, changing \"Decided by\" from developer to product owner. CLAUDE.md says DECISIONS.md is append-only and an entry is never edited. DEC-48 is not on main yet, so little history is lost, but the rewrite replaces the original decider and basis. Fix: either keep it (it only exists on this branch) or put the owner's confirmation in a new superseding entry. Your call.\n- **N3** `scripts/test-acceptance.sh` (the CATEGORIES node snippet) — Expected labels are sorted by filename and then by age. The app sorts by registration order in `src/content/decks/index.ts` and then by age. Two decks with the same age, or two labels without an age, could be ordered differently, and TC-02-01 would then fail on a correct screen. Not reachable with the decks that exist today. Fix: note it in the comment, or keep the order in one place.\n- **N4** `tests/maestro/TC-02-01-opens-on-categories.yaml` (`CATEGORIES.split(',')`) — A label containing a comma would break the list passed to the flow. Not reachable with 3+, 4+ and 5+. Optional: use a different separator.\n- **N5** `scripts/check-black-and-white.js` — The `top` bound is the first text element's top, so a non-black/white pixel above the title is not checked. This is deliberate and commented. The `<node>` regex would throw on a node without `bounds`; uiautomator always emits it. The XML `escape` leaves `>` and `'` unescaped, which is harmless here.\n- **N6** `scripts/check-full-width.js` — The new comment admits that uiautomator clips bounds to the display, so an entry wider than the screen also reads 0–width. The check cannot detect overflow. This was already true before the change and is now documented. The screenshot-based check could cover it if wanted.\n- **N7** The \"skipped\" result in `junit/screen-colours.xml` does not change the script's exit code. It is reported honestly as blocked, but on a GPU-less runner the colour criterion goes unevidenced without failing the run. This follows from the \"one colour = blocked\" decision and is documented in the AC-02-01-4 test file. Make sure the reviewer reads the skip when it happens.\n\n### Acceptance criteria\n1. Launch opens on the category screen: met (TC-02-01, step 1).\n2. Lists 3+, 4+, 5+ in that order: partly met. The 3+ part is met and verified on the device; the 4+ and 5+ part is deferred to US-01-03 and US-01-04 per DEC-48, owner-confirmed. Reported as external.\n3. A new category appears from the data with no screen change: met (AC-02-01-3 unit test).\n4. Only black or white: met (unit test plus the device pixel check; see N1 and N7).\n5. No animation: met (AC-02-01-5 unit test).\n6. Full-width entries: met (TC-02-02; see N6).\n7. Screen appears within 3 s on the Kompakt: external (manual measurement on the device).\n\n```\nREVIEW: findings\nSTORY: US-02-01\nIMPACT: Both round-1 blockers are fixed. The 2 dp borders are now an even whole number of device pixels, and the new device pixel check passed on the API 32 emulator. DEC-48 is classified critical and owner-confirmed, so the 3+-only merge is an accepted deferral, not a gap. Only non-blocking items remain, chiefly that the new unit test would not fail if the border fix were reverted.\nFINDINGS:\n  N1 src/__tests__/theme.test.ts:11 — jest PixelRatio is 2, so the old borderBottomWidth 2 (4 px, even) passes the new test and a revert of ruleWidth fails nothing at unit level → mock PixelRatio.get to 2.625/2.75/3.5 via jest.isolateModules and assert integer even pixels\n  N2 docs/specs/DECISIONS.md:589 — DEC-48 was rewritten in place (Decided by changed developer → product owner) although DECISIONS.md is append-only → keep as is (entry unmerged) or record the owner confirmation in a superseding entry\n  N3 scripts/test-acceptance.sh:44 — expected labels tie-break by filename but the app by registration order in decks/index.ts, so equal-age or no-age labels could be ordered differently and fail TC-02-01 on a correct screen (not reachable with today's decks) → note it in the comment or derive both from one order\n  N4 tests/maestro/TC-02-01-opens-on-categories.yaml:24 — CATEGORIES.split(',') breaks for a label containing a comma (not reachable with 3+/4+/5+) → use a separator not found in labels\n  N5 scripts/check-black-and-white.js:60 — rows above the first text element are not checked and a node without bounds would throw; deliberate and commented, uiautomator always emits bounds → no action needed\n  N6 scripts/check-full-width.js:5 — uiautomator clips bounds to the display so an entry wider than the screen still reads 0–width and the check cannot detect overflow (existing limit, now documented) → add a screenshot-based check if overflow matters\n  N7 scripts/check-black-and-white.js:128 — a skipped result does not fail the script, so on a GPU-less runner NFR-07 on the device goes unevidenced without failing the run → read the skip in the CI results when it occurs\nCRITERIA:\n  #1 met\n  #2 external — 3+ met on the device; 4+/5+ deferred to US-01-03/US-01-04 by DEC-48 (owner-confirmed)\n  #3 met\n  #4 met\n  #5 met\n  #6 met\n  #7 external — manual measurement on the Mudita Kompakt\n```\n"
+}
