@@ -49,3 +49,5 @@ question answered or deferred by an explicit decision, the list of items with no
 
 - Closed: 2026-10-14, by: Maciej (analyst, product owner) · `PROJECT.md` written, `status: draft` until `/og:discovery-report accepted` · `constitution.md` `status: draft` → next step `/og:discovery-report`, then `/og:modules`
 - At close: 5 topics settled, 65 findings, 30 decisions (3 extensions: `DEC-28`, `DEC-29`, `DEC-30`), 0 [W] open, 3 [A] open (`Q26`, `Q27`, `Q28` — see QUESTIONS.md), technical checklist 24/24 with a status
+- Accepted by the client: 2026-10-14 · document version: `21eae3e` · 65 findings across 5 topics are binding from now on · decisions confirmed: 0
+

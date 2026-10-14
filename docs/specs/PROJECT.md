@@ -2,7 +2,7 @@
 project: knowledge-quiz
 client: Order Group (internal)
 language: en # language of every spec artifact (en | pl) — chosen once, at /og:analyze
-status: draft # draft | approved | active | done
+status: approved
 created: 2026-10-14
 analyst: Maciej
 ---
