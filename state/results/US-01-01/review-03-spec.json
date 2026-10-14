@@ -1,0 +1,93 @@
+{
+  "story": "US-01-01",
+  "attempt": 1,
+  "round": 3,
+  "sha": "e83aaeff9d6c57dfba201aa417b5eae8f1751090",
+  "reviewer": "spec",
+  "ts": "2026-10-14T12:15:08Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-01-01",
+    "impact": "plugins/withReleaseSigning.js generates the signing setup of every release build, including Maciej's manual one from README: a KQ_UPLOAD_* left exported in his shell now overrides ~/.gradle/gradle.properties (accepted cost of DEC-45). scripts/test-acceptance.sh is what CI runs on every PR: it now exits when no device is attached (CI's emulator runner always provides one; local runners must start an emulator first) and installs dependencies itself.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": ".github/workflows/acceptance.yml:56 — CI run 38561630611 on e83aaef failed in the emulator runner's SDK install (system image \"Error on ZipFile unknown archive\") before the tests ran; no og-test-results artifact exists for this head, so the merge gate has no CI evidence. Infrastructure, not code → re-run the job (gh run rerun 38561630611) and check the artifact"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:53 — the no-device exit writes no JUnit (not even unit tests); CI then shows only \"No files were found\" at upload → call write_junit with a recorded failing case before exit 1"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:185 — missing Maestro is recorded under the AC-01-01-4 precondition's name (\"release build installed, no bundler reachable\"), and TC-00-01/TC-00-03/TC-01-01/the AC-01-01-4 flow get no failing entry → record a dedicated \"Maestro flows\" case or one failing case per flow"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:53 — the preflight finds a device but doesn't pin it; with emulator + Kompakt both attached, bare adb calls fail \"more than one device\" and Maestro may pick either → export ANDROID_SERIAL from the preflight and pass --device to maestro"
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:59 — \"yarn install\" that reports Already up-to-date does not refresh node_modules/.yarn-integrity, so once yarn.lock is newer every run reinstalls (seen in the local acceptance.log; same check in stack.sh:46) → touch node_modules/.yarn-integrity after a successful install"
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "plugins/__tests__/withReleaseSigning.test.js:56 — DEC-45 precedence is proven only by reading the generated Groovy, never by a build → in the acceptance build also set ORG_GRADLE_PROJECT_KQ_UPLOAD_KEY_ALIAS=not-this-alias (not a secret) and keep asserting the throwaway DN"
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "PR #3 body — still says signing comes \"from ~/.gradle/gradle.properties or the environment\", lists only DEC-44 and cites the f06b45e run → update it for DEC-45 and the e83aaef run (2026-10-14_140555)"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "external",
+        "note": "MANUAL TC-01-03 (Kompakt); emulator part met: TC-01-01 passed locally on e83aaef (API 32) and in CI on API 31 at b9a4b6d; CI on e83aaef needs a re-run (N1)"
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": ""
+      }
+    ],
+    "stray": []
+  },
+  "raw": "## US-01-01 spec-compliance review, round 3 (PR #3, head e83aaef)\n\nB1 is really fixed and nothing broke. All five criteria are met or covered by external evidence. I found no blocking item. The one thing stopping a merge has nothing to do with the code: **CI on e83aaef failed before the tests started, so there is no `og-test-results` artifact for this head.** The job needs a re-run.\n\n### CI on e83aaef (run 38561630611)\n- **Result:** failure after 1m45s, in the emulator runner's \"Install Android SDK\" step. Downloading `system-images;android-31;google_apis;x86_64` failed with \"Error on ZipFile unknown archive\" and the emulator never booted.\n- **Script never ran:** `yarn test:acceptance` did not start.\n- **Artifact:** the og-test-results upload failed with \"No files were found\". **It holds no result for any required test.**\n- **Previous head:** CI on b9a4b6d (run 38557153663) was green. I downloaded its og-test-results (into the scratchpad): AC-01-01-1, -3 and -5 (Jest), TC-00-01, TC-00-03 and TC-01-01 (Maestro, API 31), and AC-01-01-4 (Maestro release run plus its precondition and logcat checks) all passed. That head is not the one under review, though.\n- **Fix:** `gh run rerun 38561630611`. I did not trigger it because I work read-only.\n\n### Local evidence on e83aaef\n`test-runs/2026-10-14_140555` was run on e83aaef with a clean tree, on an API 32 emulator.\n- **Release checks (`junit/release.xml`):** 6 of 6 pass — AC-01-01-5 steps 4–6, AC-01-01-3 step 2, the AC-01-01-4 precondition and the logcat check.\n- **Debug-build flows (`maestro/report.xml`):** TC-00-01, TC-00-03 and TC-01-01 pass.\n- **Release flow (`maestro/report-release.xml`):** AC-01-01-4 passes.\n- **Unit tests (`junit/unit.xml`):** 15 of 15 pass.\n- **My own re-run:** Jest 15/15, `lint`, `tsc` and `format:check` are all green. `bash -n` on the script is fine.\n- **Secrets in logs:** zero matches for storepass/keypass/password assignments in `release-build.log`, `stack.log` and `acceptance.log`.\n\nOne thing outside this diff: the og collector's `run.json` lists AC-01-01-1, -3 and -5 as \"skipped\" even though their JUnit cases passed. The collector only matches Maestro output by `TC-` folder name. This is a tooling limit, not the implementer's.\n\n### B1 and the round-2 fixes\n| Item | Verdict | Evidence |\n| --- | --- | --- |\n| B1 [security] env wins over gradle.properties | Fixed | `plugins/withReleaseSigning.js:19` now reads `System.getenv(name) ?: findProperty(name)`. The generated `android/app/build.gradle:86` matches. The test at `plugins/__tests__/withReleaseSigning.test.js:56-65` checks the lookup order and that no `KQ_UPLOAD_*` value is read outside `kqUpload`; with the old order it would fail. |\n| B1: no stale `android/` left behind | Holds | Prebuild cleans by default in this Expo CLI (`clean: !args['--no-clean']`), and under `CI=1` it goes on even with a dirty tree. The local run's log shows \"Cleared android code\". So the idempotency guard (`withReleaseSigning.js:52`) cannot keep an old lookup during the acceptance run. |\n| DEC-45 | Recorded, append-only | `docs/specs/DECISIONS.md` only gains lines in the PR diff. README:55-56 and AC-01-01-5 step 2 match it. |\n| N1 fail fast with no device | Fixed | `scripts/test-acceptance.sh:52-56`, README:42-46 |\n| N2 fresh-clone install | Fixed | `scripts/test-acceptance.sh:58-62` |\n| N3 Maestro missing counted as a failure | Fixed, with a weak label | `scripts/test-acceptance.sh:185` (see N3 below) |\n| N7 no password in argv | Fixed | keytool uses `-storepass:env`/`-keypass:env` (`:126-129`); Gradle gets the values through the environment (`:134-136`) |\n\n### Criteria, Covers and edge case\n| Item | Verdict | Evidence |\n| --- | --- | --- |\n| #1 latest foundation, versions recorded | met | README:6-17; `tests/unit/AC-01-01-1-platform-versions.test.js`, `plugins/__tests__/withMinSdk.test.js` pass |\n| #2 installs and starts on Android 12 emulator and Kompakt | external | Kompakt part is MANUAL TC-01-03. Emulator part: TC-01-01 passed locally on e83aaef (API 32) and in CI on API 31 at b9a4b6d. |\n| #3 no network permission | met | `plugins/withReleaseNoNetwork.js` with its unit test; `aapt` on the release APK lists none (`release/permissions.txt`) |\n| #4 starts and runs with network off | met | AC-01-01-4: the flow, the precondition (bundle embedded, not debuggable, no bundler, no `adb reverse`) and the logcat check all pass |\n| #5 signed release APK, key outside the repo | met | Steps 1–3 are unit tests; steps 4–6 (apksigner shows the throwaway DN, sdkVersion 31) are in `release.xml` |\n| MOD-01-F01, NFR-05, -06, -10, -13 | delivered | As above. There are no HTTP libraries in `dependencies`. |\n| NFR-12 | delivered for this story's scope | Playing offline is deferred to TC-01-02 / US-03-01 by DEC-44 |\n| Edge case: device older than Android 12 | implemented and tested | `withMinSdk` plus the `aapt` check `sdkVersion:'31'` (STEP6) |\n| Out of scope | no violations | Every line of the fix diff traces to B1/DEC-45 or N1/N2/N3/N7 |\n| Constitution | no violations | — |\n\n### Findings (all non-blocking)\n- **N1, CI on e83aaef:** the merge gate is not satisfied because the emulator image download failed (infrastructure, not code). Re-run the job and check the artifact.\n- **N2, `scripts/test-acceptance.sh:53-56`:** the no-device exit writes no JUnit, not even the unit tests. On CI this surfaces as a confusing \"No files were found\" upload error. Fix: run `write_junit` with a recorded failure before `exit 1`.\n- **N3, `scripts/test-acceptance.sh:185`:** a missing Maestro is recorded under the AC-01-01-4 precondition's name (\"release build installed, no bundler reachable\"). TC-00-01, TC-00-03, TC-01-01 and the AC-01-01-4 flow get no failing entry at all. Fix: record a dedicated \"Maestro flows\" case, or one failing case per flow.\n- **N4, `scripts/test-acceptance.sh:53`:** the preflight finds a device but doesn't pin it. With the emulator and the Kompakt both on USB, every bare `adb` call fails with \"more than one device\", and Maestro may pick either device. Fix: export `ANDROID_SERIAL` from the preflight and pass `--device` to maestro.\n- **N5, `scripts/test-acceptance.sh:59` (same check in `stack.sh:46`):** `yarn install` that reports \"Already up-to-date\" doesn't refresh `.yarn-integrity`. After a checkout touches `yarn.lock`, every run reinstalls; the local log shows this. Fix: `touch node_modules/.yarn-integrity` after a successful install.\n- **N6, `plugins/__tests__/withReleaseSigning.test.js:56-59`:** DEC-45 is only proven by reading the generated Groovy; no build shows env overriding a Gradle property. Fix: in the acceptance build, also set the non-secret `ORG_GRADLE_PROJECT_KQ_UPLOAD_KEY_ALIAS=not-this-alias`. The APK must still be signed with the throwaway DN.\n- **N7, PR #3 description:** it still says signing comes \"from ~/.gradle/gradle.properties or the environment\". Its Decisions section lacks DEC-45, and its local run reference (`2026-10-14_120331` on f06b45e) is out of date. Fix: update the body to the e83aaef run and DEC-45.\n\n### Paths\n- `/Users/sulo/workspace/knowledge-quiz/plugins/withReleaseSigning.js`\n- `/Users/sulo/workspace/knowledge-quiz/plugins/__tests__/withReleaseSigning.test.js`\n- `/Users/sulo/workspace/knowledge-quiz/scripts/test-acceptance.sh`\n- `/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-14_140555/`\n- `/Users/sulo/workspace/knowledge-quiz/docs/specs/DECISIONS.md`\n\n```\nREVIEW: findings\nSTORY: US-01-01\nIMPACT: plugins/withReleaseSigning.js generates the signing setup of every release build, including Maciej's manual one from README: a KQ_UPLOAD_* left exported in his shell now overrides ~/.gradle/gradle.properties (accepted cost of DEC-45). scripts/test-acceptance.sh is what CI runs on every PR: it now exits when no device is attached (CI's emulator runner always provides one; local runners must start an emulator first) and installs dependencies itself.\nFINDINGS:\n  N1 .github/workflows/acceptance.yml:56 — CI run 38561630611 on e83aaef failed in the emulator runner's SDK install (system image \"Error on ZipFile unknown archive\") before the tests ran; no og-test-results artifact exists for this head, so the merge gate has no CI evidence. Infrastructure, not code → re-run the job (gh run rerun 38561630611) and check the artifact\n  N2 scripts/test-acceptance.sh:53 — the no-device exit writes no JUnit (not even unit tests); CI then shows only \"No files were found\" at upload → call write_junit with a recorded failing case before exit 1\n  N3 scripts/test-acceptance.sh:185 — missing Maestro is recorded under the AC-01-01-4 precondition's name (\"release build installed, no bundler reachable\"), and TC-00-01/TC-00-03/TC-01-01/the AC-01-01-4 flow get no failing entry → record a dedicated \"Maestro flows\" case or one failing case per flow\n  N4 scripts/test-acceptance.sh:53 — the preflight finds a device but doesn't pin it; with emulator + Kompakt both attached, bare adb calls fail \"more than one device\" and Maestro may pick either → export ANDROID_SERIAL from the preflight and pass --device to maestro\n  N5 scripts/test-acceptance.sh:59 — \"yarn install\" that reports Already up-to-date does not refresh node_modules/.yarn-integrity, so once yarn.lock is newer every run reinstalls (seen in the local acceptance.log; same check in stack.sh:46) → touch node_modules/.yarn-integrity after a successful install\n  N6 plugins/__tests__/withReleaseSigning.test.js:56 — DEC-45 precedence is proven only by reading the generated Groovy, never by a build → in the acceptance build also set ORG_GRADLE_PROJECT_KQ_UPLOAD_KEY_ALIAS=not-this-alias (not a secret) and keep asserting the throwaway DN\n  N7 PR #3 body — still says signing comes \"from ~/.gradle/gradle.properties or the environment\", lists only DEC-44 and cites the f06b45e run → update it for DEC-45 and the e83aaef run (2026-10-14_140555)\nCRITERIA:\n  #1 met\n  #2 external — MANUAL TC-01-03 (Kompakt); emulator part met: TC-01-01 passed locally on e83aaef (API 32) and in CI on API 31 at b9a4b6d; CI on e83aaef needs a re-run (N1)\n  #3 met\n  #4 met\n  #5 met\n```\n"
+}
