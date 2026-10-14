@@ -6,11 +6,11 @@
       "id": "3p-01",
       "kind": "educational",
       "pl": {
-        "question": "Jakiego koloru jest cytryna?",
+        "question": "Jakiego koloru jest cytryna: żółtego czy niebieskiego?",
         "answer": "Żółtego."
       },
       "en": {
-        "question": "What colour is a lemon?",
+        "question": "What colour is a lemon: yellow or blue?",
         "answer": "Yellow."
       }
     },
@@ -30,11 +30,11 @@
       "id": "3p-03",
       "kind": "educational",
       "pl": {
-        "question": "Ile kół ma rower?",
+        "question": "Ile kół ma rower: dwa czy sześć?",
         "answer": "Dwa."
       },
       "en": {
-        "question": "How many wheels does a bicycle have?",
+        "question": "How many wheels does a bicycle have: two or six?",
         "answer": "Two."
       }
     },
@@ -54,11 +54,11 @@
       "id": "3p-05",
       "kind": "educational",
       "pl": {
-        "question": "Czym myjesz zęby?",
+        "question": "Czym myjemy zęby: szczoteczką czy łyżką?",
         "answer": "Szczoteczką do zębów."
       },
       "en": {
-        "question": "What do you brush your teeth with?",
+        "question": "What do we brush our teeth with: a toothbrush or a spoon?",
         "answer": "A toothbrush."
       }
     },
@@ -78,11 +78,11 @@
       "id": "3p-07",
       "kind": "educational",
       "pl": {
-        "question": "Ile palców masz na jednej ręce?",
+        "question": "Ile palców masz na jednej ręce, licząc kciuk?",
         "answer": "Pięć."
       },
       "en": {
-        "question": "How many fingers do you have on one hand?",
+        "question": "How many fingers do you have on one hand, counting the thumb?",
         "answer": "Five."
       }
     },
@@ -162,11 +162,11 @@
       "id": "3p-14",
       "kind": "popular-science",
       "pl": {
-        "question": "Co świeci na niebie w dzień?",
+        "question": "Co świeci na niebie w dzień i nas grzeje?",
         "answer": "Słońce."
       },
       "en": {
-        "question": "What shines in the sky in the daytime?",
+        "question": "What shines in the sky in the daytime and keeps us warm?",
         "answer": "The sun."
       }
     },
@@ -186,11 +186,11 @@
       "id": "3p-16",
       "kind": "popular-science",
       "pl": {
-        "question": "Jak nazywamy wodę, która spada z chmur?",
+        "question": "Jak nazywamy krople wody, które spadają z chmur?",
         "answer": "Deszcz."
       },
       "en": {
-        "question": "What do we call water that falls from the clouds?",
+        "question": "What do we call drops of water that fall from the clouds?",
         "answer": "Rain."
       }
     },
@@ -210,11 +210,11 @@
       "id": "3p-18",
       "kind": "popular-science",
       "pl": {
-        "question": "Czym oddychamy?",
+        "question": "Czym oddychamy: powietrzem czy wodą?",
         "answer": "Powietrzem."
       },
       "en": {
-        "question": "What do we breathe?",
+        "question": "What do we breathe: air or water?",
         "answer": "Air."
       }
     },
@@ -246,11 +246,11 @@
       "id": "3p-21",
       "kind": "popular-science",
       "pl": {
-        "question": "Co rusza się razem z tobą po ziemi, gdy świeci słońce?",
+        "question": "Co widać na ziemi obok ciebie w słońcu: twój cień czy tęczę?",
         "answer": "Twój cień."
       },
       "en": {
-        "question": "What moves with you on the ground when the sun shines?",
+        "question": "What do you see on the ground next to you in the sun: your shadow or a rainbow?",
         "answer": "Your shadow."
       }
     },
@@ -294,7 +294,7 @@
       "id": "3p-25",
       "kind": "popular-science",
       "pl": {
-        "question": "Co unosi się nad garnkiem z gorącą wodą?",
+        "question": "Co unosi się nad garnkiem z bardzo gorącą wodą?",
         "answer": "Para."
       },
       "en": {
@@ -330,11 +330,11 @@
       "id": "3p-28",
       "kind": "nature",
       "pl": {
-        "question": "Gdzie mieszka ryba?",
+        "question": "Gdzie mieszka ryba: w wodzie czy na drzewie?",
         "answer": "W wodzie."
       },
       "en": {
-        "question": "Where does a fish live?",
+        "question": "Where does a fish live: in water or in a tree?",
         "answer": "In water."
       }
     },
@@ -346,7 +346,7 @@
         "answer": "Miód."
       },
       "en": {
-        "question": "What sweet food do bees make?",
+        "question": "What sweet thing do bees make?",
         "answer": "Honey."
       }
     },
@@ -354,11 +354,11 @@
       "id": "3p-30",
       "kind": "nature",
       "pl": {
-        "question": "Które zwierzę ma bardzo długą szyję?",
+        "question": "Kto ma dłuższą szyję: żyrafa czy kot?",
         "answer": "Żyrafa."
       },
       "en": {
-        "question": "Which animal has a very long neck?",
+        "question": "Which has a longer neck: a giraffe or a cat?",
         "answer": "A giraffe."
       }
     },
@@ -390,11 +390,11 @@
       "id": "3p-33",
       "kind": "nature",
       "pl": {
-        "question": "Które zwierzę skacze i robi kum kum?",
+        "question": "Które zwierzę robi kum kum: żaba czy krowa?",
         "answer": "Żaba."
       },
       "en": {
-        "question": "Which animal jumps and says ribbit?",
+        "question": "Which animal says ribbit: a frog or a cow?",
         "answer": "A frog."
       }
     },
@@ -414,11 +414,11 @@
       "id": "3p-35",
       "kind": "nature",
       "pl": {
-        "question": "Które zwierzę ma trąbę?",
+        "question": "Które zwierzę ma trąbę: słoń czy pies?",
         "answer": "Słoń."
       },
       "en": {
-        "question": "Which animal has a trunk?",
+        "question": "Which animal has a trunk: an elephant or a dog?",
         "answer": "An elephant."
       }
     },
@@ -462,11 +462,11 @@
       "id": "3p-39",
       "kind": "trivia",
       "pl": {
-        "question": "Co zakładamy na stopy przed butami?",
+        "question": "Co zakładamy na stopy przed butami: skarpetki czy rękawiczki?",
         "answer": "Skarpetki."
       },
       "en": {
-        "question": "What do we put on our feet before our shoes?",
+        "question": "What do we put on our feet before our shoes: socks or gloves?",
         "answer": "Socks."
       }
     },
@@ -486,11 +486,11 @@
       "id": "3p-41",
       "kind": "trivia",
       "pl": {
-        "question": "Gdzie trzymamy mleko, żeby było zimne?",
+        "question": "Gdzie trzymamy mleko, żeby było zimne: w lodówce czy w piekarniku?",
         "answer": "W lodówce."
       },
       "en": {
-        "question": "Where do we keep milk so it stays cold?",
+        "question": "Where do we keep milk so it stays cold: in the fridge or in the oven?",
         "answer": "In the fridge."
       }
     },
@@ -522,11 +522,11 @@
       "id": "3p-44",
       "kind": "trivia",
       "pl": {
-        "question": "Jak nazywamy jedzenie, które jemy rano?",
+        "question": "Jak nazywamy jedzenie rano: śniadanie czy kolacja?",
         "answer": "Śniadanie."
       },
       "en": {
-        "question": "What do we call the food we eat in the morning?",
+        "question": "What do we call the food we eat in the morning: breakfast or supper?",
         "answer": "Breakfast."
       }
     },
@@ -534,11 +534,11 @@
       "id": "3p-45",
       "kind": "trivia",
       "pl": {
-        "question": "Co pokazuje zegar?",
+        "question": "Co pokazuje zegar: godzinę czy pogodę?",
         "answer": "Godzinę."
       },
       "en": {
-        "question": "What does a clock show?",
+        "question": "What does a clock show: the time or the weather?",
         "answer": "The time."
       }
     },
@@ -546,11 +546,11 @@
       "id": "3p-46",
       "kind": "trivia",
       "pl": {
-        "question": "Czym otwieramy zamek w drzwiach?",
+        "question": "Czym otwieramy zamek w drzwiach: kluczem czy kredką?",
         "answer": "Kluczem."
       },
       "en": {
-        "question": "What do we open a door lock with?",
+        "question": "What do we open a door lock with: a key or a crayon?",
         "answer": "A key."
       }
     },
@@ -558,11 +558,11 @@
       "id": "3p-47",
       "kind": "trivia",
       "pl": {
-        "question": "Po czym jeżdżą pociągi?",
+        "question": "Po czym jeżdżą pociągi: po torach czy po wodzie?",
         "answer": "Po torach."
       },
       "en": {
-        "question": "What do trains run on?",
+        "question": "What do trains travel on: tracks or water?",
         "answer": "Tracks."
       }
     },
@@ -582,11 +582,11 @@
       "id": "3p-49",
       "kind": "trivia",
       "pl": {
-        "question": "Czym jemy zupę?",
+        "question": "Czym jemy zupę: łyżką czy grzebieniem?",
         "answer": "Łyżką."
       },
       "en": {
-        "question": "What do we eat soup with?",
+        "question": "What do we eat soup with: a spoon or a comb?",
         "answer": "A spoon."
       }
     },
