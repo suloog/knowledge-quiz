@@ -609,3 +609,15 @@
 - **Scope effect:** within scope
 - **Resolves:** —
 - **Status:** accepted
+
+## [DEC-51] What makes the 5+ deck harder than 4+, and what counts as a repeat
+
+- **Date:** 2026-10-15
+- **Decided by:** developer (delivery loop)
+- **Source:** implementation (`US-01-04`)
+- **Affects:** `US-01-04`, `MOD-01-F02`, `MOD-01-F06`, `MOD-01-F14`
+- **Decision:** The 5+ deck asks what a 5-year-old learns in the year before school, one step past 4+: numbers past ten and adding within twenty, the months, hours and minutes, the weeks, reading a clock at the full hour, the day before yesterday and family words; the planets, the skeleton and the lungs, the compass, the atlas and the sides of the world, echo, gravity and volcanoes; record-holding and unusual animals (the cheetah, the chameleon, the ostrich, the beaver), what animals eat and how plants grow; Poland's capital, flag and coat of arms, and the places and people of a town (the library, the airport, the lighthouse, the conductor). It keeps the form of the younger decks — short open questions, one answer — and the `DEC-47` near-miss rule; each question's near misses are in `docs/delivery/content-checks/US-01-04-5-plus.md`. `US-01-04#6` is read as `DEC-50` reads `US-01-03#6`, against both younger decks: no 5+ question has the text of a 3+ or 4+ question in either language, ignoring case and punctuation, and none asks for the answer of a 3+ or 4+ question; `AC-01-04-6` checks both.
+- **Why:** The story asks for the hardest of the three decks, still suited to the youngest child of the category (`MOD-01-F06`), without saying how; these are the topics of the Polish preschool's last year (zerówka) and the picture books of that age, past what 4+ asks (`DEC-49`). The repeat rule is the one already accepted for 4+, so the three decks are held to one rule. The product owner reviews all content before release (`DEC-26`).
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
