@@ -45,7 +45,8 @@ OUT="$(cd "$OUT" && pwd)"
 APP_ID="$(node -p "require('./app.json').expo.android.package")"
 CONTENT_TITLE="$(node -p "require('./src/content/app.json').title")"
 # TC-02-01, TC-02-02: the labels 3+, 4+, 5+ the shipped decks hold, in that order, as Maestro
-# patterns (3\+); `none` for one not shipped yet — 4+ and 5+ until US-01-03 and US-01-04 (DEC-48).
+# patterns (3\+) — CATEGORIES, comma-separated — and how many (CATEGORY_COUNT); 3+ alone until
+# US-01-03 and US-01-04 ship 4+ and 5+ (DEC-48).
 CATEGORY_ARGS=()
 while read -r arg; do CATEGORY_ARGS+=(-e "$arg"); done < <(node -e '
   const fs = require("fs");
@@ -53,7 +54,8 @@ while read -r arg; do CATEGORY_ARGS+=(-e "$arg"); done < <(node -e '
   const shipped = fs.readdirSync(dir).filter(f => f.endsWith(".json"))
     .map(f => JSON.parse(fs.readFileSync(`${dir}/${f}`, "utf8")).category);
   const expected = ["3+", "4+", "5+"].filter(c => shipped.includes(c));
-  [0, 1, 2].forEach(i => console.log(`CATEGORY_${i}=${expected[i] ? expected[i].replace("+", "\\+") : "none"}`));
+  console.log(`CATEGORIES=${expected.map(c => c.replace("+", "\\+")).join(",")}`);
+  console.log(`CATEGORY_COUNT=${expected.length}`);
 ')
 say() { printf '[acceptance] %s\n' "$*"; }
 
@@ -264,7 +266,7 @@ else
       sleep 1
     done
     if ! node scripts/check-full-width.js "$OUT/maestro/TC-02-02-hierarchy.txt" "$screen_width" \
-      "$(printf '%s\n' "${CATEGORY_ARGS[@]}" | grep -c '^CATEGORY_[0-9]=[0-9]')" "$OUT/junit/screen.xml"; then
+      "$(printf '%s\n' "${CATEGORY_ARGS[@]}" | sed -n 's/^CATEGORY_COUNT=//p')" "$OUT/junit/screen.xml"; then
       status=1
     fi
   fi

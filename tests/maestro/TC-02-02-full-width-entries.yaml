@@ -1,7 +1,7 @@
 appId: ${APP_ID}
 name: TC-02-02 Each category entry spans the full width of the screen
-# CATEGORY_1, CATEGORY_2 (scripts/test-acceptance.sh): as in TC-02-01 — `none` for a category not
-# shipped yet (DEC-48).
+# CATEGORY_COUNT (scripts/test-acceptance.sh): how many of 3+, 4+, 5+ the shipped content data holds
+# (DEC-48).
 ---
 # Step 1 — open the app: the category screen is shown.
 - launchApp:
@@ -15,18 +15,11 @@ name: TC-02-02 Each category entry spans the full width of the screen
 # not by one known only on the device: scripts/test-acceptance.sh compares each entry's bounds, read
 # from the accessibility layer, with the screen's width (`wm size`) right after the flows, as the
 # JUnit case "TC-02-02 step 2". Here: every shipped entry is on screen, captured for the report.
-- assertVisible:
-    id: category-0
-- runFlow:
-    when:
-      true: ${CATEGORY_1 != 'none'}
+- evalScript: ${output.entry = 0}
+- repeat:
+    times: ${CATEGORY_COUNT}
     commands:
       - assertVisible:
-          id: category-1
-- runFlow:
-    when:
-      true: ${CATEGORY_2 != 'none'}
-    commands:
-      - assertVisible:
-          id: category-2
+          id: category-${output.entry}
+      - evalScript: ${output.entry = output.entry + 1}
 - takeScreenshot: step-02-full-width-entries
