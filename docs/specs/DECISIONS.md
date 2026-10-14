@@ -549,3 +549,15 @@
 - **Scope effect:** within scope
 - **Resolves:** —
 - **Status:** accepted
+
+## [DEC-45] Upload key variables in the environment win over Gradle properties of the same name
+
+- **Date:** 2026-10-14
+- **Decided by:** product owner (delivery loop, confirmed 2026-10-14)
+- **Source:** implementation (`US-01-01`, code review round 2, finding B1)
+- **Affects:** `US-01-01`, `DEC-44`, `NFR-06`, `AC-01-01-5`, `plugins/withReleaseSigning.js`, `README.md`
+- **Decision:** Option a — Environment wins over gradle.properties (implemented). When a `KQ_UPLOAD_*` value is set both as an environment variable and as a Gradle property (e.g. in `~/.gradle/gradle.properties`), the release build uses the environment variable. The acceptance run passes its throwaway key only through the environment, so tests never sign with the real upload key and no password goes on the command line.
+- **Why:** A value given explicitly for one build should beat a persistent default; it keeps the real key out of every test build and passwords out of the process list. A release build with the values only in `gradle.properties` behaves as before. Cost: a stray `KQ_UPLOAD_*` exported in the shell overrides the real key for a release build.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
