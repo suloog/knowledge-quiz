@@ -40,7 +40,7 @@ if [ -z "$MAESTRO" ]; then
 fi
 
 say "starting the stack with: yarn stack (console: $OUT/stack.log)"
-bash scripts/stack.sh >"$OUT/stack.log" 2>&1 &
+yarn -s stack >"$OUT/stack.log" 2>&1 &
 STACK_PID=$!
 stop_stack() {
   if kill -0 "$STACK_PID" 2>/dev/null; then
@@ -51,7 +51,11 @@ stop_stack() {
 }
 trap stop_stack EXIT
 
-ADB="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-$HOME/Library/Android/sdk}}/platform-tools/adb"
+# The same SDK lookup as scripts/stack.sh.
+SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+if [ -z "$SDK" ] && [ -d "$HOME/Library/Android/sdk" ]; then SDK="$HOME/Library/Android/sdk"; fi
+if [ -z "$SDK" ] && [ -d "$HOME/Android/Sdk" ]; then SDK="$HOME/Android/Sdk"; fi
+ADB="$SDK/platform-tools/adb"
 ready=""
 for _ in $(seq 1 1200); do
   if ! kill -0 "$STACK_PID" 2>/dev/null; then
