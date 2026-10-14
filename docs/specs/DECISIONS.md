@@ -501,3 +501,15 @@
 - **Scope effect:** within scope
 - **Resolves:** —
 - **Status:** accepted
+
+## [DEC-41] Story order across modules
+
+- **Date:** 2026-10-14
+- **Decided by:** tech lead (Maciej)
+- **Source:** /og:stories 2026-10-14
+- **Affects:** `DEC-34`, `MOD-02-F04`, `US-03-01`, `US-02-02`, `US-02-03`
+- **Decision:** `MOD-02-F04` (choosing a category opens its cards) is delivered by `US-03-01`, where the cards exist; `US-02-02` (continue entry) and `US-02-03` (language switch) are delivered after the deck stories `US-03-02` and `US-03-03` they rely on. Delivery order: US-01-01 → US-01-02 → US-02-01 → US-03-01 → US-03-02 → US-03-03 / US-03-04 → US-02-02 / US-02-03 → US-01-03 / US-01-04 → US-03-05.
+- **Why:** The continue entry resumes saved decks and the language switch must keep their positions; neither is testable before the deck exists. Module order (`DEC-34`) stands for requirements, story dependencies follow behaviour.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
