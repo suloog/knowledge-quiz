@@ -1,0 +1,606 @@
+{
+  "schemaVersion": 1,
+  "category": "4+",
+  "questions": [
+    {
+      "id": "4p-01",
+      "kind": "educational",
+      "pl": {
+        "question": "Ile dni ma jeden tydzień?",
+        "answer": "Siedem."
+      },
+      "en": {
+        "question": "How many days are there in one week?",
+        "answer": "Seven."
+      }
+    },
+    {
+      "id": "4p-02",
+      "kind": "educational",
+      "pl": {
+        "question": "Jak nazywa się kształt, który ma trzy boki i trzy rogi?",
+        "answer": "Trójkąt."
+      },
+      "en": {
+        "question": "What is the name of the shape with three sides and three corners?",
+        "answer": "A triangle."
+      }
+    },
+    {
+      "id": "4p-03",
+      "kind": "educational",
+      "pl": {
+        "question": "Jaki kolor wyjdzie, gdy zmieszamy żółtą farbę z czerwoną?",
+        "answer": "Pomarańczowy."
+      },
+      "en": {
+        "question": "What colour do we get when we mix yellow paint with red paint?",
+        "answer": "Orange."
+      }
+    },
+    {
+      "id": "4p-04",
+      "kind": "educational",
+      "pl": {
+        "question": "Jaki dzień tygodnia przychodzi po poniedziałku?",
+        "answer": "Wtorek."
+      },
+      "en": {
+        "question": "Which day of the week comes after Monday?",
+        "answer": "Tuesday."
+      }
+    },
+    {
+      "id": "4p-05",
+      "kind": "educational",
+      "pl": {
+        "question": "Co mówimy, gdy ktoś nam coś daje?",
+        "answer": "Dziękuję."
+      },
+      "en": {
+        "question": "What do we say when someone gives us something?",
+        "answer": "Thank you."
+      }
+    },
+    {
+      "id": "4p-06",
+      "kind": "educational",
+      "pl": {
+        "question": "Ile to jest pięć i jeszcze pięć?",
+        "answer": "Dziesięć."
+      },
+      "en": {
+        "question": "What is five and five more?",
+        "answer": "Ten."
+      }
+    },
+    {
+      "id": "4p-07",
+      "kind": "educational",
+      "pl": {
+        "question": "Jakie słowo znaczy odwrotnie niż „pełny”, jak pełny kubek?",
+        "answer": "Pusty."
+      },
+      "en": {
+        "question": "What word means the opposite of \"full\", as in a full cup?",
+        "answer": "Empty."
+      }
+    },
+    {
+      "id": "4p-08",
+      "kind": "educational",
+      "pl": {
+        "question": "Jakie słowo znaczy odwrotnie niż „mokry”?",
+        "answer": "Suchy."
+      },
+      "en": {
+        "question": "What word means the opposite of \"wet\"?",
+        "answer": "Dry."
+      }
+    },
+    {
+      "id": "4p-09",
+      "kind": "educational",
+      "pl": {
+        "question": "Jak nazywa się płaski kształt bez rogów, okrągły jak talerz?",
+        "answer": "Koło."
+      },
+      "en": {
+        "question": "What is the name of the flat shape with no corners, round like a plate?",
+        "answer": "A circle."
+      }
+    },
+    {
+      "id": "4p-10",
+      "kind": "educational",
+      "pl": {
+        "question": "Którą częścią buzi czujemy smak jedzenia?",
+        "answer": "Językiem."
+      },
+      "en": {
+        "question": "Which part of the mouth do we taste food with?",
+        "answer": "The tongue."
+      }
+    },
+    {
+      "id": "4p-11",
+      "kind": "educational",
+      "pl": {
+        "question": "Jak nazywamy mamę naszej mamy?",
+        "answer": "Babcia."
+      },
+      "en": {
+        "question": "What do we call our mum's mum?",
+        "answer": "Grandma."
+      }
+    },
+    {
+      "id": "4p-12",
+      "kind": "educational",
+      "pl": {
+        "question": "Jaki kolor wyjdzie, gdy zmieszamy białą farbę z czarną?",
+        "answer": "Szary."
+      },
+      "en": {
+        "question": "What colour do we get when we mix white paint with black paint?",
+        "answer": "Grey."
+      }
+    },
+    {
+      "id": "4p-13",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Co bije w naszej piersi i bije szybciej, gdy biegamy?",
+        "answer": "Serce."
+      },
+      "en": {
+        "question": "What beats in our chest and beats faster when we run?",
+        "answer": "The heart."
+      }
+    },
+    {
+      "id": "4p-14",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Jak nazywamy białą chmurkę, która unosi się nad garnkiem z gotującą się wodą?",
+        "answer": "Para."
+      },
+      "en": {
+        "question": "What do we call the white cloud that rises from a pot of boiling water?",
+        "answer": "Steam."
+      }
+    },
+    {
+      "id": "4p-15",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Co dzieje się z lodem, gdy zrobi się ciepło?",
+        "answer": "Topnieje."
+      },
+      "en": {
+        "question": "What happens to ice when it gets warm?",
+        "answer": "It melts."
+      }
+    },
+    {
+      "id": "4p-16",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Jak nazywa się planeta, na której mieszkamy?",
+        "answer": "Ziemia."
+      },
+      "en": {
+        "question": "What is the name of the planet we live on?",
+        "answer": "Earth."
+      }
+    },
+    {
+      "id": "4p-17",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Co wkładamy pod pachę, żeby zmierzyć gorączkę?",
+        "answer": "Termometr."
+      },
+      "en": {
+        "question": "What do we put under our arm to measure a fever?",
+        "answer": "A thermometer."
+      }
+    },
+    {
+      "id": "4p-18",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Co przyciąga do siebie gwoździe i spinacze?",
+        "answer": "Magnes."
+      },
+      "en": {
+        "question": "What pulls nails and paper clips towards it?",
+        "answer": "A magnet."
+      }
+    },
+    {
+      "id": "4p-19",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Jak nazywamy jasny zygzak, który błyska na niebie w czasie burzy?",
+        "answer": "Błyskawica."
+      },
+      "en": {
+        "question": "What do we call the bright zigzag that flashes across the sky in a storm?",
+        "answer": "Lightning."
+      }
+    },
+    {
+      "id": "4p-20",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Która pora roku jest najcieplejsza?",
+        "answer": "Lato."
+      },
+      "en": {
+        "question": "Which season is the warmest?",
+        "answer": "Summer."
+      }
+    },
+    {
+      "id": "4p-21",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Jak nazywamy człowieka, który leci rakietą w kosmos?",
+        "answer": "Astronauta."
+      },
+      "en": {
+        "question": "What do we call a person who flies into space in a rocket?",
+        "answer": "An astronaut."
+      }
+    },
+    {
+      "id": "4p-22",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Jak nazywamy szkiełko z rączką, przez które małe rzeczy wyglądają na duże?",
+        "answer": "Lupa."
+      },
+      "en": {
+        "question": "What do we call the round glass on a handle that makes small things look big?",
+        "answer": "A magnifying glass."
+      }
+    },
+    {
+      "id": "4p-23",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Jak nazywamy wielkie zwierzęta, takie jak tyranozaur, które żyły bardzo dawno temu?",
+        "answer": "Dinozaury."
+      },
+      "en": {
+        "question": "What do we call the huge animals, like the T. rex, that lived a very long time ago?",
+        "answer": "Dinosaurs."
+      }
+    },
+    {
+      "id": "4p-24",
+      "kind": "popular-science",
+      "pl": {
+        "question": "W którą stronę spada jabłko, gdy oderwie się od gałęzi?",
+        "answer": "W dół."
+      },
+      "en": {
+        "question": "Which way does an apple fall when it comes off its branch?",
+        "answer": "Down."
+      }
+    },
+    {
+      "id": "4p-25",
+      "kind": "nature",
+      "pl": {
+        "question": "Ile nóg ma pająk?",
+        "answer": "Osiem."
+      },
+      "en": {
+        "question": "How many legs does a spider have?",
+        "answer": "Eight."
+      }
+    },
+    {
+      "id": "4p-26",
+      "kind": "nature",
+      "pl": {
+        "question": "Ile nóg ma mrówka?",
+        "answer": "Sześć."
+      },
+      "en": {
+        "question": "How many legs does an ant have?",
+        "answer": "Six."
+      }
+    },
+    {
+      "id": "4p-27",
+      "kind": "nature",
+      "pl": {
+        "question": "Jak nazywamy dziecko konia?",
+        "answer": "Źrebię."
+      },
+      "en": {
+        "question": "What do we call a baby horse?",
+        "answer": "A foal."
+      }
+    },
+    {
+      "id": "4p-28",
+      "kind": "nature",
+      "pl": {
+        "question": "Jak nazywamy pełzające stworzonko, z którego potem wyrasta motyl?",
+        "answer": "Gąsienica."
+      },
+      "en": {
+        "question": "What do we call the crawling little creature that later turns into a butterfly?",
+        "answer": "A caterpillar."
+      }
+    },
+    {
+      "id": "4p-29",
+      "kind": "nature",
+      "pl": {
+        "question": "Które duże brązowe zwierzę z lasu przesypia całą zimę?",
+        "answer": "Niedźwiedź."
+      },
+      "en": {
+        "question": "Which big brown forest animal sleeps through the whole winter?",
+        "answer": "A bear."
+      }
+    },
+    {
+      "id": "4p-30",
+      "kind": "nature",
+      "pl": {
+        "question": "Który czarno-biały ptak nie lata, tylko pływa w lodowatym morzu?",
+        "answer": "Pingwin."
+      },
+      "en": {
+        "question": "Which black and white bird cannot fly but swims in the icy sea?",
+        "answer": "A penguin."
+      }
+    },
+    {
+      "id": "4p-31",
+      "kind": "nature",
+      "pl": {
+        "question": "Jakie drzewo wyrasta z żołędzia?",
+        "answer": "Dąb."
+      },
+      "en": {
+        "question": "Which tree grows from an acorn?",
+        "answer": "An oak."
+      }
+    },
+    {
+      "id": "4p-32",
+      "kind": "nature",
+      "pl": {
+        "question": "Która część rośliny rośnie w ziemi i pije z niej wodę?",
+        "answer": "Korzeń."
+      },
+      "en": {
+        "question": "Which part of a plant grows in the soil and drinks water from it?",
+        "answer": "The roots."
+      }
+    },
+    {
+      "id": "4p-33",
+      "kind": "nature",
+      "pl": {
+        "question": "Które małe zwierzę z ogrodu ma kolce i zwija się w kulkę?",
+        "answer": "Jeż."
+      },
+      "en": {
+        "question": "Which small garden animal has spikes and rolls up into a ball?",
+        "answer": "A hedgehog."
+      }
+    },
+    {
+      "id": "4p-34",
+      "kind": "nature",
+      "pl": {
+        "question": "W jakiej porze roku liście spadają z drzew?",
+        "answer": "Jesienią."
+      },
+      "en": {
+        "question": "In which season do leaves fall from the trees?",
+        "answer": "In autumn."
+      }
+    },
+    {
+      "id": "4p-35",
+      "kind": "nature",
+      "pl": {
+        "question": "Który duży biało-czarny ptak ma długie czerwone nogi i klekocze dziobem?",
+        "answer": "Bocian."
+      },
+      "en": {
+        "question": "Which big white and black bird has long red legs and clatters its beak?",
+        "answer": "A stork."
+      }
+    },
+    {
+      "id": "4p-36",
+      "kind": "nature",
+      "pl": {
+        "question": "Które rude zwierzątko z puszystym ogonem skacze po drzewach i zbiera orzechy?",
+        "answer": "Wiewiórka."
+      },
+      "en": {
+        "question": "Which small red animal with a bushy tail jumps through the trees and gathers nuts?",
+        "answer": "A squirrel."
+      }
+    },
+    {
+      "id": "4p-37",
+      "kind": "nature",
+      "pl": {
+        "question": "Który mały czerwony owad w czarne kropki umie latać?",
+        "answer": "Biedronka."
+      },
+      "en": {
+        "question": "Which small red insect with black spots can fly?",
+        "answer": "A ladybird."
+      }
+    },
+    {
+      "id": "4p-38",
+      "kind": "nature",
+      "pl": {
+        "question": "Jak nazywamy domek, który ludzie stawiają pszczołom, żeby zbierać od nich miód?",
+        "answer": "Ul."
+      },
+      "en": {
+        "question": "What do we call the little house people make for bees, to take honey from them?",
+        "answer": "A beehive."
+      }
+    },
+    {
+      "id": "4p-39",
+      "kind": "trivia",
+      "pl": {
+        "question": "Do kogo idziemy, gdy boli nas ząb?",
+        "answer": "Do dentysty."
+      },
+      "en": {
+        "question": "Who do we go to when a tooth hurts?",
+        "answer": "The dentist."
+      }
+    },
+    {
+      "id": "4p-40",
+      "kind": "trivia",
+      "pl": {
+        "question": "Przez co na dachu domu wychodzi dym z pieca?",
+        "answer": "Przez komin."
+      },
+      "en": {
+        "question": "What on a house roof does the smoke from the stove come out of?",
+        "answer": "The chimney."
+      }
+    },
+    {
+      "id": "4p-41",
+      "kind": "trivia",
+      "pl": {
+        "question": "Jak nazywamy dzień, w którym stajemy się o rok starsi?",
+        "answer": "Urodziny."
+      },
+      "en": {
+        "question": "What do we call the day we become one year older?",
+        "answer": "A birthday."
+      }
+    },
+    {
+      "id": "4p-42",
+      "kind": "trivia",
+      "pl": {
+        "question": "Kto przynosi listy do naszej skrzynki?",
+        "answer": "Listonosz."
+      },
+      "en": {
+        "question": "Who brings letters to our letterbox?",
+        "answer": "The postman."
+      }
+    },
+    {
+      "id": "4p-43",
+      "kind": "trivia",
+      "pl": {
+        "question": "Kto piecze chleb i bułki w piekarni?",
+        "answer": "Piekarz."
+      },
+      "en": {
+        "question": "Who bakes bread and rolls in a bakery?",
+        "answer": "A baker."
+      }
+    },
+    {
+      "id": "4p-44",
+      "kind": "trivia",
+      "pl": {
+        "question": "Jak nazywamy sklep, w którym kupujemy lekarstwa?",
+        "answer": "Apteka."
+      },
+      "en": {
+        "question": "What do we call the shop where we buy medicine?",
+        "answer": "A pharmacy."
+      }
+    },
+    {
+      "id": "4p-45",
+      "kind": "trivia",
+      "pl": {
+        "question": "Jaki długi pojazd z wagonami jeździ po torach z miasta do miasta?",
+        "answer": "Pociąg."
+      },
+      "en": {
+        "question": "Which long vehicle with carriages runs on tracks from town to town?",
+        "answer": "A train."
+      }
+    },
+    {
+      "id": "4p-46",
+      "kind": "trivia",
+      "pl": {
+        "question": "Jak nazywamy zapięcie z ząbkami, które zasuwamy w kurtce?",
+        "answer": "Zamek błyskawiczny."
+      },
+      "en": {
+        "question": "What do we call the fastener with little teeth that we pull up on a jacket?",
+        "answer": "A zip."
+      }
+    },
+    {
+      "id": "4p-47",
+      "kind": "trivia",
+      "pl": {
+        "question": "Kto kieruje samolotem w czasie lotu?",
+        "answer": "Pilot."
+      },
+      "en": {
+        "question": "Who steers an aeroplane while it flies?",
+        "answer": "A pilot."
+      }
+    },
+    {
+      "id": "4p-48",
+      "kind": "trivia",
+      "pl": {
+        "question": "Do kogo idziemy, żeby obciął nam włosy?",
+        "answer": "Do fryzjera."
+      },
+      "en": {
+        "question": "Who do we go to for a haircut?",
+        "answer": "The hairdresser."
+      }
+    },
+    {
+      "id": "4p-49",
+      "kind": "trivia",
+      "pl": {
+        "question": "Czym oprócz wody myjemy ręce przed jedzeniem?",
+        "answer": "Mydłem."
+      },
+      "en": {
+        "question": "Besides water, what do we wash our hands with before we eat?",
+        "answer": "Soap."
+      }
+    },
+    {
+      "id": "4p-50",
+      "kind": "trivia",
+      "pl": {
+        "question": "Jak nazywamy kartkę z obrazkiem, którą wysyłamy z wakacji?",
+        "answer": "Pocztówka."
+      },
+      "en": {
+        "question": "What do we call the card with a picture that we send from a holiday?",
+        "answer": "A postcard."
+      }
+    }
+  ]
+}

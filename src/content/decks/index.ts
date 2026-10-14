@@ -2,5 +2,6 @@
 // the content checks fail on a deck file that is not listed.
 import type { Deck } from '../deck';
 import threePlus from './3-plus.json';
+import fourPlus from './4-plus.json';
 
-export const decks = [threePlus] as Deck[];
+export const decks = [threePlus, fourPlus] as Deck[];
