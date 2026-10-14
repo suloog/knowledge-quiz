@@ -1,0 +1,43 @@
+{
+  "_comment": "Created by /og:tests. Committed to git — addresses and NAMES of credential variables only; this app has no sign-in, so there are none. Schema: og plugin, skills/run-tests/references/evidence.md.",
+  "default_environment": "local",
+  "environments": {
+    "local": {
+      "allow_destructive": true,
+      "build": "checkout"
+    }
+  },
+  "_forbidden_hosts_comment": "Host patterns /og:run-tests refuses to touch. The app makes no network calls; kept as a backstop.",
+  "forbidden_hosts": [
+    "*prod*",
+    "*production*"
+  ],
+  "roles": {},
+  "mobile": {
+    "dir": "tests/maestro",
+    "platform": "android",
+    "device": "Android 12 (API 31) emulator",
+    "app_id": "",
+    "_app_id_comment": "Fill with the Android application id once US-01-01 sets it.",
+    "metro_port": 8081,
+    "state_bridge": true
+  },
+  "evidence": {
+    "mask_selectors": [],
+    "redact_headers": [
+      "authorization",
+      "cookie",
+      "set-cookie",
+      "x-csrftoken",
+      "x-api-key"
+    ],
+    "redact_patterns": [
+      "(?i)(password|token|secret)\"?\\s*[:=]\\s*\"?[^\",\\s]+"
+    ]
+  },
+  "report": {
+    "out_dir": "test-runs",
+    "project_name": "Knowledge Quiz",
+    "client_name": "Order Group (internal)"
+  }
+}
