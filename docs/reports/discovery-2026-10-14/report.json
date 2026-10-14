@@ -1,0 +1,2149 @@
+{
+  "schema": "og-discovery-report/1",
+  "generated": "2026-10-14",
+  "draft": false,
+  "mode": "acceptance",
+  "accepted": "2026-10-14",
+  "language": "en",
+  "meta": {
+    "project": "knowledge-quiz",
+    "client": "Order Group (internal)",
+    "analyst": "Maciej",
+    "created": "2026-10-14",
+    "status": "approved",
+    "version": {
+      "commit": "cc58629",
+      "dirty": false
+    }
+  },
+  "project": {
+    "title": "Knowledge Quiz",
+    "overview": [
+      "A quiz app for the Mudita Kompakt E-ink phone that a parent and a child aged 3–5 play together like a deck of question cards: pick an age, read a question, touch to reveal the answer, move on. It works fully offline, in Polish and English. It is an internal Order Group initiative, built by the og plugin's autonomous delivery loop."
+    ],
+    "goals": [
+      {
+        "text": "From launch, the first answer is on screen after two touches — one to pick a category, one to reveal.",
+        "raw": "- G1: From launch, the first answer is on screen after two touches — one to pick a category, one to reveal. (`SRC-01-31`)",
+        "removals": [
+          [
+            0,
+            2
+          ],
+          [
+            2,
+            6
+          ],
+          [
+            107,
+            121
+          ]
+        ],
+        "id": "G1"
+      },
+      {
+        "text": "Each of the three categories holds 50 questions in Polish and English, all reviewed by the product owner before release.",
+        "raw": "- G2: Each of the three categories holds 50 questions in Polish and English, all reviewed by the product owner before release. (`DEC-26`, `DEC-27`, `DEC-29`)",
+        "removals": [
+          [
+            0,
+            2
+          ],
+          [
+            2,
+            6
+          ],
+          [
+            126,
+            157
+          ]
+        ],
+        "id": "G2"
+      },
+      {
+        "text": "On the Mudita Kompakt the core scenario runs without animation; the answer appears within 1 s of a touch and the category screen within 3 s of launch.",
+        "raw": "- G3: On the Mudita Kompakt the core scenario runs without animation; the answer appears within 1 s of a touch and the category screen within 3 s of launch. (`SRC-01-26`, `DEC-08`, `Q26`)",
+        "removals": [
+          [
+            0,
+            2
+          ],
+          [
+            2,
+            6
+          ],
+          [
+            156,
+            187
+          ]
+        ],
+        "id": "G3"
+      },
+      {
+        "text": "Every story is delivered by the delivery loop with its unit and e2e tests green on the emulator.",
+        "raw": "- G4: Every story is delivered by the delivery loop with its unit and e2e tests green on the emulator. (`SRC-03-03`, `DEC-15`, `DEC-18`)",
+        "removals": [
+          [
+            0,
+            2
+          ],
+          [
+            2,
+            6
+          ],
+          [
+            102,
+            136
+          ]
+        ],
+        "id": "G4"
+      }
+    ],
+    "actors": {
+      "head": [
+        "Actor",
+        "Who they are",
+        "How they sign in",
+        "Access, in short"
+      ],
+      "rows": [
+        [
+          "Parent",
+          "The adult playing with the child; reads questions aloud and leads the game",
+          "No sign-in",
+          "The whole app: categories, cards, language switch"
+        ],
+        [
+          "Child",
+          "A child aged 3–5 playing with the parent; may tap through the cards themselves",
+          "No sign-in",
+          "The whole app, same as the parent"
+        ]
+      ]
+    },
+    "glossary": {
+      "head": [
+        "Term",
+        "Means exactly"
+      ],
+      "rows": [
+        [
+          "Age category",
+          "A group of questions for children of a given minimum age; v1 has 3+, 4+ and 5+"
+        ],
+        [
+          "Card",
+          "One question with its single correct answer, shown alone on the screen"
+        ],
+        [
+          "Deck",
+          "All cards of one age category, in the shuffled order the app goes through without repeats"
+        ],
+        [
+          "Reveal",
+          "The touch on a card that shows the answer below the question"
+        ],
+        [
+          "Continue entry",
+          "The entry above the category list that returns to the last-used category at its next unseen card"
+        ],
+        [
+          "End card",
+          "The card shown after the last card of a deck, offering a new shuffle or the categories"
+        ],
+        [
+          "Content",
+          "The questions, answers and illustrations shipped inside the app, in Polish and English"
+        ],
+        [
+          "E-ink",
+          "The black-and-white electronic-paper screen of the Mudita Kompakt, with slow refresh"
+        ],
+        [
+          "Delivery loop",
+          "The og plugin's autonomous delivery process (`/og:deliver`) that builds the stories"
+        ]
+      ]
+    },
+    "in_scope": [
+      {
+        "text": "Age categories — the opening screen: choosing one of the three categories, the continue entry above a fixed list, a list driven by data.",
+        "raw": "- Age categories — the opening screen: choosing one of the three categories, the continue entry above a fixed list, a list driven by data. (`discovery/03-age-categories.md` · `SRC-01-06`…`SRC-01-10` · `DEC-19`…`DEC-21`)",
+        "removals": [
+          [
+            0,
+            2
+          ],
+          [
+            138,
+            219
+          ]
+        ]
+      },
+      {
+        "text": "Question cards — the deck: one card at a time, reveal on touch, shuffled without repeats with the position remembered, the end card, the way back to the categories.",
+        "raw": "- Question cards — the deck: one card at a time, reveal on touch, shuffled without repeats with the position remembered, the end card, the way back to the categories. (`discovery/04-question-cards.md` · `SRC-01-11`…`SRC-01-18`, `SRC-01-31` · `DEC-22`…`DEC-25`)",
+        "removals": [
+          [
+            0,
+            2
+          ],
+          [
+            166,
+            260
+          ]
+        ]
+      },
+      {
+        "text": "Question content — 150 questions (50 per category) in Polish and English, optional black-and-white illustrations, a data structure open to additions, the in-app language switch.",
+        "raw": "- Question content — 150 questions (50 per category) in Polish and English, optional black-and-white illustrations, a data structure open to additions, the in-app language switch. (`discovery/05-question-content.md` · `SRC-01-04`, `SRC-01-05`, `SRC-01-19`, `SRC-01-21` · `DEC-26`…`DEC-30`)",
+        "removals": [
+          [
+            0,
+            2
+          ],
+          [
+            179,
+            289
+          ]
+        ]
+      }
+    ],
+    "out_scope": [
+      {
+        "text": "Answer choices (A/B/C), scoring, ranking, achievements, gamification or any tracking of the child's results.",
+        "raw": "- Answer choices (A/B/C), scoring, ranking, achievements, gamification or any tracking of the child's results. (`SRC-01-17`, `SRC-01-30`)",
+        "removals": [
+          [
+            0,
+            2
+          ],
+          [
+            110,
+            137
+          ]
+        ]
+      },
+      {
+        "text": "User accounts, sign-in or child profiles.",
+        "raw": "- User accounts, sign-in or child profiles. (`SRC-01-17`, `SRC-01-30`)",
+        "removals": [
+          [
+            0,
+            2
+          ],
+          [
+            43,
+            70
+          ]
+        ]
+      },
+      {
+        "text": "A backend, CMS or API; downloading or updating content online; sync between devices.",
+        "raw": "- A backend, CMS or API; downloading or updating content online; sync between devices. (`SRC-01-20`, `SRC-01-30`, `DEC-19`)",
+        "removals": [
+          [
+            0,
+            2
+          ],
+          [
+            86,
+            123
+          ]
+        ]
+      },
+      {
+        "text": "Analytics, crash reporting or any other network call.",
+        "raw": "- Analytics, crash reporting or any other network call. (`SRC-01-30`, `DEC-04`)",
+        "removals": [
+          [
+            0,
+            2
+          ],
+          [
+            55,
+            79
+          ]
+        ]
+      },
+      {
+        "text": "Distribution through an app store.",
+        "raw": "- Distribution through an app store. (`DEC-05`)",
+        "removals": [
+          [
+            0,
+            2
+          ],
+          [
+            36,
+            47
+          ]
+        ]
+      },
+      {
+        "text": "Devices other than the Mudita Kompakt — tablets, iOS, web.",
+        "raw": "- Devices other than the Mudita Kompakt — tablets, iOS, web. (`SRC-01-01`, `DEC-10`)",
+        "removals": [
+          [
+            0,
+            2
+          ],
+          [
+            60,
+            84
+          ]
+        ]
+      },
+      {
+        "text": "Greys, system font scaling or screen-reader support.",
+        "raw": "- Greys, system font scaling or screen-reader support. (`DEC-12`)",
+        "removals": [
+          [
+            0,
+            2
+          ],
+          [
+            54,
+            65
+          ]
+        ]
+      },
+      {
+        "text": "Visual parity with Mudita's own apps, or tracking changes to the Mindful Design site.",
+        "raw": "- Visual parity with Mudita's own apps, or tracking changes to the Mindful Design site. (`DEC-11`)",
+        "removals": [
+          [
+            0,
+            2
+          ],
+          [
+            87,
+            98
+          ]
+        ]
+      },
+      {
+        "text": "A separate UI design step, post-release support, a security audit or load testing.",
+        "raw": "- A separate UI design step, post-release support, a security audit or load testing. (`DEC-08`, `DEC-13`, `DEC-15`)",
+        "removals": [
+          [
+            0,
+            2
+          ],
+          [
+            84,
+            115
+          ]
+        ]
+      },
+      {
+        "text": "Separate, culturally adapted decks per language.",
+        "raw": "- Separate, culturally adapted decks per language. (`DEC-29`)",
+        "removals": [
+          [
+            0,
+            2
+          ],
+          [
+            50,
+            61
+          ]
+        ]
+      }
+    ]
+  },
+  "topics": [
+    {
+      "id": "DSC-01",
+      "title": "Users, technology and data",
+      "kind": "cross-cutting",
+      "scope": "Who uses the app and in what setting, the platform and stack constraints the sources impose, where data lives (locally, no backend), and what the MVP explicitly leaves out (accounts, sync, CMS). Visual and device constraints are `DSC-02`; the content itself is `DSC-05`.",
+      "findings": [
+        {
+          "text": "The app is used by a parent and a child together; the parent leads — presents or reads each question and reveals the answer.",
+          "raw": "- [DSC-01-01] The app is used by a parent and a child together; the parent leads — presents or reads each question and reveals the answer. (`SRC-01-02`, `SRC-01-03`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              138,
+              165
+            ]
+          ],
+          "id": "DSC-01-01",
+          "source": "discovery/01-users-technology-data.md:DSC-01",
+          "sha": "1dd8f8ad822edf0d"
+        },
+        {
+          "text": "The app targets Android devices with an E-ink screen; no other platform is part of the MVP.",
+          "raw": "- [DSC-01-02] The app targets Android devices with an E-ink screen; no other platform is part of the MVP. (`SRC-01-01`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              105,
+              119
+            ]
+          ],
+          "id": "DSC-01-02",
+          "source": "discovery/01-users-technology-data.md:DSC-01",
+          "sha": "11745de9e049deb1"
+        },
+        {
+          "text": "The MVP works entirely on the device: no backend, no API, no content downloaded from the Internet.",
+          "raw": "- [DSC-01-03] The MVP works entirely on the device: no backend, no API, no content downloaded from the Internet. (`SRC-01-20`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              112,
+              126
+            ]
+          ],
+          "id": "DSC-01-03",
+          "source": "discovery/01-users-technology-data.md:DSC-01",
+          "sha": "db79e76f49de9b3e"
+        },
+        {
+          "text": "There are no user accounts or sign-in of any kind; whoever holds the device uses the app.",
+          "raw": "- [DSC-01-04] There are no user accounts or sign-in of any kind; whoever holds the device uses the app. (`SRC-01-17`, `SRC-01-30`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              103,
+              130
+            ]
+          ],
+          "id": "DSC-01-04",
+          "source": "discovery/01-users-technology-data.md:DSC-01",
+          "sha": "dcf195e375f35916"
+        },
+        {
+          "text": "Nothing about the child is stored or shared: no child profiles, no statistics, no sync between devices.",
+          "raw": "- [DSC-01-05] Nothing about the child is stored or shared: no child profiles, no statistics, no sync between devices. (`SRC-01-30`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              117,
+              131
+            ]
+          ],
+          "id": "DSC-01-05",
+          "source": "discovery/01-users-technology-data.md:DSC-01",
+          "sha": "24e5a4a06df51fa4"
+        },
+        {
+          "text": "The app is built in React Native with Expo, starting from the company boilerplate `ordergroup/boilerplate-react-native-expo`.",
+          "raw": "- [DSC-01-06] The app is built in React Native with Expo, starting from the company boilerplate `ordergroup/boilerplate-react-native-expo`. — *source: `DEC-06`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              139,
+              160
+            ]
+          ],
+          "id": "DSC-01-06",
+          "decisions": [
+            "DEC-06"
+          ],
+          "source": "discovery/01-users-technology-data.md:DSC-01",
+          "sha": "63caf21730921bc6"
+        },
+        {
+          "text": "The app is an internal Order Group initiative; its author is the product owner and makes the scope decisions.",
+          "raw": "- [DSC-01-07] The app is an internal Order Group initiative; its author is the product owner and makes the scope decisions. (`SRC-03-01`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              123,
+              137
+            ]
+          ],
+          "id": "DSC-01-07",
+          "source": "discovery/01-users-technology-data.md:DSC-01",
+          "sha": "230f857b540418ff"
+        },
+        {
+          "text": "The MVP has no deadline.",
+          "raw": "- [DSC-01-08] The MVP has no deadline. (`SRC-03-02`) — *source: `DEC-01`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              52,
+              73
+            ],
+            [
+              38,
+              52
+            ]
+          ],
+          "id": "DSC-01-08",
+          "decisions": [
+            "DEC-01"
+          ],
+          "source": "discovery/01-users-technology-data.md:DSC-01",
+          "sha": "39f944ba138a7c30"
+        },
+        {
+          "text": "The app is implemented through the og plugin's autonomous delivery loop.",
+          "raw": "- [DSC-01-09] The app is implemented through the og plugin's autonomous delivery loop. (`SRC-03-03`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              86,
+              100
+            ]
+          ],
+          "id": "DSC-01-09",
+          "source": "discovery/01-users-technology-data.md:DSC-01",
+          "sha": "4ccc554dd88c3c25"
+        },
+        {
+          "text": "Either the parent or the child may operate the device.",
+          "raw": "- [DSC-01-10] Either the parent or the child may operate the device. (`SRC-03-04`) — *source: `DEC-02`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              82,
+              103
+            ],
+            [
+              68,
+              82
+            ]
+          ],
+          "id": "DSC-01-10",
+          "decisions": [
+            "DEC-02"
+          ],
+          "source": "discovery/01-users-technology-data.md:DSC-01",
+          "sha": "1531145fef4fe313"
+        },
+        {
+          "text": "The MVP is exactly what the MVP brief and its supplement describe; anything else is out.",
+          "raw": "- [DSC-01-11] The MVP is exactly what the MVP brief and its supplement describe; anything else is out. (`SRC-03-05`) — *source: `DEC-03`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              116,
+              137
+            ],
+            [
+              102,
+              116
+            ]
+          ],
+          "id": "DSC-01-11",
+          "decisions": [
+            "DEC-03"
+          ],
+          "source": "discovery/01-users-technology-data.md:DSC-01",
+          "sha": "a2652dca4692fefe"
+        },
+        {
+          "text": "The app makes no network calls: no analytics and no crash reporting.",
+          "raw": "- [DSC-01-12] The app makes no network calls: no analytics and no crash reporting. (`SRC-03-06`) — *source: `DEC-04`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              96,
+              117
+            ],
+            [
+              82,
+              96
+            ]
+          ],
+          "id": "DSC-01-12",
+          "decisions": [
+            "DEC-04"
+          ],
+          "source": "discovery/01-users-technology-data.md:DSC-01",
+          "sha": "646bcdf1d0df1122"
+        },
+        {
+          "text": "The MVP is distributed as an APK installed directly on the device, not through an app store.",
+          "raw": "- [DSC-01-13] The MVP is distributed as an APK installed directly on the device, not through an app store. (`SRC-03-07`) — *source: `DEC-05`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              120,
+              141
+            ],
+            [
+              106,
+              120
+            ]
+          ],
+          "id": "DSC-01-13",
+          "decisions": [
+            "DEC-05"
+          ],
+          "source": "discovery/01-users-technology-data.md:DSC-01",
+          "sha": "fc7bde89adba1bbb"
+        },
+        {
+          "text": "Upgrading the boilerplate to the latest React Native, Expo and packages is the first piece of work and part of the scope.",
+          "raw": "- [DSC-01-14] Upgrading the boilerplate to the latest React Native, Expo and packages is the first piece of work and part of the scope. (`SRC-03-08`) — *source: `DEC-06`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              149,
+              170
+            ],
+            [
+              135,
+              149
+            ]
+          ],
+          "id": "DSC-01-14",
+          "decisions": [
+            "DEC-06"
+          ],
+          "source": "discovery/01-users-technology-data.md:DSC-01",
+          "sha": "140d88ce654486de"
+        },
+        {
+          "text": "The component library is the tech lead's choice, measured against the E-ink requirements and Mudita Mindful Design.",
+          "raw": "- [DSC-01-15] The component library is the tech lead's choice, measured against the E-ink requirements and Mudita Mindful Design. (`SRC-03-09`) — *source: `DEC-07`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              143,
+              164
+            ],
+            [
+              129,
+              143
+            ]
+          ],
+          "id": "DSC-01-15",
+          "decisions": [
+            "DEC-07"
+          ],
+          "source": "discovery/01-users-technology-data.md:DSC-01",
+          "sha": "c70faac569703a0d"
+        },
+        {
+          "text": "The delivery is code with automated tests; there is no separate UI design step and no post-release support.",
+          "raw": "- [DSC-01-16] The delivery is code with automated tests; there is no separate UI design step and no post-release support. (`SRC-03-10`) — *source: `DEC-08`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              135,
+              156
+            ],
+            [
+              121,
+              135
+            ]
+          ],
+          "id": "DSC-01-16",
+          "decisions": [
+            "DEC-08"
+          ],
+          "source": "discovery/01-users-technology-data.md:DSC-01",
+          "sha": "dc5175a61faf9a5b"
+        },
+        {
+          "text": "The MVP is accepted by the product owner running the core scenario on a real E-ink device.",
+          "raw": "- [DSC-01-17] The MVP is accepted by the product owner running the core scenario on a real E-ink device. (`SRC-03-11`, `SRC-01-31`) — *source: `DEC-08`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              131,
+              152
+            ],
+            [
+              104,
+              131
+            ]
+          ],
+          "id": "DSC-01-17",
+          "decisions": [
+            "DEC-08"
+          ],
+          "source": "discovery/01-users-technology-data.md:DSC-01",
+          "sha": "23d1455608d4d52d"
+        },
+        {
+          "text": "The repository lives in the Order Group GitHub organisation; Maciej owns its access and the release signing key; there is no hosting.",
+          "raw": "- [DSC-01-18] The repository lives in the Order Group GitHub organisation; Maciej owns its access and the release signing key; there is no hosting. (`SRC-03-12`) — *source: `DEC-09`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              161,
+              182
+            ],
+            [
+              147,
+              161
+            ]
+          ],
+          "id": "DSC-01-18",
+          "decisions": [
+            "DEC-09"
+          ],
+          "source": "discovery/01-users-technology-data.md:DSC-01",
+          "sha": "331bdc90171ee922"
+        }
+      ],
+      "withdrawn": 0,
+      "file": "01-users-technology-data.md"
+    },
+    {
+      "id": "DSC-02",
+      "title": "E-ink UI and non-functional requirements",
+      "kind": "cross-cutting",
+      "scope": "The constraints every screen obeys because the app runs on an E-ink display: contrast, palette, element size, refresh behaviour, navigation simplicity, and the Mudita design references that will detail them. Also the technical checklist (devices, accessibility, performance, security, privacy).",
+      "findings": [
+        {
+          "text": "Every screen is designed for an E-ink display first.",
+          "raw": "- [DSC-02-01] Every screen is designed for an E-ink display first. (`SRC-01-22`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              66,
+              80
+            ]
+          ],
+          "id": "DSC-02-01",
+          "source": "discovery/02-eink-ui-nfr.md:DSC-02",
+          "sha": "76cc8ba4b46755b1"
+        },
+        {
+          "text": "The interface is high-contrast and monochrome.",
+          "raw": "- [DSC-02-02] The interface is high-contrast and monochrome. (`SRC-01-23`, `SRC-01-24`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              60,
+              87
+            ]
+          ],
+          "id": "DSC-02-02",
+          "source": "discovery/02-eink-ui-nfr.md:DSC-02",
+          "sha": "2b8602ad60a5686f"
+        },
+        {
+          "text": "Text and touch targets are large enough for both a parent and a small child to read and hit.",
+          "raw": "- [DSC-02-03] Text and touch targets are large enough for both a parent and a small child to read and hit. (`SRC-01-25`, `SRC-01-12`) — *source: `DEC-02`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              133,
+              154
+            ],
+            [
+              106,
+              133
+            ]
+          ],
+          "id": "DSC-02-03",
+          "decisions": [
+            "DEC-02"
+          ],
+          "source": "discovery/02-eink-ui-nfr.md:DSC-02",
+          "sha": "62ef7a8892616534"
+        },
+        {
+          "text": "Nothing animates: the screen changes only when its content changes, and unnecessary refreshes are avoided.",
+          "raw": "- [DSC-02-04] Nothing animates: the screen changes only when its content changes, and unnecessary refreshes are avoided. (`SRC-01-26`, `SRC-01-27`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              120,
+              147
+            ]
+          ],
+          "id": "DSC-02-04",
+          "source": "discovery/02-eink-ui-nfr.md:DSC-02",
+          "sha": "d508c4df665d5f16"
+        },
+        {
+          "text": "The app has few screens and a flat, simple navigation.",
+          "raw": "- [DSC-02-05] The app has few screens and a flat, simple navigation. (`SRC-01-28`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              68,
+              82
+            ]
+          ],
+          "id": "DSC-02-05",
+          "source": "discovery/02-eink-ui-nfr.md:DSC-02",
+          "sha": "b7f247c592e355e6"
+        },
+        {
+          "text": "Mudita Mindful Design and MMD are an inspiration: the app follows their interaction patterns and visual language without being a 1:1 copy; the E-ink requirements of the MVP brief are the binding bar.",
+          "raw": "- [DSC-02-06] Mudita Mindful Design and MMD are an inspiration: the app follows their interaction patterns and visual language without being a 1:1 copy; the E-ink requirements of the MVP brief are the binding bar. (`SRC-01-29`, `SRC-02-01`, `SRC-02-02`, `SRC-03-14`, `SRC-03-15`) — *source: `DEC-11`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              279,
+              300
+            ],
+            [
+              213,
+              279
+            ]
+          ],
+          "id": "DSC-02-06",
+          "decisions": [
+            "DEC-11"
+          ],
+          "source": "discovery/02-eink-ui-nfr.md:DSC-02",
+          "sha": "f02c42797ffd8bec"
+        },
+        {
+          "text": "MMD's Kotlin code is not reused; it is a pattern to model on.",
+          "raw": "- [DSC-02-07] MMD's Kotlin code is not reused; it is a pattern to model on. (`SRC-02-02`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              75,
+              89
+            ]
+          ],
+          "id": "DSC-02-07",
+          "source": "discovery/02-eink-ui-nfr.md:DSC-02",
+          "sha": "d553dcecdc8d76a9"
+        },
+        {
+          "text": "Only black and white are used — no greys.",
+          "raw": "- [DSC-02-08] Only black and white are used — no greys. (`SRC-01-24`, `SRC-03-16`) — *source: `DEC-12`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              82,
+              103
+            ],
+            [
+              55,
+              82
+            ]
+          ],
+          "id": "DSC-02-08",
+          "decisions": [
+            "DEC-12"
+          ],
+          "source": "discovery/02-eink-ui-nfr.md:DSC-02",
+          "sha": "336c6d031ab906f6"
+        },
+        {
+          "text": "The MVP does not support system font scaling or a screen reader.",
+          "raw": "- [DSC-02-09] The MVP does not support system font scaling or a screen reader. (`SRC-03-16`) — *source: `DEC-12`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              92,
+              113
+            ],
+            [
+              78,
+              92
+            ]
+          ],
+          "id": "DSC-02-09",
+          "decisions": [
+            "DEC-12"
+          ],
+          "source": "discovery/02-eink-ui-nfr.md:DSC-02",
+          "sha": "6daa14e56aa515c0"
+        },
+        {
+          "text": "The Mudita Kompakt is the only device the app is built for and accepted on, and it is tested manually.",
+          "raw": "- [DSC-02-10] The Mudita Kompakt is the only device the app is built for and accepted on, and it is tested manually. (`SRC-03-13`) — *source: `DEC-10`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              130,
+              151
+            ],
+            [
+              116,
+              130
+            ]
+          ],
+          "id": "DSC-02-10",
+          "decisions": [
+            "DEC-10"
+          ],
+          "source": "discovery/02-eink-ui-nfr.md:DSC-02",
+          "sha": "c12b05718534dd47"
+        },
+        {
+          "text": "The app supports Android 12 and newer — the version the Kompakt runs.",
+          "raw": "- [DSC-02-11] The app supports Android 12 and newer — the version the Kompakt runs. (`SRC-03-20`) — *source: `DEC-16`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              97,
+              118
+            ],
+            [
+              83,
+              97
+            ]
+          ],
+          "id": "DSC-02-11",
+          "decisions": [
+            "DEC-16"
+          ],
+          "source": "discovery/02-eink-ui-nfr.md:DSC-02",
+          "sha": "b2757e4abef1133e"
+        },
+        {
+          "text": "On the Kompakt the answer appears within 1 s of a tap and the category screen within 3 s of launch.",
+          "raw": "- [DSC-02-12] On the Kompakt the answer appears within 1 s of a tap and the category screen within 3 s of launch. — *assumption: `Q26`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              113,
+              135
+            ]
+          ],
+          "id": "DSC-02-12",
+          "assumption": "Q26",
+          "source": "discovery/02-eink-ui-nfr.md:DSC-02",
+          "sha": "5955ba40f0edaca4"
+        },
+        {
+          "text": "There is no security audit in the MVP.",
+          "raw": "- [DSC-02-13] There is no security audit in the MVP. (`SRC-03-17`) — *source: `DEC-13`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              66,
+              87
+            ],
+            [
+              52,
+              66
+            ]
+          ],
+          "id": "DSC-02-13",
+          "decisions": [
+            "DEC-13"
+          ],
+          "source": "discovery/02-eink-ui-nfr.md:DSC-02",
+          "sha": "724c25f062b6e3b5"
+        },
+        {
+          "text": "The app processes no personal data, so no regulation-specific work is needed.",
+          "raw": "- [DSC-02-14] The app processes no personal data, so no regulation-specific work is needed. (`SRC-03-18`) — *source: `DEC-14`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              105,
+              126
+            ],
+            [
+              91,
+              105
+            ]
+          ],
+          "id": "DSC-02-14",
+          "decisions": [
+            "DEC-14"
+          ],
+          "source": "discovery/02-eink-ui-nfr.md:DSC-02",
+          "sha": "34aca8c11a8526df"
+        },
+        {
+          "text": "Every story ships with unit and e2e tests; the MVP is accepted manually on the Kompakt; there is no load testing.",
+          "raw": "- [DSC-02-15] Every story ships with unit and e2e tests; the MVP is accepted manually on the Kompakt; there is no load testing. (`SRC-03-19`) — *source: `DEC-15`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              141,
+              162
+            ],
+            [
+              127,
+              141
+            ]
+          ],
+          "id": "DSC-02-15",
+          "decisions": [
+            "DEC-15"
+          ],
+          "source": "discovery/02-eink-ui-nfr.md:DSC-02",
+          "sha": "234fe4c00c9954c0"
+        },
+        {
+          "text": "The design assumes the Kompakt's screen refreshes at about 10 Hz.",
+          "raw": "- [DSC-02-16] The design assumes the Kompakt's screen refreshes at about 10 Hz. (`SRC-03-21`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              79,
+              93
+            ]
+          ],
+          "id": "DSC-02-16",
+          "source": "discovery/02-eink-ui-nfr.md:DSC-02",
+          "sha": "f72abf4e16d09c16"
+        },
+        {
+          "text": "Element sizes are set by judgement, with no hard numeric minimum, and are judged on the Kompakt.",
+          "raw": "- [DSC-02-17] Element sizes are set by judgement, with no hard numeric minimum, and are judged on the Kompakt. (`SRC-03-22`) — *source: `DEC-17`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              124,
+              145
+            ],
+            [
+              110,
+              124
+            ]
+          ],
+          "id": "DSC-02-17",
+          "decisions": [
+            "DEC-17"
+          ],
+          "source": "discovery/02-eink-ui-nfr.md:DSC-02",
+          "sha": "b420ca64019ead52"
+        },
+        {
+          "text": "The delivery loop verifies each story on an Android emulator; the Kompakt is checked by hand.",
+          "raw": "- [DSC-02-18] The delivery loop verifies each story on an Android emulator; the Kompakt is checked by hand. (`SRC-03-23`) — *source: `DEC-18`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              121,
+              142
+            ],
+            [
+              107,
+              121
+            ]
+          ],
+          "id": "DSC-02-18",
+          "decisions": [
+            "DEC-18"
+          ],
+          "source": "discovery/02-eink-ui-nfr.md:DSC-02",
+          "sha": "5c526366b261c0b1"
+        }
+      ],
+      "withdrawn": 0,
+      "file": "02-eink-ui-nfr.md"
+    },
+    {
+      "id": "DSC-03",
+      "title": "Age categories",
+      "kind": "business",
+      "scope": "The screen the app opens on: choosing an age category, how the last-used one is offered, and how the set of categories can grow later. Ends where the chosen category hands over to the question cards (`DSC-04`); what content a category holds is `DSC-05`.",
+      "findings": [
+        {
+          "text": "The app always opens on the age-category screen.",
+          "raw": "- [DSC-03-01] The app always opens on the age-category screen. (`SRC-01-06`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              62,
+              76
+            ]
+          ],
+          "id": "DSC-03-01",
+          "source": "discovery/03-age-categories.md:DSC-03",
+          "sha": "207ebe8fb68e5971"
+        },
+        {
+          "text": "The list of categories is driven by the app's data, so adding a category later needs no screen redesign.",
+          "raw": "- [DSC-03-02] The list of categories is driven by the app's data, so adding a category later needs no screen redesign. (`SRC-01-09`, `SRC-01-21`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              118,
+              145
+            ]
+          ],
+          "id": "DSC-03-02",
+          "source": "discovery/03-age-categories.md:DSC-03",
+          "sha": "c754dc0ce2dc04fa"
+        },
+        {
+          "text": "New categories and questions arrive only with a new app version; nothing is updated online.",
+          "raw": "- [DSC-03-03] New categories and questions arrive only with a new app version; nothing is updated online. (`SRC-01-19`, `SRC-01-20`, `SRC-01-30`, `SRC-03-24`) — *source: `DEC-19`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              158,
+              179
+            ],
+            [
+              105,
+              158
+            ]
+          ],
+          "id": "DSC-03-03",
+          "decisions": [
+            "DEC-19"
+          ],
+          "source": "discovery/03-age-categories.md:DSC-03",
+          "sha": "f4ee85b3b4a37583"
+        },
+        {
+          "text": "Choosing a category starts the question cards of that category.",
+          "raw": "- [DSC-03-04] Choosing a category starts the question cards of that category. (`SRC-01-10`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              77,
+              91
+            ]
+          ],
+          "id": "DSC-03-04",
+          "source": "discovery/03-age-categories.md:DSC-03",
+          "sha": "489beb86c294710d"
+        },
+        {
+          "text": "Version 1 has exactly three categories: 3+, 4+ and 5+.",
+          "raw": "- [DSC-03-05] Version 1 has exactly three categories: 3+, 4+ and 5+. (`SRC-01-07`, `SRC-03-25`) — *source: `DEC-20`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              95,
+              116
+            ],
+            [
+              68,
+              95
+            ]
+          ],
+          "id": "DSC-03-05",
+          "decisions": [
+            "DEC-20"
+          ],
+          "source": "discovery/03-age-categories.md:DSC-03",
+          "sha": "29ef449b4e6238b2"
+        },
+        {
+          "text": "The last-used category is remembered after the app is closed and offered as a separate entry above the full list, which keeps a fixed order.",
+          "raw": "- [DSC-03-06] The last-used category is remembered after the app is closed and offered as a separate entry above the full list, which keeps a fixed order. (`SRC-01-08`, `SRC-03-26`) — *source: `DEC-21`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              181,
+              202
+            ],
+            [
+              154,
+              181
+            ]
+          ],
+          "id": "DSC-03-06",
+          "decisions": [
+            "DEC-21"
+          ],
+          "source": "discovery/03-age-categories.md:DSC-03",
+          "sha": "2a2a2b0b8866e3f3"
+        },
+        {
+          "text": "On the very first launch there is no such entry, only the list of categories.",
+          "raw": "- [DSC-03-07] On the very first launch there is no such entry, only the list of categories. — *assumption: `Q27`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              91,
+              113
+            ]
+          ],
+          "id": "DSC-03-07",
+          "assumption": "Q27",
+          "source": "discovery/03-age-categories.md:DSC-03",
+          "sha": "7a8bf72f104df7d9"
+        }
+      ],
+      "withdrawn": 0,
+      "file": "03-age-categories.md"
+    },
+    {
+      "id": "DSC-04",
+      "title": "Question cards",
+      "kind": "business",
+      "scope": "The quiz itself as a deck of cards: one question at a time, a tap reveals the answer, the next interaction moves on. Includes what the MVP deliberately does not do on this screen (choosing answers, scoring, tracking). Starts once a category is chosen (`DSC-03`); the questions' wording and volume are `DSC-05`.",
+      "findings": [
+        {
+          "text": "One question is shown at a time, filling as much of the screen as possible, readable for both parent and child.",
+          "raw": "- [DSC-04-01] One question is shown at a time, filling as much of the screen as possible, readable for both parent and child. (`SRC-01-11`, `SRC-01-12`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              125,
+              152
+            ]
+          ],
+          "id": "DSC-04-01",
+          "source": "discovery/04-question-cards.md:DSC-04",
+          "sha": "b5fe92fcc3475f0d"
+        },
+        {
+          "text": "Each card has two states: first the question alone, then with its correct answer revealed.",
+          "raw": "- [DSC-04-02] Each card has two states: first the question alone, then with its correct answer revealed. (`SRC-01-13`, `SRC-01-14`, `SRC-01-15`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              104,
+              144
+            ]
+          ],
+          "id": "DSC-04-02",
+          "source": "discovery/04-question-cards.md:DSC-04",
+          "sha": "d44a49e0df2ae443"
+        },
+        {
+          "text": "A touch reveals the answer; the next interaction moves on to the next card.",
+          "raw": "- [DSC-04-03] A touch reveals the answer; the next interaction moves on to the next card. (`SRC-01-15`, `SRC-01-16`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              89,
+              116
+            ]
+          ],
+          "id": "DSC-04-03",
+          "source": "discovery/04-question-cards.md:DSC-04",
+          "sha": "84d2ecb56461f7f9"
+        },
+        {
+          "text": "It is a deck of cards, not a test: no answer choices, scoring, ranking or tracking of the child's results.",
+          "raw": "- [DSC-04-04] It is a deck of cards, not a test: no answer choices, scoring, ranking or tracking of the child's results. (`SRC-01-17`, `SRC-01-18`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              120,
+              147
+            ]
+          ],
+          "id": "DSC-04-04",
+          "source": "discovery/04-question-cards.md:DSC-04",
+          "sha": "9f6bac7e74448343"
+        },
+        {
+          "text": "The whole MVP is one loop: choose an age, see a question, ask the child, touch, see the answer, next question.",
+          "raw": "- [DSC-04-05] The whole MVP is one loop: choose an age, see a question, ask the child, touch, see the answer, next question. (`SRC-01-31`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              124,
+              138
+            ]
+          ],
+          "id": "DSC-04-05",
+          "source": "discovery/04-question-cards.md:DSC-04",
+          "sha": "8d8f24ea69723530"
+        },
+        {
+          "text": "Each category's questions are shuffled once and shown without repeats.",
+          "raw": "- [DSC-04-06] Each category's questions are shuffled once and shown without repeats. (`SRC-03-27`) — *source: `DEC-22`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              98,
+              119
+            ],
+            [
+              84,
+              98
+            ]
+          ],
+          "id": "DSC-04-06",
+          "decisions": [
+            "DEC-22"
+          ],
+          "source": "discovery/04-question-cards.md:DSC-04",
+          "sha": "bb51aa53ae3b28bb"
+        },
+        {
+          "text": "The position in each category is remembered after the app is closed, and continuing resumes at the next unseen question.",
+          "raw": "- [DSC-04-07] The position in each category is remembered after the app is closed, and continuing resumes at the next unseen question. (`SRC-03-27`) — *source: `DEC-22`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              148,
+              169
+            ],
+            [
+              134,
+              148
+            ]
+          ],
+          "id": "DSC-04-07",
+          "decisions": [
+            "DEC-22"
+          ],
+          "source": "discovery/04-question-cards.md:DSC-04",
+          "sha": "966231ebe5d97f40"
+        },
+        {
+          "text": "When a category runs out, an end card offers to start it again in a new order or to go back to the categories.",
+          "raw": "- [DSC-04-08] When a category runs out, an end card offers to start it again in a new order or to go back to the categories. (`SRC-03-28`) — *source: `DEC-23`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              138,
+              159
+            ],
+            [
+              124,
+              138
+            ]
+          ],
+          "id": "DSC-04-08",
+          "decisions": [
+            "DEC-23"
+          ],
+          "source": "discovery/04-question-cards.md:DSC-04",
+          "sha": "17298413c59e8a6e"
+        },
+        {
+          "text": "The whole card responds to a touch, and the answer appears below the question, which stays on screen.",
+          "raw": "- [DSC-04-09] The whole card responds to a touch, and the answer appears below the question, which stays on screen. (`SRC-03-29`) — *source: `DEC-24`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              129,
+              150
+            ],
+            [
+              115,
+              129
+            ]
+          ],
+          "id": "DSC-04-09",
+          "decisions": [
+            "DEC-24"
+          ],
+          "source": "discovery/04-question-cards.md:DSC-04",
+          "sha": "f5d86f5399df50c9"
+        },
+        {
+          "text": "The user returns to the categories with the Android back action or a small visible control kept clear of the card's tap area.",
+          "raw": "- [DSC-04-10] The user returns to the categories with the Android back action or a small visible control kept clear of the card's tap area. (`SRC-03-30`) — *source: `DEC-25`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              153,
+              174
+            ],
+            [
+              139,
+              153
+            ]
+          ],
+          "id": "DSC-04-10",
+          "decisions": [
+            "DEC-25"
+          ],
+          "source": "discovery/04-question-cards.md:DSC-04",
+          "sha": "0bc4fa9b916a5ebe"
+        }
+      ],
+      "withdrawn": 0,
+      "file": "04-question-cards.md"
+    },
+    {
+      "id": "DSC-05",
+      "title": "Question content",
+      "kind": "business",
+      "scope": "The questions and answers themselves: their character, how they match the child's age, that they ship inside the app, and that their structure lets more questions and categories be added later. Who writes and checks them is part of this topic. How they are displayed is `DSC-04`.",
+      "findings": [
+        {
+          "text": "The questions are educational, popular-science, nature-related and trivia.",
+          "raw": "- [DSC-05-01] The questions are educational, popular-science, nature-related and trivia. (`SRC-01-04`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              88,
+              102
+            ]
+          ],
+          "id": "DSC-05-01",
+          "source": "discovery/05-question-content.md:DSC-05",
+          "sha": "772ede22d83d7b56"
+        },
+        {
+          "text": "Each question's difficulty matches its age category.",
+          "raw": "- [DSC-05-02] Each question's difficulty matches its age category. (`SRC-01-05`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              66,
+              80
+            ]
+          ],
+          "id": "DSC-05-02",
+          "source": "discovery/05-question-content.md:DSC-05",
+          "sha": "5d51e60259424678"
+        },
+        {
+          "text": "Questions and answers ship inside the app.",
+          "raw": "- [DSC-05-03] Questions and answers ship inside the app. (`SRC-01-19`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              56,
+              70
+            ]
+          ],
+          "id": "DSC-05-03",
+          "source": "discovery/05-question-content.md:DSC-05",
+          "sha": "687d8395831afbef"
+        },
+        {
+          "text": "Content is kept in a structure where adding questions or categories is a change of data, not of the app's screens.",
+          "raw": "- [DSC-05-04] Content is kept in a structure where adding questions or categories is a change of data, not of the app's screens. (`SRC-01-21`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              128,
+              142
+            ]
+          ],
+          "id": "DSC-05-04",
+          "source": "discovery/05-question-content.md:DSC-05",
+          "sha": "2ece7f426c8879fb"
+        },
+        {
+          "text": "Every question has exactly one correct answer.",
+          "raw": "- [DSC-05-05] Every question has exactly one correct answer. (`SRC-01-15`)",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              60,
+              74
+            ]
+          ],
+          "id": "DSC-05-05",
+          "source": "discovery/05-question-content.md:DSC-05",
+          "sha": "03b03fa1d7ad5951"
+        },
+        {
+          "text": "AI writes the questions and answers within the delivery loop and checks that each suits its age category.",
+          "raw": "- [DSC-05-06] AI writes the questions and answers within the delivery loop and checks that each suits its age category. (`SRC-03-31`) — *source: `DEC-26`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              133,
+              154
+            ],
+            [
+              119,
+              133
+            ]
+          ],
+          "id": "DSC-05-06",
+          "decisions": [
+            "DEC-26"
+          ],
+          "source": "discovery/05-question-content.md:DSC-05",
+          "sha": "7b941d4f298022d7"
+        },
+        {
+          "text": "The product owner reviews all the content once the loop has finished, before release.",
+          "raw": "- [DSC-05-07] The product owner reviews all the content once the loop has finished, before release. (`SRC-03-31`) — *source: `DEC-26`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              113,
+              134
+            ],
+            [
+              99,
+              113
+            ]
+          ],
+          "id": "DSC-05-07",
+          "decisions": [
+            "DEC-26"
+          ],
+          "source": "discovery/05-question-content.md:DSC-05",
+          "sha": "fb14d48e05340048"
+        },
+        {
+          "text": "Each category has 50 questions, 150 in total.",
+          "raw": "- [DSC-05-08] Each category has 50 questions, 150 in total. (`SRC-03-32`) — *source: `DEC-27`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              73,
+              94
+            ],
+            [
+              59,
+              73
+            ]
+          ],
+          "id": "DSC-05-08",
+          "decisions": [
+            "DEC-27"
+          ],
+          "source": "discovery/05-question-content.md:DSC-05",
+          "sha": "1e2cff2c993bcf2d"
+        },
+        {
+          "text": "Some questions carry a pure black-and-white illustration, AI-generated, only where a picture helps.",
+          "raw": "- [DSC-05-09] Some questions carry a pure black-and-white illustration, AI-generated, only where a picture helps. (`SRC-03-33`) — *source: `DEC-28`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              127,
+              148
+            ],
+            [
+              113,
+              127
+            ]
+          ],
+          "id": "DSC-05-09",
+          "decisions": [
+            "DEC-28"
+          ],
+          "source": "discovery/05-question-content.md:DSC-05",
+          "sha": "f74c40b1a7d3134a"
+        },
+        {
+          "text": "The app and its content exist in Polish and English, with the same questions in both.",
+          "raw": "- [DSC-05-10] The app and its content exist in Polish and English, with the same questions in both. (`SRC-03-34`) — *source: `DEC-29`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              113,
+              134
+            ],
+            [
+              99,
+              113
+            ]
+          ],
+          "id": "DSC-05-10",
+          "decisions": [
+            "DEC-29"
+          ],
+          "source": "discovery/05-question-content.md:DSC-05",
+          "sha": "2c6a846590bcb452"
+        },
+        {
+          "text": "The language is chosen with a switch inside the app.",
+          "raw": "- [DSC-05-11] The language is chosen with a switch inside the app. (`SRC-03-35`) — *source: `DEC-30`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              80,
+              101
+            ],
+            [
+              66,
+              80
+            ]
+          ],
+          "id": "DSC-05-11",
+          "decisions": [
+            "DEC-30"
+          ],
+          "source": "discovery/05-question-content.md:DSC-05",
+          "sha": "b4b223b96962cb52"
+        },
+        {
+          "text": "The switch sits on the category screen, the first launch follows the device language (Polish, otherwise English), and the choice is remembered.",
+          "raw": "- [DSC-05-12] The switch sits on the category screen, the first launch follows the device language (Polish, otherwise English), and the choice is remembered. — *assumption: `Q28`*",
+          "removals": [
+            [
+              0,
+              2
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              157,
+              179
+            ]
+          ],
+          "id": "DSC-05-12",
+          "assumption": "Q28",
+          "source": "discovery/05-question-content.md:DSC-05",
+          "sha": "24bd60870a4651e9"
+        }
+      ],
+      "withdrawn": 0,
+      "file": "05-question-content.md"
+    }
+  ],
+  "questions": {
+    "assumed": [
+      {
+        "text": "How fast must the app respond on the Kompakt?(TQ05, `DSC-02-12`)",
+        "raw": "- **Q26 [A]** How fast must the app respond on the Kompakt? — *default: the answer appears within 1 s of a tap; the category screen appears within 3 s of launch* (TQ05, `DSC-02-12`)",
+        "removals": [
+          [
+            0,
+            2
+          ],
+          [
+            2,
+            14
+          ],
+          [
+            59,
+            162
+          ]
+        ],
+        "id": "Q26",
+        "mark": "A",
+        "default": "the answer appears within 1 s of a tap; the category screen appears within 3 s of launch",
+        "sha": "04033060fbb7a3e2"
+      },
+      {
+        "text": "What does the category screen show the very first time the app is opened, before any category has been used?",
+        "raw": "- **Q27 [A]** What does the category screen show the very first time the app is opened, before any category has been used? — *default: no continue entry, just the list of categories* (`SRC-01-08`, `DSC-03-07`)",
+        "removals": [
+          [
+            0,
+            2
+          ],
+          [
+            2,
+            14
+          ],
+          [
+            122,
+            183
+          ],
+          [
+            183,
+            209
+          ]
+        ],
+        "id": "Q27",
+        "mark": "A",
+        "default": "no continue entry, just the list of categories",
+        "sha": "09980db50c12ead0"
+      },
+      {
+        "text": "Where is the language switch, and which language does the app start in?",
+        "raw": "- **Q28 [A]** Where is the language switch, and which language does the app start in? — *default: the switch is on the category screen; on first launch the app uses Polish if the device is set to Polish, otherwise English; the choice is remembered* (`DEC-30`, `DSC-05-12`)",
+        "removals": [
+          [
+            0,
+            2
+          ],
+          [
+            2,
+            14
+          ],
+          [
+            85,
+            249
+          ],
+          [
+            249,
+            272
+          ]
+        ],
+        "id": "Q28",
+        "mark": "A",
+        "default": "the switch is on the category screen; on first launch the app uses Polish if the device is set to Polish, otherwise English; the choice is remembered",
+        "sha": "de28c8d652badfc6"
+      }
+    ],
+    "open": []
+  },
+  "counts": {
+    "topics": 5,
+    "findings": 65,
+    "withdrawn": 0,
+    "assumed": 3,
+    "open": 0,
+    "sources": 0
+  },
+  "warnings": [
+    "DSC-01 topic scope: 1 sentence(s) dropped from the lead because they name internal material — Feeds PROJECT.md (Actors, Stack & integrations, Out of scope) and the ",
+    "DSC-02 topic scope: 1 sentence(s) dropped from the lead because they name internal material — Feeds NFR.md and the constitution, never a module."
+  ],
+  "project_refs": [],
+  "decisions": [
+    "DEC-01",
+    "DEC-02",
+    "DEC-03",
+    "DEC-04",
+    "DEC-05",
+    "DEC-06",
+    "DEC-07",
+    "DEC-08",
+    "DEC-09",
+    "DEC-10",
+    "DEC-11",
+    "DEC-12",
+    "DEC-13",
+    "DEC-14",
+    "DEC-15",
+    "DEC-16",
+    "DEC-17",
+    "DEC-18",
+    "DEC-19",
+    "DEC-20",
+    "DEC-21",
+    "DEC-22",
+    "DEC-23",
+    "DEC-24",
+    "DEC-25",
+    "DEC-26",
+    "DEC-27",
+    "DEC-28",
+    "DEC-29",
+    "DEC-30"
+  ],
+  "sources": [],
+  "dangling": []
+}
