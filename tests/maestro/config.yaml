@@ -1,5 +1,6 @@
 # TC-00-01 checks the app as `yarn stack` left it, so it runs first; later flows relaunch the app.
-# flowsOrder names flows by their `name:`.
+# flowsOrder names flows by their `name:`. Flows tagged `release-build` run apart, against the release
+# APK with Metro stopped (scripts/test-acceptance.sh).
 flows:
   - '*.yaml'
 executionOrder:

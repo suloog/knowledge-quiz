@@ -6,7 +6,7 @@ A quiz app for the Mudita Kompakt E-ink phone (Android), built with Expo / React
 ## Platform versions
 
 The boilerplate brought up to the latest stable versions before any feature work (`DEC-06`,
-`DEC-42`); `package.json` and `yarn.lock` pin them.
+`DEC-42`); `yarn.lock` pins the exact versions below (`package.json` holds the ranges).
 
 | What | Version |
 | --- | --- |
@@ -37,9 +37,10 @@ and an Android 12 (API 31) AVD.
 | Command | What it runs |
 | --- | --- |
 | `yarn test` | unit tests (Jest + React Native Testing Library), with coverage |
-| `yarn test:acceptance` | the start command's script (`scripts/stack.sh`) and the Maestro flows in `tests/maestro/`, then the unit tests; JUnit reports go to `test-results/` (or `$OG_RUN_DIR`) |
+| `yarn test:acceptance` | builds the release APK with a throwaway key and checks it (`apksigner`, `aapt`); runs the start command's script (`scripts/stack.sh`) and the Maestro flows in `tests/maestro/` on the debug build; installs the release APK and runs the flows tagged `release-build` with Metro stopped; then the unit tests. JUnit reports go to `test-results/` (or `$OG_RUN_DIR`) |
 
-Acceptance tests need Maestro (`curl -Ls https://get.maestro.mobile.dev | bash`). Each Maestro
+Acceptance tests need Maestro (`curl -Ls https://get.maestro.mobile.dev | bash`) and the Android
+SDK build tools (`apksigner`, `aapt`). Each Maestro
 flow is named after its test case (`TC-NN-MM …`). CI runs `yarn test:acceptance` on every pull
 request on an Android 12 emulator (`.github/workflows/acceptance.yml`) and uploads the JUnit
 reports as the artifact `og-test-results`; a new test needs no change to the workflow.
@@ -67,6 +68,10 @@ Without the four properties the release build stops and names the missing ones; 
 with the debug key. The release build asks for no network permission (`NFR-05`); check a built APK
 with `$ANDROID_HOME/build-tools/<version>/aapt dump permissions <apk>`. The debug build that
 `yarn stack` runs keeps the Internet permission: it loads its JavaScript from the Metro bundler.
+
+`yarn test:acceptance` builds the same release APK with a throwaway key it generates with `keytool`
+for the run (in a temporary directory, deleted after the build) and passes through the four
+variables — never the upload key.
 
 ## Gates
 

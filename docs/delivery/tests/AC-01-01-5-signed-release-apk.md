@@ -17,7 +17,7 @@ depends_on: [] # test case IDs that must pass first
 
 |  |  |
 | --- | --- |
-| **Layer** | mobile — the release build's configuration (unit test suite) |
+| **Layer** | mobile — the release build's configuration (unit test suite) and a release APK built in the acceptance run (`scripts/test-acceptance.sh`) |
 | **Verifies** | `US-01-01#5`, `NFR-06`, `NFR-13` |
 | **Role** | — (no sign-in) |
 | **Type** | nfr |
@@ -27,12 +27,14 @@ depends_on: [] # test case IDs that must pass first
 ## Preconditions
 
 - The repository checked out with its dependencies installed; no signing key in it.
+- For steps 4–6: the Android SDK build tools (`apksigner`, `aapt`) and a JDK (`keytool`).
 
 ## Test data
 
 | What | Value / source |
 | --- | --- |
 | Signing key | named by the Gradle properties `KQ_UPLOAD_STORE_FILE`, `KQ_UPLOAD_STORE_PASSWORD`, `KQ_UPLOAD_KEY_ALIAS`, `KQ_UPLOAD_KEY_PASSWORD` — names only, never values |
+| Throwaway key (steps 4–6) | generated with `keytool` for the run in a temporary directory outside the repository and the run directory, deleted after the build (`DEC-44`) |
 
 ## Steps
 
@@ -41,6 +43,9 @@ depends_on: [] # test case IDs that must pass first
 | 1 | Generate the app's build configuration and read the release build type | It is signed with the release signing configuration, not the debug key | console |
 | 2 | Read the release signing configuration | The keystore, alias and passwords come from the `KQ_UPLOAD_*` Gradle properties or environment variables, nothing from the repository | console |
 | 3 | Read what a release build does when those properties are missing | It fails and names the missing properties | console |
+| 4 | Build the release APK with a throwaway key passed only through the `KQ_UPLOAD_*` environment variables | The build succeeds and writes `app-release.apk` | console (`release-build.log`) |
+| 5 | Verify the APK's signature with `apksigner verify --print-certs` | It verifies, and its certificate is the throwaway key's, not the debug key's | console (`release/apksigner.txt`) |
+| 6 | Read the APK's minimum SDK with `aapt dump badging` | `sdkVersion:'31'` — Android 12 and newer only (`NFR-10`) | console (`release/badging.txt`) |
 
 ## Pass criterion
 
@@ -48,4 +53,4 @@ depends_on: [] # test case IDs that must pass first
 
 ## Out of scope for this test
 
-- Building and signing a real release APK — needs Maciej's key (`DEC-09`); done by hand (README, *Release APK*).
+- Signing with the real upload key — it stays with Maciej (`DEC-09`); done by hand (README, *Release APK*).

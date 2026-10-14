@@ -7,7 +7,7 @@ type: edge # happy-path | edge | negative | nfr
 automation: auto # auto | manual-only — manual-only is never green in the report
 roles: [] # no sign-in in this app
 status: draft # draft | ready
-depends_on: [] # test case IDs that must pass first
+depends_on: [AC-01-01-5] # test case IDs that must pass first
 ---
 
 <!-- Content in the project language; headings fixed by this template.
@@ -26,7 +26,8 @@ depends_on: [] # test case IDs that must pass first
 
 ## Preconditions
 
-- The app is installed on the Android 12 emulator.
+- The release build (`AC-01-01-5`), with its JavaScript embedded, is installed on the Android 12 emulator — not the debug build, which cannot start without its bundler.
+- No bundler is reachable from the device: Metro stopped and the `adb reverse` port forwarding removed (airplane mode does not cut `adb reverse`). Checked before the steps; a failed check fails the test.
 - The emulator's network can be switched off.
 
 ## Test data
@@ -45,6 +46,7 @@ depends_on: [] # test case IDs that must pass first
 ## Pass criterion
 
 - With no network the app starts and shows its first screen.
+- The device log of the run shows no attempt to load code from a bundler.
 
 ## Cleanup
 
