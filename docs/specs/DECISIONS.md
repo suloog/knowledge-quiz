@@ -573,3 +573,15 @@
 - **Scope effect:** within scope
 - **Resolves:** —
 - **Status:** accepted
+
+## [DEC-47] 3+ questions with a possible near-miss answer are asked as either/or
+
+- **Date:** 2026-10-14
+- **Decided by:** developer (delivery loop)
+- **Source:** implementation (`US-01-02`)
+- **Affects:** `US-01-02`, `US-01-03`, `US-01-04`, `MOD-01-F06`, `MOD-01-F14`
+- **Decision:** A 3+ question passes the `Q29` point "one unambiguous answer" as an open question only when no other correct answer can be named (a count, a counting order, what a hen lays); every other question is asked as an either/or between the answer and one clearly wrong option, with the answer first in some questions and second in others. In the 3+ deck 46 questions are either/or (the answer second in 24) and 4 stay open (`3p-02`, `3p-07`, `3p-13`, `3p-36`); the record `docs/delivery/content-checks/US-01-02-3-plus.md` says why each of the four stays open. The content data format (`DEC-46`) does not change.
+- **Why:** Three review rounds each found another open question a 3-year-old could answer correctly with a synonym or a near miss (a neck warmer for a scarf, a hood for an umbrella, a balloon for a ball); fixing them one by one did not converge. An either/or with one clearly wrong option admits one answer by construction, and varying the side keeps "always pick the first" from winning.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted

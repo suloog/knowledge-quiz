@@ -6,11 +6,11 @@
       "id": "3p-01",
       "kind": "educational",
       "pl": {
-        "question": "Jakiego koloru jest cytryna: żółtego czy niebieskiego?",
+        "question": "Jakiego koloru jest cytryna: niebieskiego czy żółtego?",
         "answer": "Żółtego."
       },
       "en": {
-        "question": "What colour is a lemon: yellow or blue?",
+        "question": "What colour is a lemon: blue or yellow?",
         "answer": "Yellow."
       }
     },
@@ -30,11 +30,11 @@
       "id": "3p-03",
       "kind": "educational",
       "pl": {
-        "question": "Ile kół ma rower: dwa czy sześć?",
+        "question": "Ile kół ma rower: sześć czy dwa?",
         "answer": "Dwa."
       },
       "en": {
-        "question": "How many wheels does a bicycle have: two or six?",
+        "question": "How many wheels does a bicycle have: six or two?",
         "answer": "Two."
       }
     },
@@ -42,11 +42,11 @@
       "id": "3p-04",
       "kind": "educational",
       "pl": {
-        "question": "Jaki kształt ma koło samochodu?",
+        "question": "Jaki kształt ma koło samochodu: kwadratowy czy okrągły?",
         "answer": "Okrągły."
       },
       "en": {
-        "question": "What shape is a car wheel?",
+        "question": "What shape is a car wheel: square or round?",
         "answer": "Round."
       }
     },
@@ -66,11 +66,11 @@
       "id": "3p-06",
       "kind": "educational",
       "pl": {
-        "question": "Jakiego koloru jest trawa?",
+        "question": "Jakiego koloru jest trawa: czerwonego czy zielonego?",
         "answer": "Zielonego."
       },
       "en": {
-        "question": "What colour is grass?",
+        "question": "What colour is grass: red or green?",
         "answer": "Green."
       }
     },
@@ -90,11 +90,11 @@
       "id": "3p-08",
       "kind": "educational",
       "pl": {
-        "question": "Czym widzisz?",
+        "question": "Czym widzisz: oczami czy zębami?",
         "answer": "Oczami."
       },
       "en": {
-        "question": "What do you see with?",
+        "question": "What do you see with: your eyes or your teeth?",
         "answer": "Your eyes."
       }
     },
@@ -102,11 +102,11 @@
       "id": "3p-09",
       "kind": "educational",
       "pl": {
-        "question": "Czym słyszysz?",
+        "question": "Czym słyszysz: uszami czy stopami?",
         "answer": "Uszami."
       },
       "en": {
-        "question": "What do you hear with?",
+        "question": "What do you hear with: your ears or your feet?",
         "answer": "Your ears."
       }
     },
@@ -114,11 +114,11 @@
       "id": "3p-10",
       "kind": "educational",
       "pl": {
-        "question": "Czym czujesz zapachy?",
+        "question": "Czym czujesz zapachy: nosem czy kolanem?",
         "answer": "Nosem."
       },
       "en": {
-        "question": "What do you smell with?",
+        "question": "What do you smell with: your nose or your knee?",
         "answer": "Your nose."
       }
     },
@@ -126,11 +126,11 @@
       "id": "3p-11",
       "kind": "educational",
       "pl": {
-        "question": "Jakiego koloru jest śnieg?",
+        "question": "Jakiego koloru jest śnieg: białego czy czarnego?",
         "answer": "Białego."
       },
       "en": {
-        "question": "What colour is snow?",
+        "question": "What colour is snow: white or black?",
         "answer": "White."
       }
     },
@@ -138,11 +138,11 @@
       "id": "3p-12",
       "kind": "educational",
       "pl": {
-        "question": "Kto jest większy: kot czy mysz?",
+        "question": "Kto jest większy: mysz czy kot?",
         "answer": "Kot."
       },
       "en": {
-        "question": "Which is bigger: a cat or a mouse?",
+        "question": "Which is bigger: a mouse or a cat?",
         "answer": "A cat."
       }
     },
@@ -162,11 +162,11 @@
       "id": "3p-14",
       "kind": "popular-science",
       "pl": {
-        "question": "Co świeci na niebie w dzień i nas grzeje?",
+        "question": "Co świeci na niebie w dzień i nas grzeje: księżyc czy słońce?",
         "answer": "Słońce."
       },
       "en": {
-        "question": "What shines in the sky in the daytime and keeps us warm?",
+        "question": "What shines in the sky in the daytime and keeps us warm: the moon or the sun?",
         "answer": "The sun."
       }
     },
@@ -174,23 +174,23 @@
       "id": "3p-15",
       "kind": "popular-science",
       "pl": {
-        "question": "Co dzieje się z lodem, gdy robi się ciepło?",
-        "answer": "Topi się i zmienia w wodę."
+        "question": "Co dzieje się z lodem, gdy robi się ciepło: topi się czy rośnie?",
+        "answer": "Topi się."
       },
       "en": {
-        "question": "What happens to ice when it gets warm?",
-        "answer": "It melts into water."
+        "question": "What happens to ice when it gets warm: it melts or it grows?",
+        "answer": "It melts."
       }
     },
     {
       "id": "3p-16",
       "kind": "popular-science",
       "pl": {
-        "question": "Jak nazywamy krople wody, które spadają z chmur?",
+        "question": "Jak nazywamy krople wody, które spadają z chmur: piasek czy deszcz?",
         "answer": "Deszcz."
       },
       "en": {
-        "question": "What do we call drops of water that fall from the clouds?",
+        "question": "What do we call drops of water that fall from the clouds: sand or rain?",
         "answer": "Rain."
       }
     },
@@ -198,11 +198,11 @@
       "id": "3p-17",
       "kind": "popular-science",
       "pl": {
-        "question": "Co świeci w nocy na niebie i zmienia kształt?",
+        "question": "Co świeci w nocy na niebie i zmienia kształt: księżyc czy słońce?",
         "answer": "Księżyc."
       },
       "en": {
-        "question": "What shines in the night sky and changes its shape?",
+        "question": "What shines in the night sky and changes its shape: the moon or the sun?",
         "answer": "The moon."
       }
     },
@@ -234,11 +234,11 @@
       "id": "3p-20",
       "kind": "popular-science",
       "pl": {
-        "question": "Co pomaga nam widzieć w ciemności: lampka czy poduszka?",
+        "question": "Co pomaga nam widzieć w ciemności: poduszka czy lampka?",
         "answer": "Lampka."
       },
       "en": {
-        "question": "What helps us see in the dark: a lamp or a pillow?",
+        "question": "What helps us see in the dark: a pillow or a lamp?",
         "answer": "A lamp."
       }
     },
@@ -258,11 +258,11 @@
       "id": "3p-22",
       "kind": "popular-science",
       "pl": {
-        "question": "Jakiego koloru jest niebo w pogodny dzień?",
+        "question": "Jakiego koloru jest niebo w pogodny dzień: niebieskiego czy zielonego?",
         "answer": "Niebieskiego."
       },
       "en": {
-        "question": "What colour is the sky on a clear day?",
+        "question": "What colour is the sky on a clear day: blue or green?",
         "answer": "Blue."
       }
     },
@@ -282,11 +282,11 @@
       "id": "3p-24",
       "kind": "popular-science",
       "pl": {
-        "question": "Co ma wiele kolorów i pojawia się na niebie, gdy pada deszcz i świeci słońce?",
+        "question": "Co ma wiele kolorów i jest na niebie, gdy pada deszcz i świeci słońce: gwiazda czy tęcza?",
         "answer": "Tęcza."
       },
       "en": {
-        "question": "What has many colours and appears in the sky when it rains and the sun shines?",
+        "question": "What has many colours and is in the sky when it rains and the sun shines: a star or a rainbow?",
         "answer": "A rainbow."
       }
     },
@@ -294,11 +294,11 @@
       "id": "3p-25",
       "kind": "popular-science",
       "pl": {
-        "question": "Co unosi się nad garnkiem z bardzo gorącą wodą?",
+        "question": "Co unosi się nad garnkiem z bardzo gorącą wodą: śnieg czy para?",
         "answer": "Para."
       },
       "en": {
-        "question": "What rises from a pot of very hot water?",
+        "question": "What rises above a pot of very hot water: snow or steam?",
         "answer": "Steam."
       }
     },
@@ -306,11 +306,11 @@
       "id": "3p-26",
       "kind": "nature",
       "pl": {
-        "question": "Jak robi krowa?",
+        "question": "Jak robi krowa: muu czy miau?",
         "answer": "Muu."
       },
       "en": {
-        "question": "What sound does a cow make?",
+        "question": "What sound does a cow make: moo or meow?",
         "answer": "Moo."
       }
     },
@@ -318,11 +318,11 @@
       "id": "3p-27",
       "kind": "nature",
       "pl": {
-        "question": "Które zwierzę robi hau hau?",
+        "question": "Które zwierzę robi hau hau: kot czy pies?",
         "answer": "Pies."
       },
       "en": {
-        "question": "Which animal says woof?",
+        "question": "Which animal says woof: a cat or a dog?",
         "answer": "A dog."
       }
     },
@@ -330,11 +330,11 @@
       "id": "3p-28",
       "kind": "nature",
       "pl": {
-        "question": "Gdzie mieszka ryba: w wodzie czy na drzewie?",
+        "question": "Gdzie mieszka ryba: na drzewie czy w wodzie?",
         "answer": "W wodzie."
       },
       "en": {
-        "question": "Where does a fish live: in water or in a tree?",
+        "question": "Where does a fish live: in a tree or in water?",
         "answer": "In water."
       }
     },
@@ -342,11 +342,11 @@
       "id": "3p-29",
       "kind": "nature",
       "pl": {
-        "question": "Co słodkiego robią pszczoły?",
+        "question": "Co słodkiego robią pszczoły: miód czy ser?",
         "answer": "Miód."
       },
       "en": {
-        "question": "What sweet thing do bees make?",
+        "question": "What sweet thing do bees make: honey or cheese?",
         "answer": "Honey."
       }
     },
@@ -366,11 +366,11 @@
       "id": "3p-31",
       "kind": "nature",
       "pl": {
-        "question": "Który ptak robi kwa kwa?",
+        "question": "Który ptak robi kwa kwa: kaczka czy kura?",
         "answer": "Kaczka."
       },
       "en": {
-        "question": "Which bird says quack?",
+        "question": "Which bird says quack: a duck or a hen?",
         "answer": "A duck."
       }
     },
@@ -378,23 +378,23 @@
       "id": "3p-32",
       "kind": "nature",
       "pl": {
-        "question": "Czym latają ptaki?",
+        "question": "Czym latają ptaki: kołami czy skrzydłami?",
         "answer": "Skrzydłami."
       },
       "en": {
-        "question": "What do birds fly with?",
-        "answer": "Their wings."
+        "question": "What do birds fly with: wheels or wings?",
+        "answer": "Wings."
       }
     },
     {
       "id": "3p-33",
       "kind": "nature",
       "pl": {
-        "question": "Które zwierzę robi kum kum: żaba czy krowa?",
+        "question": "Które zwierzę robi kum kum: krowa czy żaba?",
         "answer": "Żaba."
       },
       "en": {
-        "question": "Which animal says ribbit: a frog or a cow?",
+        "question": "Which animal says ribbit: a cow or a frog?",
         "answer": "A frog."
       }
     },
@@ -402,11 +402,11 @@
       "id": "3p-34",
       "kind": "nature",
       "pl": {
-        "question": "Które zwierzę podobne do konia ma czarno-białe paski?",
+        "question": "Które zwierzę podobne do konia ma czarno-białe paski: owca czy zebra?",
         "answer": "Zebra."
       },
       "en": {
-        "question": "Which animal looks like a horse and has black and white stripes?",
+        "question": "Which animal looks like a horse and has black and white stripes: a sheep or a zebra?",
         "answer": "A zebra."
       }
     },
@@ -438,11 +438,11 @@
       "id": "3p-37",
       "kind": "nature",
       "pl": {
-        "question": "Które zwierzę robi chrum chrum?",
+        "question": "Które zwierzę robi chrum chrum: świnka czy kaczka?",
         "answer": "Świnka."
       },
       "en": {
-        "question": "Which animal says oink?",
+        "question": "Which animal says oink: a pig or a duck?",
         "answer": "A pig."
       }
     },
@@ -450,11 +450,11 @@
       "id": "3p-38",
       "kind": "nature",
       "pl": {
-        "question": "Które zwierzę robi miau?",
+        "question": "Które zwierzę robi miau: kot czy ryba?",
         "answer": "Kot."
       },
       "en": {
-        "question": "Which animal says meow?",
+        "question": "Which animal says meow: a cat or a fish?",
         "answer": "A cat."
       }
     },
@@ -462,11 +462,11 @@
       "id": "3p-39",
       "kind": "trivia",
       "pl": {
-        "question": "Co zakładamy na stopy przed butami: skarpetki czy rękawiczki?",
+        "question": "Co zakładamy na stopy przed butami: rękawiczki czy skarpetki?",
         "answer": "Skarpetki."
       },
       "en": {
-        "question": "What do we put on our feet before our shoes: socks or gloves?",
+        "question": "What do we put on our feet before our shoes: gloves or socks?",
         "answer": "Socks."
       }
     },
@@ -474,11 +474,11 @@
       "id": "3p-40",
       "kind": "trivia",
       "pl": {
-        "question": "Co zdmuchujemy na torcie urodzinowym?",
+        "question": "Co zdmuchujemy na torcie urodzinowym: kanapki czy świeczki?",
         "answer": "Świeczki."
       },
       "en": {
-        "question": "What do we blow out on a birthday cake?",
+        "question": "What do we blow out on a birthday cake: sandwiches or candles?",
         "answer": "Candles."
       }
     },
@@ -498,11 +498,11 @@
       "id": "3p-42",
       "kind": "trivia",
       "pl": {
-        "question": "Co trzymamy nad głową, żeby nie zmoknąć w deszczu?",
+        "question": "Co trzymamy nad głową, żeby nie zmoknąć w deszczu: łyżkę czy parasol?",
         "answer": "Parasol."
       },
       "en": {
-        "question": "What do we hold over our head to keep dry in the rain?",
+        "question": "What do we hold over our head to keep dry in the rain: a spoon or an umbrella?",
         "answer": "An umbrella."
       }
     },
@@ -510,11 +510,11 @@
       "id": "3p-43",
       "kind": "trivia",
       "pl": {
-        "question": "Jaka zabawka jest okrągła i odbija się od podłogi?",
+        "question": "Jaka zabawka jest okrągła i odbija się od podłogi: piłka czy klocek?",
         "answer": "Piłka."
       },
       "en": {
-        "question": "Which toy is round and bounces on the floor?",
+        "question": "Which toy is round and bounces on the floor: a ball or a block?",
         "answer": "A ball."
       }
     },
@@ -522,11 +522,11 @@
       "id": "3p-44",
       "kind": "trivia",
       "pl": {
-        "question": "Jak nazywamy jedzenie rano: śniadanie czy kolacja?",
+        "question": "Jak nazywamy jedzenie rano: kolacja czy śniadanie?",
         "answer": "Śniadanie."
       },
       "en": {
-        "question": "What do we call the food we eat in the morning: breakfast or supper?",
+        "question": "What do we call the food we eat in the morning: supper or breakfast?",
         "answer": "Breakfast."
       }
     },
@@ -534,11 +534,11 @@
       "id": "3p-45",
       "kind": "trivia",
       "pl": {
-        "question": "Co pokazuje zegar: godzinę czy pogodę?",
+        "question": "Co pokazuje zegar: bajkę czy godzinę?",
         "answer": "Godzinę."
       },
       "en": {
-        "question": "What does a clock show: the time or the weather?",
+        "question": "What does a clock show: a cartoon or the time?",
         "answer": "The time."
       }
     },
@@ -570,11 +570,11 @@
       "id": "3p-48",
       "kind": "trivia",
       "pl": {
-        "question": "Co zakładamy na szyję, gdy jest zimno?",
+        "question": "Co zakładamy na szyję, gdy jest zimno: szalik czy skarpetki?",
         "answer": "Szalik."
       },
       "en": {
-        "question": "What do we wear around our neck when it is cold?",
+        "question": "What do we wear around our neck when it is cold: a scarf or socks?",
         "answer": "A scarf."
       }
     },
@@ -582,11 +582,11 @@
       "id": "3p-49",
       "kind": "trivia",
       "pl": {
-        "question": "Czym jemy zupę: łyżką czy grzebieniem?",
+        "question": "Czym jemy zupę: grzebieniem czy łyżką?",
         "answer": "Łyżką."
       },
       "en": {
-        "question": "What do we eat soup with: a spoon or a comb?",
+        "question": "What do we eat soup with: a comb or a spoon?",
         "answer": "A spoon."
       }
     },
@@ -594,11 +594,11 @@
       "id": "3p-50",
       "kind": "trivia",
       "pl": {
-        "question": "Z czego lepimy bałwana?",
+        "question": "Z czego lepimy bałwana: z kamieni czy ze śniegu?",
         "answer": "Ze śniegu."
       },
       "en": {
-        "question": "What do we make a snowman from?",
+        "question": "What do we make a snowman from: stones or snow?",
         "answer": "Snow."
       }
     }
