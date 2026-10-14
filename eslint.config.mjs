@@ -1,33 +1,15 @@
 // @ts-check
-import eslintPluginPrettier from 'eslint-plugin-prettier';
+import expoConfig from 'eslint-config-expo/flat.js';
 import eslintConfigPrettier from 'eslint-config-prettier';
-import tseslint from '@typescript-eslint/eslint-plugin';
-import tsParser from '@typescript-eslint/parser';
-import expo from 'eslint-config-expo';
+import eslintPluginPrettier from 'eslint-plugin-prettier';
 
 export default [
-  // Apply to all JS/TS files
+  // Expo's recommended config: core, TypeScript, React, React hooks and Expo rules
+  ...expoConfig,
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
-      parser: tsParser,
-      parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-        ecmaFeatures: {
-          jsx: true,
-        },
-      },
       globals: {
-        // Node.js globals
-        console: 'readonly',
-        process: 'readonly',
-        __dirname: 'readonly',
-        __filename: 'readonly',
-        module: 'readonly',
-        require: 'readonly',
-        // React Native globals
-        __DEV__: 'readonly',
         // Jest globals
         describe: 'readonly',
         it: 'readonly',
@@ -41,25 +23,12 @@ export default [
       },
     },
     plugins: {
-      '@typescript-eslint': tseslint,
       prettier: eslintPluginPrettier,
     },
     rules: {
-      // Expo recommended rules
-      ...expo.rules,
-      // Prettier integration
+      // Prettier integration: formatting rules off, formatting reported by prettier itself
       ...eslintConfigPrettier.rules,
       'prettier/prettier': 'error',
-    },
-  },
-  // TypeScript specific rules
-  {
-    files: ['**/*.{ts,tsx}'],
-    rules: {
-      '@typescript-eslint/no-shadow': 'off',
-      'no-shadow': 'off',
-      'no-undef': 'off',
-      'react/react-in-jsx-scope': 'off',
     },
   },
   // Ignore patterns
@@ -67,9 +36,12 @@ export default [
     ignores: [
       'node_modules/',
       '.expo/',
+      'android/',
       'dist/',
       'build/',
       'coverage/',
+      'test-results/',
+      'test-runs/',
       '*.config.js',
       '*.config.mjs',
     ],

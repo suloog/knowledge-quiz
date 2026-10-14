@@ -9,7 +9,7 @@
     "android": "expo run:android",
     "test": "jest --coverage",
     "test:acceptance": "bash scripts/test-acceptance.sh",
-    "lint": "expo lint",
+    "lint": "expo lint --max-warnings 0",
     "tsc": "tsc -p tsconfig.json --noEmit",
     "format:check": "prettier --config .prettierrc.js '**/*.{js,jsx,ts,tsx}' --check",
     "prettier": "prettier --config .prettierrc.js '**/*.{js,jsx,ts,tsx}' --write",
