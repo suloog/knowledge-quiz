@@ -32,7 +32,7 @@ depends_on: [] # test case IDs that must pass first
 
 | # | Action | Expected result | Evidence |
 | - | ------ | --------------- | -------- |
-| 1 | Find each 3+ question's row in the record | Every question has a row | console |
+| 1 | Find each 3+ question's row in the record, and count the record's rows | Every question has a row; no id has two rows, and the record holds as many rows as the deck holds questions | console |
 | 2 | Compare each row with the question it names, in Polish and in English | The row has exactly the record's eight cells after the id, and shows that question and its answer in both languages, as the deck holds them | console |
 | 3 | Read each row's four checks: known words, nothing frightening, one answer, verifiable | All four are `pass` for every question | console |
 

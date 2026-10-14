@@ -10,21 +10,24 @@ const threePlus = decks.find(deck => deck.category === '3+');
 
 // | Id | Question (pl) | Answer (pl) | Question (en) | Answer (en) | Known words | Nothing frightening
 // | One answer | Verifiable |
-const rows = new Map(
-  record
-    .split('\n')
-    .filter(line => line.startsWith('| 3p-'))
-    .map(line => {
-      const cells = line.split('|').map(cell => cell.trim());
-      // Every cell between the first and the last pipe: an extra or a missing column shows.
-      return [cells[1], cells.slice(2, -1)];
-    }),
-);
+const entries = record
+  .split('\n')
+  .filter(line => line.startsWith('| 3p-'))
+  .map(line => {
+    const cells = line.split('|').map(cell => cell.trim());
+    // Every cell between the first and the last pipe: an extra or a missing column shows.
+    return [cells[1], cells.slice(2, -1)];
+  });
+const rows = new Map(entries);
 
 describe('AC-01-02-4 The age-suitability check of every 3+ question is recorded', () => {
-  it(`step 1 — ${RECORD} has a row for every question of the deck`, () => {
+  it(`step 1 — ${RECORD} has one row for every question of the deck, and no other`, () => {
     const missing = threePlus.questions.filter(q => !rows.has(q.id));
     expect(missing.map(q => q.id)).toEqual([]);
+    const ids = entries.map(([id]) => id);
+    const repeated = ids.filter((id, index) => ids.indexOf(id) !== index);
+    expect(repeated).toEqual([]);
+    expect(entries.length).toBe(threePlus.questions.length);
   });
 
   it('step 2 — each row names the question it checked and its answer, in Polish and English', () => {
