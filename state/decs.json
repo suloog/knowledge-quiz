@@ -14,5 +14,13 @@
     "title": "Android application id pl.ordergroup.knowledgequiz",
     "file": "docs/specs/DECISIONS.md",
     "ts": "2026-10-14T07:43:21Z"
+  },
+  {
+    "dec": "DEC-44",
+    "story": "US-01-01",
+    "attempt": 1,
+    "title": "Network permission, release signing, component library and the offline test for US-01-01",
+    "file": "docs/specs/DECISIONS.md",
+    "ts": "2026-10-14T09:44:25Z"
   }
 ]
