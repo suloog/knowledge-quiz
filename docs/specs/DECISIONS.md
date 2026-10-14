@@ -537,3 +537,15 @@
 - **Scope effect:** within scope
 - **Resolves:** —
 - **Status:** accepted
+
+## [DEC-44] Network permission, release signing, component library and the offline test for US-01-01
+
+- **Date:** 2026-10-14
+- **Decided by:** product owner (delivery loop, confirmed 2026-10-14)
+- **Source:** implementation (`US-01-01`)
+- **Affects:** `US-01-01`, `NFR-05`, `NFR-06`, `NFR-12`, `DEC-07`, `DEC-09`, `TC-01-02`, `constitution.md`
+- **Decision:** Option a — Take all four points as proposed. (1) Network: the `INTERNET` permission (with the other network permissions) is removed from the release build only, through a release manifest written by a config plugin; the debug build that `yarn stack` and CI run keeps it, because it loads its JavaScript from Metro. Criterion 3 is proven by a unit test on that manifest and by `aapt` on a built release APK. (2) Signing: the release build reads the keystore path, alias and passwords from the Gradle properties `KQ_UPLOAD_STORE_FILE`, `KQ_UPLOAD_STORE_PASSWORD`, `KQ_UPLOAD_KEY_ALIAS` and `KQ_UPLOAD_KEY_PASSWORD` (in `~/.gradle/gradle.properties` or the environment) and fails without them — never signed with the debug key. (3) Component library: none — React Native core components with the app's own black-and-white theme tokens, written into `constitution.md` *Stack*. (4) Offline test: criterion 4 is proven by the derived test `AC-01-01-4` (airplane mode on, the app opens its first screen); the `TC-01-02` flow is written in `US-03-01`, once the category screen and cards exist.
+- **Why:** The APK that reaches the Kompakt has no network permission (`NFR-05`) without changing the foundation's start command or CI; no dependency is added; no reviewed test case is changed.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted

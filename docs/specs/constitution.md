@@ -13,7 +13,7 @@ Per-project engineering law. Every module, user story and PR must satisfy this d
 - Package manager: as in the boilerplate
 - Boilerplate/base: `ordergroup/boilerplate-react-native-expo`, upgraded to the latest RN/Expo/packages as the first piece of work (`DEC-06`)
 - Target: Android 12 (API 31) and newer; Mudita Kompakt is the only reference device (`DEC-10`, `DEC-16`)
-- Component library: chosen in MOD-01's first story against SRC-01 §5, with Mudita Mindful Design as inspiration (`DEC-07`, `DEC-11`); recorded here when chosen
+- Component library: none — React Native core components, styled only with the app's own black-and-white theme tokens (`src/theme.ts`); chosen in MOD-01's first story against SRC-01 §5, with Mudita Mindful Design as inspiration (`DEC-07`, `DEC-11`, `DEC-44`)
 - Testing: Jest + React Native Testing Library (unit), Maestro (e2e) on an Android emulator (`DEC-37`)
 - No backend, no network access; content is local data in the repository (`SRC-01-20`, `DEC-04`)
 
