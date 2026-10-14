@@ -97,7 +97,7 @@ else
   "$EMULATOR" -avd "$AVD" -no-snapshot-save -no-boot-anim >"$EMULATOR_LOG" 2>&1 &
   EMULATOR_PID=$!
   emulator_failed() {
-    printf '[stack] ERROR: %s — the end of its console:\n' "$1" >&2
+    printf '[stack] ERROR: %s — the end of its console (%s):\n' "$1" "$EMULATOR_LOG" >&2
     tail -n 20 "$EMULATOR_LOG" >&2
     EMULATOR_LOG="" # kept: the error names it
     exit 1
@@ -120,6 +120,8 @@ fi
 
 # ------------------------------------------------------ 4. build, install, run
 say "building the app, installing it and starting the bundler"
-yarn expo run:android &
+# The expo binary itself, not `yarn expo`: yarn 1 runs it through `/bin/sh -c`, so APP_PID would
+# be yarn and the signals in cleanup would miss the node process that serves the bundler on :8081.
+node_modules/.bin/expo run:android &
 APP_PID=$!
 wait "$APP_PID"
