@@ -3,5 +3,6 @@
 import type { Deck } from '../deck';
 import threePlus from './3-plus.json';
 import fourPlus from './4-plus.json';
+import fivePlus from './5-plus.json';
 
-export const decks = [threePlus, fourPlus] as Deck[];
+export const decks = [threePlus, fourPlus, fivePlus] as Deck[];
