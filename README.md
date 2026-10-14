@@ -44,6 +44,30 @@ flow is named after its test case (`TC-NN-MM …`). CI runs `yarn test:acceptanc
 request on an Android 12 emulator (`.github/workflows/acceptance.yml`) and uploads the JUnit
 reports as the artifact `og-test-results`; a new test needs no change to the workflow.
 
+## Release APK
+
+The APK installed on the Kompakt (`NFR-13`) is the release build, signed with the upload key Maciej
+keeps outside the repository (`NFR-06`, `DEC-09`, `DEC-44`). The build reads the key from four
+Gradle properties — in `~/.gradle/gradle.properties` or as environment variables of the same names:
+
+| Property | What |
+| --- | --- |
+| `KQ_UPLOAD_STORE_FILE` | absolute path of the keystore |
+| `KQ_UPLOAD_STORE_PASSWORD` | the keystore's password |
+| `KQ_UPLOAD_KEY_ALIAS` | the key's alias |
+| `KQ_UPLOAD_KEY_PASSWORD` | the key's password |
+
+```bash
+npx expo prebuild --platform android
+(cd android && ./gradlew assembleRelease)
+# → android/app/build/outputs/apk/release/app-release.apk
+```
+
+Without the four properties the release build stops and names the missing ones; it is never signed
+with the debug key. The release build asks for no network permission (`NFR-05`); check a built APK
+with `$ANDROID_HOME/build-tools/<version>/aapt dump permissions <apk>`. The debug build that
+`yarn stack` runs keeps the Internet permission: it loads its JavaScript from the Metro bundler.
+
 ## Gates
 
 `yarn format:check`, `yarn lint`, `yarn tsc` and `yarn test` — the og plugin runs them before every

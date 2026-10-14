@@ -24,7 +24,9 @@
       "expo-font",
       "expo-splash-screen",
       "expo-status-bar",
-      "./plugins/withMinSdk"
+      "./plugins/withMinSdk",
+      "./plugins/withReleaseNoNetwork",
+      "./plugins/withReleaseSigning"
     ],
     "experiments": {
       "typedRoutes": true
