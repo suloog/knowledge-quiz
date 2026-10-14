@@ -25,7 +25,7 @@
 
 | TQ | Question | Status | Reference | Note |
 |------|----------|--------|-----------|------|
-| TQ05 | Response time | assumed | `Q26` | Answer ≤1 s after a tap, category screen ≤3 s after launch, on the Kompakt |
+| TQ05 | Response time | decided | `DEC-31` | Answer ≤1 s after a tap, category screen ≤3 s after launch, on the Kompakt |
 | TQ06 | Throughput | n/a | `SRC-01-20` | Single offline device, no backend or server |
 | TQ07 | Vertical and horizontal scalability | n/a | `SRC-01-20` | Single offline device, no backend or server |
 

@@ -381,3 +381,39 @@
 - **Scope effect:** extension
 - **Resolves:** `Q11`
 - **Status:** accepted
+
+## [DEC-31] Response-time targets on the Kompakt
+
+- **Date:** 2026-10-14
+- **Decided by:** analyst (product owner)
+- **Source:** /og:decide 2026-10-14 (`SRC-03`, `SRC-03-36`)
+- **Affects:** TQ05, `DSC-02-12`, `PROJECT.md` G3
+- **Decision:** On the Mudita Kompakt the answer appears within 1 s of a tap and the category screen within 3 s of launch.
+- **Why:** The product owner confirmed the proposed default.
+- **Scope effect:** within scope
+- **Resolves:** `Q26`
+- **Status:** accepted
+
+## [DEC-32] First launch shows only the category list
+
+- **Date:** 2026-10-14
+- **Decided by:** analyst (product owner)
+- **Source:** /og:decide 2026-10-14 (`SRC-03`, `SRC-03-37`)
+- **Affects:** `SRC-01-08`, `DEC-21`, `DSC-03-07`
+- **Decision:** The very first time the app is opened, before any category has been used, the category screen shows no continue entry, only the list of categories.
+- **Why:** The product owner confirmed the proposed default.
+- **Scope effect:** within scope
+- **Resolves:** `Q27`
+- **Status:** accepted
+
+## [DEC-33] Language switch placement and starting language
+
+- **Date:** 2026-10-14
+- **Decided by:** analyst (product owner)
+- **Source:** /og:decide 2026-10-14 (`SRC-03`, `SRC-03-38`)
+- **Affects:** `DEC-30`, `DSC-05-12`
+- **Decision:** The language switch is on the category screen; on first launch the app uses Polish if the device is set to Polish and English otherwise; the chosen language is remembered.
+- **Why:** The product owner confirmed the proposed default; it details `DEC-30`, already recorded as an extension.
+- **Scope effect:** within scope
+- **Resolves:** `Q28`
+- **Status:** accepted

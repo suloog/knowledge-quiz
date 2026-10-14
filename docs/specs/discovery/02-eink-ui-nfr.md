@@ -48,6 +48,7 @@ contract and the kick-off note is visible in one place, not in two files.>
 | `SRC-03-21` | informal | Assume ~10 Hz refresh |
 | `SRC-03-22` | informal | Element sizes intuitive, no hard number |
 | `SRC-03-23` | informal | The delivery loop verifies in an emulator |
+| `SRC-03-36` | informal | Confirmed: ≤1 s to reveal, ≤3 s to categories |
 
 ## Key findings
 
@@ -68,7 +69,7 @@ struck through with its DEC-nn.>
 - [DSC-02-09] The MVP does not support system font scaling or a screen reader. (`SRC-03-16`) — *source: `DEC-12`*
 - [DSC-02-10] The Mudita Kompakt is the only device the app is built for and accepted on, and it is tested manually. (`SRC-03-13`) — *source: `DEC-10`*
 - [DSC-02-11] The app supports Android 12 and newer — the version the Kompakt runs. (`SRC-03-20`) — *source: `DEC-16`*
-- [DSC-02-12] On the Kompakt the answer appears within 1 s of a tap and the category screen within 3 s of launch. — *assumption: `Q26`*
+- [DSC-02-12] On the Kompakt the answer appears within 1 s of a tap and the category screen within 3 s of launch. (`SRC-03-36`) — *source: `DEC-31`*
 - [DSC-02-13] There is no security audit in the MVP. (`SRC-03-17`) — *source: `DEC-13`*
 - [DSC-02-14] The app processes no personal data, so no regulation-specific work is needed. (`SRC-03-18`) — *source: `DEC-14`*
 - [DSC-02-15] Every story ships with unit and e2e tests; the MVP is accepted manually on the Kompakt; there is no load testing. (`SRC-03-19`) — *source: `DEC-15`*
@@ -105,7 +106,7 @@ a source like any other.>
 <Open questions in this topic — numbers only; the text lives in QUESTIONS.md, the list to send in
 discovery/AGENDA.md.>
 
-- `Q26 [A]`. Resolved here: `Q12`, `Q13`, `Q17`, `Q21`, `Q22`, `Q25`.
+- None open. Resolved here: `Q12`, `Q13`, `Q17`, `Q21`, `Q22`, `Q25`, `Q26`.
 
 ## Parked
 

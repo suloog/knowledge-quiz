@@ -36,6 +36,7 @@ contract and the kick-off note is visible in one place, not in two files.>
 | `SRC-03-33` | informal | Optional AI-generated B/W illustrations where they help |
 | `SRC-03-34` | informal | Polish and English, same questions translated |
 | `SRC-03-35` | informal | Language chosen with an in-app switch |
+| `SRC-03-38` | informal | Confirmed: switch on category screen, device language first |
 
 ## Key findings
 
@@ -56,7 +57,7 @@ struck through with its DEC-nn.>
 - [DSC-05-09] Some questions carry a pure black-and-white illustration, AI-generated, only where a picture helps. (`SRC-03-33`) — *source: `DEC-28`*
 - [DSC-05-10] The app and its content exist in Polish and English, with the same questions in both. (`SRC-03-34`) — *source: `DEC-29`*
 - [DSC-05-11] The language is chosen with a switch inside the app. (`SRC-03-35`) — *source: `DEC-30`*
-- [DSC-05-12] The switch sits on the category screen, the first launch follows the device language (Polish, otherwise English), and the choice is remembered. — *assumption: `Q28`*
+- [DSC-05-12] The switch sits on the category screen, the first launch follows the device language (Polish, otherwise English), and the choice is remembered. (`SRC-03-38`) — *source: `DEC-33`*
 
 ## Contradictions
 
@@ -86,7 +87,7 @@ a source like any other.>
 <Open questions in this topic — numbers only; the text lives in QUESTIONS.md, the list to send in
 discovery/AGENDA.md.>
 
-- `Q28 [A]`. Resolved here: `Q09`, `Q10`, `Q11`.
+- None open. Resolved here: `Q09`, `Q10`, `Q11`, `Q28`.
 
 ## Parked
 

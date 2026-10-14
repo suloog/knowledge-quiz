@@ -23,16 +23,17 @@
 | 2026-10-14 | analyst + agent | `DSC-03` | 7 findings, 3 questions resolved, 1 [A] added, `DEC-19`…`DEC-21` |
 | 2026-10-14 | analyst + agent | `DSC-04` | 10 findings, 4 questions resolved, `DEC-22`…`DEC-25` |
 | 2026-10-14 | analyst + agent | `DSC-05` | 12 findings, 3 questions resolved, 1 [A] added, `DEC-26`…`DEC-30` (3 extensions) |
+| 2026-10-14 | analyst (`/og:decide`) | `DSC-02`, `DSC-03`, `DSC-05` | `Q26`, `Q27`, `Q28` confirmed → `DEC-31`…`DEC-33` |
 
 ## Topics
 
 | Topic | Title | Kind | Sources | Findings | Open questions | Status | Module |
 | ----- | ----- | ---- | ------- | -------- | -------------- | ------ | ------ |
 | `DSC-01` | Users, technology and data | cross-cutting | `SRC-01`, `SRC-02`, `SRC-03` | 18 | 0 [W] / 0 [A] | settled | — |
-| `DSC-02` | E-ink UI and non-functional requirements | cross-cutting | `SRC-01`, `SRC-02`, `SRC-03` | 18 | 0 [W] / 1 [A] | settled | — |
-| `DSC-03` | Age categories | business | `SRC-01`, `SRC-03` | 7 | 0 [W] / 1 [A] | settled | — |
+| `DSC-02` | E-ink UI and non-functional requirements | cross-cutting | `SRC-01`, `SRC-02`, `SRC-03` | 18 | 0 [W] / 0 [A] | settled | — |
+| `DSC-03` | Age categories | business | `SRC-01`, `SRC-03` | 7 | 0 [W] / 0 [A] | settled | — |
 | `DSC-04` | Question cards | business | `SRC-01`, `SRC-03` | 10 | 0 [W] / 0 [A] | settled | — |
-| `DSC-05` | Question content | business | `SRC-01`, `SRC-03` | 12 | 0 [W] / 1 [A] | settled | — |
+| `DSC-05` | Question content | business | `SRC-01`, `SRC-03` | 12 | 0 [W] / 0 [A] | settled | — |
 
 ## Source items with no topic
 

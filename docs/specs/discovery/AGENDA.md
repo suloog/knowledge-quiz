@@ -13,21 +13,11 @@
 
 ## To confirm — our assumptions
 
-### E-ink UI and non-functional requirements (`DSC-02`)
-
-1. We assume that the answer appears within 1 s of a tap; the category screen appears within 3 s of launch — please confirm. (`Q26`)
-
-### Age categories (`DSC-03`)
-
-1. We assume that the very first time the app is opened there is no continue entry, just the list of categories — please confirm. (`Q27`)
-
-### Question content (`DSC-05`)
-
-1. We assume that the language switch is on the category screen, that on first launch the app uses Polish if the device is set to Polish and English otherwise, and that the choice is remembered — please confirm. (`Q28`)
+None.
 
 ## To decide — the client's call
 
-None — every open question has been ruled on by the product owner.
+None.
 
 ## Outside the topics
 

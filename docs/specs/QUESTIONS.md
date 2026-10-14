@@ -21,18 +21,6 @@
 as a whole.>
 
 
-## [DSC-02] E-ink UI and non-functional requirements
-
-- **Q26 [A]** How fast must the app respond on the Kompakt? — *default: the answer appears within 1 s of a tap; the category screen appears within 3 s of launch* (TQ05, `DSC-02-12`)
-
-## [DSC-03] Age categories
-
-- **Q27 [A]** What does the category screen show the very first time the app is opened, before any category has been used? — *default: no continue entry, just the list of categories* (`SRC-01-08`, `DSC-03-07`)
-
-## [DSC-05] Question content
-
-- **Q28 [A]** Where is the language switch, and which language does the app start in? — *default: the switch is on the category screen; on first launch the app uses Polish if the device is set to Polish, otherwise English; the choice is remembered* (`DEC-30`, `DSC-05-12`)
-
 ## Resolved
 
 <One line per answered question — the ruling and the decision that records it. The reasoning
@@ -63,3 +51,6 @@ lives in DECISIONS.md, not here.>
 - **Q09** Who writes the questions and checks they suit each age, how many questions per category are needed for the MVP, and in what form will they be delivered? — AI writes and accepts the content in the loop; the owner reviews it after the loop; 50 questions per category; kept as data in the app, 2026-10-14 (`DEC-26`, `DEC-27`)
 - **Q10** Are questions and answers text only, or do they include pictures? — optional AI-generated black-and-white illustrations where they help, 2026-10-14 (`DEC-28`)
 - **Q11** Which language(s) are the content and the interface in — Polish only? — Polish and English, same questions translated, with an in-app switch, 2026-10-14 (`DEC-29`, `DEC-30`)
+- **Q26** How fast must the app respond on the Kompakt? — confirmed — ≤1 s to reveal, ≤3 s to the category screen, 2026-10-14 (`DEC-31`)
+- **Q27** What does the category screen show the very first time the app is opened, before any category has been used? — confirmed — no continue entry, only the list, 2026-10-14 (`DEC-32`)
+- **Q28** Where is the language switch, and which language does the app start in? — confirmed — switch on the category screen, device language first, choice remembered, 2026-10-14 (`DEC-33`)

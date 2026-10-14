@@ -76,6 +76,12 @@ about users, scope, distribution and the starting point of the code.
 - [SRC-03-34] The interface and the content are in Polish and English; both languages have the same questions, translated. — *interview, Q11*
 - [SRC-03-35] The language is chosen with a switch in the app. — *interview, Q11*
 
+### 2026-10-14 — /og:decide, open assumptions confirmed
+
+- [SRC-03-36] Confirmed: the answer appears within 1 s of a tap and the category screen within 3 s of launch, on the Kompakt. — *interview, Q26*
+- [SRC-03-37] Confirmed: on first launch there is no continue entry, only the list of categories. — *interview, Q27*
+- [SRC-03-38] Confirmed: the language switch is on the category screen; on first launch the app follows the device language (Polish, otherwise English); the choice is remembered. — *interview, Q28*
+
 ## Noted but not scope
 
 - …

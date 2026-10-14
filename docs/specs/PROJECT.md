@@ -28,7 +28,7 @@ plugin's autonomous delivery loop.
 
 - G1: From launch, the first answer is on screen after two touches — one to pick a category, one to reveal. (`SRC-01-31`)
 - G2: Each of the three categories holds 50 questions in Polish and English, all reviewed by the product owner before release. (`DEC-26`, `DEC-27`, `DEC-29`)
-- G3: On the Mudita Kompakt the core scenario runs without animation; the answer appears within 1 s of a touch and the category screen within 3 s of launch. (`SRC-01-26`, `DEC-08`, `Q26`)
+- G3: On the Mudita Kompakt the core scenario runs without animation; the answer appears within 1 s of a touch and the category screen within 3 s of launch. (`SRC-01-26`, `DEC-08`, `DEC-31`)
 - G4: Every story is delivered by the delivery loop with its unit and e2e tests green on the emulator. (`SRC-03-03`, `DEC-15`, `DEC-18`)
 
 ## Actors
@@ -100,7 +100,7 @@ and the signing key (`DEC-09`).
 | E-ink behaviour (ghosting, refresh) is seen only on the device; the loop tests on an emulator | Problems surface late, at acceptance | Regular manual checks on the Kompakt during the loop, not only at the end (`DEC-18`) |
 | Scope grows through extensions with no deadline to stop it | The MVP never finishes | `DEC-03` boundary — anything new needs its own DEC; extensions can go to a later module |
 | Upgrading the boilerplate to the latest versions breaks parts of it or Android 12 compatibility | Foundation rework before any feature | The upgrade comes first (M1) and is verified before feature work (`DEC-06`) |
-| Timings and refresh rate are assumed, not measured (`Q26`, ~10 Hz) | G3 targets that turn out to be unreachable | Measure on the Kompakt early in M1–M2 |
+| Timings and refresh rate are set but not yet measured (`DEC-31`, ~10 Hz assumed) | G3 targets that turn out to be unreachable | Measure on the Kompakt early in M1–M2 |
 
 <Requirements are NOT listed here. They are enumerated per module in
 docs/specs/modules/NN-<slug>/REQUIREMENTS.md (MOD-NN-Fnn / Unn) and, project-wide, in

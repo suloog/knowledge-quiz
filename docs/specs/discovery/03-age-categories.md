@@ -35,6 +35,7 @@ contract and the kick-off note is visible in one place, not in two files.>
 | `SRC-03-24` | informal | New categories and questions only with a new app version |
 | `SRC-03-25` | informal | v1: exactly 3+, 4+, 5+ |
 | `SRC-03-26` | informal | Continue entry above a fixed list; remembered after closing |
+| `SRC-03-37` | informal | Confirmed: first launch shows only the list |
 
 ## Key findings
 
@@ -50,7 +51,7 @@ struck through with its DEC-nn.>
 - [DSC-03-04] Choosing a category starts the question cards of that category. (`SRC-01-10`)
 - [DSC-03-05] Version 1 has exactly three categories: 3+, 4+ and 5+. (`SRC-01-07`, `SRC-03-25`) — *source: `DEC-20`*
 - [DSC-03-06] The last-used category is remembered after the app is closed and offered as a separate entry above the full list, which keeps a fixed order. (`SRC-01-08`, `SRC-03-26`) — *source: `DEC-21`*
-- [DSC-03-07] On the very first launch there is no such entry, only the list of categories. — *assumption: `Q27`*
+- [DSC-03-07] On the very first launch there is no such entry, only the list of categories. (`SRC-03-37`) — *source: `DEC-32`*
 
 ## Contradictions
 
@@ -82,7 +83,7 @@ a source like any other.>
 <Open questions in this topic — numbers only; the text lives in QUESTIONS.md, the list to send in
 discovery/AGENDA.md.>
 
-- `Q27 [A]`. Resolved here: `Q01`, `Q02`, `Q04`.
+- None open. Resolved here: `Q01`, `Q02`, `Q04`, `Q27`.
 
 ## Parked
 
