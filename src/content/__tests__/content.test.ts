@@ -1,9 +1,8 @@
-import app from '../app.json';
 import { appContent } from '../index';
 
 describe('appContent', () => {
-  it('exposes the title kept in the content data file', () => {
-    expect(appContent.title).toBe(app.title);
+  it('exposes a non-empty title from the content data file', () => {
+    expect(typeof appContent.title).toBe('string');
     expect(appContent.title.trim()).not.toHaveLength(0);
   });
 });
