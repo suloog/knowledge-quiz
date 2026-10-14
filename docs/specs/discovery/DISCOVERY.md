@@ -47,5 +47,5 @@ not scope" sections do not count here.>
 <Filled by `/og:discovery` in close mode. Condition: every business topic discussed, every `[W]`
 question answered or deferred by an explicit decision, the list of items with no topic empty.>
 
-- Closed: YYYY-MM-DD, approved by: <analyst> · `PROJECT.md` `status: approved` ·
-  `constitution.md` `status: draft` → next step `/og:modules`
+- Closed: 2026-10-14, by: Maciej (analyst, product owner) · `PROJECT.md` written, `status: draft` until `/og:discovery-report accepted` · `constitution.md` `status: draft` → next step `/og:discovery-report`, then `/og:modules`
+- At close: 5 topics settled, 65 findings, 30 decisions (3 extensions: `DEC-28`, `DEC-29`, `DEC-30`), 0 [W] open, 3 [A] open (`Q26`, `Q27`, `Q28` — see QUESTIONS.md), technical checklist 24/24 with a status

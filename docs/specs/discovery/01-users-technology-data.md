@@ -57,16 +57,16 @@ is an unrecorded assumption — do not write it. Numbers are never reused; a wit
 struck through with its DEC-nn.>
 
 - [DSC-01-01] The app is used by a parent and a child together; the parent leads — presents or reads each question and reveals the answer. (`SRC-01-02`, `SRC-01-03`)
-- [DSC-01-02] The app targets Android devices with an E-ink screen; no other platform is part of the MVP. (`SRC-01-01`, `SRC-01` §6)
+- [DSC-01-02] The app targets Android devices with an E-ink screen; no other platform is part of the MVP. (`SRC-01-01`)
 - [DSC-01-03] The MVP works entirely on the device: no backend, no API, no content downloaded from the Internet. (`SRC-01-20`)
 - [DSC-01-04] There are no user accounts or sign-in of any kind; whoever holds the device uses the app. (`SRC-01-17`, `SRC-01-30`)
 - [DSC-01-05] Nothing about the child is stored or shared: no child profiles, no statistics, no sync between devices. (`SRC-01-30`)
-- [DSC-01-06] The app is built in React Native with Expo, starting from the company boilerplate `ordergroup/boilerplate-react-native-expo`. (`SRC-01` §6, `SRC-02` line 3)
+- [DSC-01-06] The app is built in React Native with Expo, starting from the company boilerplate `ordergroup/boilerplate-react-native-expo`. — *source: `DEC-06`*
 - [DSC-01-07] The app is an internal Order Group initiative; its author is the product owner and makes the scope decisions. (`SRC-03-01`)
 - [DSC-01-08] The MVP has no deadline. (`SRC-03-02`) — *source: `DEC-01`*
 - [DSC-01-09] The app is implemented through the og plugin's autonomous delivery loop. (`SRC-03-03`)
 - [DSC-01-10] Either the parent or the child may operate the device. (`SRC-03-04`) — *source: `DEC-02`*
-- [DSC-01-11] The MVP is exactly what SRC-01 §1–5 and SRC-02 describe; anything else is out. (`SRC-03-05`) — *source: `DEC-03`*
+- [DSC-01-11] The MVP is exactly what the MVP brief and its supplement describe; anything else is out. (`SRC-03-05`) — *source: `DEC-03`*
 - [DSC-01-12] The app makes no network calls: no analytics and no crash reporting. (`SRC-03-06`) — *source: `DEC-04`*
 - [DSC-01-13] The MVP is distributed as an APK installed directly on the device, not through an app store. (`SRC-03-07`) — *source: `DEC-05`*
 - [DSC-01-14] Upgrading the boilerplate to the latest React Native, Expo and packages is the first piece of work and part of the scope. (`SRC-03-08`) — *source: `DEC-06`*

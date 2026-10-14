@@ -62,7 +62,7 @@ struck through with its DEC-nn.>
 - [DSC-02-03] Text and touch targets are large enough for both a parent and a small child to read and hit. (`SRC-01-25`, `SRC-01-12`) — *source: `DEC-02`*
 - [DSC-02-04] Nothing animates: the screen changes only when its content changes, and unnecessary refreshes are avoided. (`SRC-01-26`, `SRC-01-27`)
 - [DSC-02-05] The app has few screens and a flat, simple navigation. (`SRC-01-28`)
-- [DSC-02-06] Mudita Mindful Design and MMD are an inspiration: the app follows their interaction patterns and visual language without being a 1:1 copy; SRC-01 §5 is the binding bar. (`SRC-01-29`, `SRC-02-01`, `SRC-02-02`, `SRC-03-14`, `SRC-03-15`) — *source: `DEC-11`*
+- [DSC-02-06] Mudita Mindful Design and MMD are an inspiration: the app follows their interaction patterns and visual language without being a 1:1 copy; the E-ink requirements of the MVP brief are the binding bar. (`SRC-01-29`, `SRC-02-01`, `SRC-02-02`, `SRC-03-14`, `SRC-03-15`) — *source: `DEC-11`*
 - [DSC-02-07] MMD's Kotlin code is not reused; it is a pattern to model on. (`SRC-02-02`)
 - [DSC-02-08] Only black and white are used — no greys. (`SRC-01-24`, `SRC-03-16`) — *source: `DEC-12`*
 - [DSC-02-09] The MVP does not support system font scaling or a screen reader. (`SRC-03-16`) — *source: `DEC-12`*
