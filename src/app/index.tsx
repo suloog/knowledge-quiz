@@ -1,5 +1,6 @@
 import { StyleSheet, Text } from 'react-native';
 import { appContent } from '@/content';
+import { colors } from '@/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const HomeScreen = () => {
@@ -17,9 +18,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: colors.paper,
   },
   title: {
     fontSize: 32,
+    color: colors.ink,
   },
 });
 
