@@ -1,0 +1,89 @@
+{
+  "n": 7,
+  "attempt": 1,
+  "ts": "2026-10-14T17:04:33Z",
+  "story": "US-01-02",
+  "mode": "fix",
+  "parsed": {
+    "result": "ready",
+    "story": "US-01-02",
+    "branch": "feature/US-01-02",
+    "commits": [
+      "dbfde5b fix(content): ask every 3+ question open, with its near misses recorded [US-01-02]",
+      "c2800ad docs(decisions): confirm DEC-47, open 3+ questions under a near-miss rule [US-01-02]",
+      "9c9996d chore(content): wip, waiting for DEC-47 [US-01-02]"
+    ],
+    "decisions": [
+      "DEC-47 critical 3+ questions stay open, each checked for a near miss recorded per question"
+    ],
+    "evidence": [
+      "#1 50 questions, one answer each in pl and en — tests/unit/AC-01-02-1-50-questions-one-answer.test.ts (pass)",
+      "#2 question ≤100 / answer ≤60 chars per language — tests/unit/AC-01-02-2-length-limits.test.ts (pass; longest question 72 pl / 82 en)",
+      "#3 each of four kinds ≥5 times — tests/unit/AC-01-02-3-four-kinds.test.ts (pass; 13/12/13/12)",
+      "#4 age-suitability check recorded per question — docs/delivery/content-checks/US-01-02-3-plus.md + tests/unit/AC-01-02-4-age-suitability-record.test.js steps 1-5 (pass: rows, texts, four checks, near-miss cell, no either/or)",
+      "#5 all content checks pass, breaking any fails the suite — tests/unit/AC-01-02-5-content-checks.test.ts (pass)",
+      "#6 new question or category is a data-only change — tests/unit/AC-01-02-6-content-is-data.test.js (pass)",
+      "#7 content ships inside the app — AC-01-02-7 step 2 on the release APK bundle (junit/release.xml pass) + tests/unit/AC-01-02-7-content-ships-inside.test.js (pass)"
+    ],
+    "tests": {
+      "run": "test-runs/2026-10-14_190107",
+      "pass": 4,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 0,
+      "manual_tests": [
+        "none"
+      ]
+    },
+    "derived_tests": [
+      "AC-01-02-1",
+      "AC-01-02-2",
+      "AC-01-02-3",
+      "AC-01-02-4",
+      "AC-01-02-5",
+      "AC-01-02-6",
+      "AC-01-02-7"
+    ],
+    "preexisting": "the story from earlier rounds on this branch (checks, derived tests 1-3 and 5-7, bundle check); this round rewrote the deck content, the record, AC-01-02-4 and DEC-47",
+    "gates": [
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn format:check ok",
+      "yarn test ok (15 suites, 53 tests)",
+      "commit hook ok on both commits",
+      "yarn test:acceptance on emulator API 32 ok (exit 0)"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "findings": [
+      "spec B1 (DEC-47 classification) fixed c2800ad (critical, put to the owner, confirmed as option c)",
+      "spec N1 / code N5 (does the rule bind 4+/5+) fixed c2800ad (DEC-47: 4+ and 5+ open under the same rule)",
+      "spec N6 (either/or near-trivial) fixed dbfde5b (no options left)",
+      "code N6 (guard against drift back to either/or) fixed dbfde5b (AC-01-02-4 step 5)",
+      "code N8 (answer position) fixed dbfde5b (no options, so position no longer matters)",
+      "spec N2 / code N2 (3p-44 wording, supper) fixed dbfde5b",
+      "spec N3 (godzina, para vocabulary) fixed dbfde5b (both facts swapped out)",
+      "spec N4 (3p-05 answer) fixed dbfde5b",
+      "spec N5 (questions about the child's own body) fixed dbfde5b (asked about a person)",
+      "code N3 (ribbit) fixed dbfde5b (frog question swapped)",
+      "code N4 (long sentences) fixed dbfde5b (longest en 82)",
+      "code N1 (Dwoje) refused: correct Polish for eyes, and the record lists \"dwa\" as the same answer",
+      "spec N7 / N8 / code N7 (run.json skips, PR impact block) refused: the collector and the PR body are the orchestrator's, and CI JUnit is the evidence",
+      "spec N9 refused: no code change asked"
+    ],
+    "notes": "Near miss checked per question: 01 weekday name, przedwczoraj; 02 dwa, own eyes; 03 nogi/paws, stabilisers; 04 nostrils; 05 toothpaste, teeth; 06 weekday name, pojutrze; 07 four without thumb, ten; 08 glasses; 09 hearing aid; 10 mouth; 11 cocoa, cream; 12 twenty-one; 13 dwójka; 14 moon by day; 15 cold, puddle, ice cream; 16 snow, hail, drizzle; 17 stars, clouds; 18 moon, planes; 19 air, breeze; 20 autumn, summer; 21 feet, dog, footprints; 22 light blue, sunset; 23 hail, ice; 24 balloon, kite; 25 rainwater, plant food; 26 milk, calf; 27 puppy, fox, wolf; 28 tortoise, goat, ladybird; 29 wax, buzz; 30 swan, ostrich, llama, cow; 31 goose, duckling; 32 birdhouse; 33 hen, cockerel; 34 tiger, okapi, horse; 35 tapir, mammoth; 36 one egg, chick; 37 wild boar, piglet; 38 kitten, lion; 39 hat, hood; 40 fire/flame, sparklers; 41 freezer; 42 hood, hat, raincoat; 43 balloon, block; 44 cereal, toast, drugie śniadanie; 45 sunglasses, contact lenses; 46 hand, card; 47 fireman, police; 48 red, yellow, neck warmer (old slot); 49 mouth, ladle, fork; 50 lemon, pear, carrot (old slot).\nThe age-suitability record is new this round and must be copied into the PR again; a reviewer subagent attacked the draft and its one finding (3p-15 puddle) is fixed.\nEmulator API 32 (AVD Medium_Phone) started and stopped by me; one full run, no SIGSEGV, snapshot true, dirty false, changed_during_run false.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [],
+      "blocked": []
+    },
+    "critical_decisions": [
+      "DEC-47 critical 3+ questions stay open, each checked for a near miss recorded per question"
+    ]
+  },
+  "raw": "The 3+ deck is rewritten as 50 open questions under DEC-47 option c, and it is committed in two commits on feature/US-01-02 (not pushed). The gates and the whole acceptance suite are green on head dbfde5b.\n\n**What changed**\n- **DEC-47** in /Users/sulo/workspace/knowledge-quiz/docs/specs/DECISIONS.md is now the confirmed entry. It is decided by the product owner (delivery loop, confirmed 2026-10-14), names option c, keeps every Affects item and is accepted. The Why says it is critical. It also says the 4+ and 5+ decks follow the same rule (open questions), which answers spec N1 and code N5. The title changed to match the ruling. Because DEC-47 exists only on this branch, the diff from main still only adds lines.\n- **The deck** (/Users/sulo/workspace/knowledge-quiz/src/content/decks/3-plus.json) has no either/or questions left. I checked every question in both languages against all the near misses earlier rounds flagged, and reworded or swapped a question wherever another correct answer was left.\n  - Swapped facts: 3p-01, 03, 04, 06, 11, 12, 18, 19, 20, 23, 25, 28, 32, 33, 39, 43, 45, 47, 48, 50.\n- **Independent review:** a reviewer subagent attacked the draft. It found one remaining near miss, 3p-15: a child could answer \"z kałuży\" (the puddle) for the ice on a frozen puddle. The question is now just \"Z czego jest lód?\" / \"What is ice made of?\". I also took its wording fixes for 3p-01, 06, 17, 23, 28 and 47.\n- **The record** (/Users/sulo/workspace/knowledge-quiz/docs/delivery/content-checks/US-01-02-3-plus.md) has a new column, \"Near misses checked\". Each row names the answers tried against that question and why each one is ruled out. The list of the four questions that stayed open is gone.\n- **The record test and its spec** (/Users/sulo/workspace/knowledge-quiz/tests/unit/AC-01-02-4-age-suitability-record.test.js and /Users/sulo/workspace/knowledge-quiz/docs/delivery/tests/AC-01-02-4-age-suitability-record.md) check the new layout.\n  - Steps 1 to 3 check as before: one row per question, unique ids, row count equal to the deck length, texts matching the deck in pl and en, and all four checks passing. Rows now have nine cells after the id.\n  - New step 4: the near-miss cell must not be empty, \"—\" or \"none\".\n  - New step 5 is the guard: no 3+ question may contain the word \"czy\" in Polish or \"or\" in English.\n\n**Tests:** I started the API 32 emulator (AVD Medium_Phone) myself and stopped it after the run. There was one run, test-runs/2026-10-14_190107, on clean head dbfde5b with a snapshot; there was no SIGSEGV, so no re-run. It holds 53/53 unit tests, the release APK checks and 4/4 Maestro flows. As in every earlier round, run.json counts only the Maestro flows (pass 4, skipped 8). The AC-01-02 Jest tests passed in junit/unit.xml and CI matches them by id.\n\n```\nRESULT: ready\nSTORY: US-01-02\nBRANCH: feature/US-01-02\nCOMMITS: dbfde5b fix(content): ask every 3+ question open, with its near misses recorded [US-01-02]; c2800ad docs(decisions): confirm DEC-47, open 3+ questions under a near-miss rule [US-01-02]; 9c9996d chore(content): wip, waiting for DEC-47 [US-01-02]\nDECISIONS: DEC-47 critical 3+ questions stay open, each checked for a near miss recorded per question\nEVIDENCE:\n  #1 50 questions, one answer each in pl and en — tests/unit/AC-01-02-1-50-questions-one-answer.test.ts (pass)\n  #2 question ≤100 / answer ≤60 chars per language — tests/unit/AC-01-02-2-length-limits.test.ts (pass; longest question 72 pl / 82 en)\n  #3 each of four kinds ≥5 times — tests/unit/AC-01-02-3-four-kinds.test.ts (pass; 13/12/13/12)\n  #4 age-suitability check recorded per question — docs/delivery/content-checks/US-01-02-3-plus.md + tests/unit/AC-01-02-4-age-suitability-record.test.js steps 1-5 (pass: rows, texts, four checks, near-miss cell, no either/or)\n  #5 all content checks pass, breaking any fails the suite — tests/unit/AC-01-02-5-content-checks.test.ts (pass)\n  #6 new question or category is a data-only change — tests/unit/AC-01-02-6-content-is-data.test.js (pass)\n  #7 content ships inside the app — AC-01-02-7 step 2 on the release APK bundle (junit/release.xml pass) + tests/unit/AC-01-02-7-content-ships-inside.test.js (pass)\nTESTS: run=test-runs/2026-10-14_190107 pass=4 fail=0 blocked=0 manual=0 manual_tests=none\nDERIVED_TESTS: AC-01-02-1; AC-01-02-2; AC-01-02-3; AC-01-02-4; AC-01-02-5; AC-01-02-6; AC-01-02-7\nPREEXISTING: the story from earlier rounds on this branch (checks, derived tests 1-3 and 5-7, bundle check); this round rewrote the deck content, the record, AC-01-02-4 and DEC-47\nGATES: yarn lint ok; yarn tsc ok; yarn format:check ok; yarn test ok (15 suites, 53 tests); commit hook ok on both commits; yarn test:acceptance on emulator API 32 ok (exit 0)\nENV_KEYS: none\nMIGRATION: no\nFINDINGS: spec B1 (DEC-47 classification) fixed c2800ad (critical, put to the owner, confirmed as option c); spec N1 / code N5 (does the rule bind 4+/5+) fixed c2800ad (DEC-47: 4+ and 5+ open under the same rule); spec N6 (either/or near-trivial) fixed dbfde5b (no options left); code N6 (guard against drift back to either/or) fixed dbfde5b (AC-01-02-4 step 5); code N8 (answer position) fixed dbfde5b (no options, so position no longer matters); spec N2 / code N2 (3p-44 wording, supper) fixed dbfde5b; spec N3 (godzina, para vocabulary) fixed dbfde5b (both facts swapped out); spec N4 (3p-05 answer) fixed dbfde5b; spec N5 (questions about the child's own body) fixed dbfde5b (asked about a person); code N3 (ribbit) fixed dbfde5b (frog question swapped); code N4 (long sentences) fixed dbfde5b (longest en 82); code N1 (Dwoje) refused: correct Polish for eyes, and the record lists \"dwa\" as the same answer; spec N7 / N8 / code N7 (run.json skips, PR impact block) refused: the collector and the PR body are the orchestrator's, and CI JUnit is the evidence; spec N9 refused: no code change asked\nNOTES: Near miss checked per question: 01 weekday name, przedwczoraj; 02 dwa, own eyes; 03 nogi/paws, stabilisers; 04 nostrils; 05 toothpaste, teeth; 06 weekday name, pojutrze; 07 four without thumb, ten; 08 glasses; 09 hearing aid; 10 mouth; 11 cocoa, cream; 12 twenty-one; 13 dwójka; 14 moon by day; 15 cold, puddle, ice cream; 16 snow, hail, drizzle; 17 stars, clouds; 18 moon, planes; 19 air, breeze; 20 autumn, summer; 21 feet, dog, footprints; 22 light blue, sunset; 23 hail, ice; 24 balloon, kite; 25 rainwater, plant food; 26 milk, calf; 27 puppy, fox, wolf; 28 tortoise, goat, ladybird; 29 wax, buzz; 30 swan, ostrich, llama, cow; 31 goose, duckling; 32 birdhouse; 33 hen, cockerel; 34 tiger, okapi, horse; 35 tapir, mammoth; 36 one egg, chick; 37 wild boar, piglet; 38 kitten, lion; 39 hat, hood; 40 fire/flame, sparklers; 41 freezer; 42 hood, hat, raincoat; 43 balloon, block; 44 cereal, toast, drugie śniadanie; 45 sunglasses, contact lenses; 46 hand, card; 47 fireman, police; 48 red, yellow, neck warmer (old slot); 49 mouth, ladle, fork; 50 lemon, pear, carrot (old slot).\nThe age-suitability record is new this round and must be copied into the PR again; a reviewer subagent attacked the draft and its one finding (3p-15 puddle) is fixed.\nEmulator API 32 (AVD Medium_Phone) started and stopped by me; one full run, no SIGSEGV, snapshot true, dirty false, changed_during_run false.\n```\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}
