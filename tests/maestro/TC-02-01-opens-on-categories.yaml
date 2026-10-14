@@ -1,8 +1,8 @@
 appId: ${APP_ID}
-name: TC-02-01 Launch opens on the category screen listing 3+, 4+ and 5+ in that order
-# CATEGORIES, CATEGORY_COUNT (scripts/test-acceptance.sh): the labels 3+, 4+, 5+ the shipped content
-# data holds, in that order and as patterns (3\+), and how many — until US-01-03 and US-01-04 ship
-# 4+ and 5+, 3+ alone (story US-02-01, edge case; DEC-48).
+name: TC-02-01 Launch opens on the category screen listing the shipped age categories youngest first
+# CATEGORIES, CATEGORY_COUNT (scripts/test-acceptance.sh): the labels the shipped content data holds,
+# youngest first and as patterns (3\+), and how many. Until US-01-03 and US-01-04 ship 4+ and 5+,
+# that is 3+ alone: the TC's "3+, 4+, 5+" is checked in full only once they land (DEC-48).
 ---
 # Step 1 — open the app: the category screen is shown.
 - launchApp:
@@ -14,8 +14,8 @@ name: TC-02-01 Launch opens on the category screen listing 3+, 4+ and 5+ in that
 - assertNotVisible:
     text: ".*(Error|isn't responding|keeps stopping|has stopped).*"
 - takeScreenshot: step-01-category-screen
-# Step 2 — read the list: entry n (category-n, top to bottom) is the n-th of 3+, 4+, 5+, and no entry
-# follows the last.
+# Step 2 — read the list: entry n (category-n, top to bottom) is the n-th shipped category, youngest
+# first, and no entry follows the last.
 - evalScript: ${output.entry = 0}
 - repeat:
     times: ${CATEGORY_COUNT}

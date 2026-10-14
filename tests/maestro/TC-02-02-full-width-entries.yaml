@@ -1,7 +1,7 @@
 appId: ${APP_ID}
 name: TC-02-02 Each category entry spans the full width of the screen
-# CATEGORY_COUNT (scripts/test-acceptance.sh): how many of 3+, 4+, 5+ the shipped content data holds
-# (DEC-48).
+# CATEGORY_COUNT (scripts/test-acceptance.sh): how many categories the shipped content data holds —
+# 3+ alone until US-01-03 and US-01-04 ship 4+ and 5+ (DEC-48).
 ---
 # Step 1 — open the app: the category screen is shown.
 - launchApp:

@@ -2,6 +2,9 @@
 // category screen and writes the result as a JUnit case (scripts/test-acceptance.sh).
 //
 //   node scripts/check-full-width.js <dump.xml> <screen width px> <entries expected> <junit.xml>
+//
+// uiautomator clips bounds to the display, so an entry wider than the screen also reads 0–width:
+// the check proves an entry spans the screen, not that it ends exactly at its edge.
 const fs = require('fs');
 
 const [dumpFile, screenWidth, expected, junitFile] = process.argv.slice(2);
@@ -16,7 +19,11 @@ const entries = [
 ].map(([, id, left, right]) => ({ id, left: +left, right: +right }));
 
 const problems = [];
-if (entries.length !== Number(expected)) {
+if (!(Number(expected) > 0)) {
+  problems.push(
+    `no category is expected (${expected}): the shipped content holds none`,
+  );
+} else if (entries.length !== Number(expected)) {
   problems.push(
     `${entries.length} category entries on screen, expected ${expected}`,
   );
