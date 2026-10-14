@@ -1,0 +1,112 @@
+{
+  "story": "US-01-04",
+  "attempt": 1,
+  "round": 1,
+  "sha": "aaf37b30d928aca1564a9e64eda8a66bf252b8c2",
+  "reviewer": "code",
+  "ts": "2026-10-14T23:14:29Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-01-04",
+    "impact": "The 5+ deck (50 questions, pl and en) is correct, within limits and free of options and of 3+/4+ repeats. I found no real second correct answer and no unmet criterion, so nothing blocks merge. Only non-blocking content and record-accuracy points remain, and CI acceptance on the emulator is still pending.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/delivery/content-checks/US-01-04-5-plus.md:57 — 5p-40 (src/content/decks/5-plus.json) says \"pięciu / five\" is ruled out because 5-a-side is \"children's and indoor games, not a grown-up match\", but adults play futsal and 5-a-side, so a parent could defend \"five\" or \"seven\" → reword to \"w zwykłym meczu piłki nożnej na dużym boisku / in an ordinary full-size football match\" and fix the near-miss note"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/delivery/content-checks/US-01-04-5-plus.md:11 — the record says each question was attacked \"by the implementer and by an independent reviewer\", but the 3+ and 4+ records do not say this and no independent review happened before this commit (this is round 1) → drop the phrase or state who reviewed and when"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/5-plus.json (5p-11, en answer) — \"Our aunt.\" is not a natural answer card; Polish is just \"Ciocia.\" → change the English answer to \"An aunt.\" (or \"Auntie.\")"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/5-plus.json (5p-28) — green anoles also change colour and move their eyes independently; the record's near misses (octopus, sand lizard, gecko) do not cover them → add the anole to the near misses, or add a distinguishing detail such as \"the lizard with a long sticky tongue and curled tail\""
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/5-plus.json (5p-19, pl) — \"Po której stronie świata Słońce wschodzi\" answered \"Na wschodzie\" gives the answer away through the verb, so it tests nothing → ask e.g. \"Po której stronie świata Słońce zachodzi wieczorem? Na zachodzie\" or accept the giveaway knowingly"
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/5-plus.json (5p-10, 5p-11, 5p-42, 5p-44, 5p-45, 5p-47) — these are no harder than 4+ (4p-06 five and five, 4p-11 grandma), against DEC-51 \"one step past 4+\" → swap a few for harder items (e.g. numbers to 20 in a different form, the seasons' order, continents) or soften the claim in DEC-51 / the record"
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/5-plus.json (5p-25, 5p-41, 5p-43, 5p-44) — four of the 50 questions are about books (atlas, writer, dictionary, library) while other themes have one → replace one or two to spread the topics"
+      },
+      {
+        "id": "N8",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/5-plus.json (5p-15, pl answer) — \"Marsa.\" is the accusative, so a card shows an inflected form where 5p-13 and 5p-14 show the nominative (\"Jowisz\", \"Saturn\") → ask \"Jak nazywa się Czerwona Planeta?\" with the answer \"Mars.\" (optional)"
+      },
+      {
+        "id": "N9",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/unit/AC-01-04-6-no-3-or-4-plus-repeat.test.ts:35 — step 2 compares only English answers, so a Polish-only repeat or a differently worded English answer (\"Our aunt\" vs \"Aunt\") is not caught → also compare Polish answers, or note the limit in the test header"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 6,
+        "verdict": "met",
+        "note": ""
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Round 1 review of PR #9 (US-01-04, 5+ deck) at aaf37b3: no blocking findings. Locally `npx jest` is green (27 suites, 130 tests). CI \"Gates\" passes; \"Acceptance tests (Android 12 emulator)\" is still pending. I removed my worktree and the main checkout is untouched. The 5+ record (`docs/delivery/content-checks/US-01-04-5-plus.md`) matches the text pasted into the PR body.\n\n**Content review of all 50 questions, pl and en**\n- **Second correct answer:** I found none that is real.\n  - 5p-28 (chameleon): green anoles also change colour and move their eyes independently. Obscure for a child, so non-blocking.\n  - 5p-40 (eleven players): adult futsal and 5-a-side are also \"grown-up matches\". The record rules out \"five\" with \"children's and indoor games, not a grown-up match\", which is false.\n- **Options in the text:** none. AC-01-04-4 step 5 passes.\n- **pl/en mismatch:** one oddity (5p-11, \"Our aunt.\"). The other answer pairs match.\n- **Suitability for age 5:** nothing frightening or adult.\n  - Several words are advanced: grawitacja, roślinożerca, nektar, klatka piersiowa, wdech, godło. The record concedes this and the owner reviews content before release (DEC-26).\n- **Harder than 4+:** mixed.\n  - 5p-10 (ten and ten), 5p-11 (aunt, same tier as 4p-11 grandma), 5p-42 (Paris is in France, with the Eiffel Tower named in the question), 5p-44 (library), 5p-45 (red light) and 5p-47 (airport) are no harder than 4+.\n  - No criterion or test measures \"harder\", so this is non-blocking.\n- **Repeats of 3+/4+:** no text repeat and no answer repeat (AC-01-04-6 passes).\n  - Subject overlaps that DEC-50/51 allow: 5p-45 and 3p-48 (traffic lights), 5p-12 and 3p-01 (yesterday / day before yesterday), 5p-10 and 4p-06 (ten and ten / five and five), 5p-24 and 4p-24 (gravity / apple falls down).\n\n**Acceptance criteria**\n- Criteria 1, 2, 3, 5 and 6 are met: shared helpers plus the 5+ deck, local run green.\n- Criterion 4 is met: record plus test, record copied into the PR.\n- The only open item is CI acceptance on the emulator: external.\n\n**Other notes**\n- DEC-51 is consistent with DEC-47 and DEC-50.\n- The AC-01-04-6 step 2 repeat check compares only English answers, so a Polish-only repeat would pass it.\n- The `index.ts` registration is correct.\n\n```\nREVIEW: findings\nSTORY: US-01-04\nIMPACT: The 5+ deck (50 questions, pl and en) is correct, within limits and free of options and of 3+/4+ repeats. I found no real second correct answer and no unmet criterion, so nothing blocks merge. Only non-blocking content and record-accuracy points remain, and CI acceptance on the emulator is still pending.\nFINDINGS:\n  N1 docs/delivery/content-checks/US-01-04-5-plus.md:57 — 5p-40 (src/content/decks/5-plus.json) says \"pięciu / five\" is ruled out because 5-a-side is \"children's and indoor games, not a grown-up match\", but adults play futsal and 5-a-side, so a parent could defend \"five\" or \"seven\" → reword to \"w zwykłym meczu piłki nożnej na dużym boisku / in an ordinary full-size football match\" and fix the near-miss note\n  N2 docs/delivery/content-checks/US-01-04-5-plus.md:11 — the record says each question was attacked \"by the implementer and by an independent reviewer\", but the 3+ and 4+ records do not say this and no independent review happened before this commit (this is round 1) → drop the phrase or state who reviewed and when\n  N3 src/content/decks/5-plus.json (5p-11, en answer) — \"Our aunt.\" is not a natural answer card; Polish is just \"Ciocia.\" → change the English answer to \"An aunt.\" (or \"Auntie.\")\n  N4 src/content/decks/5-plus.json (5p-28) — green anoles also change colour and move their eyes independently; the record's near misses (octopus, sand lizard, gecko) do not cover them → add the anole to the near misses, or add a distinguishing detail such as \"the lizard with a long sticky tongue and curled tail\"\n  N5 src/content/decks/5-plus.json (5p-19, pl) — \"Po której stronie świata Słońce wschodzi\" answered \"Na wschodzie\" gives the answer away through the verb, so it tests nothing → ask e.g. \"Po której stronie świata Słońce zachodzi wieczorem? Na zachodzie\" or accept the giveaway knowingly\n  N6 src/content/decks/5-plus.json (5p-10, 5p-11, 5p-42, 5p-44, 5p-45, 5p-47) — these are no harder than 4+ (4p-06 five and five, 4p-11 grandma), against DEC-51 \"one step past 4+\" → swap a few for harder items (e.g. numbers to 20 in a different form, the seasons' order, continents) or soften the claim in DEC-51 / the record\n  N7 src/content/decks/5-plus.json (5p-25, 5p-41, 5p-43, 5p-44) — four of the 50 questions are about books (atlas, writer, dictionary, library) while other themes have one → replace one or two to spread the topics\n  N8 src/content/decks/5-plus.json (5p-15, pl answer) — \"Marsa.\" is the accusative, so a card shows an inflected form where 5p-13 and 5p-14 show the nominative (\"Jowisz\", \"Saturn\") → ask \"Jak nazywa się Czerwona Planeta?\" with the answer \"Mars.\" (optional)\n  N9 tests/unit/AC-01-04-6-no-3-or-4-plus-repeat.test.ts:35 — step 2 compares only English answers, so a Polish-only repeat or a differently worded English answer (\"Our aunt\" vs \"Aunt\") is not caught → also compare Polish answers, or note the limit in the test header\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 met\n  #5 met\n  #6 met\n```\n"
+}
