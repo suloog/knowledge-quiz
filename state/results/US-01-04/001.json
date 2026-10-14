@@ -1,0 +1,63 @@
+{
+  "n": 1,
+  "attempt": 1,
+  "ts": "2026-10-14T23:10:41Z",
+  "story": "US-01-04",
+  "mode": "implement",
+  "parsed": {
+    "result": "ready",
+    "story": "US-01-04",
+    "branch": "feature/US-01-04",
+    "commits": [
+      "fccfebc docs(specs): record the 5+ level and repeat rule, DEC-51 [US-01-04]",
+      "aaf37b3 feat(content): 5+ deck in Polish and English [US-01-04]"
+    ],
+    "decisions": [
+      "DEC-51 routine What makes the 5+ deck harder than 4+, and what counts as a repeat"
+    ],
+    "evidence": [
+      "#1 5+ holds 50 questions, one answer each, pl and en — AC-01-04-1 (tests/unit/AC-01-04-1-50-questions-one-answer.test.ts) steps 1-3 pass",
+      "#2 question at most 100 and answer at most 60 characters, each language — AC-01-04-2 (tests/unit/AC-01-04-2-length-limits.test.ts) steps 1-2 pass",
+      "#3 each of the four kinds at least 5 times — AC-01-04-3 (tests/unit/AC-01-04-3-four-kinds.test.ts) steps 1-2 pass (12/13/13/12)",
+      "#4 age-suitability check of every 5+ question recorded — AC-01-04-4 (tests/unit/AC-01-04-4-age-suitability-record.test.js) steps 1-5 pass on docs/delivery/content-checks/US-01-04-5-plus.md; the record goes into the PR description (DEC-46)",
+      "#5 all content checks pass, breaking any one fails — AC-01-04-5 (tests/unit/AC-01-04-5-content-checks.test.ts) steps 1-4 pass (checkDecks over 3+, 4+, 5+ is clean; 13 breakages plus duplicate id, text and category all fail)",
+      "#6 no 5+ question repeats a 3+ or 4+ question — AC-01-04-6 (tests/unit/AC-01-04-6-no-3-or-4-plus-repeat.test.ts) steps 1-3 pass (text in pl and en, English answer, and a copied 3+ or 4+ question fails checkDecks)"
+    ],
+    "tests": {
+      "run": "/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-15_010725",
+      "pass": 4,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 0
+    },
+    "derived_tests": [
+      "AC-01-04-1",
+      "AC-01-04-2",
+      "AC-01-04-3",
+      "AC-01-04-4",
+      "AC-01-04-5",
+      "AC-01-04-6"
+    ],
+    "preexisting": "none for 5+. Reused the content structure and checks from US-01-02, and the shared deck-criteria and age-suitability-record helpers and the DEC-50 repeat rule from US-01-03 (#8, on main)",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test ok (27 suites, 130 tests)"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "notes": "The local run.json counts only the Maestro tests (4 pass). collect_run.py does not read Jest JUnit, so it lists the 6 AC-01-04 specs as skipped; the run's junit/unit.xml has all 39 AC-01-04 test cases passing on aaf37b3, and CI's og-test-results will match them by id.\nThe age-suitability record docs/delivery/content-checks/US-01-04-5-plus.md must be pasted into the PR description (DEC-46).\nThe branch is based on main after #8 merged, so no merge with US-01-03 is needed. 5p-40 is exactly 100 characters in English, which is within the limit.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [],
+      "blocked": []
+    },
+    "critical_decisions": []
+  },
+  "raw": "US-01-04 is done on feature/US-01-04: 2 commits, not pushed. As the coordinator asked mid-run, I based the branch on origin/main after PR #8 merged (I had made no commits before that). The branch uses the shared helpers in tests/unit/deck-criteria.ts and tests/unit/age-suitability-record.js and does not copy them.\n\nWhat changed:\n- New deck: /Users/sulo/workspace/knowledge-quiz/src/content/decks/5-plus.json, with 50 open questions in Polish and English. Kinds: educational 12, popular-science 13, nature 13, trivia 12.\n- The deck is registered with one import line in /Users/sulo/workspace/knowledge-quiz/src/content/decks/index.ts.\n- Age-suitability record, one row per question with the near misses checked: /Users/sulo/workspace/knowledge-quiz/docs/delivery/content-checks/US-01-04-5-plus.md\n- Tests: /Users/sulo/workspace/knowledge-quiz/tests/unit/AC-01-04-1 to AC-01-04-6. Derived specs: /Users/sulo/workspace/knowledge-quiz/docs/delivery/tests/AC-01-04-1 to AC-01-04-6.\n- DEC-51 is appended after DEC-50 in DECISIONS.md. The story and its BACKLOG row are now in-progress.\n\nAdversarial pass:\n- I checked all 50 questions myself in both languages and fixed two phrasings.\n- An independent reviewer subagent then attacked the draft. It found one blocking problem: in 5p-25 (thunder), Polish \"piorun\" is also a correct answer. I replaced that question with an atlas question.\n- I applied its minor fixes too: wording in 5p-35, 5p-40, 5p-44 and 5p-45, a wrong near-miss note in 5p-41, and two questions that were too easy (5p-05, 5p-07) replaced by harder ones.\n- An og:spec-compliance-reviewer pass found all 6 criteria met and nothing blocking.\n\nThe acceptance run used the local emulator API 32 (AVD Medium_Phone), which I started before `yarn test:acceptance` and stopped afterwards. It ran on the clean head aaf37b3 with a snapshot.\n\nRESULT: ready\nSTORY: US-01-04\nBRANCH: feature/US-01-04\nCOMMITS: fccfebc docs(specs): record the 5+ level and repeat rule, DEC-51 [US-01-04]; aaf37b3 feat(content): 5+ deck in Polish and English [US-01-04]\nDECISIONS: DEC-51 routine What makes the 5+ deck harder than 4+, and what counts as a repeat\nEVIDENCE:\n  #1 5+ holds 50 questions, one answer each, pl and en — AC-01-04-1 (tests/unit/AC-01-04-1-50-questions-one-answer.test.ts) steps 1-3 pass\n  #2 question at most 100 and answer at most 60 characters, each language — AC-01-04-2 (tests/unit/AC-01-04-2-length-limits.test.ts) steps 1-2 pass\n  #3 each of the four kinds at least 5 times — AC-01-04-3 (tests/unit/AC-01-04-3-four-kinds.test.ts) steps 1-2 pass (12/13/13/12)\n  #4 age-suitability check of every 5+ question recorded — AC-01-04-4 (tests/unit/AC-01-04-4-age-suitability-record.test.js) steps 1-5 pass on docs/delivery/content-checks/US-01-04-5-plus.md; the record goes into the PR description (DEC-46)\n  #5 all content checks pass, breaking any one fails — AC-01-04-5 (tests/unit/AC-01-04-5-content-checks.test.ts) steps 1-4 pass (checkDecks over 3+, 4+, 5+ is clean; 13 breakages plus duplicate id, text and category all fail)\n  #6 no 5+ question repeats a 3+ or 4+ question — AC-01-04-6 (tests/unit/AC-01-04-6-no-3-or-4-plus-repeat.test.ts) steps 1-3 pass (text in pl and en, English answer, and a copied 3+ or 4+ question fails checkDecks)\nTESTS: run=/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-15_010725 pass=4 fail=0 blocked=0 manual=0\nDERIVED_TESTS: AC-01-04-1; AC-01-04-2; AC-01-04-3; AC-01-04-4; AC-01-04-5; AC-01-04-6\nPREEXISTING: none for 5+. Reused the content structure and checks from US-01-02, and the shared deck-criteria and age-suitability-record helpers and the DEC-50 repeat rule from US-01-03 (#8, on main)\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test ok (27 suites, 130 tests)\nENV_KEYS: none\nMIGRATION: no\nNOTES: The local run.json counts only the Maestro tests (4 pass). collect_run.py does not read Jest JUnit, so it lists the 6 AC-01-04 specs as skipped; the run's junit/unit.xml has all 39 AC-01-04 test cases passing on aaf37b3, and CI's og-test-results will match them by id.\nThe age-suitability record docs/delivery/content-checks/US-01-04-5-plus.md must be pasted into the PR description (DEC-46).\nThe branch is based on main after #8 merged, so no merge with US-01-03 is needed. 5p-40 is exactly 100 characters in English, which is within the limit.\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}

@@ -70,5 +70,13 @@
     "title": "A 4+ question repeats a 3+ one when it has its text or its answer",
     "file": "docs/specs/DECISIONS.md",
     "ts": "2026-10-14T22:44:02Z"
+  },
+  {
+    "dec": "DEC-51",
+    "story": "US-01-04",
+    "attempt": 1,
+    "title": "What makes the 5+ deck harder than 4+, and what counts as a repeat",
+    "file": "docs/specs/DECISIONS.md",
+    "ts": "2026-10-14T23:03:29Z"
   }
 ]
