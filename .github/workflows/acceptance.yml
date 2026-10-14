@@ -84,7 +84,9 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       # A booted Android 12 emulator kept as a snapshot: later runs resume it instead of a cold
-      # boot. Made once per cache key, with nothing of the app on it.
+      # boot. Made once per cache key, with nothing of the app on it. The image is the Automated
+      # Test Device one (aosp_atd): Android 12 without the Google apps, lighter and faster to boot;
+      # the app is offline and uses no Google services.
       - name: Restore the emulator snapshot
         id: avd-cache
         uses: actions/cache@v4
@@ -92,7 +94,7 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd-31-google_apis-x86_64-v1
+          key: avd-31-aosp_atd-x86_64-v1
 
       - name: Create the emulator snapshot
         if: steps.avd-cache.outputs.cache-hit != 'true'
@@ -100,7 +102,8 @@ jobs:
         with:
           api-level: 31
           arch: x86_64
-          target: google_apis
+          target: aosp_atd
+          channel: canary # where the emulator runner finds the ATD images
           force-avd-creation: false
           disable-animations: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
@@ -124,7 +127,8 @@ jobs:
         with:
           api-level: 31
           arch: x86_64
-          target: google_apis
+          target: aosp_atd
+          channel: canary # where the emulator runner finds the ATD images
           force-avd-creation: false
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot-save
