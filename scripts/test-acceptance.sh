@@ -21,6 +21,10 @@
 #   maestro/report-release.xml   — Maestro on the release build, evidence under maestro/release/
 # The consoles are kept beside them: release-build.log, stack.log; the APK checks under release/.
 #
+# Needs a running Android device (the emulator CI boots, or one you start first): the release
+# flows run on it after the stack stops, so it must outlive the start command. Exits at once when
+# none is attached.
+#
 # Exits non-zero when any test failed or the stack could not be started.
 set -uo pipefail
 
@@ -43,6 +47,18 @@ if [ -z "$SDK" ] && [ -d "$HOME/Android/Sdk" ]; then SDK="$HOME/Android/Sdk"; fi
 export ANDROID_HOME="$SDK"
 ADB="$SDK/platform-tools/adb"
 BUILD_TOOLS="$SDK/build-tools/$(ls "$SDK/build-tools" 2>/dev/null | sort -V | tail -n 1)"
+
+# Started by the stack, the emulator would be stopped with it — before the release flows run.
+if [ -z "$("$ADB" devices 2>/dev/null | awk 'NR > 1 && $2 == "device" { print $1; exit }')" ]; then
+  say "ERROR: no Android device is attached — start the Android 12 emulator first, then run yarn test:acceptance"
+  exit 1
+fi
+
+# Step 1 runs expo before the start command would install anything: the same check as stack.sh.
+if [ ! -d node_modules ] || [ yarn.lock -nt node_modules/.yarn-integrity ]; then
+  say "installing dependencies"
+  yarn install --frozen-lockfile || { say "ERROR: yarn install failed"; exit 1; }
+fi
 
 STACK_PID=""
 KEY_DIR=""
@@ -96,6 +112,8 @@ STEP4="AC-01-01-5 step 4 — a release APK is built, signed with a key from outs
 STEP5="AC-01-01-5 step 5 — apksigner verifies the APK's signature, made with that key and not the debug key"
 STEP6="AC-01-01-5 step 6 — the APK installs on Android 12 (API 31) and newer only (sdkVersion 31)"
 PERMS="AC-01-01-3 step 2 — the built release APK declares no INTERNET, ACCESS_NETWORK_STATE or ACCESS_WIFI_STATE permission"
+PRE="AC-01-01-4 precondition — the release build with its JavaScript embedded is installed and no bundler is reachable"
+POST="AC-01-01-4 the app loaded no code from a bundler (logcat)"
 KEY_DN="CN=knowledge-quiz throwaway acceptance key"
 RELEASE_APK="android/app/build/outputs/apk/release/app-release.apk"
 
@@ -103,9 +121,11 @@ say "release APK, signed with a throwaway key (console: $OUT/release-build.log)"
 KEY_DIR="$(mktemp -d "${RUNNER_TEMP:-${TMPDIR:-/tmp}}/kq-throwaway-key.XXXXXX")"
 key_pass="$(LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom | head -c 24)"
 built=""
-if ! keytool -genkeypair -noprompt -storetype PKCS12 -keystore "$KEY_DIR/upload.p12" \
-  -alias kq-throwaway -keyalg RSA -keysize 2048 -validity 2 -dname "$KEY_DN" \
-  -storepass "$key_pass" -keypass "$key_pass" >"$OUT/release-build.log" 2>&1; then
+# The password through keytool's environment, not its command line.
+if ! KQ_THROWAWAY_PASS="$key_pass" keytool -genkeypair -noprompt -storetype PKCS12 \
+  -keystore "$KEY_DIR/upload.p12" -alias kq-throwaway -keyalg RSA -keysize 2048 -validity 2 \
+  -dname "$KEY_DN" -storepass:env KQ_THROWAWAY_PASS -keypass:env KQ_THROWAWAY_PASS \
+  >"$OUT/release-build.log" 2>&1; then
   record "$STEP4" fail "keytool could not generate the throwaway key (release-build.log)"
 else
   rm -rf android/app/build/outputs/apk/release
@@ -161,15 +181,12 @@ MAESTRO="$(command -v maestro || true)"
 [ -z "$MAESTRO" ] && [ -x "$HOME/.maestro/bin/maestro" ] && MAESTRO="$HOME/.maestro/bin/maestro"
 if [ -z "$MAESTRO" ]; then
   say "ERROR: Maestro is not installed (curl -Ls https://get.maestro.mobile.dev | bash)"
+  record "$PRE" fail "Maestro is not installed (curl -Ls https://get.maestro.mobile.dev | bash)"
   status=1
 else
-  # A copy of the app left on a running device would satisfy the readiness check below before
-  # the start command has installed anything: remove it, so the flows run against this build.
-  # Skipped when no device is attached yet: the start command then boots the emulator, and on a
-  # freshly booted device no copy of the app runs until the start command has opened this build.
-  if "$ADB" get-state >/dev/null 2>&1; then
-    "$ADB" uninstall "$APP_ID" >/dev/null 2>&1 || true
-  fi
+  # A copy of the app left on the device would satisfy the readiness check below before the
+  # start command has installed anything: remove it, so the flows run against this build.
+  "$ADB" uninstall "$APP_ID" >/dev/null 2>&1 || true
 
   # stack.sh itself (what `yarn stack` runs), not through yarn: yarn 1 does not wait for its
   # child on SIGTERM, so the stack's cleanup (bundler, Gradle daemon, emulator) would be cut short.
@@ -210,13 +227,11 @@ else
   # Metro is stopped and the port forwarding `expo run:android` set up (adb reverse, which airplane
   # mode does not cut) is removed: nothing on the device can reach a bundler. The app must run the
   # JavaScript embedded in the APK.
-  PRE="AC-01-01-4 precondition — the release build with its JavaScript embedded is installed and no bundler is reachable"
-  POST="AC-01-01-4 the app loaded no code from a bundler (logcat)"
   FLOW=tests/maestro/AC-01-01-4-opens-offline.yaml
   if [ -z "$built" ]; then
     record "$PRE" fail "no release APK was built"
   elif ! "$ADB" get-state >/dev/null 2>&1; then
-    record "$PRE" fail "no device is attached after the stack stopped — start the emulator before yarn test:acceptance"
+    record "$PRE" fail "no device is attached after the stack stopped"
   else
     "$ADB" uninstall "$APP_ID" >/dev/null 2>&1 || true
     "$ADB" reverse --remove-all >/dev/null 2>&1 || true

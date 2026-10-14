@@ -39,8 +39,11 @@ and an Android 12 (API 31) AVD.
 | `yarn test` | unit tests (Jest + React Native Testing Library), with coverage |
 | `yarn test:acceptance` | builds the release APK with a throwaway key and checks it (`apksigner`, `aapt`); runs the start command's script (`scripts/stack.sh`) and the Maestro flows in `tests/maestro/` on the debug build; installs the release APK and runs the flows tagged `release-build` with Metro stopped; then the unit tests. JUnit reports go to `test-results/` (or `$OG_RUN_DIR`) |
 
-Acceptance tests need Maestro (`curl -Ls https://get.maestro.mobile.dev | bash`) and the Android
-SDK build tools (`apksigner`, `aapt`). Each Maestro
+Acceptance tests need Maestro (`curl -Ls https://get.maestro.mobile.dev | bash`), the Android
+SDK build tools (`apksigner`, `aapt`) and a running Android 12 emulator: start it before
+`yarn test:acceptance`, which stops at once when no device is attached — the offline flows run on
+the release build after the stack has stopped, so the emulator must not be one the stack booted
+(and stops). Each Maestro
 flow is named after its test case (`TC-NN-MM …`). CI runs `yarn test:acceptance` on every pull
 request on an Android 12 emulator (`.github/workflows/acceptance.yml`) and uploads the JUnit
 reports as the artifact `og-test-results`; a new test needs no change to the workflow.
