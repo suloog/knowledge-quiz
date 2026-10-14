@@ -1,0 +1,111 @@
+{
+  "n": 6,
+  "attempt": 1,
+  "ts": "2026-10-14T16:45:12Z",
+  "story": "US-01-02",
+  "mode": "fix",
+  "parsed": {
+    "result": "needs_decision",
+    "story": "US-01-02",
+    "branch": "feature/US-01-02",
+    "commits": [
+      "9c9996d chore(content): wip, waiting for DEC-47 [US-01-02]",
+      "06b43b6 test(content): one record row per 3+ question, no more and no repeats [US-01-02]",
+      "d3a77eb fix(content): ask every 3+ question with a near-miss answer as an either/or [US-01-02]"
+    ],
+    "decisions": [
+      "DEC-47 critical 3+ questions with a possible near-miss answer are asked as either/or"
+    ],
+    "question": "DEC-47",
+    "evidence": [
+      "#1 50 questions, one answer each in pl and en — tests/unit/AC-01-02-1-50-questions-one-answer.test.ts (pass)",
+      "#2 question ≤100 / answer ≤60 chars per language — tests/unit/AC-01-02-2-length-limits.test.ts (pass)",
+      "#3 each of four kinds ≥5 times — tests/unit/AC-01-02-3-four-kinds.test.ts (pass; 13/13/12/12)",
+      "#4 age-suitability check recorded per question — docs/delivery/content-checks/US-01-02-3-plus.md + tests/unit/AC-01-02-4-age-suitability-record.test.js (pass); the form of the question depends on DEC-47",
+      "#5 all content checks pass, breaking any fails the suite — tests/unit/AC-01-02-5-content-checks.test.ts (pass)",
+      "#6 new question or category is a data-only change — tests/unit/AC-01-02-6-content-is-data.test.js (pass)",
+      "#7 content ships inside the app — AC-01-02-7 step 2 on the release APK bundle + tests/unit/AC-01-02-7-content-ships-inside.test.js (pass)"
+    ],
+    "tests": {
+      "run": "test-runs/2026-10-14_182139",
+      "pass": 4,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 0,
+      "manual_tests": [
+        "none"
+      ]
+    },
+    "derived_tests": [
+      "AC-01-02-1",
+      "AC-01-02-2",
+      "AC-01-02-3",
+      "AC-01-02-4",
+      "AC-01-02-5",
+      "AC-01-02-6",
+      "AC-01-02-7"
+    ],
+    "preexisting": "the whole story from earlier rounds on this branch (deck, checks, record, derived tests); this round changed only the DEC-47 entry",
+    "gates": [
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn format:check ok",
+      "yarn test ok (15 suites, 51 tests)",
+      "commit hook ok"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "findings": [
+      "spec B1 DEC-47 classification fixed 9c9996d (reclassified critical, Affects + MOD-03-U02, DSC-04-04, SRC-01-17, SRC-01-18, Status to confirm with the client",
+      "put to the owner as DEC-47, deck unchanged)"
+    ],
+    "notes": "DEC-47 was introduced on this branch only, so the diff from main still adds lines only (append-only holds); the resumed run writes the confirmed entry with the owner's option.\nContent is unchanged since 06b43b6 (CI run 38597913225 green); TESTS is that head's run, and run.json skips the AC-01-02 Jest tests as before, with CI JUnit as the evidence.\nOption c or d means a content rewrite and a new review round on resume; a or b means confirm DEC-47 and merge.",
+    "ask": {
+      "summary": "Should 3+ questions name two options in the question text (either/or) or stay open, given the must MOD-03-U02 says the card has no answer choices?",
+      "context": "All 50 questions in the 3+ deck now pass the one-answer rule; CI is green and both reviewers accept the content. 46 of them get there by naming two options in the question text (What colour is a lemon: blue or yellow?); 4 stay open (3p-02, 3p-07, 3p-13, 3p-36). The card has no buttons: the options are only in the words.\n\nThe reviewers read spoken either/or text as arguably not an answer-choice UI. But MOD-03-U02 (must) says no buttons, choices or score on the card, and DSC-04-04, SRC-01-17 and SRC-01-18 rule out answer choices and a classic quiz. Which reading holds is a judgement on a must, so it is yours.\n\nThe cost of either/or: a guessing child is right half the time and the wrong option is often absurd (a spoon for brushing teeth), so 46 of 50 questions are near-trivial. Open questions were dropped because three review rounds kept finding near-miss answers a child could give (a neck warmer for a scarf, a hood for an umbrella).",
+      "points": [
+        "The form of the 3+ questions: either/or in the question text, or open questions.",
+        "Whether that form also binds the 4+ and 5+ decks (US-01-03, US-01-04), or each of those stories decides its own."
+      ],
+      "options": [
+        {
+          "id": "a",
+          "label": "Keep either/or for 3+; 4+ and 5+ decide their own form",
+          "detail": "The deck merges as it is (46 either/or, 4 open) and DEC-47 is confirmed for 3+ only, reading MOD-03-U02 as no choice controls on the card. Cost: 46 near-trivial questions; US-01-03 and US-01-04 face the same question again."
+        },
+        {
+          "id": "b",
+          "label": "Keep either/or for 3+ and use it for 4+ and 5+ too",
+          "detail": "The deck merges as it is and US-01-03/04 follow the same rule: one form across the app, no repeat of the near-miss problem. Cost: every deck becomes a 50% guess with two options, closer to the classic quiz SRC-01-18 says the app is not."
+        },
+        {
+          "id": "c",
+          "label": "Back to open questions for 3+, under a stricter near-miss rule",
+          "detail": "Open questions return, starting from the wording the reviewers accepted; each one with a near miss is reworded to rule it out, and the record names the near miss checked per row. No either/or, a literal fit with MOD-03-U02; 4+/5+ stay open too. Cost: one more content and review round."
+        },
+        {
+          "id": "d",
+          "label": "Open by default; either/or only where no rewording removes a near miss",
+          "detail": "Most questions open as in c; the few that cannot be made unambiguous keep two options, each listed with its reason in the record. Fewer rewrites than c, but those cards still carry choices, so MOD-03-U02 is bent for them."
+        }
+      ],
+      "recommended": "c",
+      "why": "It reads MOD-03-U02 and SRC-01-17/18 as written, and it keeps the questions worth asking: a 50% guess against an absurd option teaches little. The near-miss problem is a writing problem the record can control row by row, not a reason to change what a card is."
+    },
+    "ask_problems": [],
+    "question_text": "Should 3+ questions name two options in the question text (either/or) or stay open, given the must MOD-03-U02 says the card has no answer choices?\n\nAll 50 questions in the 3+ deck now pass the one-answer rule; CI is green and both reviewers accept the content. 46 of them get there by naming two options in the question text (What colour is a lemon: blue or yellow?); 4 stay open (3p-02, 3p-07, 3p-13, 3p-36). The card has no buttons: the options are only in the words.\n\nThe reviewers read spoken either/or text as arguably not an answer-choice UI. But MOD-03-U02 (must) says no buttons, choices or score on the card, and DSC-04-04, SRC-01-17 and SRC-01-18 rule out answer choices and a classic quiz. Which reading holds is a judgement on a must, so it is yours.\n\nThe cost of either/or: a guessing child is right half the time and the wrong option is often absurd (a spoon for brushing teeth), so 46 of 50 questions are near-trivial. Open questions were dropped because three review rounds kept finding near-miss answers a child could give (a neck warmer for a scarf, a hood for an umbrella).\n\n- The form of the 3+ questions: either/or in the question text, or open questions.\n- Whether that form also binds the 4+ and 5+ decks (US-01-03, US-01-04), or each of those stories decides its own.\n\na) Keep either/or for 3+; 4+ and 5+ decide their own form — The deck merges as it is (46 either/or, 4 open) and DEC-47 is confirmed for 3+ only, reading MOD-03-U02 as no choice controls on the card. Cost: 46 near-trivial questions; US-01-03 and US-01-04 face the same question again.\nb) Keep either/or for 3+ and use it for 4+ and 5+ too — The deck merges as it is and US-01-03/04 follow the same rule: one form across the app, no repeat of the near-miss problem. Cost: every deck becomes a 50% guess with two options, closer to the classic quiz SRC-01-18 says the app is not.\nc) Back to open questions for 3+, under a stricter near-miss rule — Open questions return, starting from the wording the reviewers accepted; each one with a near miss is reworded to rule it out, and the record names the near miss checked per row. No either/or, a literal fit with MOD-03-U02; 4+/5+ stay open too. Cost: one more content and review round. (recommended)\nd) Open by default; either/or only where no rewording removes a near miss — Most questions open as in c; the few that cannot be made unambiguous keep two options, each listed with its reason in the record. Fewer rewrites than c, but those cards still carry choices, so MOD-03-U02 is bent for them.\n\nWhy c: It reads MOD-03-U02 and SRC-01-17/18 as written, and it keeps the questions worth asking: a 50% guess against an absurd option teaches little. The near-miss problem is a writing problem the record can control row by row, not a reason to change what a card is.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [],
+      "blocked": []
+    },
+    "critical_decisions": [
+      "DEC-47 critical 3+ questions with a possible near-miss answer are asked as either/or"
+    ]
+  },
+  "raw": "DEC-47 is now marked critical and goes to the owner. The deck is unchanged. I changed only the DEC-47 entry on the branch, put it in a WIP commit 9c9996d, and did not push.\n\n- **DEC-47 entry** (/Users/sulo/workspace/knowledge-quiz/docs/specs/DECISIONS.md): it keeps its number, and its Decided by line still says developer.\n  - Affects now also lists MOD-03-U02, DSC-04-04, SRC-01-17 and SRC-01-18.\n  - Status changed from accepted to \"to confirm with the client\". Protocol §4 sets that status for any deviation from a must.\n  - Why gained one sentence saying why the decision is critical.\n- **Append-only check:** DEC-47 is not on main, so the diff from origin/main to the head removes no lines. The append-only rule still holds. The resumed run writes the confirmed entry with the owner's answer.\n- **Gates on 9c9996d:** lint, tsc, format:check and the tests (15 suites, 51 tests) all passed, and the commit hook accepted the commit.\n- **Tests:** I did not run them again, because the content has not changed since 06b43b6. TESTS points to the last run.\n- **Option d:** besides a, b and c from your brief, I added d, a mixed option (open by default, either/or only where rewording cannot remove a near miss).\n- **Recommendation:** c.\n\n```\nRESULT: needs_decision\nSTORY: US-01-02\nBRANCH: feature/US-01-02\nCOMMITS: 9c9996d chore(content): wip, waiting for DEC-47 [US-01-02]; 06b43b6 test(content): one record row per 3+ question, no more and no repeats [US-01-02]; d3a77eb fix(content): ask every 3+ question with a near-miss answer as an either/or [US-01-02]\nDECISIONS: DEC-47 critical 3+ questions with a possible near-miss answer are asked as either/or\nQUESTION: DEC-47\nASK_SUMMARY: Should 3+ questions name two options in the question text (either/or) or stay open, given the must MOD-03-U02 says the card has no answer choices?\nASK_CONTEXT: All 50 questions in the 3+ deck now pass the one-answer rule; CI is green and both reviewers accept the content. 46 of them get there by naming two options in the question text (What colour is a lemon: blue or yellow?); 4 stay open (3p-02, 3p-07, 3p-13, 3p-36). The card has no buttons: the options are only in the words.\n\nThe reviewers read spoken either/or text as arguably not an answer-choice UI. But MOD-03-U02 (must) says no buttons, choices or score on the card, and DSC-04-04, SRC-01-17 and SRC-01-18 rule out answer choices and a classic quiz. Which reading holds is a judgement on a must, so it is yours.\n\nThe cost of either/or: a guessing child is right half the time and the wrong option is often absurd (a spoon for brushing teeth), so 46 of 50 questions are near-trivial. Open questions were dropped because three review rounds kept finding near-miss answers a child could give (a neck warmer for a scarf, a hood for an umbrella).\nASK_POINT: The form of the 3+ questions: either/or in the question text, or open questions.\nASK_POINT: Whether that form also binds the 4+ and 5+ decks (US-01-03, US-01-04), or each of those stories decides its own.\nASK_OPTION a: Keep either/or for 3+; 4+ and 5+ decide their own form | The deck merges as it is (46 either/or, 4 open) and DEC-47 is confirmed for 3+ only, reading MOD-03-U02 as no choice controls on the card. Cost: 46 near-trivial questions; US-01-03 and US-01-04 face the same question again.\nASK_OPTION b: Keep either/or for 3+ and use it for 4+ and 5+ too | The deck merges as it is and US-01-03/04 follow the same rule: one form across the app, no repeat of the near-miss problem. Cost: every deck becomes a 50% guess with two options, closer to the classic quiz SRC-01-18 says the app is not.\nASK_OPTION c: Back to open questions for 3+, under a stricter near-miss rule | Open questions return, starting from the wording the reviewers accepted; each one with a near miss is reworded to rule it out, and the record names the near miss checked per row. No either/or, a literal fit with MOD-03-U02; 4+/5+ stay open too. Cost: one more content and review round.\nASK_OPTION d: Open by default; either/or only where no rewording removes a near miss | Most questions open as in c; the few that cannot be made unambiguous keep two options, each listed with its reason in the record. Fewer rewrites than c, but those cards still carry choices, so MOD-03-U02 is bent for them.\nASK_RECOMMEND: c\nASK_WHY: It reads MOD-03-U02 and SRC-01-17/18 as written, and it keeps the questions worth asking: a 50% guess against an absurd option teaches little. The near-miss problem is a writing problem the record can control row by row, not a reason to change what a card is.\nEVIDENCE:\n  #1 50 questions, one answer each in pl and en — tests/unit/AC-01-02-1-50-questions-one-answer.test.ts (pass)\n  #2 question ≤100 / answer ≤60 chars per language — tests/unit/AC-01-02-2-length-limits.test.ts (pass)\n  #3 each of four kinds ≥5 times — tests/unit/AC-01-02-3-four-kinds.test.ts (pass; 13/13/12/12)\n  #4 age-suitability check recorded per question — docs/delivery/content-checks/US-01-02-3-plus.md + tests/unit/AC-01-02-4-age-suitability-record.test.js (pass); the form of the question depends on DEC-47\n  #5 all content checks pass, breaking any fails the suite — tests/unit/AC-01-02-5-content-checks.test.ts (pass)\n  #6 new question or category is a data-only change — tests/unit/AC-01-02-6-content-is-data.test.js (pass)\n  #7 content ships inside the app — AC-01-02-7 step 2 on the release APK bundle + tests/unit/AC-01-02-7-content-ships-inside.test.js (pass)\nTESTS: run=test-runs/2026-10-14_182139 pass=4 fail=0 blocked=0 manual=0 manual_tests=none\nDERIVED_TESTS: AC-01-02-1; AC-01-02-2; AC-01-02-3; AC-01-02-4; AC-01-02-5; AC-01-02-6; AC-01-02-7\nPREEXISTING: the whole story from earlier rounds on this branch (deck, checks, record, derived tests); this round changed only the DEC-47 entry\nGATES: yarn lint ok; yarn tsc ok; yarn format:check ok; yarn test ok (15 suites, 51 tests); commit hook ok\nENV_KEYS: none\nMIGRATION: no\nFINDINGS: spec B1 DEC-47 classification fixed 9c9996d (reclassified critical, Affects + MOD-03-U02, DSC-04-04, SRC-01-17, SRC-01-18, Status to confirm with the client; put to the owner as DEC-47, deck unchanged)\nNOTES: DEC-47 was introduced on this branch only, so the diff from main still adds lines only (append-only holds); the resumed run writes the confirmed entry with the owner's option.\nContent is unchanged since 06b43b6 (CI run 38597913225 green); TESTS is that head's run, and run.json skips the AC-01-02 Jest tests as before, with CI JUnit as the evidence.\nOption c or d means a content rewrite and a new review round on resume; a or b means confirm DEC-47 and merge.\n```\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}
