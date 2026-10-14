@@ -46,5 +46,13 @@
     "title": "3+ questions with a possible near-miss answer are asked as either/or",
     "file": "docs/specs/DECISIONS.md",
     "ts": "2026-10-14T16:20:19Z"
+  },
+  {
+    "dec": "DEC-48",
+    "story": "US-02-01",
+    "attempt": 1,
+    "title": "Category screen: order by age, and the 3+, 4+, 5+ checks before 4+ and 5+ ship",
+    "file": "docs/specs/DECISIONS.md",
+    "ts": "2026-10-14T18:38:59Z"
   }
 ]

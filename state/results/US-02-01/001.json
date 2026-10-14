@@ -1,0 +1,69 @@
+{
+  "n": 1,
+  "attempt": 1,
+  "ts": "2026-10-14T19:00:09Z",
+  "story": "US-02-01",
+  "mode": "implement",
+  "parsed": {
+    "result": "ready",
+    "story": "US-02-01",
+    "branch": "feature/US-02-01",
+    "commits": [
+      "ad39b69 feat(categories): category screen in black and white [US-02-01]",
+      "13623cb test(categories): acceptance tests for the category screen [US-02-01]",
+      "5cf9e26 test(categories): back on the category screen leaves the app [US-02-01]",
+      "558d8ac test(categories): run every flow step, none skipped [US-02-01]"
+    ],
+    "decisions": [
+      "DEC-48 routine Category screen: order by age, and the 3+, 4+, 5+ checks before 4+ and 5+ ship"
+    ],
+    "evidence": [
+      "#1 Every launch opens on the category screen — TC-02-01 step 1 (Maestro, tests/maestro/TC-02-01-opens-on-categories.yaml); src/app/__tests__/_layout.test.tsx",
+      "#2 Lists the data's categories in order 3+, 4+, 5+, labelled as such — TC-02-01 step 2 (checks the shipped labels in order and that no entry follows; today 3+ alone, DEC-48); src/app/__tests__/index.test.tsx (decks registered 5+, 3+, 4+ are listed 3+, 4+, 5+)",
+      "#3 A category added to the data appears with no screen change — AC-02-01-3 steps 1-3 (tests/unit/AC-02-01-3-new-category-from-data.test.tsx, Jest)",
+      "#4 Pure black or white only; another colour fails a test — AC-02-01-4 steps 1-3 (tests/unit/AC-02-01-4-black-and-white.test.tsx: every rendered colour incl. navigation, a grey element is reported, no colour literal outside src/theme.ts, app.json colours)",
+      "#5 Nothing animates; an enabled animation fails a test — AC-02-01-5 steps 1-3 (tests/unit/AC-02-01-5-no-animation.test.tsx: every RNSScreen stackAnimation is none, slide_from_right is reported, no animation API in src)",
+      "#6 Each category entry spans the full screen width — TC-02-02 steps 1-2 (Maestro flow plus JUnit case \"TC-02-02 step 2\", bounds 0-1080 of 0-1080)",
+      "#7 Screen within 3 s of launch on the Kompakt — MANUAL: TC-02-03 is manual-only"
+    ],
+    "tests": {
+      "run": "/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-14_205706",
+      "pass": 7,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 1,
+      "manual_tests": [
+        "TC-02-03"
+      ]
+    },
+    "derived_tests": [
+      "AC-02-01-3",
+      "AC-02-01-4",
+      "AC-02-01-5"
+    ],
+    "preexisting": "theme tokens #000/#FFF in src/theme.ts and animation none on the root Stack (US-01-01); the content-title heading from src/content/app.json (US-00-01); Android back leaving the root screen was default behaviour, now tested (TC-02-14)",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test (63 tests, coverage 98.6% lines) ok",
+      "yarn test:acceptance ok"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "notes": "AC-02-01-3/4/5 are Jest-only, so they are skipped in the local run.json (the collector does not read JUnit); CI reads them from og-test-results, and the run's Jest step passed 63/63.\nTC-02-01 and TC-02-02 check the categories the shipped decks hold (3+ today); scripts/test-acceptance.sh passes CATEGORIES and CATEGORY_COUNT, so they check all three once US-01-03 and US-01-04 land (DEC-48).\nLocal run used the API 32 Medium_Phone AVD (no API 31 image here); CI uses the API 31 ATD. The Android navigation bar's grey buttons are system UI, not the app.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [
+        "#7 Screen within 3 s of launch on the Kompakt — MANUAL: TC-02-03 is manual-only"
+      ],
+      "blocked": []
+    },
+    "critical_decisions": []
+  },
+  "raw": "US-02-01 is built and committed on feature/US-02-01 (4 commits, not pushed). The whole acceptance suite passed on the final head 558d8ac, with a clean tree. The one criterion still open is #7, the 3 s launch on the Kompakt: its test case TC-02-03 is manual-only, so a human decides the merge.\n\nWhat I built:\n- **Category screen** (`src/app/index.tsx`): the app title from the content data, then one full-width, large, bold entry per category, separated by black rules.\n- **Category list** (`src/content/index.ts`): built from the registered decks and sorted by the age number in the label.\n- **Black-and-white look** (`src/theme.ts`, `src/app/_layout.tsx`): a black-and-white navigation theme replaces the grey screen background reviewers flagged earlier, and every screen gets white paper underneath and no animated transition. Only 3+ shows today, as the story's edge case says.\n- **Width check**: Maestro cannot compare an element's width with a width known only at run time. `scripts/check-full-width.js` compares each entry's bounds (from uiautomator) with `wm size` and writes `junit/screen.xml`, run from `scripts/test-acceptance.sh`.\n- **Flow rewrite**: TC-02-01 and TC-02-02 first used conditional steps, and the og collector counts a skipped step as blocked. I rewrote them as repeat loops, so every step runs.\n- **Review fix**: the spec-compliance reviewer found the Android-back edge case untested. I added `tests/maestro/TC-02-14-back-closes-app.yaml`, which passes.\n\n```\nRESULT: ready\nSTORY: US-02-01\nBRANCH: feature/US-02-01\nCOMMITS: ad39b69 feat(categories): category screen in black and white [US-02-01]; 13623cb test(categories): acceptance tests for the category screen [US-02-01]; 5cf9e26 test(categories): back on the category screen leaves the app [US-02-01]; 558d8ac test(categories): run every flow step, none skipped [US-02-01]\nDECISIONS: DEC-48 routine Category screen: order by age, and the 3+, 4+, 5+ checks before 4+ and 5+ ship\nEVIDENCE:\n  #1 Every launch opens on the category screen — TC-02-01 step 1 (Maestro, tests/maestro/TC-02-01-opens-on-categories.yaml); src/app/__tests__/_layout.test.tsx\n  #2 Lists the data's categories in order 3+, 4+, 5+, labelled as such — TC-02-01 step 2 (checks the shipped labels in order and that no entry follows; today 3+ alone, DEC-48); src/app/__tests__/index.test.tsx (decks registered 5+, 3+, 4+ are listed 3+, 4+, 5+)\n  #3 A category added to the data appears with no screen change — AC-02-01-3 steps 1-3 (tests/unit/AC-02-01-3-new-category-from-data.test.tsx, Jest)\n  #4 Pure black or white only; another colour fails a test — AC-02-01-4 steps 1-3 (tests/unit/AC-02-01-4-black-and-white.test.tsx: every rendered colour incl. navigation, a grey element is reported, no colour literal outside src/theme.ts, app.json colours)\n  #5 Nothing animates; an enabled animation fails a test — AC-02-01-5 steps 1-3 (tests/unit/AC-02-01-5-no-animation.test.tsx: every RNSScreen stackAnimation is none, slide_from_right is reported, no animation API in src)\n  #6 Each category entry spans the full screen width — TC-02-02 steps 1-2 (Maestro flow plus JUnit case \"TC-02-02 step 2\", bounds 0-1080 of 0-1080)\n  #7 Screen within 3 s of launch on the Kompakt — MANUAL: TC-02-03 is manual-only\nTESTS: run=/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-14_205706 pass=7 fail=0 blocked=0 manual=1 manual_tests=TC-02-03\nDERIVED_TESTS: AC-02-01-3; AC-02-01-4; AC-02-01-5\nPREEXISTING: theme tokens #000/#FFF in src/theme.ts and animation none on the root Stack (US-01-01); the content-title heading from src/content/app.json (US-00-01); Android back leaving the root screen was default behaviour, now tested (TC-02-14)\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test (63 tests, coverage 98.6% lines) ok; yarn test:acceptance ok\nENV_KEYS: none\nMIGRATION: no\nNOTES: AC-02-01-3/4/5 are Jest-only, so they are skipped in the local run.json (the collector does not read JUnit); CI reads them from og-test-results, and the run's Jest step passed 63/63.\nTC-02-01 and TC-02-02 check the categories the shipped decks hold (3+ today); scripts/test-acceptance.sh passes CATEGORIES and CATEGORY_COUNT, so they check all three once US-01-03 and US-01-04 land (DEC-48).\nLocal run used the API 32 Medium_Phone AVD (no API 31 image here); CI uses the API 31 ATD. The Android navigation bar's grey buttons are system UI, not the app.\n```\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}
