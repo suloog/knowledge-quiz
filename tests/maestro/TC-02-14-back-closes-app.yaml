@@ -1,0 +1,18 @@
+appId: ${APP_ID}
+name: TC-02-14 Android back on the category screen closes the app
+---
+# Step 1 — open the app: the category screen is shown.
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+- takeScreenshot: step-01-category-screen
+# Step 2 — press the Android back action: the app leaves the screen and the home screen is shown.
+- back
+- assertNotVisible:
+    id: category-screen
+- assertNotVisible:
+    id: content-title
+- takeScreenshot: step-02-home-screen
