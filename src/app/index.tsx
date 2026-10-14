@@ -1,6 +1,6 @@
 import { StyleSheet, Text } from 'react-native';
 import { appContent, categories } from '@/content';
-import { colors } from '@/theme';
+import { colors, ruleWidth } from '@/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 // The screen every launch opens on: the age categories the content data holds (MOD-02-F01…F03).
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   title: {
     paddingHorizontal: 24,
     paddingVertical: 16,
-    borderBottomWidth: 2,
+    borderBottomWidth: ruleWidth,
     borderColor: colors.ink,
     fontSize: 32,
     color: colors.ink,
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     paddingHorizontal: 24,
     paddingVertical: 24,
-    borderBottomWidth: 2,
+    borderBottomWidth: ruleWidth,
     borderColor: colors.ink,
     fontSize: 64,
     fontWeight: 'bold',
