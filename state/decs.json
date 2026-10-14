@@ -54,5 +54,21 @@
     "title": "Category screen: order by age, and the 3+, 4+, 5+ checks before 4+ and 5+ ship",
     "file": "docs/specs/DECISIONS.md",
     "ts": "2026-10-14T18:38:59Z"
+  },
+  {
+    "dec": "DEC-49",
+    "story": "US-01-03",
+    "attempt": 1,
+    "title": "What makes the 4+ deck harder than 3+",
+    "file": "docs/specs/DECISIONS.md",
+    "ts": "2026-10-14T22:44:02Z"
+  },
+  {
+    "dec": "DEC-50",
+    "story": "US-01-03",
+    "attempt": 1,
+    "title": "A 4+ question repeats a 3+ one when it has its text or its answer",
+    "file": "docs/specs/DECISIONS.md",
+    "ts": "2026-10-14T22:44:02Z"
   }
 ]

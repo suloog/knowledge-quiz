@@ -1,0 +1,65 @@
+{
+  "n": 1,
+  "attempt": 1,
+  "ts": "2026-10-14T22:48:29Z",
+  "story": "US-01-03",
+  "mode": "implement",
+  "parsed": {
+    "result": "ready",
+    "story": "US-01-03",
+    "branch": "feature/US-01-03",
+    "commits": [
+      "481a663 test(content): share the deck criteria between deck stories [US-01-03]",
+      "7eebb8d docs(specs): record the 4+ level and repeat rule, DEC-49, DEC-50 [US-01-03]",
+      "11fc819 feat(content): 4+ deck in Polish and English [US-01-03]"
+    ],
+    "decisions": [
+      "DEC-49 routine What makes the 4+ deck harder than 3+",
+      "DEC-50 routine A 4+ question repeats a 3+ one when it has its text or its answer"
+    ],
+    "evidence": [
+      "#1 4+ holds exactly 50 questions, one answer each, pl and en — tests/unit/AC-01-03-1-50-questions-one-answer.test.ts (steps 1-3), junit/unit.xml suite \"AC-01-03-1 …\", 4/4 pass",
+      "#2 questions ≤100, answers ≤60 chars, each language — tests/unit/AC-01-03-2-length-limits.test.ts (steps 1-2), 4/4 pass",
+      "#3 each of the four kinds ≥5 times — tests/unit/AC-01-03-3-four-kinds.test.ts (steps 1-2), 5/5 pass (12/12/14/12)",
+      "#4 age-suitability check of every 4+ question recorded — docs/delivery/content-checks/US-01-03-4-plus.md (one row per question: four checks pass, near misses named; to copy into the PR) enforced by tests/unit/AC-01-03-4-age-suitability-record.test.js (steps 1-5, incl. no answer options), 5/5 pass",
+      "#5 all content checks pass; breaking any one fails the suite — tests/unit/AC-01-03-5-content-checks.test.ts (steps 1-4, 13 breakages on the 4+ deck plus the cross-deck duplicates), 16/16 pass",
+      "#6 no 4+ question repeats a 3+ question — tests/unit/AC-01-03-6-no-3-plus-repeat.test.ts (step 1 no shared text in pl or en, step 2 no shared answer, step 3 a copied 3+ text fails checkDecks), 4/4 pass"
+    ],
+    "tests": {
+      "run": "/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-15_004510",
+      "pass": 4,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 0
+    },
+    "derived_tests": [
+      "AC-01-03-1",
+      "AC-01-03-2",
+      "AC-01-03-3",
+      "AC-01-03-4",
+      "AC-01-03-5",
+      "AC-01-03-6"
+    ],
+    "preexisting": "the content format, checkDecks (including the cross-deck duplicate check), deck registration, the bundle-content check and the AC-01-02 tests all came from US-01-02; only data, the record and tests were added (plus the shared test helpers)",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test ok"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "notes": "AC-01-02-1…5 now call shared helpers (tests/unit/deck-criteria.ts, tests/unit/age-suitability-record.js) with unchanged test names; an independent reviewer subagent found no second correct answers, and its 4 wording fixes were applied.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [],
+      "blocked": []
+    },
+    "critical_decisions": []
+  },
+  "raw": "The 4+ deck is done and committed on feature/US-01-03, three commits on top of main, not pushed. Gates are green, and the final acceptance run on the head commit 11fc819, with a clean tree, passed everything.\n\nLocal run evidence: Jest wrote 91 unit tests to junit/unit.xml with 0 failures. That includes 38 AC-01-03 cases in six suites (AC-01-03-1 to AC-01-03-6). The release APK checks in junit/release.xml also had 0 failures; one of them (AC-01-02-7 step 2) confirms the 4+ texts are embedded in the release bundle. The Maestro flows passed.\n\nrun.json shows the six AC-01-03 tests as `skipped`. That is because collect_run.py reads only Playwright and Maestro output, not Jest JUnit — the same thing happened in the US-01-02 runs. The real evidence for them is the CI JUnit report, matched by id in the test names. I started the local API 32 emulator (AVD Medium_Phone) myself for the run and stopped it afterwards.\n\n- **Reused code:** I moved the deck checks from the 3+ tests into two shared helpers that every deck story calls: `tests/unit/deck-criteria.ts` and `tests/unit/age-suitability-record.js`. The AC-01-02 test files now call them with the 3+ settings. I compared the AC-01-02 test names before and after (38 each) and they are identical, so CI still matches the 3+ tests by id.\n- **Independent review:** a reviewer subagent attacked all 50 questions in both languages for second correct answers and found none. It flagged four wordings: 4p-22, 4p-29 (\"gawra\" is too hard for a 4-year-old), 4p-38 (the English was ambiguous) and 4p-40. I reworded all four, and also 4p-47, and added the near misses it checked to the record.\n- **Content:** the deck has 12 educational, 12 popular-science, 14 nature and 12 trivia questions. None asks for an answer that a 3+ question asks for.\n\n```\nRESULT: ready\nSTORY: US-01-03\nBRANCH: feature/US-01-03\nCOMMITS: 481a663 test(content): share the deck criteria between deck stories [US-01-03]; 7eebb8d docs(specs): record the 4+ level and repeat rule, DEC-49, DEC-50 [US-01-03]; 11fc819 feat(content): 4+ deck in Polish and English [US-01-03]\nDECISIONS: DEC-49 routine What makes the 4+ deck harder than 3+; DEC-50 routine A 4+ question repeats a 3+ one when it has its text or its answer\nEVIDENCE:\n  #1 4+ holds exactly 50 questions, one answer each, pl and en — tests/unit/AC-01-03-1-50-questions-one-answer.test.ts (steps 1-3), junit/unit.xml suite \"AC-01-03-1 …\", 4/4 pass\n  #2 questions ≤100, answers ≤60 chars, each language — tests/unit/AC-01-03-2-length-limits.test.ts (steps 1-2), 4/4 pass\n  #3 each of the four kinds ≥5 times — tests/unit/AC-01-03-3-four-kinds.test.ts (steps 1-2), 5/5 pass (12/12/14/12)\n  #4 age-suitability check of every 4+ question recorded — docs/delivery/content-checks/US-01-03-4-plus.md (one row per question: four checks pass, near misses named; to copy into the PR) enforced by tests/unit/AC-01-03-4-age-suitability-record.test.js (steps 1-5, incl. no answer options), 5/5 pass\n  #5 all content checks pass; breaking any one fails the suite — tests/unit/AC-01-03-5-content-checks.test.ts (steps 1-4, 13 breakages on the 4+ deck plus the cross-deck duplicates), 16/16 pass\n  #6 no 4+ question repeats a 3+ question — tests/unit/AC-01-03-6-no-3-plus-repeat.test.ts (step 1 no shared text in pl or en, step 2 no shared answer, step 3 a copied 3+ text fails checkDecks), 4/4 pass\nTESTS: run=/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-15_004510 pass=4 fail=0 blocked=0 manual=0\nDERIVED_TESTS: AC-01-03-1; AC-01-03-2; AC-01-03-3; AC-01-03-4; AC-01-03-5; AC-01-03-6\nPREEXISTING: the content format, checkDecks (including the cross-deck duplicate check), deck registration, the bundle-content check and the AC-01-02 tests all came from US-01-02; only data, the record and tests were added (plus the shared test helpers)\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test ok\nENV_KEYS: none\nMIGRATION: no\nNOTES: the AC-01-03 Jest results are in junit/unit.xml (91 tests, 0 failures); the run's 6 skipped tests are those AC Jest tests, which collect_run.py does not read (same as US-01-02); CI JUnit is the evidence.\nNOTES: the PR description should include docs/delivery/content-checks/US-01-03-4-plus.md (the age-suitability record, Q29/DEC-26) and list the derived tests AC-01-03-1…6.\nNOTES: AC-01-02-1…5 now call shared helpers (tests/unit/deck-criteria.ts, tests/unit/age-suitability-record.js) with unchanged test names; an independent reviewer subagent found no second correct answers, and its 4 wording fixes were applied.\n```\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}
