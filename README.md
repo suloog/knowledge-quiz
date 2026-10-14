@@ -3,6 +3,19 @@
 A quiz app for the Mudita Kompakt E-ink phone (Android), built with Expo / React Native from
 `ordergroup/boilerplate-react-native-expo`. Specification: `docs/specs/`.
 
+## Platform versions
+
+The boilerplate brought up to the latest stable versions before any feature work (`DEC-06`,
+`DEC-42`); `package.json` and `yarn.lock` pin them.
+
+| What | Version |
+| --- | --- |
+| Expo SDK | 57 (`expo` 57.0.28, `expo-router` 57.0.26) |
+| React Native | 0.86.3 (New Architecture, Hermes) |
+| React | 19.2.3 |
+| TypeScript | 6.0.3 |
+| Android | minSdk 31 (Android 12, `NFR-10`), targetSdk and compileSdk 36 |
+
 ## Start the whole stack
 
 ```bash
