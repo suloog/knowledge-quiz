@@ -113,7 +113,7 @@ write_junit() {
 STEP4="AC-01-01-5 step 4 — a release APK is built, signed with a key from outside the repository passed through KQ_UPLOAD_*"
 STEP5="AC-01-01-5 step 5 — apksigner verifies the APK's signature, made with that key and not the debug key"
 STEP6="AC-01-01-5 step 6 — the APK installs on Android 12 (API 31) and newer only (sdkVersion 31)"
-CONTENT="AC-01-02-7 step 2 — the release APK's embedded JavaScript bundle holds every 3+ question and answer, in Polish and English"
+CONTENT="AC-01-02-7 step 2 — the release APK's embedded JavaScript bundle holds every deck's questions and answers, in Polish and English"
 PERMS="AC-01-01-3 step 2 — the built release APK declares no INTERNET, ACCESS_NETWORK_STATE or ACCESS_WIFI_STATE permission"
 PRE="AC-01-01-4 precondition — the release build with its JavaScript embedded is installed and no bundler is reachable"
 POST="AC-01-01-4 the app loaded no code from a bundler (logcat)"

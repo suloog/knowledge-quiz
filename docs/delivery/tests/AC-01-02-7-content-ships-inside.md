@@ -33,11 +33,11 @@ depends_on: [AC-01-01-5] # test case IDs that must pass first
 | # | Action | Expected result | Evidence |
 | - | ------ | --------------- | -------- |
 | 1 | Read the content code | No network call and no remote address | console |
-| 2 | Read the release APK's embedded JavaScript bundle | Every 3+ question id, question and answer, in Polish and English, is in it | console (`release/bundle-content.txt`) |
+| 2 | Read the release APK's embedded JavaScript bundle | Every question id, question and answer of every deck the app ships, in Polish and English, is in it | console (`release/bundle-content.txt`) |
 
 ## Pass criterion
 
-- The 3+ content is inside the installed app and nothing in the content code reaches the network.
+- All content is inside the installed app and nothing in the content code reaches the network.
 
 ## Out of scope for this test
 
