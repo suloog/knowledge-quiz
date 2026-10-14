@@ -89,16 +89,30 @@ else
     done
   fi
   [ -n "$AVD" ] || fail "no device is running and no Android 12 (API 31) AVD was found — create one in Android Studio (Device Manager), or name an AVD with KQ_AVD=<name>"
-  say "booting the emulator $AVD"
-  "$EMULATOR" -avd "$AVD" -no-snapshot-save -no-boot-anim >/dev/null 2>&1 &
+  tmp="${TMPDIR:-/tmp}"
+  EMULATOR_LOG="$(mktemp "${tmp%/}/kq-emulator.XXXXXX")"
+  say "booting the emulator $AVD (its console: $EMULATOR_LOG)"
+  "$EMULATOR" -avd "$AVD" -no-snapshot-save -no-boot-anim >"$EMULATOR_LOG" 2>&1 &
   EMULATOR_PID=$!
-  "$ADB" wait-for-device
-  for _ in $(seq 1 180); do
-    [ "$("$ADB" shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ] && break
-    kill -0 "$EMULATOR_PID" 2>/dev/null || fail "the emulator $AVD exited while booting"
+  emulator_failed() {
+    printf '[stack] ERROR: %s — the end of its console:\n' "$1" >&2
+    tail -n 20 "$EMULATOR_LOG" >&2
+    exit 1
+  }
+  booted=""
+  for _ in $(seq 1 300); do
+    kill -0 "$EMULATOR_PID" 2>/dev/null || {
+      EMULATOR_PID=""
+      emulator_failed "the emulator $AVD exited while booting"
+    }
+    if [ -n "$(running_device)" ] &&
+      [ "$("$ADB" shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ]; then
+      booted=1
+      break
+    fi
     sleep 1
   done
-  [ "$("$ADB" shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ] || fail "the emulator $AVD did not finish booting in 3 minutes"
+  [ -n "$booted" ] || emulator_failed "the emulator $AVD did not finish booting in 5 minutes"
 fi
 
 # ------------------------------------------------------ 4. build, install, run
