@@ -34,7 +34,7 @@ depends_on: [] # test case IDs that must pass first
 | - | ------ | --------------- | -------- |
 | 1 | Run the content checks on every deck the app ships | They report nothing | console |
 | 2 | Run them on copies of the 3+ deck, each broken in one way: a question fewer or more than 50, a missing, empty or doubled answer, a missing question text, a question of 101 or an answer of 61 characters, a kind with fewer than 5 questions, an unknown kind, no id, an empty illustration name, a wrong schema version | Each broken copy is reported | console |
-| 3 | Run them on decks sharing a question id, a question text (in one language) or a category | Reported | console |
+| 3 | Run them on decks sharing a question id, a question text in one language (also differing only in case or surrounding spaces, in one deck or across two), or a category with otherwise distinct content; and on a deck with two questions missing their English text | Each sharing is reported by its own message, and only that one; the missing texts are not reported as a duplicate | console |
 | 4 | Run them on a copy whose question carries an illustration file name | Nothing reported | console |
 
 ## Pass criterion

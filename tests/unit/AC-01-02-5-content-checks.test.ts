@@ -80,16 +80,54 @@ describe('AC-01-02-5 All automatic content checks pass; breaking any one fails t
   it('step 3 — a question id, a question text or a category used twice fails the content checks', () => {
     const duplicateId = copy();
     duplicateId.questions[1].id = duplicateId.questions[0].id;
-    expect(checkDecks([duplicateId])).not.toEqual([]);
+    expect(checkDecks([duplicateId])).toEqual([
+      `question id ${duplicateId.questions[0].id} appears more than once`,
+    ]);
+
     const duplicateText = copy();
     duplicateText.questions[1].en.question =
       duplicateText.questions[0].en.question;
     expect(checkDecks([duplicateText])).toEqual([
-      `en question "${duplicateText.questions[0].en.question}" appears more than once`,
+      `en question "${duplicateText.questions[0].en.question.toLowerCase()}" appears more than once`,
     ]);
-    const other = copy();
-    other.questions.forEach(q => (q.id = `other-${q.id}`));
-    expect(checkDecks([threePlus, other])).not.toEqual([]);
+
+    const duplicatePl = copy();
+    duplicatePl.questions[1].pl.question = ` ${duplicatePl.questions[0].pl.question.toUpperCase()} `;
+    expect(checkDecks([duplicatePl])).toEqual([
+      `pl question "${duplicatePl.questions[0].pl.question.toLowerCase()}" appears more than once`,
+    ]);
+
+    // Another category, its own ids and texts, but one Polish text taken from 3+.
+    const sharedText = copy();
+    sharedText.category = 'other';
+    sharedText.questions.forEach((q, i) => {
+      q.id = `other-${i}`;
+      q.pl.question = `inne pytanie ${i}`;
+      q.en.question = `another question ${i}`;
+    });
+    sharedText.questions[7].pl.question = threePlus.questions[3].pl.question;
+    expect(checkDecks([threePlus, sharedText])).toEqual([
+      `pl question "${threePlus.questions[3].pl.question.toLowerCase()}" appears more than once`,
+    ]);
+
+    // The same category twice, with its own ids and texts: only the category is reported.
+    const sameCategory = copy();
+    sameCategory.questions.forEach((q, i) => {
+      q.id = `other-${i}`;
+      q.pl.question = `inne pytanie ${i}`;
+      q.en.question = `another question ${i}`;
+    });
+    expect(checkDecks([threePlus, sameCategory])).toEqual([
+      'category 3+ appears in more than one deck',
+    ]);
+
+    // A missing text is reported once, as missing — never as a duplicate "undefined".
+    const missingText = copy();
+    delete (missingText.questions[0] as Partial<Deck['questions'][0]>).en;
+    delete (missingText.questions[1] as Partial<Deck['questions'][0]>).en;
+    expect(
+      checkDecks([missingText]).filter(problem => problem.includes('appears')),
+    ).toEqual([]);
   });
 
   it('step 4 — a question with an illustration file name passes', () => {

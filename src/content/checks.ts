@@ -83,9 +83,15 @@ export const checkDecks = (decks: Deck[]): string[] => {
   seen(decks.flatMap(deck => deck.questions.map(q => q.id))).forEach(id =>
     problems.push(`question id ${id} appears more than once`),
   );
+  // Compared trimmed and in lower case; a missing text is reported by checkDeck, not here.
   LANGUAGES.forEach(language =>
     seen(
-      decks.flatMap(deck => deck.questions.map(q => q[language]?.question)),
+      decks.flatMap(deck =>
+        deck.questions
+          .map(q => q[language]?.question)
+          .filter(text => typeof text === 'string')
+          .map(text => text.trim().toLowerCase()),
+      ),
     ).forEach(text =>
       problems.push(`${language} question "${text}" appears more than once`),
     ),
