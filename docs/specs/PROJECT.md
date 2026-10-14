@@ -80,7 +80,7 @@ which is upgraded as the first piece of work (`DEC-06`). Android 12 and newer (`
 Kompakt as the only target (`DEC-10`). No backend, no integrations, no network calls (`SRC-01-20`,
 `DEC-04`): all logic and content live on the device, the content as local data in the repository
 (`SRC-01-19`). The component library is the tech lead's choice (`DEC-07`). Distributed as a signed APK
-by sideload (`DEC-05`). The repository is in the Order Group GitHub organisation; Maciej owns its access
+by sideload (`DEC-05`); updates ship as new APK builds, with no post-release support (`TQ14`, `DEC-08`). The repository is in the Order Group GitHub organisation; Maciej owns its access
 and the signing key (`DEC-09`).
 
 ## Milestones

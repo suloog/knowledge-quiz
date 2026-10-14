@@ -49,8 +49,8 @@ Every requirement in this module is priority **must** unless marked otherwise.
 - [MOD-03-F07] A card counts as seen once its answer has been revealed. — *source: `DEC-38`*
 - [MOD-03-F08] Each category's order and position are remembered after the app is closed, and returning resumes at the first unseen card. — *source: `DEC-22`*
 - [MOD-03-F09] After the last card of a category, an end card says the deck is finished. — *source: `DEC-23`*
-- [MOD-03-F10] From the end card the user can start the category again in a new shuffled order, with every card unseen. — *source: `DEC-23`*
-- [MOD-03-F11] From the end card the user can go back to the categories. — *source: `DEC-23`*
+- [MOD-03-F10] From the end card the parent or the child can start the category again in a new shuffled order, with every card unseen. — *source: `DEC-23`*
+- [MOD-03-F11] From the end card the parent or the child can go back to the categories. — *source: `DEC-23`*
 - [MOD-03-F12] From any card the Android back action returns to the categories. — *source: `DEC-25`*
 - [MOD-03-F13] From any card a small visible control, outside the card's touch area, returns to the categories. — *source: `DEC-25`*
 - [MOD-03-F14] A touch within 0.5 s of the screen changing is ignored. — *source: `DEC-40`*

@@ -22,7 +22,7 @@
 
 - [NFR-07] The interface uses pure black and white only — no greys, no colour. (`SRC-01-23`, `SRC-01-24`) — *source: `DEC-12`*
 - [NFR-08] Text and touch targets are large enough for a parent and a child aged 3–5, judged on the Kompakt. (`SRC-01-25`) — *source: `DEC-17`*
-- [NFR-09] Every screen is reachable in at most two steps from the category screen. (`SRC-01-28`)
+- [NFR-09] The app has two levels of navigation only: the category screen and the cards of one category. (`SRC-01-28`)
 
 ## Compatibility
 

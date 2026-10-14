@@ -53,4 +53,5 @@ Per-project engineering law. Every module, user story and PR must satisfy this d
 - No personal data is processed; no regulation-specific work (`TQ11`, `TQ12`, `DEC-14`).
 - No encryption at rest needed — only the last-used category, the language and deck positions are stored on the device (`TQ01`).
 - The app makes no network calls: no analytics, no crash reporting (`DEC-04`).
+- No security audit or penetration test in the MVP; acceptance does not depend on one (`TQ04`, `DEC-13`).
 - No hosting; the repository lives in the Order Group GitHub organisation, and Maciej owns repository access and the release signing key — the keystore never enters the repository (`TQ17`, `TQ18`, `DEC-09`).
