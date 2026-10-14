@@ -1,0 +1,74 @@
+{
+  "n": 2,
+  "attempt": 1,
+  "ts": "2026-10-14T08:08:41Z",
+  "story": "US-00-01",
+  "mode": "fix",
+  "parsed": {
+    "result": "ready",
+    "story": "US-00-01",
+    "branch": "feature/US-00-01",
+    "commits": [
+      "577c13a fix(lint): run expo's flat config so its rules apply [US-00-01]",
+      "c83154f fix(stack): say why the emulator failed instead of hanging [US-00-01]",
+      "c15cf8a test(acceptance): start the stack via yarn stack, one SDK lookup [US-00-01]",
+      "aaea6f1 chore(app): drop newArchEnabled, the only mode on SDK 57 [US-00-01]",
+      "c97c40a test(content): drop the assertion that compared a value to itself [US-00-01]",
+      "0cbc66b test(acceptance): start the stack first so a fresh clone runs [US-00-01]"
+    ],
+    "decisions": [],
+    "evidence": [
+      "#1 one documented command starts the whole stack from a fresh clone — TC-00-01 pass (steps 1-2) in run 2026-10-14_100634 on head 0cbc66b, run inside a fresh git clone (no android/, no node_modules): yarn stack installed the dependencies, ran prebuild, built, installed and opened the app (stack.log); emulator was the API 32 AVD Medium_Phone because this machine has no API 31 image; the API 31 fresh-checkout half is the PR's CI run; README \"Start the whole stack\" names yarn stack",
+      "#2 GitHub Actions workflow runs the acceptance command and uploads og-test-results always — MANUAL: TC-00-02 is manual-only (.github/workflows/acceptance.yml runs yarn test:acceptance; upload uses if: always() and if-no-files-found: error); check it on the PR's CI run",
+      "#3 one path through every layer passes, named with its TC id — TC-00-03 pass (steps 1-2) in run 2026-10-14_100634 (Maestro flow \"TC-00-03 The first screen shows a value read from the app's bundled content data\")",
+      "#4 commit and push gates in place and green on a clean checkout — MANUAL: TC-00-04 is manual-only; detect-stack.sh push lists yarn format:check, yarn lint, yarn tsc, yarn test, all ok on 0cbc66b; yarn lint now runs Expo's rules and fails on warnings"
+    ],
+    "tests": {
+      "run": "/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-14_100634",
+      "pass": 2,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 2,
+      "manual_tests": [
+        "TC-00-02",
+        "TC-00-04"
+      ]
+    },
+    "derived_tests": [],
+    "preexisting": "all four criteria were built in round 0 (commits bdb583e, 30850f6, 993eed5); this round changed only what the findings asked for",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test ok"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "findings": [
+      "code B1 fixed 577c13a",
+      "spec B1 fixed c83154f",
+      "spec B2 fixed 0cbc66b (test-acceptance.sh now starts the stack before Jest so a fresh clone works",
+      "whole suite re-run from a fresh clone of 0cbc66b on the API 32 AVD, since no API 31 image is installed here",
+      "API 31 evidence is the PR's CI run)",
+      "code N6 fixed aaea6f1",
+      "code N8 fixed c97c40a",
+      "spec N8 fixed c15cf8a (checked that yarn 1 passes SIGTERM to the script it runs, so the stack still stops)",
+      "spec N1 fixed c15cf8a"
+    ],
+    "notes": "yarn test:acceptance now runs the Maestro flows first, then the unit tests; yarn lint now fails on warnings too (--max-warnings 0).\n\nFiles I changed:\n- /Users/sulo/workspace/knowledge-quiz/eslint.config.mjs\n- /Users/sulo/workspace/knowledge-quiz/package.json\n- /Users/sulo/workspace/knowledge-quiz/scripts/stack.sh\n- /Users/sulo/workspace/knowledge-quiz/scripts/test-acceptance.sh\n- /Users/sulo/workspace/knowledge-quiz/README.md\n- /Users/sulo/workspace/knowledge-quiz/app.json\n- /Users/sulo/workspace/knowledge-quiz/src/content/__tests__/content.test.ts",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [
+        "#2 GitHub Actions workflow runs the acceptance command and uploads og-test-results always — MANUAL: TC-00-02 is manual-only (.github/workflows/acceptance.yml runs yarn test:acceptance; upload uses if: always() and if-no-files-found: error); check it on the PR's CI run",
+        "#4 commit and push gates in place and green on a clean checkout — MANUAL: TC-00-04 is manual-only; detect-stack.sh push lists yarn format:check, yarn lint, yarn tsc, yarn test, all ok on 0cbc66b; yarn lint now runs Expo's rules and fails on warnings"
+      ],
+      "blocked": []
+    },
+    "critical_decisions": []
+  },
+  "raw": "All three BLOCKING findings are fixed, in six commits on feature/US-00-01 (not pushed). The four gates pass on the new head 0cbc66b, and the whole acceptance suite passed from a fresh git clone of that commit. That clone run was on the API 32 AVD, not API 31; the CI run on the PR is the API 31 half of criterion #1's evidence.\n\n- **B1 (lint):** `yarn lint` now runs Expo's config. A probe file got errors for `var` and a conditional `useState`, and warnings for an unused variable and `==`. I also set `yarn lint` to `expo lint --max-warnings 0`, because Expo reports those last two only as warnings, which would still pass. `src/` passes clean.\n- **Spec B1 (start command hang):** `scripts/stack.sh` no longer uses `adb wait-for-device`. The emulator's output goes to a temp log, and one 5-minute loop checks that the emulator is still alive and polls the boot state. When the emulator exits or times out, the script prints the error and the last 20 lines of that log, then exits 1. Checked with `KQ_AVD=No_Such_AVD` and no device: it failed in about 1.7 s and showed \"Unknown AVD name\".\n- **Spec B2 (fresh clone):** I cloned the branch into the scratchpad (no android/, no node_modules), booted the Medium_Phone AVD (API 32), uninstalled the app and ran the snapshot, `yarn test:acceptance` and the collector there. `yarn stack` installed the dependencies, ran prebuild, built, installed and opened the app. Gradle's cache in ~/.gradle was not cleared, so the build took 21 s.\n- **One change you didn't ask for:** a fresh clone exposed that `scripts/test-acceptance.sh` ran Jest before `yarn stack` had installed anything, so it would fail. It now starts the stack and runs the Maestro flows first, stops the stack, then runs the unit tests. If the stack fails to start, the script still runs the unit tests and exits non-zero. The README line changed to match.\n\n```\nRESULT: ready\nSTORY: US-00-01\nBRANCH: feature/US-00-01\nCOMMITS: 577c13a fix(lint): run expo's flat config so its rules apply [US-00-01]; c83154f fix(stack): say why the emulator failed instead of hanging [US-00-01]; c15cf8a test(acceptance): start the stack via yarn stack, one SDK lookup [US-00-01]; aaea6f1 chore(app): drop newArchEnabled, the only mode on SDK 57 [US-00-01]; c97c40a test(content): drop the assertion that compared a value to itself [US-00-01]; 0cbc66b test(acceptance): start the stack first so a fresh clone runs [US-00-01]\nDECISIONS: none\nEVIDENCE:\n  #1 one documented command starts the whole stack from a fresh clone — TC-00-01 pass (steps 1-2) in run 2026-10-14_100634 on head 0cbc66b, run inside a fresh git clone (no android/, no node_modules): yarn stack installed the dependencies, ran prebuild, built, installed and opened the app (stack.log); emulator was the API 32 AVD Medium_Phone because this machine has no API 31 image; the API 31 fresh-checkout half is the PR's CI run; README \"Start the whole stack\" names yarn stack\n  #2 GitHub Actions workflow runs the acceptance command and uploads og-test-results always — MANUAL: TC-00-02 is manual-only (.github/workflows/acceptance.yml runs yarn test:acceptance; upload uses if: always() and if-no-files-found: error); check it on the PR's CI run\n  #3 one path through every layer passes, named with its TC id — TC-00-03 pass (steps 1-2) in run 2026-10-14_100634 (Maestro flow \"TC-00-03 The first screen shows a value read from the app's bundled content data\")\n  #4 commit and push gates in place and green on a clean checkout — MANUAL: TC-00-04 is manual-only; detect-stack.sh push lists yarn format:check, yarn lint, yarn tsc, yarn test, all ok on 0cbc66b; yarn lint now runs Expo's rules and fails on warnings\nTESTS: run=/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-14_100634 pass=2 fail=0 blocked=0 manual=2 manual_tests=TC-00-02,TC-00-04\nDERIVED_TESTS: none\nPREEXISTING: all four criteria were built in round 0 (commits bdb583e, 30850f6, 993eed5); this round changed only what the findings asked for\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test ok\nENV_KEYS: none\nMIGRATION: no\nFINDINGS: code B1 fixed 577c13a; spec B1 fixed c83154f; spec B2 fixed 0cbc66b (test-acceptance.sh now starts the stack before Jest so a fresh clone works; whole suite re-run from a fresh clone of 0cbc66b on the API 32 AVD, since no API 31 image is installed here; API 31 evidence is the PR's CI run); code N6 fixed aaea6f1; code N8 fixed c97c40a; spec N8 fixed c15cf8a (checked that yarn 1 passes SIGTERM to the script it runs, so the stack still stops); spec N1 fixed c15cf8a\nNOTES: Criterion #1 was run locally from a fresh git clone on the API 32 AVD; no API 31 image or cmdline-tools exist here to fetch one, so the PR's CI run is the API 31 evidence. ~/.gradle caches were warm (not wiped).\nNOTES: The run was made in a scratchpad clone at the same commit and copied into the repo's test-runs/ (its logs show the clone's path); run.json says commit 0cbc66b, snapshot true, dirty false, changed_during_run false.\nNOTES: yarn test:acceptance now runs the Maestro flows first, then the unit tests; yarn lint now fails on warnings too (--max-warnings 0).\n```\n\nFiles I changed:\n- /Users/sulo/workspace/knowledge-quiz/eslint.config.mjs\n- /Users/sulo/workspace/knowledge-quiz/package.json\n- /Users/sulo/workspace/knowledge-quiz/scripts/stack.sh\n- /Users/sulo/workspace/knowledge-quiz/scripts/test-acceptance.sh\n- /Users/sulo/workspace/knowledge-quiz/README.md\n- /Users/sulo/workspace/knowledge-quiz/app.json\n- /Users/sulo/workspace/knowledge-quiz/src/content/__tests__/content.test.ts\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}

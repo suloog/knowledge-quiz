@@ -1,0 +1,74 @@
+{
+  "story": "US-00-01",
+  "attempt": 1,
+  "round": 3,
+  "sha": "64a54b89d67f98df874950bba59de3c3705f428c",
+  "reviewer": "spec",
+  "ts": "2026-10-14T08:47:00Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-00-01",
+    "impact": "scripts/stack.sh is `yarn stack` (the README's start command, used by developers) and is what scripts/test-acceptance.sh starts; test-acceptance.sh is `yarn test:acceptance`, run by .github/workflows/acceptance.yml on every PR and by the delivery loop's local runs.\n  Changes to the start/stop path decide whether the bundler, Gradle daemon and emulator survive a run (on Linux the bundler still does), and the pre-start uninstall touches whatever device is attached.",
+    "findings": [
+      {
+        "id": "B1",
+        "blocking": true,
+        "security": false,
+        "tags": [],
+        "text": "scripts/stack.sh:123 — `yarn expo run:android &` makes APP_PID yarn; yarn 1 runs expo via /bin/sh -c (dash on Linux, no exec), so cleanup's `pkill -P`/`kill` (stack.sh:59-60) hit only sh and yarn and the expo/Metro node is orphaned and keeps serving :8081 after \"[stack] stopping the bundler\" (reproduced in a node:22 container; CI run 38536240209 ends with \"Terminate orphan process: pid (3135) (node)\") — breaks the script's \"SIGTERM stops the bundler, nothing keeps running\" and TC-00-01's cleanup → launch the binary directly: `node_modules/.bin/expo run:android &` (verified: expo gets SIGTERM, 8081 closed), or `set -m` and `kill -TERM -- -\"$APP_PID\"`"
+      },
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": ".github/workflows/acceptance.yml:54 — comment says the tests start the app with `yarn stack`; they now run `bash scripts/stack.sh` (README.md:27 likewise); reword to \"yarn stack's script, scripts/stack.sh\""
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:47-50,94 — on a fresh clone without Maestro (or when stack.sh fails its tools check) deps are never installed, so `yarn -s jest` fails \"command not found\" and writes no unit.xml; the \"Jest still runs\" intent does not hold locally (exit stays non-zero) → install deps when node_modules is missing, or accept it"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:53 — `adb get-state` fails with more than one device attached, so the uninstall is skipped silently and a stale app can pass the readiness check → uninstall on the device stack.sh will use, or print a line when skipped"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "PR #1 body — \"Changes\" still says Jest runs before the stack and Maestro (now stack → Maestro → Jest); og:impact still says \"from ac18d6fb7 to 993eed583\" and \"no CI saw them\" though CI run 38536240209 on 64a54b8 is green"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "external",
+        "note": "MANUAL TC-00-02"
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "external",
+        "note": "MANUAL TC-00-04"
+      }
+    ],
+    "stray": []
+  },
+  "raw": "## Spec review of US-00-01, round 3 (diff 0cbc66b..64a54b8, with the whole PR as context)\n\n**Verdict: NOT COMPLIANT. One blocking item.** The round-2 fix took out the yarn layer around `stack.sh`. The same yarn → `/bin/sh` layer sits one level lower, around `expo run:android`, so on Linux the bundler still survives SIGTERM.\n\n### Round-2 B1: verified fixed as asked, but not in effect\n- `scripts/test-acceptance.sh:60` now starts `bash scripts/stack.sh &` directly, so STACK_PID is stack.sh itself.\n- CI run 38536240209 (pull_request, head 64a54b8, API 31, success) has a `stack.log` that ends with `[stack] stopping the bundler` and `[stack] stopping the Gradle daemon`. There is no emulator line because the runner booted the emulator.\n- The orphan list at job end went from 6 processes (round 2: bash, node, sh, node, java, java) to `adb` plus one `node` (pid 3135). The leftover `node` is the bundler (B1 below).\n- I checked the TERM and Ctrl-C (SIGINT to the process group) paths with a small copy of the pattern. Both run the child's cleanup and wait for it.\n- Locally on the fresh clone (test-runs/2026-10-14_103400, API 32): the stack log ends with all three stop lines, nothing listens on 8081 afterwards, and no `kq-emulator.*` file is left in `$TMPDIR`.\n\n### Findings\n\n**B1, BLOCKING: `/Users/sulo/workspace/knowledge-quiz/scripts/stack.sh:123` (cleanup at :57-61). On Linux, SIGTERM leaves the Metro bundler running even though the script prints \"stopping the bundler\".**\n- **Cause:** `yarn expo run:android &` makes APP_PID yarn. Yarn 1 runs the binary through `/bin/sh -c`, and on Linux that is dash, which does not exec. So the tree is yarn → sh → node(expo/Metro). `pkill -P $APP_PID` reaches only `sh`, which dies without passing the signal on. The expo node is orphaned and keeps serving :8081.\n- **Reproduced** in a `node:22` (Debian) container using these cleanup lines and yarn 1.22.22. After the stop, `node …/.bin/expo run:android` is still alive (PPID 1) and `curl :8081` still answers `packager-status:running`.\n- **CI shows the same:** `Terminate orphan process: pid (3135) (node)`. Round 2's orphan list proves the `sh` layer exists on the runner.\n- **Which promises it breaks:** the header at stack.sh:11-12 (\"SIGTERM stops the bundler … nothing it started keeps running\"), TC-00-01 Cleanup (\"nothing of it keeps running\"), and the round-2 fix's own reason at test-acceptance.sh:57-58. On a Linux developer machine the next `yarn test:acceptance` finds the stale Metro on 8081 and passes the readiness check immediately.\n- **Not affected:** macOS, where `/bin/sh` is bash and execs the command, and an interactive Ctrl-C, which signals the whole group.\n- **Fix:** start the binary without yarn: `node_modules/.bin/expo run:android &`. I checked this variant in the same container: expo gets SIGTERM, 8081 is closed and nothing is left. An alternative is `set -m` before the `&` and then `kill -TERM -- -\"$APP_PID\"`.\n\n**N1: `/Users/sulo/workspace/knowledge-quiz/.github/workflows/acceptance.yml:54`** says the tests start the app \"with `yarn stack`\". They now run `bash scripts/stack.sh`, so the comment is out of date. README.md:27 says the same. It is still the script behind the documented command, which matches the technical note in substance. Fix: reword to \"`yarn stack`'s script (scripts/stack.sh)\".\n\n**N2: `/Users/sulo/workspace/knowledge-quiz/scripts/test-acceptance.sh:47-50, 94`.** On a fresh clone with no Maestro (or when stack.sh stops at its tools check), dependencies are never installed. `yarn -s jest` then fails with \"command not found\" and writes no `unit.xml`, so \"Jest still runs\" does not hold locally. The exit code is still non-zero, and CI installs dependencies anyway. Fix: when `node_modules` is missing, run `yarn install --frozen-lockfile` before Jest, or accept and note it.\n\n**N3: `/Users/sulo/workspace/knowledge-quiz/scripts/test-acceptance.sh:53`.** `adb get-state` fails with two or more devices attached (\"more than one device/emulator\"). The uninstall is then skipped without a word, and a stale installed app can again pass the readiness check. Fix: target the device that stack.sh will pick (`adb -s \"$(adb devices | awk …)\" uninstall`), or print a line when the uninstall is skipped.\n\n**N4: PR #1 description.**\n- \"Changes\" still says `yarn test:acceptance` runs \"Jest …, the stack, then the Maestro flows\". The order is now stack → Maestro → Jest.\n- The og:impact block still says \"from ac18d6fb7 to 993eed583\" and \"no CI saw them\". CI run 38536240209 on the head is now green.\n\nNot re-raised: the unused @typescript-eslint devDependencies (round 2 N2), which were refused.\n\n### Other checks\n- **Gates:** `detect-stack.sh commit|push` lists `yarn format:check`, `yarn lint`, `yarn tsc` and `yarn test`. All four pass on 64a54b8 with 100% line coverage. `bash -n` passes on both scripts.\n- **Edge cases:**\n  - A failing test turns the run red and the artifact is still uploaded (failed run 38531190069 uploaded `og-test-results`).\n  - `if-no-files-found: error` is present (acceptance.yml:74). With Maestro missing, `unit.xml` is still published, so the artifact is not empty.\n  - When tools are missing, stack.sh lists them and exits.\n- **Out of scope:** nothing. The fix diff touches only `scripts/stack.sh` and `scripts/test-acceptance.sh`.\n- **Constitution:** no violations in the fix diff.\n\n### Criteria\n| # | Verdict | Evidence |\n| --- | --- | --- |\n| 1 | met | README.md:6-10 names `yarn stack`. TC-00-01 passed on a fresh clone locally (deps installed, emulator booted) and in CI on API 31. The SIGTERM cleanup gap is B1 and is tracked there. |\n| 2 | external (MANUAL TC-00-02) | CI run 38536240209 on head 64a54b8, event pull_request: artifact `og-test-results` holds `junit/unit.xml` and `maestro/report.xml`, with testcases `TC-00-01 …` and `TC-00-03 …`. |\n| 3 | met | TC-00-03 passed in CI (`report.xml`, screenshots) and locally. |\n| 4 | external (MANUAL TC-00-04) | All four gates are detected and green, as listed above. |\n\nFiles: /Users/sulo/workspace/knowledge-quiz/scripts/stack.sh, /Users/sulo/workspace/knowledge-quiz/scripts/test-acceptance.sh, /Users/sulo/workspace/knowledge-quiz/.github/workflows/acceptance.yml, /Users/sulo/workspace/knowledge-quiz/README.md, /Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-14_103400/\n\n```\nREVIEW: findings\nSTORY: US-00-01\nIMPACT: scripts/stack.sh is `yarn stack` (the README's start command, used by developers) and is what scripts/test-acceptance.sh starts; test-acceptance.sh is `yarn test:acceptance`, run by .github/workflows/acceptance.yml on every PR and by the delivery loop's local runs.\n  Changes to the start/stop path decide whether the bundler, Gradle daemon and emulator survive a run (on Linux the bundler still does), and the pre-start uninstall touches whatever device is attached.\nFINDINGS:\n  B1 scripts/stack.sh:123 — `yarn expo run:android &` makes APP_PID yarn; yarn 1 runs expo via /bin/sh -c (dash on Linux, no exec), so cleanup's `pkill -P`/`kill` (stack.sh:59-60) hit only sh and yarn and the expo/Metro node is orphaned and keeps serving :8081 after \"[stack] stopping the bundler\" (reproduced in a node:22 container; CI run 38536240209 ends with \"Terminate orphan process: pid (3135) (node)\") — breaks the script's \"SIGTERM stops the bundler, nothing keeps running\" and TC-00-01's cleanup → launch the binary directly: `node_modules/.bin/expo run:android &` (verified: expo gets SIGTERM, 8081 closed), or `set -m` and `kill -TERM -- -\"$APP_PID\"`\n  N1 .github/workflows/acceptance.yml:54 — comment says the tests start the app with `yarn stack`; they now run `bash scripts/stack.sh` (README.md:27 likewise); reword to \"yarn stack's script, scripts/stack.sh\"\n  N2 scripts/test-acceptance.sh:47-50,94 — on a fresh clone without Maestro (or when stack.sh fails its tools check) deps are never installed, so `yarn -s jest` fails \"command not found\" and writes no unit.xml; the \"Jest still runs\" intent does not hold locally (exit stays non-zero) → install deps when node_modules is missing, or accept it\n  N3 scripts/test-acceptance.sh:53 — `adb get-state` fails with more than one device attached, so the uninstall is skipped silently and a stale app can pass the readiness check → uninstall on the device stack.sh will use, or print a line when skipped\n  N4 PR #1 body — \"Changes\" still says Jest runs before the stack and Maestro (now stack → Maestro → Jest); og:impact still says \"from ac18d6fb7 to 993eed583\" and \"no CI saw them\" though CI run 38536240209 on 64a54b8 is green\nCRITERIA:\n  #1 met\n  #2 external — MANUAL TC-00-02\n  #3 met\n  #4 external — MANUAL TC-00-04\n```\n"
+}

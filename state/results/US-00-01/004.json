@@ -1,0 +1,66 @@
+{
+  "n": 4,
+  "attempt": 1,
+  "ts": "2026-10-14T08:53:52Z",
+  "story": "US-00-01",
+  "mode": "fix",
+  "parsed": {
+    "result": "ready",
+    "story": "US-00-01",
+    "branch": "feature/US-00-01",
+    "commits": [
+      "45a2147 fix(stack): start expo directly so cleanup stops the bundler [US-00-01]",
+      "2e95f78 docs(acceptance): name stack.sh where the tests start it [US-00-01]"
+    ],
+    "decisions": [],
+    "evidence": [
+      "#1 one documented command starts the whole stack from a fresh clone — TC-00-01 pass (steps 1-2) in run 2026-10-14_105140 on head 2e95f78. It ran in a fresh git clone with no android/ and no node_modules. bash scripts/stack.sh (what yarn stack runs) installed the dependencies, booted Medium_Phone (API 32, no API 31 image here), built (BUILD SUCCESSFUL), installed and opened the app. stack.log ends with the three stop lines. Afterwards nothing listened on :8081, no expo/Metro/Gradle/emulator/stack.sh process was left, and adb listed no devices. The README \"Start the whole stack\" section names yarn stack.",
+      "#2 GitHub Actions workflow runs the acceptance command and uploads og-test-results always — MANUAL: TC-00-02 is manual-only. .github/workflows/acceptance.yml changed only in a comment: it still runs yarn test:acceptance, and the upload uses if: always() and if-no-files-found: error. Check it on the PR's CI run.",
+      "#3 one path through every layer passes, named with its TC id — TC-00-03 pass (steps 1-2) in run 2026-10-14_105140 (Maestro flow \"TC-00-03 The first screen shows a value read from the app's bundled content data\")",
+      "#4 commit and push gates in place and green on a clean checkout — MANUAL: TC-00-04 is manual-only. yarn format:check, yarn lint, yarn tsc and yarn test all pass on 2e95f78, and the commit hook ran the gates on both commits."
+    ],
+    "tests": {
+      "run": "/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-14_105140",
+      "pass": 2,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 2,
+      "manual_tests": [
+        "TC-00-02",
+        "TC-00-04"
+      ]
+    },
+    "derived_tests": [],
+    "preexisting": "All four criteria were built in round 0 and fixed in rounds 1-3. This round changed only stack.sh's launch line, plus comments and the README.",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test ok"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "findings": [
+      "spec B1 fixed 45a2147 (stack.sh launches node_modules/.bin/expo run:android directly, so APP_PID is the node process serving :8081",
+      "the stop path was reproduced and fixed in a node:22 Debian container, and checked locally after the run: :8081 closed, no stack process left)",
+      "code N1 fixed 45a2147 (the emulator failure message now prints the kept log's path, so \"the error names it\" is true)",
+      "spec N1 / code N3 fixed 2e95f78 (the workflow comment, the README test table and the TC-00-01 flow comment name scripts/stack.sh, what yarn stack runs)",
+      "spec N3 fixed 2e95f78 (test-acceptance.sh says the uninstall is skipped when no device is attached yet, because on a freshly booted emulator no copy of the app runs until the start command opens this build)"
+    ],
+    "notes": "The suite ran locally on the API 32 AVD Medium_Phone (no API 31 image on this machine), from a fresh git clone (scratchpad/fresh3) of 2e95f78 with warm ~/.gradle caches; the run dir is copied into the repo's git-ignored test-runs/. The API 31 run and the CI-side check that no orphan node is terminated at the job's end come from the PR's CI run. 2e95f78 touches .github/workflows/acceptance.yml (a comment only), so the PR still needs the owner's merge.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [
+        "#2 GitHub Actions workflow runs the acceptance command and uploads og-test-results always — MANUAL: TC-00-02 is manual-only. .github/workflows/acceptance.yml changed only in a comment: it still runs yarn test:acceptance, and the upload uses if: always() and if-no-files-found: error. Check it on the PR's CI run.",
+        "#4 commit and push gates in place and green on a clean checkout — MANUAL: TC-00-04 is manual-only. yarn format:check, yarn lint, yarn tsc and yarn test all pass on 2e95f78, and the commit hook ran the gates on both commits."
+      ],
+      "blocked": []
+    },
+    "critical_decisions": []
+  },
+  "raw": "I fixed spec B1 in 45a2147. scripts/stack.sh now starts `node_modules/.bin/expo run:android &` itself instead of `yarn expo run:android &`, so APP_PID is the expo/Metro node process. The trivial optional items are in 2e95f78. The whole acceptance suite passed from a fresh clone of the new head 2e95f78, on the API 32 AVD Medium_Phone: this machine has no API 31 image, so the PR's CI run remains the API 31 evidence. Nothing is pushed.\n\n**Every backgrounded or signalled process, in both scripts:**\n- `test-acceptance.sh`: STACK_PID is `bash scripts/stack.sh` with no wrapper (since 0929718).\n- `stack.sh` APP_PID: now node directly. The expo binary is a `#!/usr/bin/env node` script, and env execs node.\n- `stack.sh` EMULATOR_PID: the emulator binary directly. It is stopped first with `adb emu kill`. I did not test the fallback `kill -TERM`; it runs only if `adb emu kill` fails.\n- `yarn install`, `yarn -s jest` and Maestro run in the foreground and are never signalled.\n\n**Linux proof** (node:22 Debian container, `/bin/sh` is dash, no secrets, no env files). The harness runs stack.sh's real launch line and cleanup, with `run:android` swapped for `start` because there is no Android SDK in the container. adb and java are stubs. It stops the stack the way test-acceptance.sh does: `kill -TERM` on stack.sh, then `wait`.\n- Old line (`yarn expo start`): the process tree was bash → yarn → `/bin/sh -c` → node. After the stop, the node process (re-parented to PID 1) was still serving :8081. That reproduces the reviewer's finding.\n- New line: the tree was bash → node. After \"[stack] stopping the bundler\" no process was left and :8081 was closed.\n- The harness is at /private/tmp/claude-501/-Users-sulo-workspace-knowledge-quiz/0811fcaa-1d7c-4ea0-83f3-d685a8a6e3bc/scratchpad/linuxproof/proof.sh.\n\n**Local check after the acceptance run** (ps read outside the sandbox, because the sandbox hides other processes): nothing listened on :8081. No expo, Metro, Gradle, Kotlin daemon, qemu/emulator, dotslash/devtools or stack.sh process was left. `adb devices` was empty, and the emulator's temporary console log had been removed.\n\nRESULT: ready\nSTORY: US-00-01\nBRANCH: feature/US-00-01\nCOMMITS: 45a2147 fix(stack): start expo directly so cleanup stops the bundler [US-00-01]; 2e95f78 docs(acceptance): name stack.sh where the tests start it [US-00-01]\nDECISIONS: none\nEVIDENCE:\n  #1 one documented command starts the whole stack from a fresh clone — TC-00-01 pass (steps 1-2) in run 2026-10-14_105140 on head 2e95f78. It ran in a fresh git clone with no android/ and no node_modules. bash scripts/stack.sh (what yarn stack runs) installed the dependencies, booted Medium_Phone (API 32, no API 31 image here), built (BUILD SUCCESSFUL), installed and opened the app. stack.log ends with the three stop lines. Afterwards nothing listened on :8081, no expo/Metro/Gradle/emulator/stack.sh process was left, and adb listed no devices. The README \"Start the whole stack\" section names yarn stack.\n  #2 GitHub Actions workflow runs the acceptance command and uploads og-test-results always — MANUAL: TC-00-02 is manual-only. .github/workflows/acceptance.yml changed only in a comment: it still runs yarn test:acceptance, and the upload uses if: always() and if-no-files-found: error. Check it on the PR's CI run.\n  #3 one path through every layer passes, named with its TC id — TC-00-03 pass (steps 1-2) in run 2026-10-14_105140 (Maestro flow \"TC-00-03 The first screen shows a value read from the app's bundled content data\")\n  #4 commit and push gates in place and green on a clean checkout — MANUAL: TC-00-04 is manual-only. yarn format:check, yarn lint, yarn tsc and yarn test all pass on 2e95f78, and the commit hook ran the gates on both commits.\nTESTS: run=/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-14_105140 pass=2 fail=0 blocked=0 manual=2 manual_tests=TC-00-02,TC-00-04\nDERIVED_TESTS: none\nPREEXISTING: All four criteria were built in round 0 and fixed in rounds 1-3. This round changed only stack.sh's launch line, plus comments and the README.\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test ok\nENV_KEYS: none\nMIGRATION: no\nFINDINGS: spec B1 fixed 45a2147 (stack.sh launches node_modules/.bin/expo run:android directly, so APP_PID is the node process serving :8081; the stop path was reproduced and fixed in a node:22 Debian container, and checked locally after the run: :8081 closed, no stack process left); code N1 fixed 45a2147 (the emulator failure message now prints the kept log's path, so \"the error names it\" is true); spec N1 / code N3 fixed 2e95f78 (the workflow comment, the README test table and the TC-00-01 flow comment name scripts/stack.sh, what yarn stack runs); spec N3 fixed 2e95f78 (test-acceptance.sh says the uninstall is skipped when no device is attached yet, because on a freshly booted emulator no copy of the app runs until the start command opens this build)\nNOTES: The suite ran locally on the API 32 AVD Medium_Phone (no API 31 image on this machine), from a fresh git clone (scratchpad/fresh3) of 2e95f78 with warm ~/.gradle caches; the run dir is copied into the repo's git-ignored test-runs/. The API 31 run and the CI-side check that no orphan node is terminated at the job's end come from the PR's CI run. 2e95f78 touches .github/workflows/acceptance.yml (a comment only), so the PR still needs the owner's merge.\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}

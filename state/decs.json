@@ -1,0 +1,18 @@
+[
+  {
+    "dec": "DEC-42",
+    "story": "US-00-01",
+    "attempt": 1,
+    "title": "Foundation keeps the boilerplate's tooling, leaves out its demo and network code",
+    "file": "docs/specs/DECISIONS.md",
+    "ts": "2026-10-14T07:43:20Z"
+  },
+  {
+    "dec": "DEC-43",
+    "story": "US-00-01",
+    "attempt": 1,
+    "title": "Android application id pl.ordergroup.knowledgequiz",
+    "file": "docs/specs/DECISIONS.md",
+    "ts": "2026-10-14T07:43:21Z"
+  }
+]

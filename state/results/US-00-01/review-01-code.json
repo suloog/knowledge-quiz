@@ -1,0 +1,74 @@
+{
+  "story": "US-00-01",
+  "attempt": 1,
+  "round": 1,
+  "sha": "2e95f78429f470316afe26c9db5cefbc6026ec88",
+  "reviewer": "code",
+  "ts": "2026-10-14T09:00:33Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-00-01",
+    "impact": "scripts/stack.sh is what `yarn stack` and scripts/test-acceptance.sh start, and CI runs that through `yarn test:acceptance`. Every later story's acceptance run goes through the same launch and cleanup path. A regression there would leave an orphan Metro on :8081 or an emulator running, and would make the next run's readiness check pass against stale state. The other four edits in the fix commits are comments, a failure message and a README line.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "/tmp-scratch linuxproof/proof.sh — the Linux harness runs `expo start`, not `run:android`, so Gradle children are untested there; CI run 38538411102 covers it and shows no orphan node → remark only, no action"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/stack.sh:59 — `pkill` is not in the tools check; without procps on Linux the child-kill is silently skipped through `|| true` → add pkill to the `missing` list, or drop the pkill line if the direct kill is enough now"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:53 — the comment \"on a freshly booted device no copy of the app runs\" is not true for an AVD that quick-boots from a saved snapshot, where `pidof` could pass before this build is installed → soften the wording"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "README.md:13 — the README says \"Android 12 AVD\" and \"(API 31)\", but stack.sh:87 also accepts API 32, which the local run used → say \"Android 12 (API 31/32)\""
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/stack.sh:59-60 — TERM is sent twice to expo (pkill -P children, then the direct kill); harmless, as the clean local stop shows → no action"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Round-1 verdict: the blocking fix is really fixed and I found nothing that blocks. The remaining findings are non-blocking.\n\n**The fix**\n- `node_modules/.bin/expo` is a symlink to `expo/bin/cli`, whose first line is `#!/usr/bin/env node`. `env` execs `node` in place, so `$!` is the expo/Metro node process with no `sh` or `yarn` in between. That makes `kill -TERM \"$APP_PID\"` hit the real server.\n- `pkill -TERM -P \"$APP_PID\"` now reaches only expo's real children, such as the Gradle client.\n- CI run 38538411102 on 2e95f78 finished `success`: all 16 steps passed. Both Maestro flows passed (TC-00-01 and TC-00-03) and the 3 unit tests passed. Both artifacts were uploaded.\n- The job-end \"Cleaning up orphan processes\" now lists only `adb` (pid 2914). That is the adb server, which the emulator-runner action started and `stack.sh` did not. The orphaned expo/Metro node from the previous round is gone.\n- The local run `test-runs/2026-10-14_105140` (fresh clone) shows `[stack] stopping the bundler`, `stopping the Gradle daemon` and `stopping the emulator this script started`. Right now nothing listens on :8081 and no expo, emulator or gradle process is left.\n- I ran `format:check`, `lint`, `tsc` and `test` locally. All are green, and the working tree is clean.\n- Run-directory note: the `test-runs/` directory is gitignored.\n\n**Non-blocking findings**\n- N1 `linuxproof/proof.sh`, not committed: the harness swaps `run:android` for `expo start` and stubs adb and java. It proves the PID mapping and the old-versus-new difference. It does not exercise `expo run:android` with Gradle children on Linux. CI run 38538411102 covers that path and shows no orphan node, so this is only a remark.\n- N2 `scripts/stack.sh:59`: `pkill` is not in the tools check at lines 24-36. On a Linux box without `procps` the line is silently skipped through `|| true`, and expo's children are not signalled. Add `pkill` to `missing`, or kill the children another way. The GitHub runner and macOS both have it.\n- N3 `scripts/test-acceptance.sh:53-54`: the new comment says \"on a freshly booted device no copy of the app runs\". An AVD that quick-boots from a saved snapshot, for example one saved by Android Studio, could still have the app running. `pidof` plus :8081 would then pass the readiness check before this build is installed. This is unlikely, since `-no-snapshot-save` stops this script saving snapshots, but the comment states it as a fact. Soften the wording.\n- N4 `README.md:13-15` and `:21`: the README says an Android 12 AVD or \"(API 31)\", but `stack.sh:87` accepts both API 31 and 32. The implementer's local run used API 32, so the docs are narrower than the behaviour. Say \"Android 12 (API 31/32)\".\n- N5 `scripts/test-acceptance.sh:41-44` and `scripts/stack.sh:125`: on SIGTERM `stack.sh` sends TERM twice to expo, once through `pkill -P` and once directly. That is harmless, and the local run shows a clean stop. No action needed.\n\n**Acceptance criteria**\n- #1 (one documented command, fresh clone, README names it) — met: `yarn stack` runs `scripts/stack.sh`. Local run `test-runs/2026-10-14_105140` and CI on 2e95f78 both started the stack from a fresh checkout.\n- #2 (workflow on every pull request, one repo command, `og-test-results` uploaded with `if: always()` and `if-no-files-found: error`) — met: `.github/workflows/acceptance.yml` meets it, and CI run 38538411102 is green with the artifact uploaded.\n- #3 (a passing acceptance test whose name carries its test case id) — met: \"TC-00-01 …\" passed in CI and locally.\n- #4 (gates in place and green on a clean checkout) — met: `format:check`, `lint`, `tsc` and `test` all pass.\n\n```\nREVIEW: findings\nSTORY: US-00-01\nIMPACT: scripts/stack.sh is what `yarn stack` and scripts/test-acceptance.sh start, and CI runs that through `yarn test:acceptance`. Every later story's acceptance run goes through the same launch and cleanup path. A regression there would leave an orphan Metro on :8081 or an emulator running, and would make the next run's readiness check pass against stale state. The other four edits in the fix commits are comments, a failure message and a README line.\nFINDINGS:\n  N1 /tmp-scratch linuxproof/proof.sh — the Linux harness runs `expo start`, not `run:android`, so Gradle children are untested there; CI run 38538411102 covers it and shows no orphan node → remark only, no action\n  N2 scripts/stack.sh:59 — `pkill` is not in the tools check; without procps on Linux the child-kill is silently skipped through `|| true` → add pkill to the `missing` list, or drop the pkill line if the direct kill is enough now\n  N3 scripts/test-acceptance.sh:53 — the comment \"on a freshly booted device no copy of the app runs\" is not true for an AVD that quick-boots from a saved snapshot, where `pidof` could pass before this build is installed → soften the wording\n  N4 README.md:13 — the README says \"Android 12 AVD\" and \"(API 31)\", but stack.sh:87 also accepts API 32, which the local run used → say \"Android 12 (API 31/32)\"\n  N5 scripts/stack.sh:59-60 — TERM is sent twice to expo (pkill -P children, then the direct kill); harmless, as the clean local stop shows → no action\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 met\n```\n"
+}

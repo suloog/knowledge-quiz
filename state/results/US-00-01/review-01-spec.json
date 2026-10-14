@@ -1,0 +1,67 @@
+{
+  "story": "US-00-01",
+  "attempt": 1,
+  "round": 1,
+  "sha": "2e95f78429f470316afe26c9db5cefbc6026ec88",
+  "reviewer": "spec",
+  "ts": "2026-10-14T09:01:38Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-00-01",
+    "impact": "scripts/stack.sh is what `yarn stack` (README start command) runs and what scripts/test-acceptance.sh starts locally and in CI; launching expo directly changes which process cleanup signals and drops yarn's env/PATH wrapping for expo and its Gradle child.\n  Verified: build and Metro work without yarn (local fresh clone + CI API 31), Metro now stops on SIGTERM, no orphan node at the CI job end (only adb). A layout without node_modules/.bin/expo (e.g. Yarn PnP) would break the start, but the repo pins Yarn 1.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/maestro/TC-00-01-stack-starts.yaml:10 — screenshot label `step-01-started-by-yarn-stack` is stale now that the tests start scripts/stack.sh directly → rename to e.g. `step-01-started-by-the-start-command`"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "PR #1 body \"Changes\"/\"Notes\" — says test:acceptance runs Jest, then the stack, then Maestro (real order: stack, Maestro, then Jest) and that CI has not run → fix the order and cite run 38538411102 (API 31, green, og-test-results) for TC-00-02"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/stack.sh:87 — AVD lookup accepts API 31 and 32 while the message at :93 and README.md:20 say \"Android 12 (API 31)\" → say \"Android 12/12L (API 31-32)\" or narrow the regex"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "CI test-results/stack.log — React Native DevTools (dotslash) aborts with a FATAL chrome-sandbox error during expo run:android in CI; harmless noise, not caused by this fix → optionally turn off the DevTools launch in CI"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "external",
+        "note": "MANUAL TC-00-02 (run 38538411102 on 2e95f78 green, og-test-results uploaded with TC-00-01/TC-00-03 testcases)"
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "external",
+        "note": "MANUAL TC-00-04 (detect-stack lists format:check, lint, tsc, test; all exit 0 on a fresh clone of 2e95f78)"
+      }
+    ],
+    "stray": []
+  },
+  "raw": "## Spec-compliance review: US-00-01, retry round 1 (fix range 64a54b8..2e95f78, PR #1 as context)\n\nThe previous blocking item is fixed and I found nothing new that blocks. All four criteria are met or have external evidence. What's left is four small non-blocking items, mostly stale wording.\n\n### B1 from the last round (expo/Metro node orphaned on Linux): FIXED, three independent checks\n\n1. **Code.** `/Users/sulo/workspace/knowledge-quiz/scripts/stack.sh:125` now runs `node_modules/.bin/expo run:android &`.\n   - `node_modules/.bin/expo` links to `expo/bin/cli`, which starts with `#!/usr/bin/env node`. So `APP_PID` is now the node process itself.\n   - In `@expo/cli`, `run:android` starts Metro inside that same process (`runAndroidAsync.js:99` calls `startBundlerAsync`).\n   - Expo CLI handles SIGTERM, SIGINT and SIGHUP (`utils/exit.js`).\n   - So the cleanup signals at lines 59-61 now reach the process that serves :8081.\n2. **Linux proof, rerun by me.** I copied the implementer's `proof.sh` and ran it in `node:22`, where `/bin/sh` is dash. The `stack.sh` it uses is byte-identical to the one at 2e95f78.\n   - **Old launch (`yarn expo start`):** the chain was yarn, then `/bin/sh -c`, then node. After SIGTERM the node process (pid 48) was re-parented to pid 1, and the result was \"RESULT old: :8081 STILL SERVING\".\n   - **New launch:** node is a direct child of `stack.sh`. After SIGTERM the log shows \"[stack] stopping the bundler\", no process is left, and the result was \"RESULT new: :8081 closed\".\n   - The proof uses `start` instead of `run:android`. That is a fair stand-in, because both run Metro in the same process.\n3. **CI on 2e95f78.** Run 38538411102 (event `pull_request`, headSha 2e95f78) has finished with **success**.\n   - **Device:** `api-level: 31`, `google_apis`, x86_64.\n   - **Flows:** both passed (\"[Passed] TC-00-01 …\", \"[Passed] TC-00-03 …\", \"2/2 Flows Passed\"), plus Jest 3/3.\n   - **Stop path:** \"[acceptance] stopping the stack\" at 08:59:08.47 and \"unit tests\" at 08:59:09.15. The `stack.log` in the artifact ends with \"[stack] stopping the bundler\" and \"[stack] stopping the Gradle daemon\".\n   - **Orphans:** \"Complete job\" only ends `pid (2914) (adb)`, the adb server. The previous run 38536240209 (at 64a54b8) also ended `pid (3135) (node)`, and that node line is gone.\n   - **Artifact:** `og-test-results` was uploaded (967 bytes). It holds `junit/unit.xml` and `maestro/report.xml`, whose testcases are named \"TC-00-01 …\" and \"TC-00-03 …\".\n\n**Local run `test-runs/2026-10-14_105140`:** fresh clone of 2e95f78, clean tree.\n- `stack.log` shows \"installing dependencies\", the build, then \"stopping the bundler\", \"stopping the Gradle daemon\" and \"stopping the emulator this script started\".\n- 2 pass, 0 fail, 2 manual.\n- Nothing is listening on :8081 afterwards.\n- The device was `Medium_Phone`, an API 32 AVD; the PR's Notes say so.\n\n**Did the fix break anything?** I found nothing.\n- The build still works without yarn in front: Gradle and Metro resolved fine both locally and in CI.\n- The comment-only edits (README.md:27, acceptance.yml:54-56, test-acceptance.sh:53-54, the header of TC-00-01-stack-starts.yaml) and the emulator-log path added to the error at stack.sh:100 change no behaviour.\n\n### Gates (#4), on a fresh clone of 2e95f78 (`/private/tmp/claude-501/-Users-sulo-workspace-knowledge-quiz/0811fcaa-1d7c-4ea0-83f3-d685a8a6e3bc/scratchpad/review2/clone`)\n- `detect-stack.sh commit .` and `detect-stack.sh push .` both list `yarn format:check`, `yarn lint`, `yarn tsc` and `yarn test`.\n- After `yarn install --frozen-lockfile`, all four pass (exit 0); Jest ran 3 suites, 3 tests.\n\n### Criteria\n\n| Criterion | Verdict | Evidence |\n| --- | --- | --- |\n| #1 one documented command starts the stack | MET | README.md:9 names `yarn stack`; package.json `stack` runs `bash scripts/stack.sh`; TC-00-01 passes locally (fresh clone) and in CI on API 31 |\n| #2 workflow on every PR, one repo command, `og-test-results` always uploaded | EXTERNAL (MANUAL TC-00-02) | Seen on GitHub: run 38538411102 on the head commit, `on: pull_request`, the workflow runs only `yarn test:acceptance` (acceptance.yml:67), upload has `if: always()` and `if-no-files-found: error` (acceptance.yml:70-75), artifact 11881700660 holds the reports |\n| #3 one path through every layer, test named with its TC id | MET | TC-00-03 passes locally and in CI; testcase name \"TC-00-03 …\" in `maestro/report.xml` |\n| #4 gates detected and green on a clean checkout | EXTERNAL (MANUAL TC-00-04) | Steps 1-2 checked by me as above; step 3 (a commit refused by the hook) is manual |\n\n### Edge cases\n- **A failing test turns the run red and the artifact is still uploaded:** shown by run 38531190069 at 993eed5. It concluded \"failure\", yet both upload steps succeeded and `og-test-results` (1015 bytes) was published.\n- **No JUnit report means the upload fails:** set by `if-no-files-found: error` (acceptance.yml:75). It is configuration only and was never seen firing.\n- **Missing services:** the tool and AVD checks in stack.sh:24-41 and 82-93, and the emulator-failure path at 99-118, are unchanged by this round.\n\n### Out of scope / constitution\nThe fix diff touches `.github/` with a comment only. That file is added by the PR anyway, so the owner merges it by hand. Nothing in the diff is out of scope or forbidden by the constitution.\n\n### Findings, all NON-BLOCKING\n- **N1** `tests/maestro/TC-00-01-stack-starts.yaml:10`: the screenshot and evidence label `step-01-started-by-yarn-stack` is out of date. The tests now start `scripts/stack.sh` directly, as the header comment at lines 4-5 now says. Fix: rename it to e.g. `step-01-started-by-the-start-command`.\n- **N2** PR #1 body, \"Changes\" bullet: it says `yarn test:acceptance` runs \"Jest with JUnit output, the stack, then the Maestro flows\". The real order is the stack, then the Maestro flows, then Jest (scripts/test-acceptance.sh:44-99). The Notes line \"CI … has not run before this PR\" is also stale. Fix: correct the order, and cite run 38538411102 (API 31, green, `og-test-results`) as the TC-00-02 evidence.\n- **N3** `scripts/stack.sh:87` against line 93 and README.md:20: the AVD lookup accepts API 31 and 32 (`android-3[12]`), but the error message and README say \"Android 12 (API 31)\". Fix: say \"Android 12 / 12L (API 31-32)\", or narrow the regex to 31 (local runs depend on API 32).\n- **N4** CI `stack.log`: React Native DevTools, fetched by dotslash during `expo run:android`, aborts with a FATAL chrome-sandbox message. It is harmless (it does not show up as an orphan) but noisy. It is not caused by this fix. Fix (optional): turn off the DevTools launch in CI, or ignore it.\n\n### Files\n- `/Users/sulo/workspace/knowledge-quiz/scripts/stack.sh`\n- `/Users/sulo/workspace/knowledge-quiz/scripts/test-acceptance.sh`\n- `/Users/sulo/workspace/knowledge-quiz/.github/workflows/acceptance.yml`\n- `/Users/sulo/workspace/knowledge-quiz/tests/maestro/TC-00-01-stack-starts.yaml`\n- `/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-14_105140/stack.log`\n- CI artifacts: `/private/tmp/claude-501/-Users-sulo-workspace-knowledge-quiz/0811fcaa-1d7c-4ea0-83f3-d685a8a6e3bc/scratchpad/review2/art/`\n- CI log: `/private/tmp/claude-501/-Users-sulo-workspace-knowledge-quiz/0811fcaa-1d7c-4ea0-83f3-d685a8a6e3bc/scratchpad/review2/ci.log`\n\n```\nREVIEW: findings\nSTORY: US-00-01\nIMPACT: scripts/stack.sh is what `yarn stack` (README start command) runs and what scripts/test-acceptance.sh starts locally and in CI; launching expo directly changes which process cleanup signals and drops yarn's env/PATH wrapping for expo and its Gradle child.\n  Verified: build and Metro work without yarn (local fresh clone + CI API 31), Metro now stops on SIGTERM, no orphan node at the CI job end (only adb). A layout without node_modules/.bin/expo (e.g. Yarn PnP) would break the start, but the repo pins Yarn 1.\nFINDINGS:\n  N1 tests/maestro/TC-00-01-stack-starts.yaml:10 — screenshot label `step-01-started-by-yarn-stack` is stale now that the tests start scripts/stack.sh directly → rename to e.g. `step-01-started-by-the-start-command`\n  N2 PR #1 body \"Changes\"/\"Notes\" — says test:acceptance runs Jest, then the stack, then Maestro (real order: stack, Maestro, then Jest) and that CI has not run → fix the order and cite run 38538411102 (API 31, green, og-test-results) for TC-00-02\n  N3 scripts/stack.sh:87 — AVD lookup accepts API 31 and 32 while the message at :93 and README.md:20 say \"Android 12 (API 31)\" → say \"Android 12/12L (API 31-32)\" or narrow the regex\n  N4 CI test-results/stack.log — React Native DevTools (dotslash) aborts with a FATAL chrome-sandbox error during expo run:android in CI; harmless noise, not caused by this fix → optionally turn off the DevTools launch in CI\nCRITERIA:\n  #1 met\n  #2 external — MANUAL TC-00-02 (run 38538411102 on 2e95f78 green, og-test-results uploaded with TC-00-01/TC-00-03 testcases)\n  #3 met\n  #4 external — MANUAL TC-00-04 (detect-stack lists format:check, lint, tsc, test; all exit 0 on a fresh clone of 2e95f78)\n```\n"
+}
