@@ -51,8 +51,9 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      # The emulator is booted here; the tests start the app on it with `yarn stack`, the
-      # README's start command. Which tests run is the repository's business: scripts/test-acceptance.sh.
+      # The emulator is booted here; the tests start the app on it with scripts/stack.sh, what
+      # `yarn stack` (the README's start command) runs. Which tests run is the repository's
+      # business: scripts/test-acceptance.sh.
       - name: Acceptance tests
         uses: reactivecircus/android-emulator-runner@v2
         env:

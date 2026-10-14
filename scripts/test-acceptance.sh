@@ -50,6 +50,8 @@ if [ -z "$MAESTRO" ]; then
 else
   # A copy of the app left on a running device would satisfy the readiness check below before
   # the start command has installed anything: remove it, so the flows run against this build.
+  # Skipped when no device is attached yet: the start command then boots the emulator, and on a
+  # freshly booted device no copy of the app runs until the start command has opened this build.
   if "$ADB" get-state >/dev/null 2>&1; then
     "$ADB" uninstall "$APP_ID" >/dev/null 2>&1 || true
   fi
