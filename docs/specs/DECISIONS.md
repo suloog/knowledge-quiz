@@ -561,3 +561,15 @@
 - **Scope effect:** within scope
 - **Resolves:** —
 - **Status:** accepted
+
+## [DEC-46] Content data format, adding categories, and the evidence for US-01-02 criteria 4 and 7
+
+- **Date:** 2026-10-14
+- **Decided by:** product owner (delivery loop, confirmed 2026-10-14)
+- **Source:** implementation (`US-01-02`)
+- **Affects:** `US-01-02`, `US-01-03`, `US-01-04`, `US-03-01`, `MOD-01-F09`, `MOD-01-F10`, `MOD-01-F14`, `TC-01-02`, `DEC-44`, `constitution.md`
+- **Decision:** Option a — Take all four points as proposed. (1) Format: one file per category, `src/content/decks/3-plus.json`, with `schemaVersion` 1, `category` "3+" and 50 questions, each with a stable `id`, a `kind` (educational, popular-science, nature, trivia), `pl` and `en` question and answer strings, and an optional illustration file name. (2) A new category is its JSON file plus one import line in `src/content/decks/index.ts`; screens read content only through `src/content`; a test fails when a deck file is not registered. (3) Criterion 7: `TC-01-02` runs in `US-03-01` (as in `DEC-44`); until then the derived test `AC-01-02-7` checks that the release APK's embedded bundle holds the 3+ deck and that the content code makes no network calls. (4) Criterion 4: a per-question record, `docs/delivery/content-checks/US-01-02-3-plus.md`, with the four `Q29` checks, copied into the PR, and a unit test that fails on any question without a row passing all four.
+- **Why:** The simplest data format that satisfies the constitution (*Content is data*) and lets 4+ and 5+ follow without code changes; the content data schema is the tech lead's to approve (constitution, *Review rules*). No category screen exists yet to run `TC-01-02` on, and the age-suitability check needs a durable, testable record beside the PR.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
