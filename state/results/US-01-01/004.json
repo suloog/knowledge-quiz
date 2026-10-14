@@ -1,0 +1,98 @@
+{
+  "n": 4,
+  "attempt": 1,
+  "ts": "2026-10-14T12:02:06Z",
+  "story": "US-01-01",
+  "mode": "fix",
+  "parsed": {
+    "result": "needs_decision",
+    "story": "US-01-01",
+    "branch": "feature/US-01-01",
+    "commits": [
+      "73f4b10 test(app): acceptance run preflight and no passwords in argv [US-01-01]",
+      "3a98e2b docs(app): align Depends on rows in AC-01-01-3/-4 [US-01-01]",
+      "595358a chore(app): wip, waiting for DEC-45 [US-01-01]"
+    ],
+    "decisions": [
+      "DEC-45 critical Upload key variables in the environment win over Gradle properties of the same name"
+    ],
+    "question": "DEC-45",
+    "evidence": [
+      "#1 Platform versions recorded — AC-01-01-1 Jest (unit.xml, 15/15 pass) in test-runs/2026-10-14_135850",
+      "#2 App opens on the emulator — TC-01-01 Maestro pass (maestro/report.xml)",
+      "#3 No network permission — AC-01-01-3 step 1 Jest pass, step 2 aapt pass (junit/release.xml)",
+      "#4 Opens offline — AC-01-01-4 pass (precondition, Maestro release flow, logcat check)",
+      "#5 Signed release APK — AC-01-01-5 steps 1-3 Jest (env-first precedence in step 2), steps 4-6 pass, signed with the throwaway DN (junit/release.xml)"
+    ],
+    "tests": {
+      "run": "test-runs/2026-10-14_135850",
+      "pass": 4,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 1,
+      "manual_tests": [
+        "TC-01-03"
+      ]
+    },
+    "derived_tests": [
+      "AC-01-01-1",
+      "AC-01-01-3",
+      "AC-01-01-4",
+      "AC-01-01-5"
+    ],
+    "preexisting": "everything from rounds 0-2 up to b9a4b6d",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test ok (15/15)"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "findings": [
+      "B1 fixed 595358a (plugin reads System.getenv(name) ?: findProperty(name)",
+      "AC-01-01-5 step 2 unit test asserts that order and that no KQ_UPLOAD_* value is read past kqUpload",
+      "DN check kept), pending DEC-45",
+      "N1 fixed 73f4b10",
+      "N2 fixed 73f4b10",
+      "N5 fixed 73f4b10",
+      "N3 fixed 73f4b10",
+      "N7 fixed 3a98e2b"
+    ],
+    "notes": "Local run on an Android API 32 emulator (CI uses API 31) on WIP head 595358a; it does not count: the resumed run writes the DEC-45 entry, then reruns the whole suite on the final head.\nLocally, AC-01-01-1/-3/-5 are JUnit-only and show as skipped in run.json (the collector does not read JUnit); their JUnit has no failures. In CI evidence mode they are read from the CI artifact.\nNot verified locally whether ~/.gradle/gradle.properties holds the real key; the file was not read.",
+    "ask": {
+      "summary": "When a KQ_UPLOAD_* signing value is set both in the environment and in ~/.gradle/gradle.properties, should the environment win?",
+      "context": "Review found that the acceptance run passes a throwaway key through KQ_UPLOAD_* environment variables, but the build read gradle.properties first. On your machine, where the real upload key sits in gradle.properties as the README says, the test build was signed with the real key and the signature check failed.\n\nDEC-44 allows both sources but does not say which wins. Your normal release build, with values only in gradle.properties, is unchanged under either option.",
+      "points": [],
+      "options": [
+        {
+          "id": "a",
+          "label": "Environment wins over gradle.properties (implemented)",
+          "detail": "A key passed in for one build, like the acceptance run's throwaway key, is always used and your real key is never touched by tests. Unit-tested and documented in the README. Cost: a stray KQ_UPLOAD_* exported in your shell would override your real key for a release build."
+        },
+        {
+          "id": "b",
+          "label": "gradle.properties wins; tests pass the throwaway with -P",
+          "detail": "Keeps the old precedence. The acceptance run passes the throwaway key's path and password on the gradlew command line, so its random throwaway password is briefly visible in the process list, which the reviewer asked to avoid."
+        }
+      ],
+      "recommended": "a",
+      "why": "A value given explicitly for one build should beat a persistent default; it keeps the real key out of every test build and passwords off the command line, and your normal release setup behaves exactly as before."
+    },
+    "ask_problems": [],
+    "question_text": "When a KQ_UPLOAD_* signing value is set both in the environment and in ~/.gradle/gradle.properties, should the environment win?\n\nReview found that the acceptance run passes a throwaway key through KQ_UPLOAD_* environment variables, but the build read gradle.properties first. On your machine, where the real upload key sits in gradle.properties as the README says, the test build was signed with the real key and the signature check failed.\n\nDEC-44 allows both sources but does not say which wins. Your normal release build, with values only in gradle.properties, is unchanged under either option.\n\na) Environment wins over gradle.properties (implemented) — A key passed in for one build, like the acceptance run's throwaway key, is always used and your real key is never touched by tests. Unit-tested and documented in the README. Cost: a stray KQ_UPLOAD_* exported in your shell would override your real key for a release build. (recommended)\nb) gradle.properties wins; tests pass the throwaway with -P — Keeps the old precedence. The acceptance run passes the throwaway key's path and password on the gradlew command line, so its random throwaway password is briefly visible in the process list, which the reviewer asked to avoid.\n\nWhy a: A value given explicitly for one build should beat a persistent default; it keeps the real key out of every test build and passwords off the command line, and your normal release setup behaves exactly as before.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [],
+      "blocked": []
+    },
+    "critical_decisions": [
+      "DEC-45 critical Upload key variables in the environment win over Gradle properties of the same name"
+    ]
+  },
+  "raw": "Fix round 2 for US-01-01 is done on feature/US-01-01 (not pushed), but the story is parked on one critical decision, DEC-45. The B1 fix makes the KQ_UPLOAD_* environment variables win over Gradle properties of the same name. DEC-44 lists both sources but says nothing about which wins when both are set, and the choice concerns the signing key (secrets), so in semi mode it goes to the owner.\n\nThe fix (option a) and all five non-blocking items are committed. The DEC-45 entry is not in docs/specs/DECISIONS.md yet: as with DEC-44, it gets written once the owner answers. The resumed run then writes it, runs the whole suite again on the final head and returns ready.\n\nNon-blocking items, all in 73f4b10 except N7:\n- N1 / spec N2: scripts/test-acceptance.sh now runs `yarn install --frozen-lockfile` before step 1, under the same condition as stack.sh.\n- N2 / spec N1: the script stops at start when no Android device is attached. README Tests says to start the emulator first, since one booted by the stack is killed with it. The earlier \"no device yet\" branch is gone.\n- N5 / spec N7: keytool now takes `-storepass:env` / `-keypass:env KQ_THROWAWAY_PASS`, so no password is on the command line.\n- spec N3: when Maestro is missing, the AC-01-01-4 precondition is recorded as failed in junit/release.xml.\n- N7 (3a98e2b): the \"Depends on\" rows in docs/delivery/tests/AC-01-01-3-no-network-permission.md and AC-01-01-4-opens-offline.md now say `AC-01-01-5`, matching the frontmatter.\n\nLocal acceptance run on the WIP head 595358a: Android emulator API 32 (Medium_Phone), clean tree, run dir test-runs/2026-10-14_135850. It is informational only: the DEC-45 commit will come after it, so it cannot be the run that counts.\n- Every check passed: release.xml 6/6 (including step 5, signed with the throwaway key's DN), unit 15/15, Maestro debug 3/3 and release 1/1, script exit 0.\n- run.json shows pass=4 fail=0 blocked=0 manual=1 skipped=4. The local collector does not read JUnit, so AC-01-01-1, -3 and -5 come out as skipped locally even though they passed; in CI evidence mode they are read from the CI artifact. TC-01-02 is skipped because it belongs to US-03-01.\n- I booted the emulator for this run and killed it afterwards. I did not look into ~/.gradle/gradle.properties (a probe for key names was refused), so locally I could not confirm that a real key is set there and loses to the throwaway. That case is covered by the unit test and by the step 5 DN check.\n\n```\nRESULT: needs_decision\nSTORY: US-01-01\nBRANCH: feature/US-01-01\nCOMMITS: 73f4b10 test(app): acceptance run preflight and no passwords in argv [US-01-01]; 3a98e2b docs(app): align Depends on rows in AC-01-01-3/-4 [US-01-01]; 595358a chore(app): wip, waiting for DEC-45 [US-01-01]\nDECISIONS: DEC-45 critical Upload key variables in the environment win over Gradle properties of the same name\nQUESTION: DEC-45\nASK_SUMMARY: When a KQ_UPLOAD_* signing value is set both in the environment and in ~/.gradle/gradle.properties, should the environment win?\nASK_CONTEXT: Review found that the acceptance run passes a throwaway key through KQ_UPLOAD_* environment variables, but the build read gradle.properties first. On your machine, where the real upload key sits in gradle.properties as the README says, the test build was signed with the real key and the signature check failed.\n\nDEC-44 allows both sources but does not say which wins. Your normal release build, with values only in gradle.properties, is unchanged under either option.\nASK_OPTION a: Environment wins over gradle.properties (implemented) | A key passed in for one build, like the acceptance run's throwaway key, is always used and your real key is never touched by tests. Unit-tested and documented in the README. Cost: a stray KQ_UPLOAD_* exported in your shell would override your real key for a release build.\nASK_OPTION b: gradle.properties wins; tests pass the throwaway with -P | Keeps the old precedence. The acceptance run passes the throwaway key's path and password on the gradlew command line, so its random throwaway password is briefly visible in the process list, which the reviewer asked to avoid.\nASK_RECOMMEND: a\nASK_WHY: A value given explicitly for one build should beat a persistent default; it keeps the real key out of every test build and passwords off the command line, and your normal release setup behaves exactly as before.\nEVIDENCE:\n  #1 Platform versions recorded — AC-01-01-1 Jest (unit.xml, 15/15 pass) in test-runs/2026-10-14_135850\n  #2 App opens on the emulator — TC-01-01 Maestro pass (maestro/report.xml)\n  #3 No network permission — AC-01-01-3 step 1 Jest pass, step 2 aapt pass (junit/release.xml)\n  #4 Opens offline — AC-01-01-4 pass (precondition, Maestro release flow, logcat check)\n  #5 Signed release APK — AC-01-01-5 steps 1-3 Jest (env-first precedence in step 2), steps 4-6 pass, signed with the throwaway DN (junit/release.xml)\nTESTS: run=test-runs/2026-10-14_135850 pass=4 fail=0 blocked=0 manual=1 manual_tests=TC-01-03\nDERIVED_TESTS: AC-01-01-1; AC-01-01-3; AC-01-01-4; AC-01-01-5\nPREEXISTING: everything from rounds 0-2 up to b9a4b6d\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test ok (15/15)\nENV_KEYS: none\nMIGRATION: no\nFINDINGS: B1 fixed 595358a (plugin reads System.getenv(name) ?: findProperty(name); AC-01-01-5 step 2 unit test asserts that order and that no KQ_UPLOAD_* value is read past kqUpload; DN check kept), pending DEC-45; N1 fixed 73f4b10; N2 fixed 73f4b10; N5 fixed 73f4b10; N3 fixed 73f4b10; N7 fixed 3a98e2b\nNOTES: Local run on an Android API 32 emulator (CI uses API 31) on WIP head 595358a; it does not count: the resumed run writes the DEC-45 entry, then reruns the whole suite on the final head.\nLocally, AC-01-01-1/-3/-5 are JUnit-only and show as skipped in run.json (the collector does not read JUnit); their JUnit has no failures. In CI evidence mode they are read from the CI artifact.\nNot verified locally whether ~/.gradle/gradle.properties holds the real key; the file was not read.\n```\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}

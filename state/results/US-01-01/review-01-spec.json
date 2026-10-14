@@ -1,0 +1,107 @@
+{
+  "story": "US-01-01",
+  "attempt": 1,
+  "round": 1,
+  "sha": "f06b45e49094ca8b984bfd26aa481514cc4fdaec",
+  "reviewer": "spec",
+  "ts": "2026-10-14T11:15:26Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-01-01",
+    "impact": "The three config plugins rewrite every future `expo prebuild` (gradle.properties, app/build.gradle, the release manifest). withReleaseSigning patches the Expo template with regexes, so a future SDK upgrade can stop prebuild. Its taskGraph guard makes every assemble/bundle/package/sign *Release task fail without the KQ_UPLOAD_* keys, which matters for CI and for any release-based e2e test. src/theme.ts colour tokens are now used by src/app/index.tsx and every later screen.",
+    "findings": [
+      {
+        "id": "B1",
+        "blocking": true,
+        "security": false,
+        "tags": [],
+        "text": "tests/maestro/AC-01-01-4-opens-offline.yaml:12 — In CI (run 38547165315, API 31) the flow turns on airplane mode and launches the debug build with clearState. That build loads its JavaScript from Metro at 10.0.2.2:8081, which is unreachable, so the app shows \"Unable to load script\" and the content-title assertion fails. Criterion #4 / NFR-12 is unmet. The local API 32 pass was false: logcat shows isMetroRunning=true while in airplane mode. → Run AC-01-01-4 against an APK with the JS bundle embedded: the release build, signed with a CI-generated test key passed in through KQ_UPLOAD_* (fits DEC-44), installed by scripts/test-acceptance.sh before the flow. Then add a step that checks the app did not load code from Metro."
+      },
+      {
+        "id": "B2",
+        "blocking": true,
+        "security": false,
+        "tags": [],
+        "text": ".github/workflows/acceptance.yml:67 — Criterion #5 / NFR-13 (\"a signed release APK can be built\") is never shown. AC-01-01-5 only checks how the plugin rewrites the Gradle text. No CI job or recorded run builds and signs a release APK, and the PR's test-key/apksigner claim has no stored output. This evidence could be produced without Maciej's key. → In CI (or scripts/test-acceptance.sh): create a test keystore with keytool, export KQ_UPLOAD_*, run `./gradlew assembleRelease`, then `apksigner verify --print-certs`, `aapt dump permissions` (no network permission) and `aapt dump badging` (sdkVersion 31). Report these as JUnit tests carrying the AC-01-01-5 / AC-01-01-3 ids. The same APK serves B1."
+      },
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "PR #3 body, \"Acceptance evidence\" table — it claims \"#4 AC-01-01-4 (Maestro, airplane mode) pass\" from test-runs/2026-10-14_120331, but CI fails and the local pass reached Metro. → Correct the table once B1 is fixed."
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/constitution.md:23 — The *No network* rule still says INTERNET \"is removed from the manifest\". Per DEC-44 (which lists constitution.md under Affects) this now holds for the release build only. → Reword the line to say so and cite DEC-44."
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "plugins/__tests__/withReleaseNoNetwork.test.js:13 and plugins/__tests__/withMinSdk.test.js:5 — Both tests check what the plugins write, not the manifest that actually ships. A library that adds a network permission under another name (e.g. CHANGE_NETWORK_STATE), or a template change that ignores android.minSdkVersion, would still pass. → Assert on the merged release manifest (`./gradlew processReleaseMainManifest` runs without the key, because the guard regex does not match \"process\") or on the APK from B2."
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": ".gitignore:46 — Only `*.keystore` is ignored. An upload key saved as `.jks` or `.p12` inside the repo would not be ignored (risk to NFR-06). → Add `*.jks` and `*.p12`."
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "android/app/src/main/AndroidManifest.xml (generated from the Expo template) — The release manifest still declares the template's optional SYSTEM_ALERT_WINDOW, VIBRATE and READ/WRITE_EXTERNAL_STORAGE (maxSdk 32). None is a network permission and the story does not ask for removal, but the shipped app does not need them. → Optionally list them in `android.blockedPermissions` in app.json."
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "package.json:20 — collectCoverageFrom only covers src/**, so the new plugins/** code is outside the 80% changed-code coverage gate the constitution requires (it is tested, just not measured). → Add plugins/**/*.js and exclude its __tests__."
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "TC-01-02 — It covers US-01-01#4 and has no result in og-test-results. DEC-44 defers it to US-03-01, so this is not a defect, but the impact block lists it as \"not run on this head\". → Mark it as deferred by DEC-44 in the evidence table so the loop does not count it as missing."
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "external",
+        "note": "MANUAL TC-01-03 (emulator part met: TC-01-01 passed in CI run 38547165315 on API 31)"
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "unmet",
+        "note": "AC-01-01-4 fails in CI run 38547165315: the debug build cannot load its JS from Metro in airplane mode (\"Unable to load script\"); the local pass was not offline"
+      },
+      {
+        "n": 5,
+        "verdict": "missing",
+        "note": "no recorded build of a signed release APK; could be produced in CI with a test keystore via KQ_UPLOAD_*, assembleRelease, apksigner verify and aapt dump, reported as AC-01-01-5"
+      }
+    ],
+    "stray": []
+  },
+  "raw": "## Spec-compliance review, round 1: PR #3, US-01-01 (head f06b45e)\n\n**Verdict: NOT COMPLIANT.** CI run 38547165315 failed on this head. Criterion #4 (the app runs with the network off) is unmet, and criterion #5 has no recorded evidence that a signed release APK was ever built.\n\n### CI run 38547165315 (API 31): what og-test-results holds\n| Required test | Result in og-test-results |\n| --- | --- |\n| AC-01-01-1 (Jest, 2 tests) | pass |\n| AC-01-01-3 (Jest, 2 tests) | pass |\n| AC-01-01-4 (Maestro) | **FAIL**: \"Assertion is false: id: content-title is visible\" |\n| AC-01-01-5 (Jest, 5 tests) | pass |\n| TC-01-01 (Maestro) | pass |\n| TC-01-02 | **absent**. DEC-44 defers it to US-03-01, so this is expected. |\n| TC-01-03 | absent. It is manual-only (Kompakt). |\n\nThe earlier stories' tests (TC-00-01, TC-00-03) still pass. I ran `yarn jest` locally: 8 suites and 15 tests, all green.\n\n**Why AC-01-01-4 fails.** The flow runs the debug build. That build loads its JavaScript from Metro at 10.0.2.2:8081, and `clearState` throws away any cached bundle. With airplane mode on, the app cannot reach Metro and shows the red \"Unable to load script\" screen (CI logcat: \"Failed to connect to /10.0.2.2:8081\"; failure screenshot `screenshots/step-006-assertCondition-content-title.png`).\n\nThe local \"pass\" in test-runs/2026-10-14_120331 (API 32) was a false positive. Its logcat shows `isMetroRunning(): Async result = true` (device-logcat.txt line 336) after \"Turning radio off - airplane\" (line 10). So locally the app still loaded its code over a network connection. DEC-44 itself says the debug build needs Metro, so this flow can never prove criterion #4 against that build.\n\n### Criteria\n| Criterion | Verdict | Evidence |\n| --- | --- | --- |\n| #1 Foundation at its latest versions, versions recorded | met | The upgrade landed on main in US-00-01 (DEC-42). README.md has a *Platform versions* section. `tests/unit/AC-01-01-1-platform-versions.test.js` passes in CI. |\n| #2 Installs and starts on an Android 12 emulator and on the Kompakt | external | Emulator part met: TC-01-01 passed in CI on API 31. Kompakt part is MANUAL TC-01-03. |\n| #3 No network permission | met | `plugins/withReleaseNoNetwork.js` plus AC-01-01-3 (CI pass). The locally merged release manifest (`android/app/build/intermediates/packaged_manifests/release/.../AndroidManifest.xml`) has no INTERNET, ACCESS_NETWORK_STATE or ACCESS_WIFI_STATE. |\n| #4 Starts and runs with the network off | **unmet** | AC-01-01-4 fails in CI (above). |\n| #5 Signed release APK, key outside the repo | **missing** | AC-01-01-5 only checks how the plugin rewrites the Gradle text. Nothing recorded shows a release APK built and signed. The PR says a test key (\"throwaway key\") build was checked with `apksigner`, but that output is not in test-runs or CI. `android/app/build/outputs/apk/` only has `debug/`. |\n\n### Covers check\n- **MOD-01-F01**: delivered (foundation on main; TC-01-01 passes on API 31).\n- **NFR-05**: delivered for the release build, as DEC-44 allows.\n- **NFR-06**: the configuration is delivered (`KQ_UPLOAD_*`; no keystore tracked in git). Its build evidence is part of B2.\n- **NFR-10**: delivered. The merged manifest has minSdkVersion 31 and targetSdkVersion 36.\n- **NFR-12**: **not delivered**. Nothing shows the app working offline (B1).\n- **NFR-13**: **not evidenced**. No signed APK was ever produced on record (B2).\n\n### Edge case\n\"Device older than Android 12 is not offered the app\": implemented. minSdk is 31 through `plugins/withMinSdk.js`, and the local merged manifest confirms it. The test only checks the Gradle property the plugin writes, not the built manifest or APK (N3).\n\n### Out-of-scope and constitution\n- **Out of scope:** nothing violated. The `constitution.md` *Stack* change is authorised by DEC-07 and DEC-44. No dependencies were added (package.json and yarn.lock are untouched).\n- **Constitution:** the *No network* rule at `docs/specs/constitution.md:23` still says INTERNET \"is removed from the manifest\". DEC-44 now limits that to the release build, and that line was not updated (N2).\n\n### Files\n- /Users/sulo/workspace/knowledge-quiz/tests/maestro/AC-01-01-4-opens-offline.yaml\n- /Users/sulo/workspace/knowledge-quiz/plugins/withReleaseSigning.js\n- /Users/sulo/workspace/knowledge-quiz/plugins/withReleaseNoNetwork.js\n- /Users/sulo/workspace/knowledge-quiz/plugins/withMinSdk.js\n- /Users/sulo/workspace/knowledge-quiz/scripts/test-acceptance.sh\n- /Users/sulo/workspace/knowledge-quiz/.github/workflows/acceptance.yml\n- CI artifacts downloaded to /private/tmp/claude-501/-Users-sulo-workspace-knowledge-quiz/0811fcaa-1d7c-4ea0-83f3-d685a8a6e3bc/scratchpad/ci38547165315/\n\n```\nREVIEW: findings\nSTORY: US-01-01\nIMPACT: The three config plugins rewrite every future `expo prebuild` (gradle.properties, app/build.gradle, the release manifest). withReleaseSigning patches the Expo template with regexes, so a future SDK upgrade can stop prebuild. Its taskGraph guard makes every assemble/bundle/package/sign *Release task fail without the KQ_UPLOAD_* keys, which matters for CI and for any release-based e2e test. src/theme.ts colour tokens are now used by src/app/index.tsx and every later screen.\nFINDINGS:\n  B1 tests/maestro/AC-01-01-4-opens-offline.yaml:12 — In CI (run 38547165315, API 31) the flow turns on airplane mode and launches the debug build with clearState. That build loads its JavaScript from Metro at 10.0.2.2:8081, which is unreachable, so the app shows \"Unable to load script\" and the content-title assertion fails. Criterion #4 / NFR-12 is unmet. The local API 32 pass was false: logcat shows isMetroRunning=true while in airplane mode. → Run AC-01-01-4 against an APK with the JS bundle embedded: the release build, signed with a CI-generated test key passed in through KQ_UPLOAD_* (fits DEC-44), installed by scripts/test-acceptance.sh before the flow. Then add a step that checks the app did not load code from Metro.\n  B2 .github/workflows/acceptance.yml:67 — Criterion #5 / NFR-13 (\"a signed release APK can be built\") is never shown. AC-01-01-5 only checks how the plugin rewrites the Gradle text. No CI job or recorded run builds and signs a release APK, and the PR's test-key/apksigner claim has no stored output. This evidence could be produced without Maciej's key. → In CI (or scripts/test-acceptance.sh): create a test keystore with keytool, export KQ_UPLOAD_*, run `./gradlew assembleRelease`, then `apksigner verify --print-certs`, `aapt dump permissions` (no network permission) and `aapt dump badging` (sdkVersion 31). Report these as JUnit tests carrying the AC-01-01-5 / AC-01-01-3 ids. The same APK serves B1.\n  N1 PR #3 body, \"Acceptance evidence\" table — it claims \"#4 AC-01-01-4 (Maestro, airplane mode) pass\" from test-runs/2026-10-14_120331, but CI fails and the local pass reached Metro. → Correct the table once B1 is fixed.\n  N2 docs/specs/constitution.md:23 — The *No network* rule still says INTERNET \"is removed from the manifest\". Per DEC-44 (which lists constitution.md under Affects) this now holds for the release build only. → Reword the line to say so and cite DEC-44.\n  N3 plugins/__tests__/withReleaseNoNetwork.test.js:13 and plugins/__tests__/withMinSdk.test.js:5 — Both tests check what the plugins write, not the manifest that actually ships. A library that adds a network permission under another name (e.g. CHANGE_NETWORK_STATE), or a template change that ignores android.minSdkVersion, would still pass. → Assert on the merged release manifest (`./gradlew processReleaseMainManifest` runs without the key, because the guard regex does not match \"process\") or on the APK from B2.\n  N4 .gitignore:46 — Only `*.keystore` is ignored. An upload key saved as `.jks` or `.p12` inside the repo would not be ignored (risk to NFR-06). → Add `*.jks` and `*.p12`.\n  N5 android/app/src/main/AndroidManifest.xml (generated from the Expo template) — The release manifest still declares the template's optional SYSTEM_ALERT_WINDOW, VIBRATE and READ/WRITE_EXTERNAL_STORAGE (maxSdk 32). None is a network permission and the story does not ask for removal, but the shipped app does not need them. → Optionally list them in `android.blockedPermissions` in app.json.\n  N6 package.json:20 — collectCoverageFrom only covers src/**, so the new plugins/** code is outside the 80% changed-code coverage gate the constitution requires (it is tested, just not measured). → Add plugins/**/*.js and exclude its __tests__.\n  N7 TC-01-02 — It covers US-01-01#4 and has no result in og-test-results. DEC-44 defers it to US-03-01, so this is not a defect, but the impact block lists it as \"not run on this head\". → Mark it as deferred by DEC-44 in the evidence table so the loop does not count it as missing.\nCRITERIA:\n  #1 met\n  #2 external — MANUAL TC-01-03 (emulator part met: TC-01-01 passed in CI run 38547165315 on API 31)\n  #3 met\n  #4 unmet — AC-01-01-4 fails in CI run 38547165315: the debug build cannot load its JS from Metro in airplane mode (\"Unable to load script\"); the local pass was not offline\n  #5 missing — no recorded build of a signed release APK; could be produced in CI with a test keystore via KQ_UPLOAD_*, assembleRelease, apksigner verify and aapt dump, reported as AC-01-01-5\n```\n"
+}
