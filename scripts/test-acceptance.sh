@@ -6,7 +6,8 @@
 # 1. the release APK: built and signed with a throwaway key generated for this run and passed
 #    through the KQ_UPLOAD_* variables, which win over the Gradle properties of the same names
 #    (DEC-45) — the real upload key stays with Maciej (DEC-09, DEC-44),
-#    then checked with apksigner and aapt (AC-01-01-5, AC-01-01-3);
+#    then checked with apksigner and aapt (AC-01-01-5, AC-01-01-3), and its embedded bundle for
+#    the shipped content (AC-01-02-7);
 # 2. the Maestro flows against the app started with the documented start command (`yarn stack` =
 #    `bash scripts/stack.sh`, which also installs the dependencies on a fresh clone) — the debug
 #    build, its JavaScript served by Metro;
@@ -112,6 +113,7 @@ write_junit() {
 STEP4="AC-01-01-5 step 4 — a release APK is built, signed with a key from outside the repository passed through KQ_UPLOAD_*"
 STEP5="AC-01-01-5 step 5 — apksigner verifies the APK's signature, made with that key and not the debug key"
 STEP6="AC-01-01-5 step 6 — the APK installs on Android 12 (API 31) and newer only (sdkVersion 31)"
+CONTENT="AC-01-02-7 step 2 — the release APK's embedded JavaScript bundle holds every deck's questions and answers, in Polish and English"
 PERMS="AC-01-01-3 step 2 — the built release APK declares no INTERNET, ACCESS_NETWORK_STATE or ACCESS_WIFI_STATE permission"
 PRE="AC-01-01-4 precondition — the release build with its JavaScript embedded is installed and no bundler is reachable"
 POST="AC-01-01-4 the app loaded no code from a bundler (logcat)"
@@ -146,7 +148,7 @@ KEY_DIR=""
 unset key_pass
 
 if [ -z "$built" ]; then
-  for name in "$STEP5" "$STEP6" "$PERMS"; do record "$name" fail "no release APK was built"; done
+  for name in "$STEP5" "$STEP6" "$PERMS" "$CONTENT"; do record "$name" fail "no release APK was built"; done
 else
   "$BUILD_TOOLS/apksigner" verify --print-certs "$RELEASE_APK" >"$OUT/release/apksigner.txt" 2>&1
   signed=$?
@@ -174,6 +176,15 @@ else
     record "$PERMS" fail "the APK declares $network(release/permissions.txt)"
   else
     record "$PERMS" ok
+  fi
+
+  if ! unzip -p "$RELEASE_APK" assets/index.android.bundle >"$OUT/release/index.android.bundle" 2>/dev/null ||
+    [ ! -s "$OUT/release/index.android.bundle" ]; then
+    record "$CONTENT" fail "the APK has no embedded JavaScript bundle"
+  elif node scripts/check-bundle-content.js "$OUT/release/index.android.bundle" >"$OUT/release/bundle-content.txt" 2>&1; then
+    record "$CONTENT" ok
+  else
+    record "$CONTENT" fail "$(head -n 1 "$OUT/release/bundle-content.txt") (release/bundle-content.txt)"
   fi
 fi
 

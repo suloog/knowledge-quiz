@@ -561,3 +561,27 @@
 - **Scope effect:** within scope
 - **Resolves:** —
 - **Status:** accepted
+
+## [DEC-46] Content data format, adding categories, and the evidence for US-01-02 criteria 4 and 7
+
+- **Date:** 2026-10-14
+- **Decided by:** product owner (delivery loop, confirmed 2026-10-14)
+- **Source:** implementation (`US-01-02`)
+- **Affects:** `US-01-02`, `US-01-03`, `US-01-04`, `US-03-01`, `MOD-01-F09`, `MOD-01-F10`, `MOD-01-F14`, `TC-01-02`, `DEC-44`, `constitution.md`
+- **Decision:** Option a — Take all four points as proposed. (1) Format: one file per category, `src/content/decks/3-plus.json`, with `schemaVersion` 1, `category` "3+" and 50 questions, each with a stable `id`, a `kind` (educational, popular-science, nature, trivia), `pl` and `en` question and answer strings, and an optional illustration file name. (2) A new category is its JSON file plus one import line in `src/content/decks/index.ts`; screens read content only through `src/content`; a test fails when a deck file is not registered. (3) Criterion 7: `TC-01-02` runs in `US-03-01` (as in `DEC-44`); until then the derived test `AC-01-02-7` checks that the release APK's embedded bundle holds the 3+ deck and that the content code makes no network calls. (4) Criterion 4: a per-question record, `docs/delivery/content-checks/US-01-02-3-plus.md`, with the four `Q29` checks, copied into the PR, and a unit test that fails on any question without a row passing all four.
+- **Why:** The simplest data format that satisfies the constitution (*Content is data*) and lets 4+ and 5+ follow without code changes; the content data schema is the tech lead's to approve (constitution, *Review rules*). No category screen exists yet to run `TC-01-02` on, and the age-suitability check needs a durable, testable record beside the PR.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
+
+## [DEC-47] 3+ questions stay open, each checked for a near miss recorded per question
+
+- **Date:** 2026-10-14
+- **Decided by:** product owner (delivery loop, confirmed 2026-10-14)
+- **Source:** implementation (`US-01-02`)
+- **Affects:** `US-01-02`, `US-01-03`, `US-01-04`, `MOD-01-F06`, `MOD-01-F14`, `MOD-03-U02`, `DSC-04-04`, `SRC-01-17`, `SRC-01-18`
+- **Decision:** Option c — Back to open questions for 3+, under a stricter near-miss rule. No 3+ question names answer options (no either/or): every one is an open question with one answer. Each is attacked, in Polish and in English, for any other answer a child or a parent reading aloud could give that is also correct — another thing that fits the question, a near miss (a neck warmer for a scarf, a hood for an umbrella, fire for candles); where one exists the question is reworded (a distinguishing detail, a more specific question, or another fact) until none does. A synonym naming the same thing (a puppy for a dog) is the same answer. The record `docs/delivery/content-checks/US-01-02-3-plus.md` names, for every question, the near misses checked and why each is ruled out; `AC-01-02-4` fails on a row without them and on any 3+ question that offers options. The 4+ and 5+ decks (`US-01-03`, `US-01-04`) are open questions under the same rule. The content data format (`DEC-46`) does not change.
+- **Why:** The product owner's answer to the question put in the delivery loop. It reads the `must` `MOD-03-U02` ("no buttons, choices or score on it"), `DSC-04-04` (no answer choices) and the `SRC-01-17` / `SRC-01-18` non-goals (no A/B/C answers, not a classic quiz) as written, and keeps the questions worth asking: an either/or against an absurd option is a 50% guess. The near misses three review rounds found are handled question by question in the record instead. Critical: it settles how a `must` requirement is read, so it was the product owner's to decide.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted

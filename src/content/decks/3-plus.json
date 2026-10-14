@@ -1,0 +1,606 @@
+{
+  "schemaVersion": 1,
+  "category": "3+",
+  "questions": [
+    {
+      "id": "3p-01",
+      "kind": "educational",
+      "pl": {
+        "question": "Jakim słowem nazywamy dzień, który był przed dzisiejszym?",
+        "answer": "Wczoraj."
+      },
+      "en": {
+        "question": "What word do we use for the day before today?",
+        "answer": "Yesterday."
+      }
+    },
+    {
+      "id": "3p-02",
+      "kind": "educational",
+      "pl": {
+        "question": "Ile oczu ma człowiek?",
+        "answer": "Dwoje."
+      },
+      "en": {
+        "question": "How many eyes does a person have?",
+        "answer": "Two."
+      }
+    },
+    {
+      "id": "3p-03",
+      "kind": "educational",
+      "pl": {
+        "question": "Ile łap ma pies?",
+        "answer": "Cztery."
+      },
+      "en": {
+        "question": "How many legs does a dog have?",
+        "answer": "Four."
+      }
+    },
+    {
+      "id": "3p-04",
+      "kind": "educational",
+      "pl": {
+        "question": "Ile nosów ma człowiek?",
+        "answer": "Jeden."
+      },
+      "en": {
+        "question": "How many noses does a person have?",
+        "answer": "One."
+      }
+    },
+    {
+      "id": "3p-05",
+      "kind": "educational",
+      "pl": {
+        "question": "Na co wyciskamy pastę, zanim umyjemy zęby?",
+        "answer": "Na szczoteczkę do zębów."
+      },
+      "en": {
+        "question": "What do we squeeze toothpaste onto before we brush our teeth?",
+        "answer": "Onto a toothbrush."
+      }
+    },
+    {
+      "id": "3p-06",
+      "kind": "educational",
+      "pl": {
+        "question": "Jakim słowem nazywamy dzień, który będzie po dzisiejszym?",
+        "answer": "Jutro."
+      },
+      "en": {
+        "question": "What word do we use for the day that comes after today?",
+        "answer": "Tomorrow."
+      }
+    },
+    {
+      "id": "3p-07",
+      "kind": "educational",
+      "pl": {
+        "question": "Ile palców ma jedna ręka człowieka, licząc kciuk?",
+        "answer": "Pięć."
+      },
+      "en": {
+        "question": "How many fingers does one human hand have, counting the thumb?",
+        "answer": "Five."
+      }
+    },
+    {
+      "id": "3p-08",
+      "kind": "educational",
+      "pl": {
+        "question": "Którą częścią ciała widzimy?",
+        "answer": "Oczami."
+      },
+      "en": {
+        "question": "Which part of the body do we see with?",
+        "answer": "The eyes."
+      }
+    },
+    {
+      "id": "3p-09",
+      "kind": "educational",
+      "pl": {
+        "question": "Którą częścią ciała słyszymy?",
+        "answer": "Uszami."
+      },
+      "en": {
+        "question": "Which part of the body do we hear with?",
+        "answer": "The ears."
+      }
+    },
+    {
+      "id": "3p-10",
+      "kind": "educational",
+      "pl": {
+        "question": "Którą częścią ciała czujemy zapachy?",
+        "answer": "Nosem."
+      },
+      "en": {
+        "question": "Which part of the body do we smell with?",
+        "answer": "The nose."
+      }
+    },
+    {
+      "id": "3p-11",
+      "kind": "educational",
+      "pl": {
+        "question": "Jakiego koloru jest mleko?",
+        "answer": "Białego."
+      },
+      "en": {
+        "question": "What colour is milk?",
+        "answer": "White."
+      }
+    },
+    {
+      "id": "3p-12",
+      "kind": "educational",
+      "pl": {
+        "question": "Ile to jest dwa i jeszcze jeden?",
+        "answer": "Trzy."
+      },
+      "en": {
+        "question": "What is two and one more?",
+        "answer": "Three."
+      }
+    },
+    {
+      "id": "3p-13",
+      "kind": "educational",
+      "pl": {
+        "question": "Jaka liczba jest po jedynce?",
+        "answer": "Dwa."
+      },
+      "en": {
+        "question": "Which number comes after one?",
+        "answer": "Two."
+      }
+    },
+    {
+      "id": "3p-14",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Co świeci na niebie w dzień i nas grzeje?",
+        "answer": "Słońce."
+      },
+      "en": {
+        "question": "What shines in the sky in the daytime and keeps us warm?",
+        "answer": "The sun."
+      }
+    },
+    {
+      "id": "3p-15",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Z czego jest lód?",
+        "answer": "Z wody."
+      },
+      "en": {
+        "question": "What is ice made of?",
+        "answer": "Water."
+      }
+    },
+    {
+      "id": "3p-16",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Jak nazywamy krople wody, które latem spadają z chmur?",
+        "answer": "Deszcz."
+      },
+      "en": {
+        "question": "What do we call the drops of water that fall from the clouds in summer?",
+        "answer": "Rain."
+      }
+    },
+    {
+      "id": "3p-17",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Co świeci w nocy na niebie i raz jest okrągłe, a raz cienkie?",
+        "answer": "Księżyc."
+      },
+      "en": {
+        "question": "What shines in the night sky and is sometimes round and sometimes thin?",
+        "answer": "The moon."
+      }
+    },
+    {
+      "id": "3p-18",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Co świeci nocą na niebie jak mnóstwo małych kropek?",
+        "answer": "Gwiazdy."
+      },
+      "en": {
+        "question": "What shines in the night sky like lots of tiny dots?",
+        "answer": "Stars."
+      }
+    },
+    {
+      "id": "3p-19",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Jak nazywamy powietrze, które wieje i porusza liśćmi na drzewach?",
+        "answer": "Wiatr."
+      },
+      "en": {
+        "question": "What do we call air that blows and moves the leaves on the trees?",
+        "answer": "The wind."
+      }
+    },
+    {
+      "id": "3p-20",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Jaka pora roku przychodzi po zimie?",
+        "answer": "Wiosna."
+      },
+      "en": {
+        "question": "Which season comes after winter?",
+        "answer": "Spring."
+      }
+    },
+    {
+      "id": "3p-21",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Jak nazywamy ciemny kształt, który robisz na ziemi, gdy stoisz w słońcu?",
+        "answer": "Cień."
+      },
+      "en": {
+        "question": "What do we call the dark shape you make on the ground when you stand in the sun?",
+        "answer": "A shadow."
+      }
+    },
+    {
+      "id": "3p-22",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Jakiego koloru jest niebo w dzień, gdy nie ma chmur?",
+        "answer": "Niebieskiego."
+      },
+      "en": {
+        "question": "What colour is the sky in the daytime when there are no clouds?",
+        "answer": "Blue."
+      }
+    },
+    {
+      "id": "3p-23",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Co białego pada zimą z chmur i jeździmy po tym na sankach?",
+        "answer": "Śnieg."
+      },
+      "en": {
+        "question": "What white thing falls from the clouds in winter and we go sledging on it?",
+        "answer": "Snow."
+      }
+    },
+    {
+      "id": "3p-24",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Co kolorowego pojawia się na niebie, gdy pada deszcz i świeci słońce?",
+        "answer": "Tęcza."
+      },
+      "en": {
+        "question": "What colourful thing appears in the sky when it rains and the sun shines?",
+        "answer": "A rainbow."
+      }
+    },
+    {
+      "id": "3p-25",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Czym napełniamy konewkę, żeby dać kwiatkom pić?",
+        "answer": "Wodą."
+      },
+      "en": {
+        "question": "What do we fill a watering can with to give the flowers a drink?",
+        "answer": "Water."
+      }
+    },
+    {
+      "id": "3p-26",
+      "kind": "nature",
+      "pl": {
+        "question": "Jak robi krowa?",
+        "answer": "Muu."
+      },
+      "en": {
+        "question": "What sound does a cow make?",
+        "answer": "Moo."
+      }
+    },
+    {
+      "id": "3p-27",
+      "kind": "nature",
+      "pl": {
+        "question": "Które zwierzę robi hau hau?",
+        "answer": "Pies."
+      },
+      "en": {
+        "question": "Which animal says woof?",
+        "answer": "A dog."
+      }
+    },
+    {
+      "id": "3p-28",
+      "kind": "nature",
+      "pl": {
+        "question": "Które małe zwierzątko ma na głowie różki i nosi swój domek na plecach?",
+        "answer": "Ślimak."
+      },
+      "en": {
+        "question": "Which little animal has little horns on its head and carries its home on its back?",
+        "answer": "A snail."
+      }
+    },
+    {
+      "id": "3p-29",
+      "kind": "nature",
+      "pl": {
+        "question": "Co słodkiego robią pszczoły?",
+        "answer": "Miód."
+      },
+      "en": {
+        "question": "What sweet thing do bees make?",
+        "answer": "Honey."
+      }
+    },
+    {
+      "id": "3p-30",
+      "kind": "nature",
+      "pl": {
+        "question": "Które zwierzę ma bardzo długą szyję i brązowe plamy?",
+        "answer": "Żyrafa."
+      },
+      "en": {
+        "question": "Which animal has a very long neck and brown spots?",
+        "answer": "A giraffe."
+      }
+    },
+    {
+      "id": "3p-31",
+      "kind": "nature",
+      "pl": {
+        "question": "Który ptak robi kwa kwa?",
+        "answer": "Kaczka."
+      },
+      "en": {
+        "question": "Which bird says quack?",
+        "answer": "A duck."
+      }
+    },
+    {
+      "id": "3p-32",
+      "kind": "nature",
+      "pl": {
+        "question": "Co budują ptaki, żeby złożyć w nim jajka?",
+        "answer": "Gniazdo."
+      },
+      "en": {
+        "question": "What do birds build to lay their eggs in?",
+        "answer": "A nest."
+      }
+    },
+    {
+      "id": "3p-33",
+      "kind": "nature",
+      "pl": {
+        "question": "Który ptak pieje rano kukuryku?",
+        "answer": "Kogut."
+      },
+      "en": {
+        "question": "Which bird crows cock-a-doodle-doo in the morning?",
+        "answer": "A rooster."
+      }
+    },
+    {
+      "id": "3p-34",
+      "kind": "nature",
+      "pl": {
+        "question": "Które zwierzę podobne do konia ma czarno-białe paski?",
+        "answer": "Zebra."
+      },
+      "en": {
+        "question": "Which animal looks like a horse and has black and white stripes?",
+        "answer": "A zebra."
+      }
+    },
+    {
+      "id": "3p-35",
+      "kind": "nature",
+      "pl": {
+        "question": "Które bardzo duże szare zwierzę ma długą trąbę?",
+        "answer": "Słoń."
+      },
+      "en": {
+        "question": "Which very big grey animal has a long trunk?",
+        "answer": "An elephant."
+      }
+    },
+    {
+      "id": "3p-36",
+      "kind": "nature",
+      "pl": {
+        "question": "Co znosi kura?",
+        "answer": "Jajka."
+      },
+      "en": {
+        "question": "What does a hen lay?",
+        "answer": "Eggs."
+      }
+    },
+    {
+      "id": "3p-37",
+      "kind": "nature",
+      "pl": {
+        "question": "Które zwierzę z wiejskiego podwórka robi chrum chrum?",
+        "answer": "Świnka."
+      },
+      "en": {
+        "question": "Which farm animal says oink?",
+        "answer": "A pig."
+      }
+    },
+    {
+      "id": "3p-38",
+      "kind": "nature",
+      "pl": {
+        "question": "Które zwierzę robi miau?",
+        "answer": "Kot."
+      },
+      "en": {
+        "question": "Which animal says meow?",
+        "answer": "A cat."
+      }
+    },
+    {
+      "id": "3p-39",
+      "kind": "trivia",
+      "pl": {
+        "question": "Co zakładamy na głowę, żeby była bezpieczna na rowerze?",
+        "answer": "Kask."
+      },
+      "en": {
+        "question": "What do we wear on our head to keep it safe on a bike?",
+        "answer": "A helmet."
+      }
+    },
+    {
+      "id": "3p-40",
+      "kind": "trivia",
+      "pl": {
+        "question": "Co stawiamy na torcie urodzinowym, zapalamy i zdmuchujemy?",
+        "answer": "Świeczki."
+      },
+      "en": {
+        "question": "What do we put on a birthday cake, light and then blow out?",
+        "answer": "Candles."
+      }
+    },
+    {
+      "id": "3p-41",
+      "kind": "trivia",
+      "pl": {
+        "question": "Jak nazywamy zimną szafkę w kuchni, w której trzymamy mleko?",
+        "answer": "Lodówka."
+      },
+      "en": {
+        "question": "What do we call the cold cupboard in the kitchen where we keep the milk?",
+        "answer": "The fridge."
+      }
+    },
+    {
+      "id": "3p-42",
+      "kind": "trivia",
+      "pl": {
+        "question": "Co otwieramy i trzymamy nad głową, gdy pada deszcz?",
+        "answer": "Parasol."
+      },
+      "en": {
+        "question": "What do we open and hold over our head when it rains?",
+        "answer": "An umbrella."
+      }
+    },
+    {
+      "id": "3p-43",
+      "kind": "trivia",
+      "pl": {
+        "question": "Jaką okrągłą zabawkę kopiemy na boisku?",
+        "answer": "Piłkę."
+      },
+      "en": {
+        "question": "Which round toy do we kick on a playing field?",
+        "answer": "A ball."
+      }
+    },
+    {
+      "id": "3p-44",
+      "kind": "trivia",
+      "pl": {
+        "question": "Jak nazywamy posiłek, który jemy rano, zaraz po wstaniu?",
+        "answer": "Śniadanie."
+      },
+      "en": {
+        "question": "What do we call the meal we eat in the morning, just after we get up?",
+        "answer": "Breakfast."
+      }
+    },
+    {
+      "id": "3p-45",
+      "kind": "trivia",
+      "pl": {
+        "question": "Co zakładamy na nos, gdy oczy słabo widzą?",
+        "answer": "Okulary."
+      },
+      "en": {
+        "question": "What do we wear on our nose when our eyes can't see well?",
+        "answer": "Glasses."
+      }
+    },
+    {
+      "id": "3p-46",
+      "kind": "trivia",
+      "pl": {
+        "question": "Co wkładamy do zamka w drzwiach i przekręcamy, żeby je otworzyć?",
+        "answer": "Klucz."
+      },
+      "en": {
+        "question": "What do we put into a door lock and turn to open the door?",
+        "answer": "A key."
+      }
+    },
+    {
+      "id": "3p-47",
+      "kind": "trivia",
+      "pl": {
+        "question": "Kto jeździ wozem strażackim i gasi pożary?",
+        "answer": "Strażak."
+      },
+      "en": {
+        "question": "Who rides in a fire engine and puts out fires?",
+        "answer": "A firefighter."
+      }
+    },
+    {
+      "id": "3p-48",
+      "kind": "trivia",
+      "pl": {
+        "question": "Na jakim świetle przechodzimy przez ulicę?",
+        "answer": "Na zielonym."
+      },
+      "en": {
+        "question": "What colour must the light be for us to cross the street?",
+        "answer": "Green."
+      }
+    },
+    {
+      "id": "3p-49",
+      "kind": "trivia",
+      "pl": {
+        "question": "Czym nabieramy zupę, żeby włożyć ją do buzi?",
+        "answer": "Łyżką."
+      },
+      "en": {
+        "question": "What do we scoop soup up with to put it in our mouth?",
+        "answer": "A spoon."
+      }
+    },
+    {
+      "id": "3p-50",
+      "kind": "trivia",
+      "pl": {
+        "question": "Jaki żółty owoc jest wygięty i obieramy go ze skórki?",
+        "answer": "Banan."
+      },
+      "en": {
+        "question": "Which yellow fruit is curved and has a skin we peel off?",
+        "answer": "A banana."
+      }
+    }
+  ]
+}
