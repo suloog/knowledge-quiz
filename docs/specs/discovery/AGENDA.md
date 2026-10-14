@@ -13,7 +13,23 @@
 
 ## To confirm — our assumptions
 
-None.
+### Question content (`MOD-01`)
+
+1. We assume: words a child of that age knows; nothing frightening, violent or adult; one unambiguous answer; a fact that can be verified — please confirm. (`Q29`)
+2. We assume: each kind appears at least 5 times among the 50 questions — please confirm. (`Q30`)
+
+### Age categories (`MOD-02`)
+
+1. We assume: it opens that category's end card — please confirm. (`Q31`)
+2. We assume: no — every category keeps its order and position, since both languages hold the same questions — please confirm. (`Q32`)
+3. We assume: "3+", "4+", "5+" in both languages — please confirm. (`Q33`)
+4. We assume: it closes the app, as usual on Android — please confirm. (`Q34`)
+
+### Question cards (`MOD-03`)
+
+1. We assume: with the question, from the moment the card appears — please confirm. (`Q35`)
+2. We assume: visibly separated (e.g. by a rule or spacing), so a child can tell which is which — please confirm. (`Q36`)
+3. We assume: the saved order is kept, removed questions are skipped, added ones join the unseen remainder in shuffled order — please confirm. (`Q37`)
 
 ## To decide — the client's call
 

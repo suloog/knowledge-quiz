@@ -21,6 +21,24 @@
 as a whole.>
 
 
+## [MOD-01] Question content
+
+- **Q29 [A]** What does the age-suitability check of every question verify? — *default: words a child of that age knows; nothing frightening, violent or adult; one unambiguous answer; a fact that can be verified* (`MOD-01-F14`)
+- **Q30 [A]** How are the four kinds of content (educational, popular-science, nature, trivia) spread within a category? — *default: each kind appears at least 5 times among the 50 questions* (`MOD-01-F15`)
+
+## [MOD-02] Age categories
+
+- **Q31 [A]** What does the continue entry do when the last-used category's deck is already finished? — *default: it opens that category's end card* (`MOD-02-F09`)
+- **Q32 [A]** Does switching the language restart the decks? — *default: no — every category keeps its order and position, since both languages hold the same questions* (`MOD-02-F13`)
+- **Q33 [A]** How are the categories labelled? — *default: "3+", "4+", "5+" in both languages* (`MOD-02-U03`)
+- **Q34 [A]** What does the Android back action do on the category screen? — *default: it closes the app, as usual on Android* (`MOD-02`, Constraints)
+
+## [MOD-03] Question cards
+
+- **Q35 [A]** When is a question's illustration shown? — *default: with the question, from the moment the card appears* (`MOD-03-U03`)
+- **Q36 [A]** How is the answer set apart from the question? — *default: visibly separated (e.g. by a rule or spacing), so a child can tell which is which* (`MOD-03-U04`)
+- **Q37 [A]** What happens to a saved deck when a new app version adds or removes questions? — *default: the saved order is kept, removed questions are skipped, added ones join the unseen remainder in shuffled order* (`MOD-03`, Constraints)
+
 ## Resolved
 
 <One line per answered question — the ruling and the decision that records it. The reasoning

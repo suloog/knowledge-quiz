@@ -82,6 +82,12 @@ about users, scope, distribution and the starting point of the code.
 - [SRC-03-37] Confirmed: on first launch there is no continue entry, only the list of categories. — *interview, Q27*
 - [SRC-03-38] Confirmed: the language switch is on the category screen; on first launch the app follows the device language (Polish, otherwise English); the choice is remembered. — *interview, Q28*
 
+### 2026-10-14 — /og:requirements, all modules
+
+- [SRC-03-39] A card counts as seen once its answer has been revealed. — *interview, requirements MOD-03*
+- [SRC-03-40] A question is at most 100 characters and an answer at most 60 characters. — *interview, requirements MOD-01*
+- [SRC-03-41] A touch within 0.5 s of the screen changing is ignored. — *interview, requirements MOD-03*
+
 ## Noted but not scope
 
 - …

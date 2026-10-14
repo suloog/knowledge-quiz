@@ -31,9 +31,9 @@
 | ----- | ----- | ---- | ------- | -------- | -------------- | ------ | ------ |
 | `DSC-01` | Users, technology and data | cross-cutting | `SRC-01`, `SRC-02`, `SRC-03` | 18 | 0 [W] / 0 [A] | settled | — |
 | `DSC-02` | E-ink UI and non-functional requirements | cross-cutting | `SRC-01`, `SRC-02`, `SRC-03` | 18 | 0 [W] / 0 [A] | settled | — |
-| `DSC-03` | Age categories | business | `SRC-01`, `SRC-03` | 7 | 0 [W] / 0 [A] | settled | — |
-| `DSC-04` | Question cards | business | `SRC-01`, `SRC-03` | 10 | 0 [W] / 0 [A] | settled | — |
-| `DSC-05` | Question content | business | `SRC-01`, `SRC-03` | 12 | 0 [W] / 0 [A] | settled | — |
+| `DSC-03` | Age categories | business | `SRC-01`, `SRC-03` | 7 | 0 [W] / 0 [A] | settled | `MOD-02` |
+| `DSC-04` | Question cards | business | `SRC-01`, `SRC-03` | 10 | 0 [W] / 0 [A] | settled | `MOD-03` |
+| `DSC-05` | Question content | business | `SRC-01`, `SRC-03` | 12 | 0 [W] / 0 [A] | settled | `MOD-01` (switch: `MOD-02`) |
 
 ## Source items with no topic
 

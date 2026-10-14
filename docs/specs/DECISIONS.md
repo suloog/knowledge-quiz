@@ -417,3 +417,87 @@
 - **Scope effect:** within scope
 - **Resolves:** `Q28`
 - **Status:** accepted
+
+## [DEC-34] Module split and order: Content → Categories → Cards
+
+- **Date:** 2026-10-14
+- **Decided by:** tech lead (Maciej)
+- **Source:** /og:modules 2026-10-14
+- **Affects:** `MOD-01`, `MOD-02`, `MOD-03`, `DSC-03`, `DSC-04`, `DSC-05`
+- **Decision:** Three modules, one per business topic, ordered by dependency: MOD-01 Question content, MOD-02 Age categories, MOD-03 Question cards. This departs from the brief's order (§2 categories, §3 quiz, §4 content) and from the discovery numbering.
+- **Why:** Every screen is built on real data; content is what both screens depend on.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
+
+## [DEC-35] Language switch delivered by Age categories
+
+- **Date:** 2026-10-14
+- **Decided by:** tech lead (Maciej)
+- **Source:** /og:modules 2026-10-14
+- **Affects:** `DSC-05-11`, `DSC-05-12`, `DEC-30`, `DEC-33`, `MOD-02`
+- **Decision:** The language switch found in discovery topic DSC-05 is delivered by MOD-02 Age categories, not by MOD-01 Question content.
+- **Why:** The switch sits on the category screen; the content module only provides both languages.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
+
+## [DEC-36] Owners of the cross-cutting formal items
+
+- **Date:** 2026-10-14
+- **Decided by:** tech lead (Maciej)
+- **Source:** /og:modules 2026-10-14
+- **Affects:** `SRC-01-01`, `SRC-01-02`, `SRC-01-03`, `SRC-01-20`, `SRC-01-22`…`SRC-01-30`, `SRC-02-01`, `SRC-02-02`
+- **Decision:** Formal items from the cross-cutting topics are owned in a module's Scope coverage and delivered through NFR-nn: SRC-01 §5 and SRC-02 by MOD-02 Age categories (the first screen, where the E-ink look is set); SRC-01-01, -20 and -30 by MOD-01 Question content; SRC-01-02 and -03 by MOD-03 Question cards.
+- **Why:** Every formal item needs exactly one owner for /og:clarify to check.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
+
+## [DEC-37] Test tooling and coverage bar
+
+- **Date:** 2026-10-14
+- **Decided by:** tech lead (Maciej)
+- **Source:** /og:modules 2026-10-14
+- **Affects:** `constitution.md`, TQ16, `DEC-15`
+- **Decision:** Unit tests use Jest with React Native Testing Library, e2e tests use Maestro on an Android emulator, and changed code needs 80% line coverage; unit-first, no TDD mandate. Added to the boilerplate's setup where it lacks them.
+- **Why:** Maestro runs against Expo builds without native test code, simple for the delivery loop to write and run.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
+
+## [DEC-38] A card is seen once its answer is revealed
+
+- **Date:** 2026-10-14
+- **Decided by:** analyst (product owner)
+- **Source:** /og:requirements 2026-10-14 (`SRC-03`, `SRC-03-39`)
+- **Affects:** `DEC-22`, `MOD-03-F07`, `MOD-03-F08`, `MOD-02-F06`
+- **Decision:** A card counts as seen — and is never shown again in that round of the deck — once its answer has been revealed; a card closed before the reveal is shown again.
+- **Why:** An unrevealed question was never asked; the family should not lose it.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
+
+## [DEC-39] Length limits for questions and answers
+
+- **Date:** 2026-10-14
+- **Decided by:** analyst (product owner)
+- **Source:** /og:requirements 2026-10-14 (`SRC-03`, `SRC-03-40`)
+- **Affects:** `MOD-01-F11`, `MOD-01-F12`
+- **Decision:** Every question is at most 100 characters and every answer at most 60 characters, in each language; enforced by an automatic content check.
+- **Why:** Fits large type on the Kompakt's small E-ink screen without scrolling and suits a 3-year-old.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
+
+## [DEC-40] Touches right after a screen change are ignored
+
+- **Date:** 2026-10-14
+- **Decided by:** analyst (product owner)
+- **Source:** /og:requirements 2026-10-14 (`SRC-03`, `SRC-03-41`)
+- **Affects:** `DEC-24`, `MOD-03-F14`
+- **Decision:** A touch within 0.5 s of the screen changing is ignored.
+- **Why:** With the whole card as the target, a child's double tap would otherwise reveal and skip a card in one go.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
