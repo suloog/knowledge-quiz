@@ -24,6 +24,8 @@
 #   junit/unit.xml               — Jest
 #   junit/release.xml            — the release APK's checks (steps 1 and 3)
 #   junit/screen.xml             — TC-02-02 step 2, the category entries' width (step 2)
+#   junit/screen-colours.xml     — AC-02-01-4 step 4, the category screen's pixels (step 2);
+#                                  skipped when the device draws one colour only (no GPU)
 #   maestro/report.xml           — Maestro on the debug build (TC-00-01), evidence under maestro/
 #   maestro/report-release.xml   — Maestro on the release build (all other flows), evidence under
 #                                  maestro/release/
@@ -44,17 +46,19 @@ OUT="$(cd "$OUT" && pwd)"
 
 APP_ID="$(node -p "require('./app.json').expo.android.package")"
 CONTENT_TITLE="$(node -p "require('./src/content/app.json').title")"
-# TC-02-01, TC-02-02: the labels 3+, 4+, 5+ the shipped decks hold, in that order, as Maestro
-# patterns (3\+) — CATEGORIES, comma-separated — and how many (CATEGORY_COUNT); 3+ alone until
-# US-01-03 and US-01-04 ship 4+ and 5+ (DEC-48).
+# TC-02-01, TC-02-02: the labels of every shipped deck, youngest first by the same rule as
+# src/content/index.ts (a label without a leading age last), as Maestro patterns (3\+) —
+# CATEGORIES, comma-separated — and how many (CATEGORY_COUNT); 3+ alone until US-01-03 and US-01-04
+# ship 4+ and 5+ (DEC-48).
 CATEGORY_ARGS=()
 while read -r arg; do CATEGORY_ARGS+=(-e "$arg"); done < <(node -e '
   const fs = require("fs");
   const dir = "src/content/decks";
-  const shipped = fs.readdirSync(dir).filter(f => f.endsWith(".json"))
-    .map(f => JSON.parse(fs.readFileSync(`${dir}/${f}`, "utf8")).category);
-  const expected = ["3+", "4+", "5+"].filter(c => shipped.includes(c));
-  console.log(`CATEGORIES=${expected.map(c => c.replace("+", "\\+")).join(",")}`);
+  const age = c => { const n = Number.parseInt(c, 10); return Number.isNaN(n) ? Number.MAX_SAFE_INTEGER : n; };
+  const expected = fs.readdirSync(dir).filter(f => f.endsWith(".json")).sort()
+    .map(f => JSON.parse(fs.readFileSync(`${dir}/${f}`, "utf8")).category)
+    .sort((a, b) => age(a) - age(b));
+  console.log(`CATEGORIES=${expected.map(c => c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join(",")}`);
   console.log(`CATEGORY_COUNT=${expected.length}`);
 ')
 say() { printf '[acceptance] %s\n' "$*"; }
@@ -259,6 +263,8 @@ else
     screen_width="$("$ADB" shell wm size | tr -d '\r' | awk -F'[ x]' '/^Physical size/ { p = $3 } /^Override size/ { o = $3 } END { print o ? o : p }')"
     "$ADB" shell am force-stop "$APP_ID" >/dev/null 2>&1
     "$ADB" shell monkey -p "$APP_ID" -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1
+    # A file left by an earlier run into the same directory would end the wait at once.
+    rm -f "$OUT/maestro/TC-02-02-hierarchy.txt"
     for _ in $(seq 1 60); do
       "$ADB" shell uiautomator dump /sdcard/kq-ui.xml >/dev/null 2>&1 &&
         "$ADB" exec-out cat /sdcard/kq-ui.xml >"$OUT/maestro/TC-02-02-hierarchy.txt" 2>/dev/null
@@ -269,6 +275,19 @@ else
       "$(printf '%s\n' "${CATEGORY_ARGS[@]}" | sed -n 's/^CATEGORY_COUNT=//p')" "$OUT/junit/screen.xml"; then
       status=1
     fi
+
+    # AC-02-01-4 step 4: the same screen's pixels — #000000 and #FFFFFF only outside the text
+    # glyphs (NFR-07). The raw screenshot is read by the check; the PNG is kept as evidence.
+    say "AC-02-01-4 step 4: the category screen's colours on the device"
+    density="$("$ADB" shell wm density | tr -d '\r' | awk -F': ' '/^Physical density/ { p = $2 } /^Override density/ { o = $2 } END { print o ? o : p }')"
+    rm -f "$OUT/maestro/AC-02-01-4-screen.raw"
+    "$ADB" exec-out screencap >"$OUT/maestro/AC-02-01-4-screen.raw" 2>/dev/null
+    "$ADB" exec-out screencap -p >"$OUT/maestro/AC-02-01-4-step-04-screen.png" 2>/dev/null
+    if ! node scripts/check-black-and-white.js "$OUT/maestro/AC-02-01-4-screen.raw" \
+      "$OUT/maestro/TC-02-02-hierarchy.txt" "$density" "$OUT/junit/screen-colours.xml"; then
+      status=1
+    fi
+    rm -f "$OUT/maestro/AC-02-01-4-screen.raw"
   fi
   stop_stack
 

@@ -17,7 +17,7 @@ depends_on: [] # test case IDs that must pass first
 
 |  |  |
 | --- | --- |
-| **Layer** | mobile — the app rendered by the unit test suite, and the repository's sources |
+| **Layer** | mobile — the app rendered by the unit test suite, the repository's sources, and the app on the Android 12 emulator |
 | **Verifies** | `US-02-01#4`, `NFR-07` |
 | **Role** | Parent (no sign-in) |
 | **Type** | nfr |
@@ -27,6 +27,7 @@ depends_on: [] # test case IDs that must pass first
 ## Preconditions
 
 - The repository checked out with its dependencies installed.
+- For step 4: the app running on the Android 12 emulator, on the category screen, with a GPU that draws the screen (a frame of one colour only blocks the step).
 
 ## Steps
 
@@ -35,10 +36,11 @@ depends_on: [] # test case IDs that must pass first
 | 1 | Open the app (root layout and navigation included) and read the colour of every element drawn | Every colour is #000000 or #FFFFFF — the navigation's screen background included | console |
 | 2 | Draw an element in a third colour (grey) and read the colours again | The check reports the grey: another colour fails the test | console |
 | 3 | Read every source file under `src/` except `src/theme.ts`, and the app configuration | No colour is written anywhere but the theme; the app configuration's colours are black or white | console |
+| 4 | Take a screenshot of the category screen on the emulator and read every pixel of the app's area (system bars excluded) outside the text glyphs — each text element shrunk by 8 dp | Every pixel is #000000 or #FFFFFF: no grey row beside a rule, no other colour | screenshot |
 
 ## Pass criterion
 
-- Only #000000 and #FFFFFF are drawn, and a third colour makes the test fail.
+- Only #000000 and #FFFFFF are drawn — in the app's styles and in the pixels on the device — and a third colour makes the test fail.
 
 ## Out of scope for this test
 
