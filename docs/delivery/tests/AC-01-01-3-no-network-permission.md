@@ -22,7 +22,7 @@ depends_on: [AC-01-01-5] # test case IDs that must pass first
 | **Role** | — (no sign-in) |
 | **Type** | nfr |
 | **Automation** | auto |
-| **Depends on** | — |
+| **Depends on** | `AC-01-01-5` |
 
 ## Preconditions
 
