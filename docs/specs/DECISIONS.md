@@ -586,17 +586,17 @@
 - **Resolves:** —
 - **Status:** accepted
 
-## [DEC-48] Category screen: order by age, and the 3+, 4+, 5+ checks before 4+ and 5+ ship
+## [DEC-48] Category screen: order by age; 4+ and 5+ on screen, and the full TC-02-01/02 check, deferred to US-01-03 and US-01-04
 
 - **Date:** 2026-10-14
-- **Decided by:** developer (delivery loop)
-- **Source:** implementation (`US-02-01`)
-- **Affects:** `US-02-01`, `MOD-02-F02`, `MOD-02-F03`, `MOD-02-U03`, `TC-02-01`, `TC-02-02`, `src/content/index.ts`
-- **Decision:** (1) The category list is built in `src/content` from the registered decks and sorted by the age number its label starts with ("3+" → 3), so the screen shows 3+, 4+, 5+ whatever order the decks are registered in, and a new deck takes its place by age with no change to the screen. (2) The entry shows the deck's `category` label as it is: it is the same in both languages (`MOD-02-U03`), so it needs no i18n string; the screen keeps the app title from the content data above the list. (3) Until `US-01-03` and `US-01-04` ship the 4+ and 5+ decks, the executable tests for `TC-02-01` and `TC-02-02` check the categories the shipped content data holds — in the order 3+, 4+, 5+, and no other entry — which today is 3+ alone, as the story's edge case says; `scripts/test-acceptance.sh` reads the shipped decks and hands the flows the expected labels, so the same flows check all three entries once the decks land, with no change to the tests.
-- **Why:** The simplest order rule that guarantees `MOD-02-F02` without relying on the registration order in `src/content/decks/index.ts`. Criterion 2 lists "the categories found in the content data", and the story's edge case says the screen shows only 3+ while only that deck exists: a flow that demanded 4+ and 5+ now would fail on content not yet shipped, not on the screen.
-- **Scope effect:** within scope
+- **Decided by:** developer (delivery loop) — critical, put to the product owner, awaiting the answer
+- **Source:** implementation (`US-02-01`, code review round 1, finding B1)
+- **Affects:** `US-02-01`, `US-01-03`, `US-01-04`, `MOD-02-F02`, `MOD-02-F03`, `MOD-02-U03`, `TC-02-01`, `TC-02-02`, `src/content/index.ts`, `scripts/test-acceptance.sh`
+- **Decision:** (1) The category list is built in `src/content` from the registered decks and sorted by the age number its label starts with ("3+" → 3; a label without one last), so the screen shows 3+, 4+, 5+ whatever order the decks are registered in, and a new deck takes its place by age with no change to the screen. (2) The entry shows the deck's `category` label as it is: it is the same in both languages (`MOD-02-U03`), so it needs no i18n string; the screen keeps the app title from the content data above the list. (3) Proposed, for the product owner: `US-02-01` merges with the 3+ category only, the one deck shipped today. The executable tests for `TC-02-01` and `TC-02-02` check the categories the shipped content data holds, youngest first, and no other entry — today 3+ alone, as the story's edge case says — so the `must` `MOD-02-F02` ("lists 3+, 4+ and 5+") and the TCs' "three entries" are proven for 3+ only until `US-01-03` and `US-01-04` ship the 4+ and 5+ decks; the same flows then check all three with no change to the tests.
+- **Why:** The simplest order rule that guarantees `MOD-02-F02` without relying on the registration order in `src/content/decks/index.ts`. Criterion 2 lists "the categories found in the content data", and the story's edge case says the screen shows only 3+ while only that deck exists: a flow that demanded 4+ and 5+ now would fail on content not yet shipped, not on the screen. Critical: point 3 defers part of a `must` requirement and the full check of two reviewed test cases, so it is the product owner's to decide.
+- **Scope effect:** reduction (deferred) — the 4+ and 5+ part of `MOD-02-F02` and the full `TC-02-01` / `TC-02-02` check move to `US-01-03` / `US-01-04`
 - **Resolves:** —
-- **Status:** accepted
+- **Status:** to confirm with the client
 
 ## [DEC-49] What makes the 4+ deck harder than 3+
 
