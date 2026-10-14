@@ -16,7 +16,8 @@ const rows = new Map(
     .filter(line => line.startsWith('| 3p-'))
     .map(line => {
       const cells = line.split('|').map(cell => cell.trim());
-      return [cells[1], cells.slice(2, 10)];
+      // Every cell between the first and the last pipe: an extra or a missing column shows.
+      return [cells[1], cells.slice(2, -1)];
     }),
 );
 
@@ -28,7 +29,9 @@ describe('AC-01-02-4 The age-suitability check of every 3+ question is recorded'
 
   it('step 2 — each row names the question it checked and its answer, in Polish and English', () => {
     threePlus.questions.forEach(q => {
-      const [plQuestion, plAnswer, enQuestion, enAnswer] = rows.get(q.id);
+      const cells = rows.get(q.id);
+      expect({ id: q.id, cells: cells.length }).toEqual({ id: q.id, cells: 8 });
+      const [plQuestion, plAnswer, enQuestion, enAnswer] = cells;
       expect({
         id: q.id,
         pl: { question: plQuestion, answer: plAnswer },
