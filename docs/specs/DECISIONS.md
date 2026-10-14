@@ -585,3 +585,27 @@
 - **Scope effect:** within scope
 - **Resolves:** —
 - **Status:** accepted
+
+## [DEC-49] What makes the 4+ deck harder than 3+
+
+- **Date:** 2026-10-15
+- **Decided by:** developer (delivery loop)
+- **Source:** implementation (`US-01-03`)
+- **Affects:** `US-01-03`, `MOD-01-F06`, `MOD-01-F14`
+- **Decision:** The 4+ deck asks what a 4-year-old learns beyond the 3+ basics: counting to ten and adding within ten, the days of the week, flat shapes, mixing two paint colours, opposites, animal babies, how animals and plants live (a caterpillar becoming a butterfly, the roots, winter sleep), what happens to water and ice, and the people who help us (the dentist, the baker, the postman). It keeps the 3+ form — short open questions, one answer, words a 4-year-old meets at home, in picture books and at preschool — and the `DEC-47` near-miss rule; each question's near misses are in `docs/delivery/content-checks/US-01-03-4-plus.md`.
+- **Why:** The story asks for "a little harder than 3+, still suited to the youngest child of the category" (`MOD-01-F06`) without saying how; these are the topics a 4-year-old's preschool year covers, one step past the 3+ deck's body parts, animal sounds and everyday objects. The product owner reviews all content before release (`DEC-26`).
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
+
+## [DEC-50] A 4+ question repeats a 3+ one when it has its text or its answer
+
+- **Date:** 2026-10-15
+- **Decided by:** developer (delivery loop)
+- **Source:** implementation (`US-01-03`)
+- **Affects:** `US-01-03`, `MOD-01-F02`
+- **Decision:** `US-01-03#6` ("none of the 4+ questions repeats a 3+ question") is read as: no 4+ question has the text of a 3+ question in either language, ignoring case and punctuation, and no 4+ question asks for the answer of a 3+ question, so none is a 3+ question in other words. `AC-01-03-6` checks both; the content checks (`DEC-46`) already refuse a repeated text across decks. A 4+ question may touch a subject a 3+ question touched when it asks for something else (3+ asks what ice is made of, 4+ what happens to it when it gets warm).
+- **Why:** A repeat of the text alone would let the same question back in reworded, which is what a child would notice; the answer is the simplest thing that shows it. Subjects are not exclusive to one category: a child meets the same things again, a level up.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
