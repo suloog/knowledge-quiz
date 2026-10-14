@@ -1,5 +1,4 @@
-// The shape of one age category's deck data file (src/content/decks/<category>.json), as proposed
-// in DEC-46 — pending the tech lead's approval of the content data format (constitution).
+// The shape of one age category's deck data file (src/content/decks/<category>.json) — DEC-46.
 
 export const CONTENT_KINDS = [
   'educational',

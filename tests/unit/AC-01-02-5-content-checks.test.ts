@@ -1,0 +1,94 @@
+// US-01-02#5 — all automatic content checks pass, and breaking any one of them fails the suite.
+import { decks } from '../../src/content';
+import { checkDeck, checkDecks } from '../../src/content/checks';
+import type { Deck } from '../../src/content/deck';
+
+const threePlus = decks.find(deck => deck.category === '3+')!;
+const copy = (): Deck => JSON.parse(JSON.stringify(threePlus));
+const broken = (change: (deck: Deck) => void) => {
+  const deck = copy();
+  change(deck);
+  return checkDeck(deck);
+};
+
+describe('AC-01-02-5 All automatic content checks pass; breaking any one fails the suite', () => {
+  it('step 1 — every deck the app ships passes every content check', () => {
+    expect(checkDecks(decks)).toEqual([]);
+  });
+
+  it.each<[string, (deck: Deck) => void]>([
+    ['a question fewer than 50', deck => void deck.questions.pop()],
+    [
+      'a question more than 50',
+      deck => void deck.questions.push({ ...deck.questions[0], id: 'extra' }),
+    ],
+    [
+      'a missing English answer',
+      deck =>
+        void delete (
+          deck.questions[0].en as Partial<Deck['questions'][0]['en']>
+        ).answer,
+    ],
+    [
+      'an empty Polish answer',
+      deck => void (deck.questions[0].pl.answer = ' '),
+    ],
+    [
+      'two answers instead of one',
+      deck =>
+        void ((deck.questions[0].pl as unknown as { answer: string[] }).answer =
+          ['a', 'b']),
+    ],
+    [
+      'a missing Polish question',
+      deck =>
+        void delete (deck.questions[0] as Partial<Deck['questions'][0]>).pl,
+    ],
+    [
+      'a question of 101 characters',
+      deck => void (deck.questions[0].en.question = 'x'.repeat(101)),
+    ],
+    [
+      'an answer of 61 characters',
+      deck => void (deck.questions[0].pl.answer = 'x'.repeat(61)),
+    ],
+    [
+      'a kind with fewer than 5 questions',
+      deck =>
+        deck.questions
+          .filter(q => q.kind === 'trivia')
+          .slice(0, -4)
+          .forEach(q => (q.kind = 'nature')),
+    ],
+    [
+      'an unknown kind',
+      deck => void ((deck.questions[0] as { kind: string }).kind = 'history'),
+    ],
+    ['a question without an id', deck => void (deck.questions[0].id = '')],
+    [
+      'an illustration that is not a file name',
+      deck => void (deck.questions[0].illustration = ''),
+    ],
+    [
+      'a wrong schema version',
+      deck => void ((deck as { schemaVersion: number }).schemaVersion = 2),
+    ],
+  ])('step 2 — %s fails the content checks', (_, change) => {
+    expect(broken(change)).not.toEqual([]);
+  });
+
+  it('step 3 — a question id or a category used twice fails the content checks', () => {
+    const duplicateId = copy();
+    duplicateId.questions[1].id = duplicateId.questions[0].id;
+    expect(checkDecks([duplicateId])).not.toEqual([]);
+    const other = copy();
+    other.questions.forEach(q => (q.id = `other-${q.id}`));
+    expect(checkDecks([threePlus, other])).not.toEqual([]);
+  });
+
+  it('step 4 — a question with an illustration file name passes', () => {
+    expect(
+      broken(deck => (deck.questions[0].illustration = 'sun.png')),
+    ).toEqual([]);
+  });
+});

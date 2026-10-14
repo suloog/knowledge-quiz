@@ -1,0 +1,606 @@
+{
+  "schemaVersion": 1,
+  "category": "3+",
+  "questions": [
+    {
+      "id": "3p-01",
+      "kind": "educational",
+      "pl": {
+        "question": "Jakiego koloru jest dojrzały banan?",
+        "answer": "Żółtego."
+      },
+      "en": {
+        "question": "What colour is a ripe banana?",
+        "answer": "Yellow."
+      }
+    },
+    {
+      "id": "3p-02",
+      "kind": "educational",
+      "pl": {
+        "question": "Ile masz oczu?",
+        "answer": "Dwoje."
+      },
+      "en": {
+        "question": "How many eyes do you have?",
+        "answer": "Two."
+      }
+    },
+    {
+      "id": "3p-03",
+      "kind": "educational",
+      "pl": {
+        "question": "Ile kół ma rower?",
+        "answer": "Dwa."
+      },
+      "en": {
+        "question": "How many wheels does a bicycle have?",
+        "answer": "Two."
+      }
+    },
+    {
+      "id": "3p-04",
+      "kind": "educational",
+      "pl": {
+        "question": "Jaki kształt ma moneta?",
+        "answer": "Okrągły."
+      },
+      "en": {
+        "question": "What shape is a coin?",
+        "answer": "Round."
+      }
+    },
+    {
+      "id": "3p-05",
+      "kind": "educational",
+      "pl": {
+        "question": "Czym myjesz zęby?",
+        "answer": "Szczoteczką do zębów."
+      },
+      "en": {
+        "question": "What do you brush your teeth with?",
+        "answer": "A toothbrush."
+      }
+    },
+    {
+      "id": "3p-06",
+      "kind": "educational",
+      "pl": {
+        "question": "Jakiego koloru jest trawa?",
+        "answer": "Zielonego."
+      },
+      "en": {
+        "question": "What colour is grass?",
+        "answer": "Green."
+      }
+    },
+    {
+      "id": "3p-07",
+      "kind": "educational",
+      "pl": {
+        "question": "Ile palców masz na jednej ręce?",
+        "answer": "Pięć."
+      },
+      "en": {
+        "question": "How many fingers do you have on one hand?",
+        "answer": "Five."
+      }
+    },
+    {
+      "id": "3p-08",
+      "kind": "educational",
+      "pl": {
+        "question": "Czym widzisz?",
+        "answer": "Oczami."
+      },
+      "en": {
+        "question": "What do you see with?",
+        "answer": "Your eyes."
+      }
+    },
+    {
+      "id": "3p-09",
+      "kind": "educational",
+      "pl": {
+        "question": "Czym słyszysz?",
+        "answer": "Uszami."
+      },
+      "en": {
+        "question": "What do you hear with?",
+        "answer": "Your ears."
+      }
+    },
+    {
+      "id": "3p-10",
+      "kind": "educational",
+      "pl": {
+        "question": "Czym czujesz zapachy?",
+        "answer": "Nosem."
+      },
+      "en": {
+        "question": "What do you smell with?",
+        "answer": "Your nose."
+      }
+    },
+    {
+      "id": "3p-11",
+      "kind": "educational",
+      "pl": {
+        "question": "Jakiego koloru jest śnieg?",
+        "answer": "Białego."
+      },
+      "en": {
+        "question": "What colour is snow?",
+        "answer": "White."
+      }
+    },
+    {
+      "id": "3p-12",
+      "kind": "educational",
+      "pl": {
+        "question": "Kto jest większy: kot czy mysz?",
+        "answer": "Kot."
+      },
+      "en": {
+        "question": "Which is bigger: a cat or a mouse?",
+        "answer": "A cat."
+      }
+    },
+    {
+      "id": "3p-13",
+      "kind": "educational",
+      "pl": {
+        "question": "Jaka liczba jest po jedynce?",
+        "answer": "Dwa."
+      },
+      "en": {
+        "question": "Which number comes after one?",
+        "answer": "Two."
+      }
+    },
+    {
+      "id": "3p-14",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Co świeci na niebie w dzień?",
+        "answer": "Słońce."
+      },
+      "en": {
+        "question": "What shines in the sky in the daytime?",
+        "answer": "The sun."
+      }
+    },
+    {
+      "id": "3p-15",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Co dzieje się z lodem, gdy robi się ciepło?",
+        "answer": "Topi się i zmienia w wodę."
+      },
+      "en": {
+        "question": "What happens to ice when it gets warm?",
+        "answer": "It melts into water."
+      }
+    },
+    {
+      "id": "3p-16",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Co spada z chmur, gdy pada deszcz?",
+        "answer": "Krople wody."
+      },
+      "en": {
+        "question": "What falls from the clouds when it rains?",
+        "answer": "Drops of water."
+      }
+    },
+    {
+      "id": "3p-17",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Co świeci w nocy na niebie i zmienia kształt?",
+        "answer": "Księżyc."
+      },
+      "en": {
+        "question": "What shines in the night sky and changes its shape?",
+        "answer": "The moon."
+      }
+    },
+    {
+      "id": "3p-18",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Czym oddychamy?",
+        "answer": "Powietrzem."
+      },
+      "en": {
+        "question": "What do we breathe?",
+        "answer": "Air."
+      }
+    },
+    {
+      "id": "3p-19",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Czy metalowy klucz wrzucony do wody pływa, czy tonie?",
+        "answer": "Tonie."
+      },
+      "en": {
+        "question": "Does a metal key dropped in water float or sink?",
+        "answer": "It sinks."
+      }
+    },
+    {
+      "id": "3p-20",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Czego potrzebujemy, żeby widzieć w ciemności?",
+        "answer": "Światła."
+      },
+      "en": {
+        "question": "What do we need to see in the dark?",
+        "answer": "Light."
+      }
+    },
+    {
+      "id": "3p-21",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Co ciemnego idzie obok ciebie w słoneczny dzień?",
+        "answer": "Twój cień."
+      },
+      "en": {
+        "question": "What dark shape follows you on a sunny day?",
+        "answer": "Your shadow."
+      }
+    },
+    {
+      "id": "3p-22",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Jakiego koloru jest niebo w pogodny dzień?",
+        "answer": "Niebieskiego."
+      },
+      "en": {
+        "question": "What colour is the sky on a clear day?",
+        "answer": "Blue."
+      }
+    },
+    {
+      "id": "3p-23",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Co zamienia wodę w lód: ciepło czy zimno?",
+        "answer": "Zimno."
+      },
+      "en": {
+        "question": "What turns water into ice: warmth or cold?",
+        "answer": "Cold."
+      }
+    },
+    {
+      "id": "3p-24",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Co ma wiele kolorów i pojawia się na niebie, gdy pada deszcz i świeci słońce?",
+        "answer": "Tęcza."
+      },
+      "en": {
+        "question": "What has many colours and appears in the sky when it rains and the sun shines?",
+        "answer": "A rainbow."
+      }
+    },
+    {
+      "id": "3p-25",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Co unosi się nad garnkiem, gdy woda się gotuje?",
+        "answer": "Para."
+      },
+      "en": {
+        "question": "What rises from a pot when the water boils?",
+        "answer": "Steam."
+      }
+    },
+    {
+      "id": "3p-26",
+      "kind": "nature",
+      "pl": {
+        "question": "Jak robi krowa?",
+        "answer": "Muu."
+      },
+      "en": {
+        "question": "What sound does a cow make?",
+        "answer": "Moo."
+      }
+    },
+    {
+      "id": "3p-27",
+      "kind": "nature",
+      "pl": {
+        "question": "Które zwierzę robi hau hau?",
+        "answer": "Pies."
+      },
+      "en": {
+        "question": "Which animal says woof?",
+        "answer": "A dog."
+      }
+    },
+    {
+      "id": "3p-28",
+      "kind": "nature",
+      "pl": {
+        "question": "Gdzie mieszka ryba?",
+        "answer": "W wodzie."
+      },
+      "en": {
+        "question": "Where does a fish live?",
+        "answer": "In water."
+      }
+    },
+    {
+      "id": "3p-29",
+      "kind": "nature",
+      "pl": {
+        "question": "Co robią pszczoły?",
+        "answer": "Miód."
+      },
+      "en": {
+        "question": "What do bees make?",
+        "answer": "Honey."
+      }
+    },
+    {
+      "id": "3p-30",
+      "kind": "nature",
+      "pl": {
+        "question": "Które zwierzę ma bardzo długą szyję?",
+        "answer": "Żyrafa."
+      },
+      "en": {
+        "question": "Which animal has a very long neck?",
+        "answer": "A giraffe."
+      }
+    },
+    {
+      "id": "3p-31",
+      "kind": "nature",
+      "pl": {
+        "question": "Który ptak robi kwa kwa?",
+        "answer": "Kaczka."
+      },
+      "en": {
+        "question": "Which bird says quack?",
+        "answer": "A duck."
+      }
+    },
+    {
+      "id": "3p-32",
+      "kind": "nature",
+      "pl": {
+        "question": "Czym latają ptaki?",
+        "answer": "Skrzydłami."
+      },
+      "en": {
+        "question": "What do birds fly with?",
+        "answer": "Their wings."
+      }
+    },
+    {
+      "id": "3p-33",
+      "kind": "nature",
+      "pl": {
+        "question": "Co rośnie na jabłoni?",
+        "answer": "Jabłka."
+      },
+      "en": {
+        "question": "What grows on an apple tree?",
+        "answer": "Apples."
+      }
+    },
+    {
+      "id": "3p-34",
+      "kind": "nature",
+      "pl": {
+        "question": "Które zwierzę podobne do konia ma czarno-białe paski?",
+        "answer": "Zebra."
+      },
+      "en": {
+        "question": "Which horse-like animal has black and white stripes?",
+        "answer": "A zebra."
+      }
+    },
+    {
+      "id": "3p-35",
+      "kind": "nature",
+      "pl": {
+        "question": "Które zwierzę ma trąbę?",
+        "answer": "Słoń."
+      },
+      "en": {
+        "question": "Which animal has a trunk?",
+        "answer": "An elephant."
+      }
+    },
+    {
+      "id": "3p-36",
+      "kind": "nature",
+      "pl": {
+        "question": "Co znosi kura?",
+        "answer": "Jajka."
+      },
+      "en": {
+        "question": "What does a hen lay?",
+        "answer": "Eggs."
+      }
+    },
+    {
+      "id": "3p-37",
+      "kind": "nature",
+      "pl": {
+        "question": "Jakiego koloru są liście drzew latem?",
+        "answer": "Zielonego."
+      },
+      "en": {
+        "question": "What colour are tree leaves in summer?",
+        "answer": "Green."
+      }
+    },
+    {
+      "id": "3p-38",
+      "kind": "nature",
+      "pl": {
+        "question": "Które zwierzę robi miau?",
+        "answer": "Kot."
+      },
+      "en": {
+        "question": "Which animal says meow?",
+        "answer": "A cat."
+      }
+    },
+    {
+      "id": "3p-39",
+      "kind": "trivia",
+      "pl": {
+        "question": "Ile dni ma tydzień?",
+        "answer": "Siedem."
+      },
+      "en": {
+        "question": "How many days are there in a week?",
+        "answer": "Seven."
+      }
+    },
+    {
+      "id": "3p-40",
+      "kind": "trivia",
+      "pl": {
+        "question": "Co stawiamy na torcie urodzinowym?",
+        "answer": "Świeczki."
+      },
+      "en": {
+        "question": "What do we put on a birthday cake?",
+        "answer": "Candles."
+      }
+    },
+    {
+      "id": "3p-41",
+      "kind": "trivia",
+      "pl": {
+        "question": "Gdzie trzymamy lody, żeby się nie roztopiły?",
+        "answer": "W zamrażarce."
+      },
+      "en": {
+        "question": "Where do we keep ice cream so it does not melt?",
+        "answer": "In the freezer."
+      }
+    },
+    {
+      "id": "3p-42",
+      "kind": "trivia",
+      "pl": {
+        "question": "Co chroni nas przed deszczem, gdy trzymamy to nad głową?",
+        "answer": "Parasol."
+      },
+      "en": {
+        "question": "What do we hold over our head to keep dry in the rain?",
+        "answer": "An umbrella."
+      }
+    },
+    {
+      "id": "3p-43",
+      "kind": "trivia",
+      "pl": {
+        "question": "W czym śpimy w nocy?",
+        "answer": "W łóżku."
+      },
+      "en": {
+        "question": "What do we sleep in at night?",
+        "answer": "A bed."
+      }
+    },
+    {
+      "id": "3p-44",
+      "kind": "trivia",
+      "pl": {
+        "question": "Jaki posiłek jemy rano?",
+        "answer": "Śniadanie."
+      },
+      "en": {
+        "question": "Which meal do we eat in the morning?",
+        "answer": "Breakfast."
+      }
+    },
+    {
+      "id": "3p-45",
+      "kind": "trivia",
+      "pl": {
+        "question": "Co pokazuje zegar?",
+        "answer": "Godzinę."
+      },
+      "en": {
+        "question": "What does a clock show?",
+        "answer": "The time."
+      }
+    },
+    {
+      "id": "3p-46",
+      "kind": "trivia",
+      "pl": {
+        "question": "Czego potrzebujesz, żeby otworzyć drzwi zamknięte na klucz?",
+        "answer": "Klucza."
+      },
+      "en": {
+        "question": "What do you need to open a locked door?",
+        "answer": "A key."
+      }
+    },
+    {
+      "id": "3p-47",
+      "kind": "trivia",
+      "pl": {
+        "question": "Po czym jeżdżą pociągi?",
+        "answer": "Po torach."
+      },
+      "en": {
+        "question": "What do trains run on?",
+        "answer": "Tracks."
+      }
+    },
+    {
+      "id": "3p-48",
+      "kind": "trivia",
+      "pl": {
+        "question": "Co zakładamy na dłonie, gdy jest zimno?",
+        "answer": "Rękawiczki."
+      },
+      "en": {
+        "question": "What do we put on our hands when it is cold?",
+        "answer": "Gloves."
+      }
+    },
+    {
+      "id": "3p-49",
+      "kind": "trivia",
+      "pl": {
+        "question": "Czym jemy zupę?",
+        "answer": "Łyżką."
+      },
+      "en": {
+        "question": "What do we eat soup with?",
+        "answer": "A spoon."
+      }
+    },
+    {
+      "id": "3p-50",
+      "kind": "trivia",
+      "pl": {
+        "question": "Z czego lepimy bałwana?",
+        "answer": "Ze śniegu."
+      },
+      "en": {
+        "question": "What do we make a snowman from?",
+        "answer": "Snow."
+      }
+    }
+  ]
+}
