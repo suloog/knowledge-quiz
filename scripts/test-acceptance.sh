@@ -23,6 +23,7 @@
 # JUnit reports land in $OG_RUN_DIR (default: test-results/):
 #   junit/unit.xml               — Jest
 #   junit/release.xml            — the release APK's checks (steps 1 and 3)
+#   junit/screen.xml             — TC-02-02 step 2, the category entries' width (step 2)
 #   maestro/report.xml           — Maestro on the debug build (TC-00-01), evidence under maestro/
 #   maestro/report-release.xml   — Maestro on the release build (all other flows), evidence under
 #                                  maestro/release/
@@ -43,6 +44,17 @@ OUT="$(cd "$OUT" && pwd)"
 
 APP_ID="$(node -p "require('./app.json').expo.android.package")"
 CONTENT_TITLE="$(node -p "require('./src/content/app.json').title")"
+# TC-02-01, TC-02-02: the labels 3+, 4+, 5+ the shipped decks hold, in that order, as Maestro
+# patterns (3\+); `none` for one not shipped yet — 4+ and 5+ until US-01-03 and US-01-04 (DEC-48).
+CATEGORY_ARGS=()
+while read -r arg; do CATEGORY_ARGS+=(-e "$arg"); done < <(node -e '
+  const fs = require("fs");
+  const dir = "src/content/decks";
+  const shipped = fs.readdirSync(dir).filter(f => f.endsWith(".json"))
+    .map(f => JSON.parse(fs.readFileSync(`${dir}/${f}`, "utf8")).category);
+  const expected = ["3+", "4+", "5+"].filter(c => shipped.includes(c));
+  [0, 1, 2].forEach(i => console.log(`CATEGORY_${i}=${expected[i] ? expected[i].replace("+", "\\+") : "none"}`));
+')
 say() { printf '[acceptance] %s\n' "$*"; }
 
 status=0
@@ -234,7 +246,25 @@ else
       --include-tags debug-build \
       -e APP_ID="$APP_ID" \
       -e CONTENT_TITLE="$CONTENT_TITLE" \
+      "${CATEGORY_ARGS[@]}" \
       tests/maestro; then
+      status=1
+    fi
+
+    # TC-02-02 step 2: each category entry's bounds, from the accessibility layer, against the
+    # screen's width (the override if one is set) — a width Maestro cannot select by (DEC-48).
+    say "TC-02-02 step 2: the category entries' width"
+    screen_width="$("$ADB" shell wm size | tr -d '\r' | awk -F'[ x]' '/^Physical size/ { p = $3 } /^Override size/ { o = $3 } END { print o ? o : p }')"
+    "$ADB" shell am force-stop "$APP_ID" >/dev/null 2>&1
+    "$ADB" shell monkey -p "$APP_ID" -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1
+    for _ in $(seq 1 60); do
+      "$ADB" shell uiautomator dump /sdcard/kq-ui.xml >/dev/null 2>&1 &&
+        "$ADB" exec-out cat /sdcard/kq-ui.xml >"$OUT/maestro/TC-02-02-hierarchy.txt" 2>/dev/null
+      grep -q 'resource-id="category-0"' "$OUT/maestro/TC-02-02-hierarchy.txt" 2>/dev/null && break
+      sleep 1
+    done
+    if ! node scripts/check-full-width.js "$OUT/maestro/TC-02-02-hierarchy.txt" "$screen_width" \
+      "$(printf '%s\n' "${CATEGORY_ARGS[@]}" | grep -c '^CATEGORY_[0-9]=[0-9]')" "$OUT/junit/screen.xml"; then
       status=1
     fi
   fi

@@ -1,0 +1,41 @@
+appId: ${APP_ID}
+name: TC-02-01 Launch opens on the category screen listing 3+, 4+ and 5+ in that order
+# CATEGORY_0…CATEGORY_2 (scripts/test-acceptance.sh): the labels 3+, 4+, 5+ the shipped content data
+# holds, in that order and as patterns (3\+), `none` past the last one — until US-01-03 and US-01-04
+# ship 4+ and 5+, only 3+ (story US-02-01, edge case; DEC-48).
+---
+# Step 1 — open the app: the category screen is shown.
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+- assertNotVisible:
+    text: ".*(Error|isn't responding|keeps stopping|has stopped).*"
+- takeScreenshot: step-01-category-screen
+# Step 2 — read the list: the entries 3+, 4+, 5+ in that order, top to bottom, and no other.
+- assertVisible:
+    id: category-0
+    text: ${CATEGORY_0}
+- runFlow:
+    when:
+      true: ${CATEGORY_1 != 'none'}
+    commands:
+      - assertVisible:
+          id: category-1
+          text: ${CATEGORY_1}
+          below:
+            id: category-0
+- runFlow:
+    when:
+      true: ${CATEGORY_2 != 'none'}
+    commands:
+      - assertVisible:
+          id: category-2
+          text: ${CATEGORY_2}
+          below:
+            id: category-1
+- assertNotVisible:
+    id: "category-${CATEGORY_1 == 'none' ? 1 : CATEGORY_2 == 'none' ? 2 : 3}"
+- takeScreenshot: step-02-categories-in-order
