@@ -513,3 +513,27 @@
 - **Scope effect:** within scope
 - **Resolves:** —
 - **Status:** accepted
+
+## [DEC-42] Foundation keeps the boilerplate's tooling, leaves out its demo and network code
+
+- **Date:** 2026-10-14
+- **Decided by:** developer (delivery loop)
+- **Source:** implementation (`US-00-01`)
+- **Affects:** `US-00-01`, `US-01-01`, `DEC-06`, `DEC-07`, `constitution.md`
+- **Decision:** The app starts from `ordergroup/boilerplate-react-native-expo` upgraded to Expo SDK 57 / React Native 0.86 (`DEC-06`). Kept: Yarn 1, Expo Router under `src/app`, the TypeScript, ESLint, Prettier, Babel and Husky setup, Jest with `jest-expo`, the image assets. Left out, because nothing in the app uses them and the constitution forbids network code: the login and todo demo screens, the MSW mocks and their polyfills, the RTK Query API layer and the Redux store, `react-native-paper` and the theme built on it, AsyncStorage, Reanimated, Gesture Handler, React Native Web, the `.default.env` file and the boilerplate's CI workflow. Added for tests (`DEC-37`): React Native Testing Library and `jest-junit`.
+- **Why:** Simplest foundation consistent with the constitution (*No network*) that leaves the component library to `DEC-07` and the persistence module to its own story; each later story adds the library it needs.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
+
+## [DEC-43] Android application id pl.ordergroup.knowledgequiz
+
+- **Date:** 2026-10-14
+- **Decided by:** developer (delivery loop)
+- **Source:** implementation (`US-00-01`)
+- **Affects:** `US-00-01`, `US-01-01`, `app.json`, `.claude/og-test-targets.json`
+- **Decision:** The Android application id (package) is `pl.ordergroup.knowledgequiz`, the app's display name `Knowledge Quiz`. The Maestro flows and `.claude/og-test-targets.json` use it.
+- **Why:** The foundation must build, install and test the app before `US-01-01`; the id follows the company's domain. It can still change before the first signed APK is released.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted

@@ -1,0 +1,16 @@
+appId: ${APP_ID}
+name: TC-00-01 The documented start command builds the app and starts it on the Android emulator
+---
+# Step 1 — scripts/stack.sh, what `yarn stack` runs (started by scripts/test-acceptance.sh, console
+# in stack.log), built, installed and opened the app; this flow does not launch it.
+- extendedWaitUntil:
+    visible:
+      id: content-title
+    timeout: 300000
+- takeScreenshot: step-01-started-by-yarn-stack
+# Step 2 — the app is open on its first screen, with no error dialog.
+- assertVisible:
+    id: content-title
+- assertNotVisible:
+    text: ".*(Error|isn't responding|keeps stopping|has stopped).*"
+- takeScreenshot: step-02-first-screen

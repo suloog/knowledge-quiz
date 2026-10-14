@@ -17,8 +17,7 @@
     "dir": "tests/maestro",
     "platform": "android",
     "device": "Android 12 (API 31) emulator",
-    "app_id": "",
-    "_app_id_comment": "Fill with the Android application id once US-01-01 sets it.",
+    "app_id": "pl.ordergroup.knowledgequiz",
     "metro_port": 8081,
     "state_bridge": true
   },
