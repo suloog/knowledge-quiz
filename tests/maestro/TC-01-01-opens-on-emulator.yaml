@@ -1,0 +1,17 @@
+appId: ${APP_ID}
+name: TC-01-01 The app installs and opens on an Android 12 emulator
+---
+# Step 1 — install the app on a clean Android 12 emulator: scripts/test-acceptance.sh removes any
+# copy left on the device, then the start command builds and installs this build (stack.log).
+# Installation completed when the app's launcher activity can be started.
+- launchApp:
+    clearState: true
+- takeScreenshot: step-01-installed
+# Step 2 — open the app: it shows its first screen without an error dialog.
+- extendedWaitUntil:
+    visible:
+      id: content-title
+    timeout: 120000
+- assertNotVisible:
+    text: ".*(Error|isn't responding|keeps stopping|has stopped).*"
+- takeScreenshot: step-02-first-screen

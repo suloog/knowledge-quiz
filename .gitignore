@@ -45,6 +45,8 @@ buck-out/
 \.buckd/
 *.keystore
 !debug.keystore
+*.jks
+*.p12
 
 # fastlane
 #

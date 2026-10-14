@@ -1,0 +1,24 @@
+appId: ${APP_ID}
+name: AC-01-01-4 The app starts and runs with the device's network switched off
+# Runs against the release APK only (scripts/test-acceptance.sh, step 3): Metro stopped, adb reverse
+# removed, the JavaScript embedded in the APK. The debug build cannot start without Metro.
+tags:
+  - release-build
+# Cleanup — switch the network back on, whatever happened in the steps.
+onFlowComplete:
+  - setAirplaneMode: disabled
+---
+# Step 1 — switch the emulator's network off (airplane mode).
+- setAirplaneMode: enabled
+- takeScreenshot: step-01-network-off
+# Step 2 — open the app from a cleared state: it starts and shows its first screen without an
+# error dialog.
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: content-title
+    timeout: 120000
+- assertNotVisible:
+    text: ".*(Error|isn't responding|keeps stopping|has stopped).*"
+- takeScreenshot: step-02-first-screen-offline

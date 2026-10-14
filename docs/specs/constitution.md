@@ -13,14 +13,14 @@ Per-project engineering law. Every module, user story and PR must satisfy this d
 - Package manager: as in the boilerplate
 - Boilerplate/base: `ordergroup/boilerplate-react-native-expo`, upgraded to the latest RN/Expo/packages as the first piece of work (`DEC-06`)
 - Target: Android 12 (API 31) and newer; Mudita Kompakt is the only reference device (`DEC-10`, `DEC-16`)
-- Component library: chosen in MOD-01's first story against SRC-01 §5, with Mudita Mindful Design as inspiration (`DEC-07`, `DEC-11`); recorded here when chosen
+- Component library: none — React Native core components, styled only with the app's own black-and-white theme tokens (`src/theme.ts`); chosen in MOD-01's first story against SRC-01 §5, with Mudita Mindful Design as inspiration (`DEC-07`, `DEC-11`, `DEC-44`)
 - Testing: Jest + React Native Testing Library (unit), Maestro (e2e) on an Android emulator (`DEC-37`)
 - No backend, no network access; content is local data in the repository (`SRC-01-20`, `DEC-04`)
 
 ## Architecture principles
 
 - **Content is data.** Categories, questions, answers and illustrations live in versioned data files in the repository, validated by a schema test; screens never hard-code content.
-- **No network.** No HTTP or analytics libraries; the Android `INTERNET` permission is removed from the manifest.
+- **No network.** No HTTP or analytics libraries; the Android `INTERNET` permission (with the other network permissions) is removed from the release build's manifest — the debug build keeps it to load its code from Metro (`DEC-44`).
 - **E-ink rendering.** Colours only from theme tokens (#000, #FFF); animations and navigation transitions disabled globally; a test or lint check forbids any other colour.
 - **One persistence module** holds the last category, each category's deck order and position, and the language; the app starts cleanly when storage is empty or corrupt.
 - **i18n everywhere.** Every user-facing string goes through i18n (pl, en) — no literal strings in components; content carries both languages per question.
