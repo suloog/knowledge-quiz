@@ -6,11 +6,11 @@
       "id": "3p-01",
       "kind": "educational",
       "pl": {
-        "question": "Jakiego koloru jest dojrzały banan?",
+        "question": "Jakiego koloru jest cytryna?",
         "answer": "Żółtego."
       },
       "en": {
-        "question": "What colour is a ripe banana?",
+        "question": "What colour is a lemon?",
         "answer": "Yellow."
       }
     },
@@ -234,23 +234,23 @@
       "id": "3p-20",
       "kind": "popular-science",
       "pl": {
-        "question": "Czego potrzebujemy, żeby widzieć w ciemności?",
-        "answer": "Światła."
+        "question": "Co pomaga nam widzieć w ciemności: lampka czy poduszka?",
+        "answer": "Lampka."
       },
       "en": {
-        "question": "What do we need to see in the dark?",
-        "answer": "Light."
+        "question": "What helps us see in the dark: a lamp or a pillow?",
+        "answer": "A lamp."
       }
     },
     {
       "id": "3p-21",
       "kind": "popular-science",
       "pl": {
-        "question": "Co ciemnego chodzi za tobą w słoneczny dzień?",
+        "question": "Co rusza się razem z tobą po ziemi, gdy świeci słońce?",
         "answer": "Twój cień."
       },
       "en": {
-        "question": "What dark shape follows you on a sunny day?",
+        "question": "What moves with you on the ground when the sun shines?",
         "answer": "Your shadow."
       }
     },
@@ -294,11 +294,11 @@
       "id": "3p-25",
       "kind": "popular-science",
       "pl": {
-        "question": "Co unosi się nad garnkiem, gdy woda się gotuje?",
+        "question": "Co unosi się nad garnkiem z gorącą wodą?",
         "answer": "Para."
       },
       "en": {
-        "question": "What rises from a pot when the water boils?",
+        "question": "What rises from a pot of very hot water?",
         "answer": "Steam."
       }
     },
@@ -342,7 +342,7 @@
       "id": "3p-29",
       "kind": "nature",
       "pl": {
-        "question": "Jaki słodki przysmak robią pszczoły?",
+        "question": "Co słodkiego robią pszczoły?",
         "answer": "Miód."
       },
       "en": {
@@ -406,7 +406,7 @@
         "answer": "Zebra."
       },
       "en": {
-        "question": "Which horse-like animal has black and white stripes?",
+        "question": "Which animal looks like a horse and has black and white stripes?",
         "answer": "A zebra."
       }
     },
@@ -438,12 +438,12 @@
       "id": "3p-37",
       "kind": "nature",
       "pl": {
-        "question": "Jakiego koloru są liście drzew latem?",
-        "answer": "Zielonego."
+        "question": "Które zwierzę robi chrum chrum?",
+        "answer": "Świnka."
       },
       "en": {
-        "question": "What colour are tree leaves in summer?",
-        "answer": "Green."
+        "question": "Which animal says oink?",
+        "answer": "A pig."
       }
     },
     {
@@ -474,11 +474,11 @@
       "id": "3p-40",
       "kind": "trivia",
       "pl": {
-        "question": "Co stawiamy na torcie urodzinowym?",
+        "question": "Co zdmuchujemy na torcie urodzinowym?",
         "answer": "Świeczki."
       },
       "en": {
-        "question": "What do we put on a birthday cake?",
+        "question": "What do we blow out on a birthday cake?",
         "answer": "Candles."
       }
     },
@@ -486,19 +486,19 @@
       "id": "3p-41",
       "kind": "trivia",
       "pl": {
-        "question": "Gdzie trzymamy lody, żeby się nie roztopiły?",
-        "answer": "W zamrażarce."
+        "question": "Gdzie trzymamy mleko, żeby było zimne?",
+        "answer": "W lodówce."
       },
       "en": {
-        "question": "Where do we keep ice cream so it does not melt?",
-        "answer": "In the freezer."
+        "question": "Where do we keep milk so it stays cold?",
+        "answer": "In the fridge."
       }
     },
     {
       "id": "3p-42",
       "kind": "trivia",
       "pl": {
-        "question": "Co chroni nas przed deszczem, gdy trzymamy to nad głową?",
+        "question": "Co trzymamy nad głową, żeby nie zmoknąć w deszczu?",
         "answer": "Parasol."
       },
       "en": {
@@ -522,11 +522,11 @@
       "id": "3p-44",
       "kind": "trivia",
       "pl": {
-        "question": "Jaki posiłek jemy rano?",
+        "question": "Jak nazywamy jedzenie, które jemy rano?",
         "answer": "Śniadanie."
       },
       "en": {
-        "question": "Which meal do we eat in the morning?",
+        "question": "What do we call the food we eat in the morning?",
         "answer": "Breakfast."
       }
     },
@@ -570,12 +570,12 @@
       "id": "3p-48",
       "kind": "trivia",
       "pl": {
-        "question": "Co zakładamy na dłonie, gdy jest zimno?",
-        "answer": "Rękawiczki."
+        "question": "Co zakładamy na szyję, gdy jest zimno?",
+        "answer": "Szalik."
       },
       "en": {
-        "question": "What do we put on our hands when it is cold?",
-        "answer": "Gloves."
+        "question": "What do we wear around our neck when it is cold?",
+        "answer": "A scarf."
       }
     },
     {
