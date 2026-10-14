@@ -1,0 +1,45 @@
+{
+  "n": 1,
+  "attempt": 1,
+  "ts": "2026-10-14T12:37:53Z",
+  "story": "US-01-02",
+  "mode": "implement",
+  "parsed": {
+    "result": "needs_decision",
+    "story": "US-01-02",
+    "branch": "feature/US-01-02",
+    "commits": [
+      "57b5b91 chore(content): wip, waiting for DEC-46 [US-01-02]"
+    ],
+    "decisions": [
+      "DEC-46 critical Content data format for the decks, and how US-01-02 proves its criteria"
+    ],
+    "question": "DEC-46",
+    "preexisting": "src/content holds only app.json (the app title) with its test; no deck, schema or content checks existed before this story",
+    "gates": [
+      "prettier --check ok",
+      "tsc ok",
+      "commit hook gates ok"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "notes": "Resuming with answer a: write DEC-46 with the owner's confirmation, then the 50-question deck, validators with a broken-fixture test per check, derived specs AC-01-02-1 to -7, and the APK bundle check in scripts/test-acceptance.sh. Local emulator is API 32, while CI uses API 31.",
+    "ask": null,
+    "ask_problems": [
+      "ASK_POINT 1 has 302 characters — at most 300"
+    ],
+    "question_text": "May the 3+ deck use the content data format and the proof approach below, so that 4+ and 5+ follow the same format?\nThe constitution says the tech lead approves changes to the content data schema, and this story creates that schema. US-01-03, US-01-04, MOD-02 and MOD-03 will all be built on it. Nothing in the deck is written yet. A draft of the shape is in src/content/deck.ts on the branch.\n- Format: one file per category, src/content/decks/3-plus.json, holding schemaVersion 1, category \"3+\" and 50 questions. Each question has a stable id, a kind (educational, popular-science, nature or trivia), pl and en each with one question and one answer string, and an optional illustration file name.\n- Adding a category: add its JSON file plus one import line in src/content/decks/index.ts, inside the content folder. Screens read categories only through src/content, so no screen changes. A test fails if a deck file is not registered.\n- Criterion 7 (nothing downloaded): TC-01-02 needs the category screen and cards, so as in DEC-44 it runs in US-03-01. For now a derived test AC-01-02-7 checks that the release APK's embedded bundle contains the 3+ deck and that the content code has no network calls.\n- Criterion 4 (age-suitability record): the check of every question is kept in docs/delivery/content-checks/US-01-02-3-plus.md, one row per question with the four Q29 checks, and copied into the PR. A unit test fails if any question has no row with all four checks passed.\na) Take all four points as proposed | The deck and its checks are built as described. 4+ and 5+ reuse the format unchanged. Content reaches the screen in MOD-02 and MOD-03. Lowest effort, and nothing auto-discovered.\nb) As proposed, but category files are discovered automatically | A new category is only a new JSON file, with no import line. This relies on Metro's require.context and needs a workaround to run in Jest, which adds setup that is harder to follow.\nc) As proposed, but the age check lives only in the PR description | No record file and no test for it. The check is visible only on GitHub and nothing stops a later edit from adding an unchecked question.\n→ a\nIt follows the story's technical notes exactly, keeps every check enforced by a test, and adds no tooling. A new category costs one obvious line next to its data file.",
+    "tests": {},
+    "evidence": [],
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [],
+      "blocked": []
+    },
+    "critical_decisions": [
+      "DEC-46 critical Content data format for the decks, and how US-01-02 proves its criteria"
+    ]
+  },
+  "raw": "US-01-02 is parked on one critical decision, DEC-46. This story creates the first deck data format, and constitution.md says changes to the content data schema need the tech lead's approval. The loop's own reclassifier also raises anything about the schema to critical. So in semi mode I stopped before writing content, validators or tests. I committed the in-progress status (story and BACKLOG row) and a types-only file with the proposed shape, src/content/deck.ts, which nothing uses yet. The gates passed on that commit.\n\nI reserved DEC-46 with `og-delivery dec next`. Its entry in docs/specs/DECISIONS.md is left for the resumed run to write, with the owner's answer, the same way DEC-44 was handled. All stop conditions are clear: the dependency US-01-01 is merged. Q29 and Q30 are [A] assumptions with defaults, and the story lists no open questions, so I use their defaults.\n\nRelevant files:\n- /Users/sulo/workspace/knowledge-quiz/src/content/deck.ts\n- /Users/sulo/workspace/knowledge-quiz/docs/specs/modules/01-question-content/stories/US-01-02-deck-3-plus.md\n\nRESULT: needs_decision\nSTORY: US-01-02\nBRANCH: feature/US-01-02\nCOMMITS: 57b5b91 chore(content): wip, waiting for DEC-46 [US-01-02]\nDECISIONS: DEC-46 critical Content data format for the decks, and how US-01-02 proves its criteria\nQUESTION: DEC-46\nASK_SUMMARY: May the 3+ deck use the content data format and the proof approach below, so that 4+ and 5+ follow the same format?\nASK_CONTEXT: The constitution says the tech lead approves changes to the content data schema, and this story creates that schema. US-01-03, US-01-04, MOD-02 and MOD-03 will all be built on it. Nothing in the deck is written yet. A draft of the shape is in src/content/deck.ts on the branch.\nASK_POINT: Format: one file per category, src/content/decks/3-plus.json, holding schemaVersion 1, category \"3+\" and 50 questions. Each question has a stable id, a kind (educational, popular-science, nature or trivia), pl and en each with one question and one answer string, and an optional illustration file name.\nASK_POINT: Adding a category: add its JSON file plus one import line in src/content/decks/index.ts, inside the content folder. Screens read categories only through src/content, so no screen changes. A test fails if a deck file is not registered.\nASK_POINT: Criterion 7 (nothing downloaded): TC-01-02 needs the category screen and cards, so as in DEC-44 it runs in US-03-01. For now a derived test AC-01-02-7 checks that the release APK's embedded bundle contains the 3+ deck and that the content code has no network calls.\nASK_POINT: Criterion 4 (age-suitability record): the check of every question is kept in docs/delivery/content-checks/US-01-02-3-plus.md, one row per question with the four Q29 checks, and copied into the PR. A unit test fails if any question has no row with all four checks passed.\nASK_OPTION a: Take all four points as proposed | The deck and its checks are built as described. 4+ and 5+ reuse the format unchanged. Content reaches the screen in MOD-02 and MOD-03. Lowest effort, and nothing auto-discovered.\nASK_OPTION b: As proposed, but category files are discovered automatically | A new category is only a new JSON file, with no import line. This relies on Metro's require.context and needs a workaround to run in Jest, which adds setup that is harder to follow.\nASK_OPTION c: As proposed, but the age check lives only in the PR description | No record file and no test for it. The check is visible only on GitHub and nothing stops a later edit from adding an unchecked question.\nASK_RECOMMEND: a\nASK_WHY: It follows the story's technical notes exactly, keeps every check enforced by a test, and adds no tooling. A new category costs one obvious line next to its data file.\nPREEXISTING: src/content holds only app.json (the app title) with its test; no deck, schema or content checks existed before this story\nGATES: prettier --check ok; tsc ok; commit hook gates ok\nENV_KEYS: none\nMIGRATION: no\nNOTES: Resuming with answer a: write DEC-46 with the owner's confirmation, then the 50-question deck, validators with a broken-fixture test per check, derived specs AC-01-02-1 to -7, and the APK bundle check in scripts/test-acceptance.sh. Local emulator is API 32, while CI uses API 31.\n",
+  "evidence": []
+}
