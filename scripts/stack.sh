@@ -50,6 +50,7 @@ fi
 
 # --------------------------------------------------------------- 3. device
 EMULATOR_PID=""
+EMULATOR_LOG=""
 APP_PID=""
 cleanup() {
   trap - EXIT INT TERM
@@ -67,6 +68,7 @@ cleanup() {
     say "stopping the emulator this script started"
     "$ADB" emu kill >/dev/null 2>&1 || kill -TERM "$EMULATOR_PID" 2>/dev/null || true
   fi
+  if [ -n "$EMULATOR_LOG" ]; then rm -f "$EMULATOR_LOG"; fi
 }
 trap cleanup EXIT
 trap 'exit 130' INT
@@ -97,6 +99,7 @@ else
   emulator_failed() {
     printf '[stack] ERROR: %s — the end of its console:\n' "$1" >&2
     tail -n 20 "$EMULATOR_LOG" >&2
+    EMULATOR_LOG="" # kept: the error names it
     exit 1
   }
   booted=""
