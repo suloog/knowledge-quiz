@@ -21,21 +21,21 @@ Test cases partly missing — 6 stories have acceptance criteria that are proved
 
 ## Order
 
-| # | Story | Title | Depends on | Test cases |
-| --- | --- | --- | --- | --- |
-| 1 | `US-00-01` | As a developer, I can start the whole stack with one command and have CI run the acceptance tests on every pull request, so that every later story is built and proven on the same ground | — | `TC-00-01`, `TC-00-02`, `TC-00-03`, `TC-00-04` |
-| 2 | `US-01-01` | As a Parent, I can install the app on the Kompakt and open it, so that we have a dependable app to play on | — | `TC-01-01`, `TC-01-02`, `TC-01-03` |
-| 3 | `US-01-02` | As a Parent, I can rely on a full 3+ deck in Polish and English, so that a 3-year-old gets questions at their level | `US-01-01` | `TC-01-02` |
-| 4 | `US-02-01` | As a Parent, I can open the app and see the age categories, so that I pick questions meant for my child's age | `US-01-02` | `TC-02-01`, `TC-02-02`, `TC-02-03` |
-| 5 | `US-03-01` | As a Child, I can touch a card to see the answer and touch again for the next question, so that we play the quiz | `US-02-01` | `TC-03-01`, `TC-03-02`, `TC-03-03`, `TC-03-04`, `TC-03-05`, `TC-03-06` |
-| 6 | `US-03-02` | As a Parent, I can go through a category without repeats and come back where we left off, so that my child never gets the same question twice in a row | `US-03-01` | `TC-03-07`, `TC-03-08`, `TC-03-09`, `TC-03-10` |
-| 7 | `US-03-03` | As a Parent, I can see when a deck is finished and start it again or go back, so that the game has a clear end | `US-03-02` | `TC-03-12`, `TC-03-13`, `TC-03-14` |
-| 8 | `US-03-04` | As a Parent, I can go back to the categories from any card, so that we can change the age at any time | `US-03-01` | `TC-03-16`, `TC-03-17`, `TC-03-18`, `TC-03-19` |
-| 9 | `US-02-02` | As a Parent, I can continue the last-used category straight from the top of the screen, so that we pick up where we stopped | `US-02-01`, `US-03-02`, `US-03-03` | `TC-02-05`, `TC-02-06`, `TC-02-07`, `TC-02-08` |
-| 10 | `US-02-03` | As a Parent, I can switch the app between Polish and English, so that we play in our language | `US-02-01`, `US-03-02` | `TC-02-10`, `TC-02-11`, `TC-02-12`, `TC-02-13` |
-| 11 | `US-01-03` | As a Parent, I can rely on a full 4+ deck in Polish and English, so that a 4-year-old gets questions at their level | `US-01-02` | — (unit suite) |
-| 12 | `US-01-04` | As a Parent, I can rely on a full 5+ deck in Polish and English, so that a 5-year-old gets questions at their level | `US-01-02` | — (unit suite) |
-| 13 | `US-03-05` | As a Child, I can see a picture with some questions, so that a question is easier to understand | `US-03-01`, `US-01-02`, `US-01-03`, `US-01-04` | `TC-03-20`, `TC-03-21`, `TC-03-22`, `TC-03-23` |
+| #   | Story      | Title                                                                                                                                                                                     | Depends on                                     | Test cases                                                             |
+| --- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------------- |
+| 1   | `US-00-01` | As a developer, I can start the whole stack with one command and have CI run the acceptance tests on every pull request, so that every later story is built and proven on the same ground | —                                              | `TC-00-01`, `TC-00-02`, `TC-00-03`, `TC-00-04`                         |
+| 2   | `US-01-01` | As a Parent, I can install the app on the Kompakt and open it, so that we have a dependable app to play on                                                                                | —                                              | `TC-01-01`, `TC-01-02`, `TC-01-03`                                     |
+| 3   | `US-01-02` | As a Parent, I can rely on a full 3+ deck in Polish and English, so that a 3-year-old gets questions at their level                                                                       | `US-01-01`                                     | `TC-01-02`                                                             |
+| 4   | `US-02-01` | As a Parent, I can open the app and see the age categories, so that I pick questions meant for my child's age                                                                             | `US-01-02`                                     | `TC-02-01`, `TC-02-02`, `TC-02-03`                                     |
+| 5   | `US-03-01` | As a Child, I can touch a card to see the answer and touch again for the next question, so that we play the quiz                                                                          | `US-02-01`                                     | `TC-03-01`, `TC-03-02`, `TC-03-03`, `TC-03-04`, `TC-03-05`, `TC-03-06` |
+| 6   | `US-03-02` | As a Parent, I can go through a category without repeats and come back where we left off, so that my child never gets the same question twice in a row                                    | `US-03-01`                                     | `TC-03-07`, `TC-03-08`, `TC-03-09`, `TC-03-10`                         |
+| 7   | `US-03-03` | As a Parent, I can see when a deck is finished and start it again or go back, so that the game has a clear end                                                                            | `US-03-02`                                     | `TC-03-12`, `TC-03-13`, `TC-03-14`                                     |
+| 8   | `US-03-04` | As a Parent, I can go back to the categories from any card, so that we can change the age at any time                                                                                     | `US-03-01`                                     | `TC-03-16`, `TC-03-17`, `TC-03-18`, `TC-03-19`                         |
+| 9   | `US-02-02` | As a Parent, I can continue the last-used category straight from the top of the screen, so that we pick up where we stopped                                                               | `US-02-01`, `US-03-02`, `US-03-03`             | `TC-02-05`, `TC-02-06`, `TC-02-07`, `TC-02-08`                         |
+| 10  | `US-02-03` | As a Parent, I can switch the app between Polish and English, so that we play in our language                                                                                             | `US-02-01`, `US-03-02`                         | `TC-02-10`, `TC-02-11`, `TC-02-12`, `TC-02-13`                         |
+| 11  | `US-01-03` | As a Parent, I can rely on a full 4+ deck in Polish and English, so that a 4-year-old gets questions at their level                                                                       | `US-01-02`                                     | — (unit suite)                                                         |
+| 12  | `US-01-04` | As a Parent, I can rely on a full 5+ deck in Polish and English, so that a 5-year-old gets questions at their level                                                                       | `US-01-02`                                     | — (unit suite)                                                         |
+| 13  | `US-03-05` | As a Child, I can see a picture with some questions, so that a question is easier to understand                                                                                           | `US-03-01`, `US-01-02`, `US-01-03`, `US-01-04` | `TC-03-20`, `TC-03-21`, `TC-03-22`, `TC-03-23`                         |
 
 The order follows `DEC-41`: the playable core (3+ deck, categories, cards) first, the 4+ and 5+ decks and the illustrations last.
 
@@ -44,34 +44,34 @@ and whose dependencies are met. Stories waiting on the owner never stop the othe
 
 ## Settings
 
-| Area | Setting |
-| --- | --- |
-| Base branch | `main` — PRs target it; story statuses travel in each story's PR; the final report goes straight to it |
-| Stories the loop starts | whatever is in the order, stories without a test case for every criterion included (`lenient`) |
-| Foundation | `US-00-01` first — nothing else starts until it is merged. Its PR adds the CI workflow, so the owner reviews and merges it on GitHub, then switches the test results to CI with `/og:deliver` → *Change settings* |
-| Pilot | pause after the first story until the owner says continue |
-| Stop | when the scope is done — and after 3 failed stories |
-| A failed story | one more attempt on the retry's model and effort, then skipped with its dependents |
-| Decisions | semi-automatic: critical ones wait for the owner; the loop works on other stories meanwhile |
-| Code review | standard — code and spec reviewers, up to 3 rounds, blocking findings fixed, the rest listed in the PR |
-| Merge | automatic — merged once review is clean and every criterion is evidenced (while test results are `local`, every merge still waits for the owner) |
-| Approving a waiting PR | the loop acts as `suloog`, the owner's own account — GitHub lets nobody approve their own PR, so the owner merges a waiting PR on GitHub themselves and the loop picks that up |
-| Protected paths | only the built-in signals · size ceiling none |
-| Dependents of an unmerged PR | wait |
-| Unit tests | as the constitution says — 80% line coverage on changed code, unit-first, plus the content-quality tests |
-| End-to-end | each story's test cases (criteria when none) · regression at the end |
-| Questions for the owner | an issue on GitHub — answered in a comment as `suloog` (`DEC-nn: <answer>`); the loop runs as that same account, so an answer there is not independently verified |
-| Test results a merge relies on | the agents' own runs (`local`) — every merge waits for the owner, until the switch to CI after `US-00-01` |
-| Models and effort | Balanced — orchestrator `claude-opus-5-5` · medium · implementer `claude-opus-5-5` · medium · its retry `claude-opus-5-5` · high · code review `claude-sonnet-5-5` · high · spec review `claude-opus-5-5` · high · commit messages and summaries `claude-haiku-5-5`. Provisional: the profiles rest on vendor data as of 2026-10-09, not yet on this team's measurements; the report names the model that really answered for each role |
-| Weekly limit | pause at 80% |
-| 5-hour limit | ignored |
-| Extra credits | not used |
-| After a limit pause | resumes by itself; when usage cannot be read, it waits and looks again |
-| Environment files | `.env.example` (key names only); no other `.env*` |
-| Variables the loop needs | none |
-| Reports | Slack thread https://ordergroup.slack.com/archives/C02MEF2FG5A/p1791962854992019 — milestones; the thread carries reports and can only pause or stop the loop (and answer `status`) — answers and other commands go through the loop's session, `og-delivery` in a terminal, or GitHub |
-| Backup of the run's state | after every iteration to the branch `og-delivery/state` on `origin` (run `20261014T072840Z`) — a commit on top of the last, never the base, never a PR; a new clone starts from it, and `og-delivery status` says when the last one was |
-| Where the loop runs | on the machine it is started on — `og-deliver-run` or `/loop` |
+| Area                           | Setting                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Base branch                    | `main` — PRs target it; story statuses travel in each story's PR; the final report goes straight to it                                                                                                                                                                                                                                                                                                                                  |
+| Stories the loop starts        | whatever is in the order, stories without a test case for every criterion included (`lenient`)                                                                                                                                                                                                                                                                                                                                          |
+| Foundation                     | `US-00-01` — done: merged as PR #1 on 2026-10-14, which added the CI workflow; the run was then switched to CI evidence                                                                                                                                                                                                                                                                                                                 |
+| Pilot                          | pause after the first story until the owner says continue                                                                                                                                                                                                                                                                                                                                                                               |
+| Stop                           | when the scope is done — and after 3 failed stories                                                                                                                                                                                                                                                                                                                                                                                     |
+| A failed story                 | one more attempt on the retry's model and effort, then skipped with its dependents                                                                                                                                                                                                                                                                                                                                                      |
+| Decisions                      | semi-automatic: critical ones wait for the owner; the loop works on other stories meanwhile                                                                                                                                                                                                                                                                                                                                             |
+| Code review                    | standard — code and spec reviewers, up to 3 rounds, blocking findings fixed, the rest listed in the PR                                                                                                                                                                                                                                                                                                                                  |
+| Merge                          | automatic — merged once review is clean, every criterion is evidenced and CI is green on the PR's head (changes to CI, hooks, agent settings or dependencies still wait for the owner)                                                                                                                                                                                                                                                  |
+| Approving a waiting PR         | the loop acts as `suloog`, the owner's own account — GitHub lets nobody approve their own PR, so the owner merges a waiting PR on GitHub themselves and the loop picks that up                                                                                                                                                                                                                                                          |
+| Protected paths                | only the built-in signals · size ceiling none                                                                                                                                                                                                                                                                                                                                                                                           |
+| Dependents of an unmerged PR   | wait                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| Unit tests                     | as the constitution says — 80% line coverage on changed code, unit-first, plus the content-quality tests                                                                                                                                                                                                                                                                                                                                |
+| End-to-end                     | each story's test cases (criteria when none) · regression at the end                                                                                                                                                                                                                                                                                                                                                                    |
+| Questions for the owner        | an issue on GitHub — answered in a comment as `suloog` (`DEC-nn: <answer>`); the loop runs as that same account, so an answer there is not independently verified                                                                                                                                                                                                                                                                       |
+| Test results a merge relies on | CI (`ci`) — the `acceptance.yml` run on each PR's head and its `og-test-results` artifact; switched from `local` on 2026-10-14 after `US-00-01` merged                                                                                                                                                                                                                                                                                  |
+| Models and effort              | Balanced — orchestrator `claude-opus-5-5` · medium · implementer `claude-opus-5-5` · medium · its retry `claude-opus-5-5` · high · code review `claude-sonnet-5-5` · high · spec review `claude-opus-5-5` · high · commit messages and summaries `claude-haiku-5-5`. Provisional: the profiles rest on vendor data as of 2026-10-09, not yet on this team's measurements; the report names the model that really answered for each role |
+| Weekly limit                   | pause at 80%                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| 5-hour limit                   | ignored                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Extra credits                  | not used                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| After a limit pause            | resumes by itself; when usage cannot be read, it waits and looks again                                                                                                                                                                                                                                                                                                                                                                  |
+| Environment files              | `.env.example` (key names only); no other `.env*`                                                                                                                                                                                                                                                                                                                                                                                       |
+| Variables the loop needs       | none                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| Reports                        | Slack thread https://ordergroup.slack.com/archives/C02MEF2FG5A/p1791962854992019 — milestones; the thread carries reports and can only pause or stop the loop (and answer `status`) — answers and other commands go through the loop's session, `og-delivery` in a terminal, or GitHub                                                                                                                                                  |
+| Backup of the run's state      | after every iteration to the branch `og-delivery/state` on `origin` (run `20261014T072840Z`) — a commit on top of the last, never the base, never a PR; a new clone starts from it, and `og-delivery status` says when the last one was                                                                                                                                                                                                 |
+| Where the loop runs            | on the machine it is started on — `og-deliver-run` or `/loop`                                                                                                                                                                                                                                                                                                                                                                           |
 
 ## Critical decisions
 
@@ -86,13 +86,14 @@ The owner's standing consent, in plain words — what the loop may do without as
 
 - Merge PRs into `main` with squash when review is clean and every criterion is evidenced, except critical ones — automatic merging chosen by the owner on 2026-10-14.
 - **Override of two blocking preflight findings**, the owner's choice on 2026-10-14: "Auto now, fix access before CI switch". The loop runs as `suloog` (ADMIN) and `main` has no ruleset or protection. Accepted for now because every merge waits for the owner while test results are `local`; before switching the evidence to CI the owner adds a token with Contents and Pull requests only and a ruleset on `main` (og plugin, `skills/deliver/references/github-protection.md`).
+- **Second override of the same two blocking findings**, the owner's choice on 2026-10-14 at the switch to CI evidence: "CI i merge auto mimo ✗" (CI and automatic merge despite ✗). The access fix the first override promised before the switch was not made: the loop still runs as `suloog` (ADMIN) and `main` still has no ruleset or protection, and from now on the loop merges non-critical PRs with green CI into `main` by itself. The fix is still the one in `skills/deliver/references/github-protection.md`: a token with Contents and Pull requests only, and a ruleset on `main` requiring `Acceptance tests (Android 12 emulator)` with nobody on the bypass list.
 - Commit `chore(delivery)` log, status and report updates straight to `main`.
 - Decide non-critical implementation questions itself and record them as DEC entries.
 - The owner confirmed on 2026-10-14 that the shell the loop is started from holds no production credentials.
 
 ## Steering
 
-Write in the loop's session — or in the Slack thread, as far as the *Reports* row lets the thread
+Write in the loop's session — or in the Slack thread, as far as the _Reports_ row lets the thread
 steer (this thread takes only `pause`, `stop` and `status`): `pause` · `continue` · `stop` · `status` ·
 `skip US-xx-yy` · `retry US-xx-yy` (`… fresh` for a new attempt on a new branch) ·
 `DEC-nn: <answer>` (in the run's GitHub issue, the session or a terminal) · merge a waiting PR on GitHub · `fix #n: <what>` · `take over` / `fresh` / `skip US-xx-yy` (when
@@ -117,7 +118,7 @@ takes both from the settings by itself.)
 
 `pause` stops new work but the loop keeps reading the thread every hour, so `continue` brings it
 back. `stop` ends the loop's wake-ups — nothing reads the thread after that; restart with
-`/og:deliver` → *Resume*, then `/loop /og:deliver-next`.
+`/og:deliver` → _Resume_, then `/loop /og:deliver-next`.
 
 ## Preflight — 2026-10-14
 
@@ -136,6 +137,15 @@ back. `stop` ends the loop's wake-ups — nothing reads the thread after that; r
 - ✓ `docs/specs/DECISIONS.md` present
 - ⚠ the loop needs a **new** session started with `claude --permission-mode auto`; the repo default is plan mode
 - ✓ allowlist extended with `Bash(npm:*)`, `Bash(npx expo:*)`, `Bash(maestro:*)`
+
+## Preflight — 2026-10-14, Change settings (test results to CI)
+
+- ✓ the loop runs on GitHub as suloog (ADMIN) in suloog/knowledge-quiz
+- ✗ suloog administers suloog/knowledge-quiz → **accepted by the owner again** (see Authorisations): "CI i merge auto mimo ✗"
+- ✗ main has no ruleset or branch protection → **accepted by the owner again** (see Authorisations): "CI i merge auto mimo ✗"
+- ⚠ the loop runs as the owner's own account: a waiting PR is merged by the owner on GitHub; answers on the run's issue are unverified
+- ✓ test results: the `acceptance.yml` run on each PR's head, from its `og-test-results` artifact (green on PR #1, run 38538411102)
+- ✓ `US-00-01` (foundation) merged as PR #1
 
 ## What the loop never does
 
