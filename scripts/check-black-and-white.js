@@ -8,8 +8,8 @@
 // bars drawn over it). Text glyphs are anti-aliased by the font renderer, so grey is allowed inside
 // each text element shrunk by 8 dp on every side — its padding is at least 16 dp, and its rule
 // sits on its edge, so a grey row beside a rule is still caught.
-// A screenshot of one colour only (an emulator that renders nothing, as CI's GPU-less one does)
-// proves nothing either way: the case is reported skipped, with the reason.
+// A screenshot of one colour only (an emulator that rendered nothing) proves nothing either way:
+// the case is reported skipped, with the reason. A check that read no pixel at all fails.
 const fs = require('fs');
 
 const [rawFile, dumpFile, densityDpi, junitFile] = process.argv.slice(2);
@@ -108,6 +108,9 @@ const check = () => {
     }
   }
   const area = `${width}x${height}, checked rows ${top}–${bottom - 1}, glyph margin ${margin} px`;
+  if (seen.size === 0) {
+    return { fail: `no pixel was read — the checked area is empty (${area})` };
+  }
   if (seen.size === 1) {
     return {
       skip: `the screenshot is one colour only (${[...seen][0]}): the device drew nothing to check — blocked by the environment (${area})`,
