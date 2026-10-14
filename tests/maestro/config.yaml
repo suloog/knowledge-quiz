@@ -1,0 +1,8 @@
+# TC-00-01 checks the app as `yarn stack` left it, so it runs first; later flows relaunch the app.
+# flowsOrder names flows by their `name:`.
+flows:
+  - '*.yaml'
+executionOrder:
+  continueOnFailure: true
+  flowsOrder:
+    - TC-00-01 The documented start command builds the app and starts it on the Android emulator

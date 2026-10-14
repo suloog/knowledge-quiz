@@ -1,0 +1,82 @@
+name: Acceptance tests
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: acceptance-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  acceptance:
+    name: Acceptance tests (Android 12 emulator)
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+
+      - name: Enable KVM for the emulator
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Install Maestro
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      # The emulator is booted here; the tests start the app on it with `yarn stack`, the
+      # README's start command. Which tests run is the repository's business: scripts/test-acceptance.sh.
+      - name: Acceptance tests
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          OG_RUN_DIR: test-results
+        with:
+          api-level: 31
+          arch: x86_64
+          target: google_apis
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot-save
+          script: yarn test:acceptance
+
+      - name: Upload the results the delivery loop reads
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: og-test-results
+          path: test-results/**/*.xml
+          if-no-files-found: error
+
+      - name: Upload the evidence (screenshots, logs)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: acceptance-evidence
+          path: test-results/
+          if-no-files-found: ignore
