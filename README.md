@@ -24,7 +24,7 @@ and an Android 12 (API 31) AVD.
 | Command | What it runs |
 | --- | --- |
 | `yarn test` | unit tests (Jest + React Native Testing Library), with coverage |
-| `yarn test:acceptance` | unit tests, then `yarn stack` and the Maestro flows in `tests/maestro/`; JUnit reports go to `test-results/` (or `$OG_RUN_DIR`) |
+| `yarn test:acceptance` | `yarn stack` and the Maestro flows in `tests/maestro/`, then the unit tests; JUnit reports go to `test-results/` (or `$OG_RUN_DIR`) |
 
 Acceptance tests need Maestro (`curl -Ls https://get.maestro.mobile.dev | bash`). Each Maestro
 flow is named after its test case (`TC-NN-MM …`). CI runs `yarn test:acceptance` on every pull
