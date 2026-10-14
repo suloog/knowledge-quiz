@@ -1,0 +1,131 @@
+{
+  "story": "US-01-02",
+  "attempt": 1,
+  "round": 1,
+  "sha": "b9c3d381345cec86d3fc6dcd23fbbfecd3d930f7",
+  "reviewer": "spec",
+  "ts": "2026-10-14T13:27:25Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-01-02",
+    "impact": "src/content/index.ts now re-exports `decks`; the only consumer today is the tests (src/app/index.tsx still reads appContent only, TC-00-03 green). checkDeck/checkDecks become the gate for US-01-03/US-01-04 decks, and the new AC-01-02-7 step in scripts/test-acceptance.sh (the script CI runs for every PR) reads every JSON in src/content/decks, so a 4+/5+ file not imported in decks/index.ts fails every later PR's acceptance run (intended). The AC-01-02-4 record parser is hard-wired to `| 3p-` rows and English columns.",
+    "findings": [
+      {
+        "id": "B1",
+        "blocking": true,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:474 (3p-40), docs/delivery/content-checks/US-01-02-3-plus.md:55 — \"What do we put on a birthday cake?\" has many right answers in English (candles, icing, cream, sprinkles, fruit), and \"Co stawiamy na torcie urodzinowym?\" still admits cake figures and decorations; a child who says \"icing\" is told the answer is \"Candles\", yet the record marks \"One answer: pass\", so the MOD-01-F14 (must) check of criterion 4 is false for this row → reword so only candles fit, e.g. en \"What do we blow out on a birthday cake?\" / pl \"Co zdmuchujemy na torcie urodzinowym?\", and update the record row (AC-01-02-4 step 2 will require it)"
+      },
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:570 (3p-48) — en answer \"Gloves.\" while many 3-year-olds wear mittens; pl \"Rękawiczki\" covers both, en does not, so the one-answer check is borderline in English → reword (e.g. \"What keeps our hands warm in winter?\" still has two answers; better pick a question whose single word is uncontested) or accept explicitly in the record"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:234 (3p-20) and :246 (3p-21) — \"What do we need to see in the dark?\" invites \"a torch/lamp\" besides \"Light\"; \"What dark shape follows you…\" (\"Co ciemnego chodzi za tobą\") reads mildly spooky for a 3-year-old → consider rewording against the one-answer and nothing-frightening checks"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/unit/AC-01-02-4-age-suitability-record.test.js:29-38, docs/delivery/content-checks/US-01-02-3-plus.md — the record shows and the test compares English only; a later edit of any Polish question/answer passes the suite with the record untouched, and MOD-01-F07 (same meaning in both languages) has no evidence beyond one sentence (\"the Polish one says the same\") → add Question (pl)/Answer (pl) columns and compare both languages in step 2"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:342 (3p-29), :402 (3p-34) — \"przysmak\" and \"horse-like\" are above a 3-year-old's vocabulary while the row says \"Known words: pass\" → plainer words (\"Co słodkiego robią pszczoły?\", \"Which animal looks like a horse with black and white stripes?\")"
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/checks.ts:21-23 — any non-empty category passes (\"3 +\", \"6+\"); MOD-01-F02 names 3+, 4+ or 5+ → accept this given F10 (new categories as data), or check the label's format"
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/checks.ts:31-58 — the schema check ignores unknown keys, so a misspelt optional field (e.g. \"ilustration\") passes silently and the illustration is dropped; constitution says content is \"validated by a schema test\" → reject keys outside id/kind/pl/en/illustration"
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/modules/01-question-content/stories/US-01-02-deck-3-plus.md:6,20 and docs/specs/BACKLOG.md:46 — status still `in-progress`; the runbook says statuses travel in the story's PR and US-01-01's PR #3 carried `done` → set it before merge (DoD)"
+      },
+      {
+        "id": "N8",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/DECISIONS.md:570 — DEC-46 lists constitution.md under Affects, but the diff does not change the constitution (e.g. \"screens read content only through src/content\", the deck format) → record it there or drop it from Affects in a follow-up entry"
+      },
+      {
+        "id": "N9",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "PR #4 body — the impact block says \"Not current … not run on this head\" and the evidence table cites only the local run, whose run.json reports AC-01-02-1…7 as skipped → refresh with CI run 38568166419 (all AC-01-02-* green on b9c3d381)"
+      },
+      {
+        "id": "N10",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:116 — the case name says \"every 3+ question\" but check-bundle-content.js checks every deck file → name it for all decks before 4+/5+ land"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "unmet",
+        "note": "the record marks 3p-40 \"One answer: pass\", but \"What do we put on a birthday cake?\" has several right answers (B1)"
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 6,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 7,
+        "verdict": "met",
+        "note": ""
+      }
+    ],
+    "stray": []
+  },
+  "raw": "**Spec-compliance review: PR #4 / US-01-02, round 1. Verdict: NOT COMPLIANT, one blocking item (B1).**\n\nThe code, tests and CI are in good shape. The one block is a content item: question 3p-40 is recorded as having \"one unambiguous answer\", but in English it has several right answers.\n\n**CI on the head** (`b9c3d381`, run 38568166419, `Acceptance tests (Android 12 emulator)`) finished **success**. The `og-test-results` artifact holds:\n- **`junit/unit.xml`:** 51 tests, 0 failures.\n  - AC-01-02-1: 4 pass\n  - AC-01-02-2: 4 pass\n  - AC-01-02-3: 5 pass\n  - AC-01-02-4: 3 pass\n  - AC-01-02-5: 16 pass\n  - AC-01-02-6: 3 pass\n  - AC-01-02-7: 1 pass\n  - The US-01-01 suites also pass.\n- **`junit/release.xml`:** 7/7 pass, including \"AC-01-02-7 step 2 — the release APK's embedded JavaScript bundle holds every 3+ question and answer\". The local run's `release/bundle-content.txt` gives the count: 250 of 250 texts.\n- **Maestro:** TC-00-01, TC-00-03, TC-01-01 and AC-01-01-4 (release, offline) all pass.\n- **TC-01-02:** not in the run. DEC-44/46 defer it to US-03-01, so it is not a finding.\n\n**Local checks on the head:** `jest --coverage` gives 15 suites and 51 tests green, with 98% line coverage on src. `tsc`, `lint` and `format:check` are all clean. In the local run, `test-runs/2026-10-14_145653/run.json` lists AC-01-02-1…7 as \"skipped\", but its `junit/*.xml` show them passing. US-01-01's runs show the same pattern, so the runner apparently reads only Maestro reports and run.json isn't the evidence.\n\n## Criteria\n\n| # | Verdict | Evidence |\n|---|---|---|\n| 1 | MET | `src/content/decks/3-plus.json` (50 questions, pl/en); `tests/unit/AC-01-02-1-50-questions-one-answer.test.ts`; CI pass |\n| 2 | MET | `src/content/checks.ts:43-56`; `tests/unit/AC-01-02-2-length-limits.test.ts`; CI pass |\n| 3 | MET | 13/12/13/12 per kind; `tests/unit/AC-01-02-3-four-kinds.test.ts`; CI pass |\n| 4 | UNMET | Record `docs/delivery/content-checks/US-01-02-3-plus.md` is in the PR body and AC-01-02-4 passes, but the 3p-40 row records a false \"One answer: pass\" (B1) |\n| 5 | MET | `checkDecks` returns no problems; 13 breakage cases plus duplicate id and duplicate category each make it fail; `tests/unit/AC-01-02-5-content-checks.test.ts`; CI pass |\n| 6 | MET | DEC-46 path: a new category is its JSON file plus one import in `src/content/decks/index.ts`; the screen scan and the unregistered-deck test are in `tests/unit/AC-01-02-6-content-is-data.test.js`; CI pass |\n| 7 | MET | AC-01-02-7 unit test plus the release-bundle check (`scripts/check-bundle-content.js`, `scripts/test-acceptance.sh:181-188`); CI pass; TC-01-02 deferred by DEC-44/46 |\n\n## Covers\n\n| Requirement | Verdict | Evidence |\n|---|---|---|\n| F02 | MET | One deck per category; ids and categories must be unique across decks. The category label itself is not checked (N5). |\n| F03 | MET | Count of 50 is checked. |\n| F04 | MET | Exactly one answer is checked. |\n| F05 | MET | Kinds are checked. |\n| F06 | MET | Covered by the record. |\n| F07 | MET | I compared all 50 pl/en pairs myself and they say the same thing. Nothing in the PR shows this check was done (N3). |\n| F09 | MET | Content is in the bundle; no network code in `src/content`. |\n| F10 | MET | Same evidence as criterion 6. |\n| F11 | MET | Question length ≤ 100 checked. |\n| F12 | MET | Answer length ≤ 60 checked. |\n| F14 | NOT MET | 3p-40 (B1). |\n| F15 | MET | ≥ 5 per kind checked. |\n\n- **Edge cases:** both are implemented and tested in AC-01-02-5 step 2: counts above and below 50, a missing en answer, a missing pl question, and lengths over the limit.\n- **Out of scope:** no violations. The `scripts/test-acceptance.sh` change belongs to AC-01-02-7. BACKLOG and DECISIONS changes are bookkeeping, and DEC-46 is appended only.\n- **Constitution:** no violations. Content is data, no network code, and content quality is tested.\n\n```\nREVIEW: findings\nSTORY: US-01-02\nIMPACT: src/content/index.ts now re-exports `decks`; the only consumer today is the tests (src/app/index.tsx still reads appContent only, TC-00-03 green). checkDeck/checkDecks become the gate for US-01-03/US-01-04 decks, and the new AC-01-02-7 step in scripts/test-acceptance.sh (the script CI runs for every PR) reads every JSON in src/content/decks, so a 4+/5+ file not imported in decks/index.ts fails every later PR's acceptance run (intended). The AC-01-02-4 record parser is hard-wired to `| 3p-` rows and English columns.\nFINDINGS:\n  B1 src/content/decks/3-plus.json:474 (3p-40), docs/delivery/content-checks/US-01-02-3-plus.md:55 — \"What do we put on a birthday cake?\" has many right answers in English (candles, icing, cream, sprinkles, fruit), and \"Co stawiamy na torcie urodzinowym?\" still admits cake figures and decorations; a child who says \"icing\" is told the answer is \"Candles\", yet the record marks \"One answer: pass\", so the MOD-01-F14 (must) check of criterion 4 is false for this row → reword so only candles fit, e.g. en \"What do we blow out on a birthday cake?\" / pl \"Co zdmuchujemy na torcie urodzinowym?\", and update the record row (AC-01-02-4 step 2 will require it)\n  N1 src/content/decks/3-plus.json:570 (3p-48) — en answer \"Gloves.\" while many 3-year-olds wear mittens; pl \"Rękawiczki\" covers both, en does not, so the one-answer check is borderline in English → reword (e.g. \"What keeps our hands warm in winter?\" still has two answers; better pick a question whose single word is uncontested) or accept explicitly in the record\n  N2 src/content/decks/3-plus.json:234 (3p-20) and :246 (3p-21) — \"What do we need to see in the dark?\" invites \"a torch/lamp\" besides \"Light\"; \"What dark shape follows you…\" (\"Co ciemnego chodzi za tobą\") reads mildly spooky for a 3-year-old → consider rewording against the one-answer and nothing-frightening checks\n  N3 tests/unit/AC-01-02-4-age-suitability-record.test.js:29-38, docs/delivery/content-checks/US-01-02-3-plus.md — the record shows and the test compares English only; a later edit of any Polish question/answer passes the suite with the record untouched, and MOD-01-F07 (same meaning in both languages) has no evidence beyond one sentence (\"the Polish one says the same\") → add Question (pl)/Answer (pl) columns and compare both languages in step 2\n  N4 src/content/decks/3-plus.json:342 (3p-29), :402 (3p-34) — \"przysmak\" and \"horse-like\" are above a 3-year-old's vocabulary while the row says \"Known words: pass\" → plainer words (\"Co słodkiego robią pszczoły?\", \"Which animal looks like a horse with black and white stripes?\")\n  N5 src/content/checks.ts:21-23 — any non-empty category passes (\"3 +\", \"6+\"); MOD-01-F02 names 3+, 4+ or 5+ → accept this given F10 (new categories as data), or check the label's format\n  N6 src/content/checks.ts:31-58 — the schema check ignores unknown keys, so a misspelt optional field (e.g. \"ilustration\") passes silently and the illustration is dropped; constitution says content is \"validated by a schema test\" → reject keys outside id/kind/pl/en/illustration\n  N7 docs/specs/modules/01-question-content/stories/US-01-02-deck-3-plus.md:6,20 and docs/specs/BACKLOG.md:46 — status still `in-progress`; the runbook says statuses travel in the story's PR and US-01-01's PR #3 carried `done` → set it before merge (DoD)\n  N8 docs/specs/DECISIONS.md:570 — DEC-46 lists constitution.md under Affects, but the diff does not change the constitution (e.g. \"screens read content only through src/content\", the deck format) → record it there or drop it from Affects in a follow-up entry\n  N9 PR #4 body — the impact block says \"Not current … not run on this head\" and the evidence table cites only the local run, whose run.json reports AC-01-02-1…7 as skipped → refresh with CI run 38568166419 (all AC-01-02-* green on b9c3d381)\n  N10 scripts/test-acceptance.sh:116 — the case name says \"every 3+ question\" but check-bundle-content.js checks every deck file → name it for all decks before 4+/5+ land\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 unmet — the record marks 3p-40 \"One answer: pass\", but \"What do we put on a birthday cake?\" has several right answers (B1)\n  #5 met\n  #6 met\n  #7 met\n```\n"
+}

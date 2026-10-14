@@ -1,0 +1,73 @@
+{
+  "n": 2,
+  "attempt": 1,
+  "ts": "2026-10-14T12:59:34Z",
+  "story": "US-01-02",
+  "mode": "implement",
+  "parsed": {
+    "result": "ready",
+    "story": "US-01-02",
+    "branch": "feature/US-01-02",
+    "commits": [
+      "57b5b91 chore(content): wip, waiting for DEC-46 [US-01-02]",
+      "9e97034 docs(specs): record the content data format, DEC-46 [US-01-02]",
+      "5f16384 feat(content): 3+ deck in Polish and English with content checks [US-01-02]",
+      "ee2e7c1 test(acceptance): check the release bundle ships the decks [US-01-02]",
+      "b9c3d38 fix(content): give every 3+ question one unambiguous answer [US-01-02]"
+    ],
+    "decisions": [
+      "DEC-46 critical Content data format, adding categories, and the evidence for US-01-02 criteria 4 and 7"
+    ],
+    "evidence": [
+      "#1 50 questions, one answer each, pl and en — AC-01-02-1 (tests/unit/AC-01-02-1-50-questions-one-answer.test.ts) steps 1-3 pass",
+      "#2 question at most 100 / answer at most 60 characters, each language — AC-01-02-2 (tests/unit/AC-01-02-2-length-limits.test.ts) steps 1-2 pass",
+      "#3 each of the four kinds at least 5 times — AC-01-02-3 (tests/unit/AC-01-02-3-four-kinds.test.ts) pass; counts 13/12/13/12",
+      "#4 PR records the age-suitability check of every question — docs/delivery/content-checks/US-01-02-3-plus.md (50 rows, the four Q29 checks all pass) plus AC-01-02-4 (tests/unit/AC-01-02-4-age-suitability-record.test.js), which fails on any question without a passing row; the record must be copied into the PR body",
+      "#5 all content checks pass, breaking any one fails the suite — AC-01-02-5 (tests/unit/AC-01-02-5-content-checks.test.ts): the shipped decks pass checkDecks; 13 single breakages plus duplicate id or category are each caught",
+      "#6 adding a question or category is a data-only change — AC-01-02-6 (tests/unit/AC-01-02-6-content-is-data.test.js): fails on an unregistered deck file, on a screen that reads a deck or holds question text, and on checks that name a category",
+      "#7 all content ships inside the app — AC-01-02-7 step 1 (tests/unit/AC-01-02-7-content-ships-inside.test.js, no network code in src/content) and step 2 in scripts/test-acceptance.sh (release APK's Hermes bundle: 250 of 250 texts found, release/bundle-content.txt); TC-01-02 is deferred to US-03-01 (DEC-44, DEC-46)"
+    ],
+    "tests": {
+      "run": "/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-14_145653",
+      "pass": 4,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 0,
+      "manual_tests": [
+        "none"
+      ]
+    },
+    "derived_tests": [
+      "AC-01-02-1",
+      "AC-01-02-2",
+      "AC-01-02-3",
+      "AC-01-02-4",
+      "AC-01-02-5",
+      "AC-01-02-6",
+      "AC-01-02-7"
+    ],
+    "preexisting": "src/content/deck.ts (deck types), and the story plus BACKLOG row set to in-progress, from WIP 57b5b91; kept and extended",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test ok (coverage 98% lines)"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "notes": "Copy docs/delivery/content-checks/US-01-02-3-plus.md into the PR body (DEC-46 point 4).",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [],
+      "blocked": []
+    },
+    "critical_decisions": [
+      "DEC-46 critical Content data format, adding categories, and the evidence for US-01-02 criteria 4 and 7"
+    ]
+  },
+  "raw": "US-01-02 is finished on feature/US-01-02 (not pushed). It follows the owner's DEC-46 answer (option a), and the whole acceptance suite passed on the final head b9c3d38 with a clean tree.\n\nThe local run.json counts only the Maestro flows (pass=4, skipped=8). The collector does not read JUnit, so all seven AC-01-02 tests show as \"skipped\" there. They passed in the JUnit reports of the same run (`junit/unit.xml` and `junit/release.xml`, 0 failures), and CI will read them by id. I ran locally on an API 32 emulator because there is no API 31 image here. CI uses API 31.\n\nA spec-compliance review found four 3+ questions without one unambiguous answer (3p-16, 3p-33, 3p-43, 3p-46). I replaced them, plus four advisory ones (3p-04, 3p-21, 3p-29, 3p-39), in commit b9c3d38, before the final run.\n\nTwo things need the orchestrator:\n- **TC-01-02** covers US-01-02#7, but DEC-44/46 defer it to US-03-01, so CI will not run it. merge-check may report it as unexecuted, as it did for US-01-01#4.\n- **The PR body** must include the age-suitability record `docs/delivery/content-checks/US-01-02-3-plus.md` (DEC-46 point 4).\n\nThe status is still `in-progress`. Per the brief I did not push or open a PR.\n\nRESULT: ready\nSTORY: US-01-02\nBRANCH: feature/US-01-02\nCOMMITS: 57b5b91 chore(content): wip, waiting for DEC-46 [US-01-02]; 9e97034 docs(specs): record the content data format, DEC-46 [US-01-02]; 5f16384 feat(content): 3+ deck in Polish and English with content checks [US-01-02]; ee2e7c1 test(acceptance): check the release bundle ships the decks [US-01-02]; b9c3d38 fix(content): give every 3+ question one unambiguous answer [US-01-02]\nDECISIONS: DEC-46 critical Content data format, adding categories, and the evidence for US-01-02 criteria 4 and 7\nEVIDENCE:\n  #1 50 questions, one answer each, pl and en — AC-01-02-1 (tests/unit/AC-01-02-1-50-questions-one-answer.test.ts) steps 1-3 pass\n  #2 question at most 100 / answer at most 60 characters, each language — AC-01-02-2 (tests/unit/AC-01-02-2-length-limits.test.ts) steps 1-2 pass\n  #3 each of the four kinds at least 5 times — AC-01-02-3 (tests/unit/AC-01-02-3-four-kinds.test.ts) pass; counts 13/12/13/12\n  #4 PR records the age-suitability check of every question — docs/delivery/content-checks/US-01-02-3-plus.md (50 rows, the four Q29 checks all pass) plus AC-01-02-4 (tests/unit/AC-01-02-4-age-suitability-record.test.js), which fails on any question without a passing row; the record must be copied into the PR body\n  #5 all content checks pass, breaking any one fails the suite — AC-01-02-5 (tests/unit/AC-01-02-5-content-checks.test.ts): the shipped decks pass checkDecks; 13 single breakages plus duplicate id or category are each caught\n  #6 adding a question or category is a data-only change — AC-01-02-6 (tests/unit/AC-01-02-6-content-is-data.test.js): fails on an unregistered deck file, on a screen that reads a deck or holds question text, and on checks that name a category\n  #7 all content ships inside the app — AC-01-02-7 step 1 (tests/unit/AC-01-02-7-content-ships-inside.test.js, no network code in src/content) and step 2 in scripts/test-acceptance.sh (release APK's Hermes bundle: 250 of 250 texts found, release/bundle-content.txt); TC-01-02 is deferred to US-03-01 (DEC-44, DEC-46)\nTESTS: run=/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-14_145653 pass=4 fail=0 blocked=0 manual=0 manual_tests=none\nDERIVED_TESTS: AC-01-02-1; AC-01-02-2; AC-01-02-3; AC-01-02-4; AC-01-02-5; AC-01-02-6; AC-01-02-7\nPREEXISTING: src/content/deck.ts (deck types), and the story plus BACKLOG row set to in-progress, from WIP 57b5b91; kept and extended\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test ok (coverage 98% lines)\nENV_KEYS: none\nMIGRATION: no\nNOTES: Run on a local API 32 emulator (no API 31 image here; CI uses API 31). AC-01-02-* show as skipped in run.json because the collector does not read JUnit; they passed in junit/unit.xml and junit/release.xml (0 failures), and CI matches them by id.\nNOTES: TC-01-02 covers US-01-02#7 but is deferred to US-03-01 (DEC-44/46), so CI will not run it.\nNOTES: Copy docs/delivery/content-checks/US-01-02-3-plus.md into the PR body (DEC-46 point 4).\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}

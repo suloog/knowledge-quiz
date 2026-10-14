@@ -1,0 +1,117 @@
+{
+  "story": "US-01-02",
+  "attempt": 1,
+  "round": 2,
+  "sha": "51d99c8b9a331a98a2a9c730065929682a2b58ef",
+  "reviewer": "code",
+  "ts": "2026-10-14T13:38:10Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-01-02",
+    "impact": "`checkDecks` and `checkDeck` in `src/content/checks.ts` are the shared guard for the later decks (US-01-03, US-01-04), and the new duplicate-text rule now applies to every later deck: the same question text in 4+ and 3+ in the same language fails the suite. The deck JSON feeds `scripts/check-bundle-content.js` (all decks, so the acceptance run fails when a later deck is missing from the bundle) and the AC-01-02-4 record test (hard-wired to `3p-` rows and the pl/en columns). The risk is a content-quality gap (3p-21) reaching the owner's single content review, not a code regression.",
+    "findings": [
+      {
+        "id": "B1",
+        "blocking": true,
+        "security": false,
+        "tags": [],
+        "text": "`src/content/decks/3-plus.json` 3p-21 (and `docs/delivery/content-checks/US-01-02-3-plus.md` row 3p-21) — \"What moves with you on the ground when the sun shines?\" also has the correct answers \"my dog\", \"my feet\" and \"my friend\", so the record's \"One answer: pass\" is wrong; the \"dark shape\" hint was lost in the rewording → restore it (\"Co ciemnego idzie za tobą po ziemi, gdy świeci słońce?\" / \"What dark shape follows you on the ground when the sun shines?\") or turn it into an either/or question, then re-check the row"
+      },
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "`src/content/decks/3-plus.json` 3p-25 — pl \"gorącą\" vs en \"very hot\" do not match → use the same degree in both"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "`src/content/decks/3-plus.json` 3p-40 — \"the fire/flame\" is a possible answer for \"blow out\" → accept it or tighten the question"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "`src/content/decks/3-plus.json` 3p-41 — \"In the freezer\" also keeps milk cold → reword or pick another item"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "`src/content/decks/3-plus.json` 3p-44 — \"the food we eat in the morning\" admits porridge, toast and cereal → \"first meal of the day\""
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "`tests/unit/AC-01-02-5-content-checks.test.ts:80` — the duplicate-text test covers only `en` and only one deck → add a `pl` case and a two-deck case"
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "`src/content/checks.ts:86` — the duplicate-text comparison is not normalised (case, whitespace) and treats a missing text as \"undefined\" → trim and lower-case, skip non-strings"
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "PR body, evidence for criterion #5 — it does not mention the duplicate-text check and is marked \"Not current\" → refresh it"
+      },
+      {
+        "id": "N8",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "`src/content/decks/3-plus.json` 3p-12 / 3p-38 / 3p-02 / 3p-03 / 3p-13 — answers repeat (\"A cat\" twice, \"Two\" three times) → pre-existing, for the owner's review only"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": "the record exists and AC-01-02-4 is green, but the row for 3p-21 records \"One answer: pass\" wrongly (B1)"
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 6,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 7,
+        "verdict": "external",
+        "note": "AC-01-02-7 is green (local run 250/250, CI job still pending); TC-01-02 is deferred to US-03-01 by DEC-44/DEC-46"
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Round 2 review of PR #4 (US-01-02), fix commits b9c3d38..51d99c8, checked out detached at 51d99c8.\n\nVerification run: `yarn jest tests/unit` is 38/38 green, `tsc` and `format:check` are clean. The PR body's embedded record is identical to `docs/delivery/content-checks/US-01-02-3-plus.md`. The local run `test-runs/2026-10-14_153132` is on commit 51d99c8, clean tree, 15 suites / 51 tests, bundle check 250/250 texts. CI (`gh pr checks 4`): the \"Acceptance tests (Android 12 emulator)\" job is still pending, so I have not seen it green.\n\n**B1 (birthday cake, 3p-40): fixed.** \"Co zdmuchujemy na torcie urodzinowym?\" / \"What do we blow out on a birthday cake?\" has the answer Candles in both languages. pl and en mean the same, the words are fine for a 3-year-old, and the record row matches the deck (AC-01-02-4 step 2 enforces that). The only residual is that a child could say \"the fire\" or \"the flame\". That is the same object, so it is only a nit (N2).\n\n**What the fix broke:** nothing structural. The `checkDecks` duplicate-text check works, and the AC-01-02-5 step 3 test would fail if it were reverted (it asserts the exact message). The AC-01-02-4 parser change (`slice(2, 10)` for the row, `slice(4)` for the four checks) is correct. The rewording of 3p-21 introduced a new ambiguity, described below.\n\n**Wording of each reworded question.** \"Ok\" means one unambiguous answer, pl and en with the same meaning, suitable for a 3-year-old, and the record matches.\n- 3p-01 lemon: ok.\n- 3p-20 lamp or pillow: ok.\n- 3p-21: not ok, see B1 below.\n- 3p-25: ok on one answer. pl says \"gorącą\" (hot) and en says \"very hot\", a small mismatch (N1).\n- 3p-29 (pl): ok.\n- 3p-34 (en): ok.\n- 3p-37 pig: ok. The sound-word questions follow the existing pattern (woof / hau hau).\n- 3p-41 milk and fridge: freezer is a plausible wrong answer (N3).\n- 3p-42 (pl): ok. It now matches the en text, which was unchanged.\n- 3p-44: weaker than before (N4).\n- 3p-48 scarf: ok.\n\nFINDINGS detail:\n- B1 `src/content/decks/3-plus.json`, 3p-21 (pl \"Co rusza się razem z tobą po ziemi, gdy świeci słońce?\", en \"What moves with you on the ground when the sun shines?\"), and `docs/delivery/content-checks/US-01-02-3-plus.md` row 3p-21. The \"One answer\" check is marked `pass`, but the child, or a parent reading it aloud, can answer \"my dog\", \"my feet\", \"my friend\" or \"my ball\", and each of those is correct. The old wording (\"What dark shape follows you...\") carried the hint \"dark shape\", and the rewording dropped it. That fails the story's one-unambiguous-answer rule (DEC-46 / Q29), the same class as round-1 B1. Fix: put the shape back, for example \"Co ciemnego idzie za tobą po ziemi, gdy świeci słońce?\" / \"What dark shape follows you on the ground when the sun shines?\". Alternatively use a choice question like 3p-20 and 3p-23.\n- N1 `3-plus.json`, 3p-25 and its record row: pl \"z gorącą wodą\" vs en \"of very hot water\". Make them the same, either \"gorącą\"/\"hot\" or \"bardzo gorącą\"/\"very hot\".\n- N2 3p-40: \"the fire\" or \"the flame\" is a possible child answer. Accept it, or ask \"Co zdmuchujemy z tortu: świeczki czy talerzyk?\" if you want it tighter.\n- N3 3p-41: \"In the freezer\" also keeps milk cold, and a parent would have to correct it. Consider \"Gdzie trzymamy mleko w kuchni, żeby było zimne, ale nie zamarzło?\" (too long to be worth it), or swap the item, for example butter.\n- N4 3p-44: \"Jak nazywamy jedzenie, które jemy rano?\" / \"What do we call the food we eat in the morning?\" admits \"porridge\", \"toast\" or \"cereal\" as answers. The earlier \"Which meal\" was tighter. Suggest \"Jak nazywa się pierwszy posiłek w ciągu dnia?\" / \"What is the first meal of the day called?\" (check the word \"meal\" for a 3-year-old).\n- N5 `tests/unit/AC-01-02-5-content-checks.test.ts:80-89` covers the duplicate-text check only for `en`, and only within one deck. A break in the `pl` path or across decks would pass. Add a `pl` duplicate and a two-deck case.\n- N6 `src/content/checks.ts`, the new duplicate-text block. Texts are compared exactly, so \"What colour is grass?\" and \"What colour is grass ?\" or a different case are not caught. If a question has no `pl` or `en` text, `undefined` is counted and the message \"undefined question appears more than once\" misleads (the \"no question\" problem is reported anyway). Optional: `trim().toLowerCase()`, and skip non-strings.\n- N7 The PR body \"Acceptance evidence\" for #5 still says \"13 single breakages + duplicate id/category caught\" and does not mention the duplicate question text. The body also carries the loop's \"Not current\" marker for 51d99c8. Update the line when the PR is refreshed.\n- N8 Several answers repeat across questions: \"A cat\" (3p-12 and 3p-38), and \"Two\" in 3p-02, 3p-03 and 3p-13. This is pre-existing and not a defect. Mentioned only for the owner's content review.\n- The `scripts/test-acceptance.sh` and AC-01-02-7 wording changes (\"every deck\") are accurate: `scripts/check-bundle-content.js` already read every JSON file under `src/content/decks`. No finding.\n\nREVIEW: findings\nSTORY: US-01-02\nIMPACT: `checkDecks` and `checkDeck` in `src/content/checks.ts` are the shared guard for the later decks (US-01-03, US-01-04), and the new duplicate-text rule now applies to every later deck: the same question text in 4+ and 3+ in the same language fails the suite. The deck JSON feeds `scripts/check-bundle-content.js` (all decks, so the acceptance run fails when a later deck is missing from the bundle) and the AC-01-02-4 record test (hard-wired to `3p-` rows and the pl/en columns). The risk is a content-quality gap (3p-21) reaching the owner's single content review, not a code regression.\nFINDINGS:\n  B1 `src/content/decks/3-plus.json` 3p-21 (and `docs/delivery/content-checks/US-01-02-3-plus.md` row 3p-21) — \"What moves with you on the ground when the sun shines?\" also has the correct answers \"my dog\", \"my feet\" and \"my friend\", so the record's \"One answer: pass\" is wrong; the \"dark shape\" hint was lost in the rewording → restore it (\"Co ciemnego idzie za tobą po ziemi, gdy świeci słońce?\" / \"What dark shape follows you on the ground when the sun shines?\") or turn it into an either/or question, then re-check the row\n  N1 `src/content/decks/3-plus.json` 3p-25 — pl \"gorącą\" vs en \"very hot\" do not match → use the same degree in both\n  N2 `src/content/decks/3-plus.json` 3p-40 — \"the fire/flame\" is a possible answer for \"blow out\" → accept it or tighten the question\n  N3 `src/content/decks/3-plus.json` 3p-41 — \"In the freezer\" also keeps milk cold → reword or pick another item\n  N4 `src/content/decks/3-plus.json` 3p-44 — \"the food we eat in the morning\" admits porridge, toast and cereal → \"first meal of the day\"\n  N5 `tests/unit/AC-01-02-5-content-checks.test.ts:80` — the duplicate-text test covers only `en` and only one deck → add a `pl` case and a two-deck case\n  N6 `src/content/checks.ts:86` — the duplicate-text comparison is not normalised (case, whitespace) and treats a missing text as \"undefined\" → trim and lower-case, skip non-strings\n  N7 PR body, evidence for criterion #5 — it does not mention the duplicate-text check and is marked \"Not current\" → refresh it\n  N8 `src/content/decks/3-plus.json` 3p-12 / 3p-38 / 3p-02 / 3p-03 / 3p-13 — answers repeat (\"A cat\" twice, \"Two\" three times) → pre-existing, for the owner's review only\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 met — the record exists and AC-01-02-4 is green, but the row for 3p-21 records \"One answer: pass\" wrongly (B1)\n  #5 met\n  #6 met\n  #7 external — AC-01-02-7 is green (local run 250/250, CI job still pending); TC-01-02 is deferred to US-03-01 by DEC-44/DEC-46\n"
+}

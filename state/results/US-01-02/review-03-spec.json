@@ -1,0 +1,117 @@
+{
+  "story": "US-01-02",
+  "attempt": 1,
+  "round": 3,
+  "sha": "c3162bec9c32dac10204f770568983fad94d5542",
+  "reviewer": "spec",
+  "ts": "2026-10-14T14:27:21Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-01-02",
+    "impact": "checkDeck/checkDecks (src/content/checks.ts) are the shared gate for the 4+/5+ decks of US-01-03/04; the new trimmed, case-insensitive duplicate-text rule now also rejects a 4+/5+ text matching a 3+ one. The record test is hard-wired to `| 3p-` rows with exactly 8 cells after the id, so later deck records must keep that layout; check-bundle-content.js reads every deck JSON, so a later deck missing from the release bundle fails the acceptance run.",
+    "findings": [
+      {
+        "id": "B1",
+        "blocking": true,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:3p-48 — \"Co zakładamy na szyję, gdy jest zimno?\" / \"What do we wear around our neck when it is cold?\" → \"Szalik.\"/\"A scarf.\": a Polish 3-year-old answering \"komin\" (tube scarf / neck warmer, very common for toddlers) is right but marked wrong; the record's \"One answer: pass\" is false → make it an either/or with a clearly wrong option (e.g. \"…: rękawiczki czy szalik?\" / \"…: gloves or a scarf?\"), update the record row and PR body"
+      },
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json — in 18 of 20 either/or questions the correct option comes first (only 3p-19, 3p-23 put it second); always picking the first option wins 90% → swap the order in about half"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:3p-43 — a balloon is round, a toy and bounces gently off the floor (weak second answer) → add \"…i kopiemy ją\" / \"…and we kick it\", or make it an either/or"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:3p-45 — \"the weather\" is not airtight as the wrong option (weather/smart clocks show it) → use e.g. \"bajkę\"/\"a cartoon\""
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:3p-22,3p-13,3p-04 — \"pogodny\", \"liczba/jedynka\", \"kształt\" are edge vocabulary for age 3 (read aloud by a parent; acceptable)"
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:3p-25,3p-21 — 3p-25 pl \"nad garnkiem\" vs en \"rises from a pot\" (en loosely admits \"bubbles\") → \"rises above a pot\"; 3p-21 rainbow colours can appear on the ground (puddles, prisms), option still clearly wrong"
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/checks.ts:91 — duplicate text only trimmed and lowercased; \"Ile masz oczu?\" vs \"Ile masz oczu\" or a doubled inner space pass as distinct → also collapse whitespace and strip trailing punctuation, or accept"
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/unit/AC-01-02-4-age-suitability-record.test.js:13-22 — rows go into a Map, so a duplicated id row hides an earlier \"fail\" row and rows for ids not in the deck are ignored → assert `| 3p-` row count === deck length and unique ids"
+      },
+      {
+        "id": "N8",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "PR #4 body:12,20 — still cites CI on 51d99c8 (\"not run on this head\") and names the 3p-21 gap as the risk → point to run 38577727619 on c3162be and refresh IMPACT"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "unmet",
+        "note": "the record (repo and PR body) marks 3p-48 \"One answer: pass\" although \"komin\" is a second correct answer (B1)"
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 6,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 7,
+        "verdict": "met",
+        "note": ""
+      }
+    ],
+    "stray": []
+  },
+  "raw": "## US-01-02 spec-compliance review, round 3 (PR #4, head c3162be)\n\n**Verdict: NOT COMPLIANT.** One new blocking item: the 3+ question 3p-48 has a second correct answer.\n\n### Test runs\n- **CI on c3162be:** run 38577727619 succeeded; artifact og-test-results downloaded.\n  - `junit/unit.xml`: 15 suites, no failures, errors or skips. That covers AC-01-02-1 (4 tests), -2 (4), -3 (5), -4 (3), -5 (16), -6 (3) and -7 (1).\n  - `junit/release.xml`: 7 of 7 pass, including \"AC-01-02-7 step 2 — the release APK's embedded JavaScript bundle holds every deck's questions and answers\".\n  - Maestro reports: 3 of 3 and 1 of 1 pass, both from US-01-01.\n  - TC-01-02 is deferred to US-03-01 by DEC-44 and DEC-46, so it is not a finding.\n- **Local run** (`test-runs/2026-10-14_160342`, clean tree at c3162be): `release.xml` 7 of 7, `bundle-content.txt` reads \"3+: 250 of 250 texts found in the bundle\".\n- **My own runs:** jest AC-01-02 36 of 36, full jest 51 of 51 across 15 suites; `tsc`, `lint` and `format:check` all pass.\n- **PR body:** its 50 record rows match `docs/delivery/content-checks/US-01-02-3-plus.md` exactly.\n\n### Round-2 findings\n| Item | Status |\n| --- | --- |\n| B1 3p-21 (my feet) | Fixed. Now \"your shadow or a rainbow\"; feet are no longer an option. |\n| B2 3p-05 (toothpaste) | Fixed. Now \"a toothbrush or a spoon\". |\n| N1 category test | Fixed. `AC-01-02-5-content-checks.test.ts` `sameCategory` expects exactly `['category 3+ appears in more than one deck']`. |\n| N2 undefined / trim / case | Fixed. `src/content/checks.ts:86-97` drops non-strings, then trims and lowercases. Tests cover upper case with padding, a text shared across decks, and two missing `en` texts producing no \"appears\" message. |\n| N3–N5 (3p-44, 3p-25, 3p-16, 3p-39) | Fixed, see the per-question review. |\n| N10 record columns | Fixed. `AC-01-02-4-age-suitability-record.test.js:20,33` uses `slice(2,-1)` and asserts 8 cells. |\n| Regressions | None. Kinds are still 13/12/13/12 (educational/popular-science/nature/trivia). Every length is within limits; the longest is 3p-21 en at 79 characters. The question/answer check (F07) and the duplicate-text check pass. |\n\n### All 50 questions against Q29 and MOD-01-F04/F07/F14\nThese pass with no edge: 3p-01, 02, 03, 05, 06, 07, 08, 09, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 22, 23, 24, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 44, 46, 47, 49, 50.\n\n- **Either/or questions:** in every one the wrong option is clearly wrong (blue lemon, six wheels, spoon, mouse, water to breathe, float, pillow, warmth, tree, cat, cow, dog, gloves, oven, supper, crayon, water for trains, comb). Weaker edges are on 3p-21 and 3p-45, listed below.\n- **pl/en meaning:** no real mismatch in any of the 50. The only small difference is in 3p-25, listed below.\n- **Weak edges, not blocking:** 3p-04, 13, 21, 22, 25, 43, 45.\n- **Blocking:** 3p-48.\n\n| Requirement / criterion | Verdict | Evidence |\n| --- | --- | --- |\n| #1 50 questions, one answer, pl+en | MET | AC-01-02-1, 4 tests; CI unit.xml |\n| #2 ≤100 / ≤60 | MET | AC-01-02-2; max question 79, max answer 26 |\n| #3 each kind ≥5 | MET | AC-01-02-3; 13/12/13/12 |\n| #4 PR records the Q29 check | NOT MET | The record and PR body are complete and AC-01-02-4 passes, but the record says 3p-48 \"One answer: pass\", which is wrong (B1) |\n| #5 checks pass; breaking one fails | MET | AC-01-02-5, 16 tests; checks.ts |\n| #6 data-only change | MET | AC-01-02-6, 3 tests |\n| #7 ships inside, nothing downloaded | MET | AC-01-02-7 step 1 (unit) and step 2 (CI release.xml); TC-01-02 deferred by DEC-44/46 |\n| F02, F03, F05, F09, F10, F11, F12, F15 | MET | As above |\n| F04 one correct answer / F14 one unambiguous answer | NOT MET | 3p-48 (B1) |\n| F06 age-suited | MET | Vocabulary edges only (N4) |\n| F07 same meaning pl/en | MET | Wording nit only (N5) |\n| Edge: failing content fails the suite | MET | AC-01-02-5 step 2 |\n| Edge: fewer than 50 in either language fails | MET | AC-01-02-5 \"a question fewer than 50\"; a missing pl question also fails |\n\n- **Out of scope:** nothing out of scope is touched. The diff covers content, tests, scripts and docs, plus an append-only DEC-46 entry and status fields.\n- **Constitution:** no violation. Content is data and is checked by a schema test; no screen holds content; the quality gates are green.\n\n### Findings\n\n**B1 — `src/content/decks/3-plus.json` 3p-48** (\"Co zakładamy na szyję, gdy jest zimno?\" / \"What do we wear around our neck when it is cold?\" → \"Szalik.\" / \"A scarf.\")\n- **Failing scenario:** a Polish 3-year-old answers \"komin\" (a tube scarf or neck warmer). That is a correct answer, and for toddlers in Poland it is very common, often recommended over scarves. The card says \"Szalik\", so the parent cannot mark the child right. This is the same kind of second answer as the toothpaste case. In English, \"a neck warmer\" is the equivalent. The record row's \"One answer: pass\" is therefore wrong.\n- **Fix:** reword as an either/or, ideally with the correct option second. For example \"…gdy jest zimno: rękawiczki czy szalik?\" / \"…when it is cold: gloves or a scarf?\". Then update the record row and the PR body.\n- This was not raised in earlier rounds. I found it in this full pass.\n\n**N1 — either/or questions put the correct option first in 18 of 20.** Only 3p-19 and 3p-23 put it second. A child who always picks the first option is right 90% of the time. Fix: swap the order in about half of them.\n\n**N2 — 3p-43** (\"round toy that bounces on the floor\" → ball). A balloon is round, a toy, and bounces gently off the floor, which makes it a weak second answer. Fix: add \"…i kopiemy ją\" / \"…and we kick it\", or make it an either/or.\n\n**N3 — 3p-45** (\"the time or the weather?\"). Weather-station and smart clocks do show the weather, so the wrong option is not airtight. Fix: use something clearly wrong, for example \"godzinę czy bajkę\" / \"the time or a cartoon\".\n\n**N4 — vocabulary edges for age 3.** \"pogodny dzień\" (3p-22), \"liczba / jedynka\" (3p-13) and \"kształt\" (3p-04) are at the edge for this age. The parent reads the question aloud, so this is acceptable. Note also that in 3p-04 \"koło\" means both \"wheel\" and \"circle\".\n\n**N5 — 3p-21 and 3p-25 minor wording.**\n- 3p-21: rainbow colours can appear on the ground (oil on puddles, light through a prism). The option is still clearly wrong.\n- 3p-25: Polish \"nad garnkiem\" means \"above the pot\", but English says \"rises from a pot\", which loosely admits \"bubbles\". Fix: \"What rises above a pot of very hot water?\"\n\n**N6 — `src/content/checks.ts:91`.** Duplicate texts are only trimmed and lowercased, so \"Ile masz oczu?\" and \"Ile masz oczu\" (or a doubled inner space) count as distinct. Fix: also collapse whitespace and strip trailing punctuation, or accept as is.\n\n**N7 — `tests/unit/AC-01-02-4-age-suitability-record.test.js:13-22`.** Rows are stored in a Map keyed by id.\n- If the record has two rows for one id, only the last is kept, so an earlier \"fail\" row is hidden.\n- Rows whose id is not in the deck are ignored.\n- Fix: assert the number of `| 3p-` rows equals `deck.questions.length` and that the ids are unique.\n\n**N8 — PR #4 body is stale.**\n- Line 12 cites CI on 51d99c8 as \"not run on this head\".\n- Line 20 still names \"a content-quality gap (3p-21)\" as the risk.\n- Fix: point to run 38577727619 on c3162be and refresh IMPACT.\n\n### Files\n- /Users/sulo/workspace/knowledge-quiz/src/content/decks/3-plus.json\n- /Users/sulo/workspace/knowledge-quiz/docs/delivery/content-checks/US-01-02-3-plus.md\n- /Users/sulo/workspace/knowledge-quiz/src/content/checks.ts\n- /Users/sulo/workspace/knowledge-quiz/tests/unit/AC-01-02-4-age-suitability-record.test.js\n- /Users/sulo/workspace/knowledge-quiz/tests/unit/AC-01-02-5-content-checks.test.ts\n- CI artifact copy: /private/tmp/claude-501/-Users-sulo-workspace-knowledge-quiz/0811fcaa-1d7c-4ea0-83f3-d685a8a6e3bc/scratchpad/ci-artifact-c3162be/junit/\n\n```\nREVIEW: findings\nSTORY: US-01-02\nIMPACT: checkDeck/checkDecks (src/content/checks.ts) are the shared gate for the 4+/5+ decks of US-01-03/04; the new trimmed, case-insensitive duplicate-text rule now also rejects a 4+/5+ text matching a 3+ one. The record test is hard-wired to `| 3p-` rows with exactly 8 cells after the id, so later deck records must keep that layout; check-bundle-content.js reads every deck JSON, so a later deck missing from the release bundle fails the acceptance run.\nFINDINGS:\n  B1 src/content/decks/3-plus.json:3p-48 — \"Co zakładamy na szyję, gdy jest zimno?\" / \"What do we wear around our neck when it is cold?\" → \"Szalik.\"/\"A scarf.\": a Polish 3-year-old answering \"komin\" (tube scarf / neck warmer, very common for toddlers) is right but marked wrong; the record's \"One answer: pass\" is false → make it an either/or with a clearly wrong option (e.g. \"…: rękawiczki czy szalik?\" / \"…: gloves or a scarf?\"), update the record row and PR body\n  N1 src/content/decks/3-plus.json — in 18 of 20 either/or questions the correct option comes first (only 3p-19, 3p-23 put it second); always picking the first option wins 90% → swap the order in about half\n  N2 src/content/decks/3-plus.json:3p-43 — a balloon is round, a toy and bounces gently off the floor (weak second answer) → add \"…i kopiemy ją\" / \"…and we kick it\", or make it an either/or\n  N3 src/content/decks/3-plus.json:3p-45 — \"the weather\" is not airtight as the wrong option (weather/smart clocks show it) → use e.g. \"bajkę\"/\"a cartoon\"\n  N4 src/content/decks/3-plus.json:3p-22,3p-13,3p-04 — \"pogodny\", \"liczba/jedynka\", \"kształt\" are edge vocabulary for age 3 (read aloud by a parent; acceptable)\n  N5 src/content/decks/3-plus.json:3p-25,3p-21 — 3p-25 pl \"nad garnkiem\" vs en \"rises from a pot\" (en loosely admits \"bubbles\") → \"rises above a pot\"; 3p-21 rainbow colours can appear on the ground (puddles, prisms), option still clearly wrong\n  N6 src/content/checks.ts:91 — duplicate text only trimmed and lowercased; \"Ile masz oczu?\" vs \"Ile masz oczu\" or a doubled inner space pass as distinct → also collapse whitespace and strip trailing punctuation, or accept\n  N7 tests/unit/AC-01-02-4-age-suitability-record.test.js:13-22 — rows go into a Map, so a duplicated id row hides an earlier \"fail\" row and rows for ids not in the deck are ignored → assert `| 3p-` row count === deck length and unique ids\n  N8 PR #4 body:12,20 — still cites CI on 51d99c8 (\"not run on this head\") and names the 3p-21 gap as the risk → point to run 38577727619 on c3162be and refresh IMPACT\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 unmet — the record (repo and PR body) marks 3p-48 \"One answer: pass\" although \"komin\" is a second correct answer (B1)\n  #5 met\n  #6 met\n  #7 met\n```\n"
+}

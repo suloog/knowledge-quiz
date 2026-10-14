@@ -1,0 +1,138 @@
+{
+  "story": "US-01-02",
+  "attempt": 1,
+  "round": 1,
+  "sha": "b9c3d381345cec86d3fc6dcd23fbbfecd3d930f7",
+  "reviewer": "code",
+  "ts": "2026-10-14T13:03:07Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-01-02",
+    "impact": "src/content/index.ts now exports `decks` and the deck types; the existing appContent and src/app code are untouched. scripts/test-acceptance.sh gained a release-APK step, and its check-bundle-content.js reads every deck JSON, so a bundle gap in later decks (4+, 5+) fails the whole acceptance run. checkDecks and the registration test are the shared guard for US-01-03/04, so a gap there would let those decks through unchecked.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/delivery/content-checks/US-01-02-3-plus.md:15 — every one of the 50 rows is four identical \"pass\" cells with no rationale, and the Polish text is not recorded although the check was \"made against both languages\". Some \"Known words = pass\" rows are doubtful for a 3-year-old: pl \"przysmak\" (3p-29), \"posiłek\" (3p-44), \"zamrażarce\" (3p-41), \"chroni nas przed deszczem ... trzymamy to nad głową\" (3p-42), en \"ripe\" (3p-01), \"boils\" (3p-25), and the concept questions 3p-17 (moon changes shape), 3p-24 (rainbow needs rain and sun), 3p-45 (what a clock shows) → reword the hardest ones (e.g. 3p-29 \"Co słodkiego robią pszczoły?\", 3p-44 \"Co jemy rano na śniadanie?\" is circular, so prefer \"Co jemy rano, gdy się obudzimy?\") or downgrade those rows, and add a short note column or a Polish column; the owner reviews all content before release (DEC-26)."
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:3p-37 — the answer repeats other questions: \"Green\" for 3p-06 and 3p-37, \"Two\" for 3p-02, 3p-03 and 3p-13, \"cat/Kot\" for 3p-12 and 3p-38, and \"key\" appears in 3p-19 and 3p-46. A child who has just heard the answer to one can guess the next → swap 3p-37 for a different nature question and vary the \"Two\" answers."
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:3p-02 — pl answer \"Dwoje.\" to \"Ile masz oczu?\" is correct but sounds odd as a bare answer, and is inconsistent with \"Dwa.\" in 3p-03 and 3p-13 → use \"Dwoje oczu.\" or \"Dwa.\"."
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:3p-48 — en \"Gloves\" is ambiguous with \"mittens\", which is what most 3-year-olds wear. pl \"Rękawiczki\" is fine → ask \"What do we put on our hands to keep warm?\" with the answer \"Gloves or mittens.\", or accept the ambiguity since a parent reads the answer."
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:3p-42 — the pl question \"Co chroni nas przed deszczem, gdy trzymamy to nad głową?\" reads awkwardly (the \"to\" refers to nothing) and drifts from the en wording; a raincoat or hood also \"protects from rain\" → \"Co otwieramy nad głową, żeby nie zmoknąć w deszczu?\""
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json (en text) — spelling is mixed: \"colour\" (British) with \"meow\" (US) and \"ribbit\"; \"woof\" is also US. Not wrong, but pick one convention for the 4+/5+ decks."
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/checks.ts:34 — there is no duplicate-question check: a pasted duplicate pl or en question text, or a question and answer pair repeated under a new id, passes the suite once the count is 50. AC-01-02-1 requires one answer per question, not distinct questions → add a \"question text appears twice\" check in checkDecks plus one broken-fixture case, since 4+/5+ will be bulk-authored."
+      },
+      {
+        "id": "N8",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/checks.ts:19 — checkDecks([]) returns no problems, so AC-01-02-5 step 1 would pass with no deck registered. Only AC-01-02-1 step 1 would catch it, and it hardcodes \"3+\" → fine for now; consider having checkDecks require at least one deck."
+      },
+      {
+        "id": "N9",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/unit/AC-01-02-5-content-checks.test.ts:58 — step 2 asserts only `not.toEqual([])`, not which check fired. A broken fixture could trip an unrelated check (for example the \"extra\" question also changes the kind counts) and still pass if its own check were deleted → assert `toContainEqual(expect.stringContaining(...))` with the expected phrase per case, and add boundary cases (100-character question and 60-character answer pass)."
+      },
+      {
+        "id": "N10",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/check-bundle-content.js:23 — substring matching of short answers (\"Rain.\", \"Air.\", \"Snow.\", \"A key.\") can be satisfied by unrelated bundle strings, so \"250 of 250\" is weaker than it looks. The long questions and the 3p-NN ids anchor it in practice → optionally require the id and the question text only, or count a deck as present when all its ids are found."
+      },
+      {
+        "id": "N11",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/unit/AC-01-02-6-content-is-data.test.js:42 — step 3 greps checks.ts for the literals 3+/4+/5+/3-plus. That evidences \"no category named\", not \"adding a question or category needs no screen change\", which no test can fully prove before a screen exists. It is acceptable per DEC-46, but the step-3 regex misses names like `threePlus` or \"4plus\" → low value; keep it, or drop it if it becomes a nuisance."
+      },
+      {
+        "id": "N12",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/delivery/tests/AC-01-02-5-content-checks.md:33 — the step text says \"a doubled answer\", and the test models it as an array instead of a second string, which is a different failure. A single answer string such as \"a / b\" (two answers in one field) is not caught by any check → state in the doc that two answers in one field are caught only by review (the Q29 record), not by the suite."
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": "AC-01-02-1 (50 questions, pl+en question and one string answer each); local run green, CI run pending on this head"
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": "AC-01-02-2 and the same limits in checks.ts (100/60); local run green, CI run pending"
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": "AC-01-02-3 (13/12/13/12); local run green, CI run pending"
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": "record in the PR body and docs/delivery/content-checks/US-01-02-3-plus.md, enforced by AC-01-02-4 (the record is self-attested, see N1 on content quality)"
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": "AC-01-02-5 (13 single breakages, duplicate id and category); see N7 and N9 on gaps"
+      },
+      {
+        "n": 6,
+        "verdict": "met",
+        "note": "AC-01-02-6 (every deck file is registered, no screen holds content, no category named in checks)"
+      },
+      {
+        "n": 7,
+        "verdict": "met",
+        "note": "AC-01-02-7 step 1 (unit) and step 2 (release APK bundle, 250 of 250); TC-01-02 offline playback is deferred to US-03-01 by DEC-44 and DEC-46, which is external evidence and not a finding"
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Review of PR #4, US-01-02, round 1, head b9c3d38. I found no blockers. All 7 criteria are met locally, but CI had not finished when I looked.\n\nCI and local evidence\n- `gh pr checks 4` shows \"Acceptance tests (Android 12 emulator)\" still pending. The PR's impact block says \"not run on this head\" for AC-01-02-1..7 and TC-01-02. Merge needs that run green, with the og-test-results artifact showing every AC-01-02-* id.\n- On the b9c3d38 checkout, `yarn jest --ci` passes (15 suites, 51 tests), and `yarn test` passes with the coverage threshold. `tsc`, `lint` and `format:check` are clean.\n- The local run `test-runs/2026-10-14_145653/junit/unit.xml` has all new Jest tests under `tests/unit/` with \"AC-01-02-N\" in the test name. Jest picks them up under `yarn test:acceptance`, which runs `yarn jest --ci` with jest-junit.\n- AC-01-02-7 step 2 is a shell check written to `junit/release.xml`, and its name also carries the id. `bundle-content.txt` reads \"250 of 250 texts found in the bundle\".\n- Reverting `checks.ts` or `3-plus.json` would fail AC-01-02-1, 2, 3 and 5. Each AC-01-02-5 breakage case trips its own check.\n\nContent review\n- All 50 questions are present, with the answers as listed in the deck. Kinds are 13, 12, 13 and 12.\n- Every question has one defensible answer, the facts are correct, and nothing is frightening or adult.\n- Polish and English are grammatical. Everything below is non-blocking.\n\nIMPACT: `src/content/index.ts` now also exports `decks` and the deck types. `appContent` and its test are untouched, and `src/content` is only imported by the existing `src/app` code and the tests.\nIMPACT: `scripts/test-acceptance.sh` gained a release-APK step that unzips `index.android.bundle` and runs `scripts/check-bundle-content.js`. It reads every `src/content/decks/*.json`, so it will check the 4+ and 5+ decks automatically. A failure there also fails the whole acceptance run.\nIMPACT: `checkDecks` and the AC-01-02-6 registration test are what US-01-03 and US-01-04 will rely on. AC-01-02-6 step 3 fails if `checks.ts` names a category, and the record test only reads the 3+ file.\n\n```\nREVIEW: findings\nSTORY: US-01-02\nIMPACT: src/content/index.ts now exports `decks` and the deck types; the existing appContent and src/app code are untouched. scripts/test-acceptance.sh gained a release-APK step, and its check-bundle-content.js reads every deck JSON, so a bundle gap in later decks (4+, 5+) fails the whole acceptance run. checkDecks and the registration test are the shared guard for US-01-03/04, so a gap there would let those decks through unchecked.\nFINDINGS:\n  N1 docs/delivery/content-checks/US-01-02-3-plus.md:15 — every one of the 50 rows is four identical \"pass\" cells with no rationale, and the Polish text is not recorded although the check was \"made against both languages\". Some \"Known words = pass\" rows are doubtful for a 3-year-old: pl \"przysmak\" (3p-29), \"posiłek\" (3p-44), \"zamrażarce\" (3p-41), \"chroni nas przed deszczem ... trzymamy to nad głową\" (3p-42), en \"ripe\" (3p-01), \"boils\" (3p-25), and the concept questions 3p-17 (moon changes shape), 3p-24 (rainbow needs rain and sun), 3p-45 (what a clock shows) → reword the hardest ones (e.g. 3p-29 \"Co słodkiego robią pszczoły?\", 3p-44 \"Co jemy rano na śniadanie?\" is circular, so prefer \"Co jemy rano, gdy się obudzimy?\") or downgrade those rows, and add a short note column or a Polish column; the owner reviews all content before release (DEC-26).\n  N2 src/content/decks/3-plus.json:3p-37 — the answer repeats other questions: \"Green\" for 3p-06 and 3p-37, \"Two\" for 3p-02, 3p-03 and 3p-13, \"cat/Kot\" for 3p-12 and 3p-38, and \"key\" appears in 3p-19 and 3p-46. A child who has just heard the answer to one can guess the next → swap 3p-37 for a different nature question and vary the \"Two\" answers.\n  N3 src/content/decks/3-plus.json:3p-02 — pl answer \"Dwoje.\" to \"Ile masz oczu?\" is correct but sounds odd as a bare answer, and is inconsistent with \"Dwa.\" in 3p-03 and 3p-13 → use \"Dwoje oczu.\" or \"Dwa.\".\n  N4 src/content/decks/3-plus.json:3p-48 — en \"Gloves\" is ambiguous with \"mittens\", which is what most 3-year-olds wear. pl \"Rękawiczki\" is fine → ask \"What do we put on our hands to keep warm?\" with the answer \"Gloves or mittens.\", or accept the ambiguity since a parent reads the answer.\n  N5 src/content/decks/3-plus.json:3p-42 — the pl question \"Co chroni nas przed deszczem, gdy trzymamy to nad głową?\" reads awkwardly (the \"to\" refers to nothing) and drifts from the en wording; a raincoat or hood also \"protects from rain\" → \"Co otwieramy nad głową, żeby nie zmoknąć w deszczu?\"\n  N6 src/content/decks/3-plus.json (en text) — spelling is mixed: \"colour\" (British) with \"meow\" (US) and \"ribbit\"; \"woof\" is also US. Not wrong, but pick one convention for the 4+/5+ decks.\n  N7 src/content/checks.ts:34 — there is no duplicate-question check: a pasted duplicate pl or en question text, or a question and answer pair repeated under a new id, passes the suite once the count is 50. AC-01-02-1 requires one answer per question, not distinct questions → add a \"question text appears twice\" check in checkDecks plus one broken-fixture case, since 4+/5+ will be bulk-authored.\n  N8 src/content/checks.ts:19 — checkDecks([]) returns no problems, so AC-01-02-5 step 1 would pass with no deck registered. Only AC-01-02-1 step 1 would catch it, and it hardcodes \"3+\" → fine for now; consider having checkDecks require at least one deck.\n  N9 tests/unit/AC-01-02-5-content-checks.test.ts:58 — step 2 asserts only `not.toEqual([])`, not which check fired. A broken fixture could trip an unrelated check (for example the \"extra\" question also changes the kind counts) and still pass if its own check were deleted → assert `toContainEqual(expect.stringContaining(...))` with the expected phrase per case, and add boundary cases (100-character question and 60-character answer pass).\n  N10 scripts/check-bundle-content.js:23 — substring matching of short answers (\"Rain.\", \"Air.\", \"Snow.\", \"A key.\") can be satisfied by unrelated bundle strings, so \"250 of 250\" is weaker than it looks. The long questions and the 3p-NN ids anchor it in practice → optionally require the id and the question text only, or count a deck as present when all its ids are found.\n  N11 tests/unit/AC-01-02-6-content-is-data.test.js:42 — step 3 greps checks.ts for the literals 3+/4+/5+/3-plus. That evidences \"no category named\", not \"adding a question or category needs no screen change\", which no test can fully prove before a screen exists. It is acceptable per DEC-46, but the step-3 regex misses names like `threePlus` or \"4plus\" → low value; keep it, or drop it if it becomes a nuisance.\n  N12 docs/delivery/tests/AC-01-02-5-content-checks.md:33 — the step text says \"a doubled answer\", and the test models it as an array instead of a second string, which is a different failure. A single answer string such as \"a / b\" (two answers in one field) is not caught by any check → state in the doc that two answers in one field are caught only by review (the Q29 record), not by the suite.\nCRITERIA:\n  #1 met — AC-01-02-1 (50 questions, pl+en question and one string answer each); local run green, CI run pending on this head\n  #2 met — AC-01-02-2 and the same limits in checks.ts (100/60); local run green, CI run pending\n  #3 met — AC-01-02-3 (13/12/13/12); local run green, CI run pending\n  #4 met — record in the PR body and docs/delivery/content-checks/US-01-02-3-plus.md, enforced by AC-01-02-4 (the record is self-attested, see N1 on content quality)\n  #5 met — AC-01-02-5 (13 single breakages, duplicate id and category); see N7 and N9 on gaps\n  #6 met — AC-01-02-6 (every deck file is registered, no screen holds content, no category named in checks)\n  #7 met — AC-01-02-7 step 1 (unit) and step 2 (release APK bundle, 250 of 250); TC-01-02 offline playback is deferred to US-03-01 by DEC-44 and DEC-46, which is external evidence and not a finding\n```\n"
+}

@@ -1,0 +1,138 @@
+{
+  "story": "US-01-02",
+  "attempt": 1,
+  "round": 2,
+  "sha": "51d99c8b9a331a98a2a9c730065929682a2b58ef",
+  "reviewer": "spec",
+  "ts": "2026-10-14T13:55:32Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-01-02",
+    "impact": "checkDecks (src/content/checks.ts) is the shared gate for the 4+/5+ decks of US-01-03/04; its new cross-deck question-text check also rejects a text reused across categories, and a test whose decks share both texts and a category no longer proves the category check works (N1). The AC-01-02-4 record parser now reads 10 columns (pl+en) hard-wired to `| 3p-` rows, so later deck records must follow the same layout; scripts/test-acceptance.sh only had a case name renamed, while check-bundle-content.js (unchanged) already reads every deck JSON.",
+    "findings": [
+      {
+        "id": "B1",
+        "blocking": true,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:246 — 3p-21 \"What moves with you on the ground when the sun shines?\" / \"Co rusza się razem z tobą po ziemi, gdy świeci słońce?\": a child answers \"my feet\" / \"nogi\" (correct) and is told \"Your shadow\", yet docs/delivery/content-checks/US-01-02-3-plus.md:36 records One answer: pass (MOD-01-F14, criterion 4) → reword so only the shadow fits, e.g. \"What on the ground looks like you when the sun shines?\" / \"Co na ziemi wygląda jak ty, gdy świeci słońce?\", and update the record row"
+      },
+      {
+        "id": "B2",
+        "blocking": true,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:54 — 3p-05 \"What do you brush your teeth with?\" / \"Czym myjesz zęby?\": \"toothpaste\" / \"pastą\" is also correct, yet record line 20 marks One answer: pass (same defect as round-1 B1, missed in round 1) → e.g. \"What do we put toothpaste on to brush our teeth?\" / \"Na co nakładamy pastę, żeby umyć zęby?\" (or \"a toothbrush or a spoon?\"), and update the row"
+      },
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/unit/AC-01-02-5-content-checks.test.ts:90-92 — `other` repeats every question text, so checkDecks([threePlus, other]) returns 101 problems (100 repeated texts + 1 category); deleting the category check at checks.ts:80-82 would leave step 3 green → assert toContain('category 3+ appears in more than one deck') or give `other` distinct texts"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/checks.ts:86-92 — two questions missing the same language also yield `en question \"undefined\" appears more than once` (reproduced) → skip non-text values before `seen`"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:522 — 3p-44 \"What do we call the food we eat in the morning?\" invites \"cereal\"/\"płatki\"; the old \"Which meal…\" was less open → reconsider the wording or justify it in the record"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:294 — 3p-25 en \"very hot water\" vs pl \"gorącą wodą\" (just hot): small meaning drift against MOD-01-F07 → align the wording"
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:186,462 — 3p-16 (snow/hail also fall from clouds), 3p-39 (tights/rajstopy before shoes): weaker one-answer edges → tighten or accept explicitly"
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "PR #4 body — Changes and evidence #5 omit the new repeated-question-text check, the impact text still says \"English columns\", and the evidence cites only the local run → cite CI run 38573011198 (green on 51d99c8) and update the text (round-1 N9)"
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/checks.ts:21-23 — any non-empty category label passes (round-1 N5, not done)"
+      },
+      {
+        "id": "N8",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/checks.ts:30-58 — unknown keys pass, so a misspelt \"ilustration\" is dropped silently (round-1 N6, not done)"
+      },
+      {
+        "id": "N9",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/DECISIONS.md:570 — DEC-46 lists constitution.md under Affects but the constitution is unchanged (round-1 N8, not done)"
+      },
+      {
+        "id": "N10",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/unit/AC-01-02-4-age-suitability-record.test.js:19,42 — slice(2, 10) cuts off any extra column, so a row with a fifth check cell reading \"fail\" still passes step 3 → take cells.slice(2, -1) and require exactly 8 cells"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "unmet",
+        "note": "the record marks 3p-21 and 3p-05 \"One answer: pass\", but each has a second correct answer (my feet; toothpaste) — B1, B2"
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 6,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 7,
+        "verdict": "met",
+        "note": ""
+      }
+    ],
+    "stray": []
+  },
+  "raw": "**PR #4 / US-01-02, spec-compliance review round 2: NOT COMPLIANT. Two blocking items, both on the same rule as round-1 B1 (a question with more than one right answer).**\n\nRound-1 B1 (3p-40) is fixed. \"What do we blow out on a birthday cake?\" and \"Co zdmuchujemy na torcie urodzinowym?\" each have one answer, candles, and the record row matches the deck. Nothing in code or tests broke.\n\nThe blocking items:\n- **3p-21 (new wording):** \"What moves with you on the ground when the sun shines?\" can also be answered \"my feet\".\n- **3p-05 (unchanged since round 1, I missed it then):** \"What do you brush your teeth with?\" can also be answered \"toothpaste\".\n\nThe record marks \"One answer: pass\" for both, so criterion 4 / MOD-01-F14 is still not met.\n\n**CI on 51d99c8** (run 38573011198, \"Acceptance tests (Android 12 emulator)\"): **completed / success**. The og-test-results artifact holds:\n- **junit/unit.xml:** 51 tests, 0 failures.\n  - AC-01-02-1: 4 pass\n  - AC-01-02-2: 4 pass\n  - AC-01-02-3: 5 pass\n  - AC-01-02-4: 3 pass, including the new step 2 that compares Polish and English\n  - AC-01-02-5: 16 pass, including the new step 3 for a repeated question text\n  - AC-01-02-6: 3 pass\n  - AC-01-02-7: 1 pass\n- **junit/release.xml:** 7/7 pass, including the renamed \"AC-01-02-7 step 2 — the release APK's embedded JavaScript bundle holds every deck's questions and answers, in Polish and English\".\n- **Maestro:** TC-00-01, TC-00-03, TC-01-01 and AC-01-01-4 (release build, offline) pass.\n- **TC-01-02:** not in the run. DEC-44/46 defer it to US-03-01, so it is not a finding.\n\n**Local checks:**\n- **Run test-runs/2026-10-14_153132** (API 32): taken on 51d99c8 with a clean tree. `release/bundle-content.txt` reads \"3+: 250 of 250 texts found in the bundle\". 15 suites and 51 tests green.\n- **My own run on the head:** `jest tests/unit` gives 8 suites and 38 tests green. `tsc`, `lint` and `format:check` are clean.\n- **PR body vs record:** the record rows in the PR body are identical to `docs/delivery/content-checks/US-01-02-3-plus.md`.\n\n**I checked every reworded question against the four Q29 checks and MOD-01-F07 in both languages.** For each one the record row matches the deck.\n- **Clean:** 3p-01 lemon, 3p-20 lamp or pillow, 3p-29 (pl), 3p-34 (en, round-1 N4 done), 3p-37 pig, 3p-40, 3p-41 fridge, 3p-42 (pl), 3p-48 scarf (round-1 N1 done).\n- **Problems:** 3p-21 (B1); 3p-25, a small shift in meaning between the languages (N4); 3p-44, borderline (N3).\n- **Round-1 N3 and N10:** done.\n- **Round-1 N5, N6, N8, N9:** still open (listed below as N7–N10).\n\n## Criteria\n| # | Verdict | Evidence |\n|---|---|---|\n| 1 | MET | 50 questions with pl/en; AC-01-02-1 passes in CI |\n| 2 | MET | `src/content/checks.ts:43-57`; AC-01-02-2 passes in CI |\n| 3 | MET | 13/12/13/12 per kind; AC-01-02-3 passes in CI |\n| 4 | NOT MET | The record exists, is in the PR, compares both languages and passes in CI. But the 3p-21 and 3p-05 rows record a false \"One answer: pass\" (B1, B2). |\n| 5 | MET | `checkDecks(decks)` returns []. Each breakage fails, including the new repeated-text case. Caveat: N1. |\n| 6 | MET | AC-01-02-6 passes in CI; not touched in round 2 |\n| 7 | MET | AC-01-02-7 unit test, plus the release-bundle check passes in CI and locally (250/250). TC-01-02 is deferred (DEC-44/46). |\n\n## Covers\n- **F02–F05, F09–F12, F15:** MET, with the same evidence as criteria 1–3 and 5–7.\n- **F06:** MET.\n- **F07:** MET. The record now shows both languages, and AC-01-02-4 step 2 compares both; the only gap is a small wording difference in 3p-25 (N4).\n- **F14:** NOT MET (B1, B2).\n\n## Other checks\n- **Edge cases:** both are tested in AC-01-02-5 step 2 (counts above and below 50, a missing answer or question in either language, lengths over the limit).\n- **Out of scope:** no violations. Round 2 touches only the deck, the record, `checks.ts`, tests, the derived AC docs and one case name in `test-acceptance.sh`.\n- **Constitution:** no violations.\n\n## Findings\n- **B1 — `src/content/decks/3-plus.json:246` (3p-21); `docs/delivery/content-checks/US-01-02-3-plus.md:36`.**\n  - Scenario: \"What moves with you on the ground when the sun shines?\" / \"Co rusza się razem z tobą po ziemi, gdy świeci słońce?\" A child answers \"my feet\" / \"nogi\" (or shoes, or the dog) and is told the answer is \"Your shadow\". The record's own rule is that \"a child, or a parent reading it aloud, cannot give another correct one\", yet it marks One answer: pass.\n  - Fix: reword so only the shadow fits, e.g. en \"What on the ground looks like you when the sun shines?\" / pl \"Co na ziemi wygląda jak ty, gdy świeci słońce?\". Keep \"dark\" out (round-1 N2), then update the record row.\n- **B2 — `src/content/decks/3-plus.json:54` (3p-05); record line 20.**\n  - Scenario: \"What do you brush your teeth with?\" / \"Czym myjesz zęby?\" A child answers \"toothpaste\" / \"pastą\", which is correct, and is told it is \"A toothbrush\". The record marks One answer: pass. Same defect class as round-1 B1. It was already there in round 1 and I missed it.\n  - Fix: e.g. en \"What do we put toothpaste on to brush our teeth?\" / pl \"Na co nakładamy pastę, żeby umyć zęby?\", answer \"A toothbrush.\" / \"Na szczoteczkę.\". Or a choice: \"a toothbrush or a spoon\". Then update the row.\n- **N1 — `tests/unit/AC-01-02-5-content-checks.test.ts:90-92`: the duplicate-category case no longer tests the category check.**\n  - `other` is a copy with the same question texts. I ran `checkDecks([threePlus, other])` on scratch copies and it returns 101 problems: 100 repeated texts and 1 repeated category.\n  - So if the category check at `checks.ts:80-82` were deleted, step 3 would stay green. That gap is in the guard US-01-03/04 rely on.\n  - Fix: assert `toContain('category 3+ appears in more than one deck')`, or give `other` distinct texts.\n- **N2 — `src/content/checks.ts:86-92`:** when two questions lack the same language, it also reports `en question \"undefined\" appears more than once` (reproduced). This is noise on top of the real \"no en question\" problems. Fix: filter out non-text values before `seen`.\n- **N3 — `3-plus.json:522` (3p-44):** \"What do we call the food we eat in the morning?\" / \"Jak nazywamy jedzenie, które jemy rano?\" invites \"cereal\" / \"płatki\" / \"kanapki\". The old \"Which meal…\" was clearer. Borderline under the one-answer check; consider \"Jak nazywa się posiłek rano?\", or keep it and note why.\n- **N4 — `3-plus.json:294` (3p-25), MOD-01-F07:** en \"a pot of very hot water\" vs pl \"garnkiem z gorącą wodą\" (just \"hot\"). The meaning shifts slightly. Fix: drop \"very\", or write \"bardzo gorącą\".\n- **N5 — weaker one-answer edges (not changed in round 2):**\n  - `3-plus.json:186` (3p-16): water from the clouds could also be snow or hail.\n  - `3-plus.json:462` (3p-39): before shoes, a child could say tights / rajstopy.\n  - Consider tightening both, or accepting them explicitly.\n- **N6 — PR #4 body is stale:**\n  - \"Changes\" says \"unique ids and categories\", and evidence #5 says \"duplicate id/category caught\". Neither mentions the new repeated-question-text check.\n  - The impact text still says the record parser uses \"English columns\".\n  - The evidence table cites only the local run. It should cite CI run 38573011198 (green on 51d99c8). This carries round-1 N9.\n- **N7 — `src/content/checks.ts:21-23` (round-1 N5, still open):** any non-empty category label passes.\n- **N8 — `src/content/checks.ts:30-58` (round-1 N6, still open):** unknown keys pass, so a misspelt \"ilustration\" is dropped silently.\n- **N9 — `docs/specs/DECISIONS.md:570` (round-1 N8, still open):** DEC-46 lists `constitution.md` under Affects, but the constitution is unchanged.\n- **N10 — `tests/unit/AC-01-02-4-age-suitability-record.test.js:19,42`:** `slice(2, 10)` cuts off any extra column. A row with a fifth check cell reading `fail` would still pass step 3. Fix: take `cells.slice(2, -1)` and require exactly 8 cells.\n\nPaths:\n- /Users/sulo/workspace/knowledge-quiz/src/content/decks/3-plus.json\n- /Users/sulo/workspace/knowledge-quiz/docs/delivery/content-checks/US-01-02-3-plus.md\n- /Users/sulo/workspace/knowledge-quiz/src/content/checks.ts\n- /Users/sulo/workspace/knowledge-quiz/tests/unit/AC-01-02-5-content-checks.test.ts\n- /Users/sulo/workspace/knowledge-quiz/tests/unit/AC-01-02-4-age-suitability-record.test.js\n\n```\nREVIEW: findings\nSTORY: US-01-02\nIMPACT: checkDecks (src/content/checks.ts) is the shared gate for the 4+/5+ decks of US-01-03/04; its new cross-deck question-text check also rejects a text reused across categories, and a test whose decks share both texts and a category no longer proves the category check works (N1). The AC-01-02-4 record parser now reads 10 columns (pl+en) hard-wired to `| 3p-` rows, so later deck records must follow the same layout; scripts/test-acceptance.sh only had a case name renamed, while check-bundle-content.js (unchanged) already reads every deck JSON.\nFINDINGS:\n  B1 src/content/decks/3-plus.json:246 — 3p-21 \"What moves with you on the ground when the sun shines?\" / \"Co rusza się razem z tobą po ziemi, gdy świeci słońce?\": a child answers \"my feet\" / \"nogi\" (correct) and is told \"Your shadow\", yet docs/delivery/content-checks/US-01-02-3-plus.md:36 records One answer: pass (MOD-01-F14, criterion 4) → reword so only the shadow fits, e.g. \"What on the ground looks like you when the sun shines?\" / \"Co na ziemi wygląda jak ty, gdy świeci słońce?\", and update the record row\n  B2 src/content/decks/3-plus.json:54 — 3p-05 \"What do you brush your teeth with?\" / \"Czym myjesz zęby?\": \"toothpaste\" / \"pastą\" is also correct, yet record line 20 marks One answer: pass (same defect as round-1 B1, missed in round 1) → e.g. \"What do we put toothpaste on to brush our teeth?\" / \"Na co nakładamy pastę, żeby umyć zęby?\" (or \"a toothbrush or a spoon?\"), and update the row\n  N1 tests/unit/AC-01-02-5-content-checks.test.ts:90-92 — `other` repeats every question text, so checkDecks([threePlus, other]) returns 101 problems (100 repeated texts + 1 category); deleting the category check at checks.ts:80-82 would leave step 3 green → assert toContain('category 3+ appears in more than one deck') or give `other` distinct texts\n  N2 src/content/checks.ts:86-92 — two questions missing the same language also yield `en question \"undefined\" appears more than once` (reproduced) → skip non-text values before `seen`\n  N3 src/content/decks/3-plus.json:522 — 3p-44 \"What do we call the food we eat in the morning?\" invites \"cereal\"/\"płatki\"; the old \"Which meal…\" was less open → reconsider the wording or justify it in the record\n  N4 src/content/decks/3-plus.json:294 — 3p-25 en \"very hot water\" vs pl \"gorącą wodą\" (just hot): small meaning drift against MOD-01-F07 → align the wording\n  N5 src/content/decks/3-plus.json:186,462 — 3p-16 (snow/hail also fall from clouds), 3p-39 (tights/rajstopy before shoes): weaker one-answer edges → tighten or accept explicitly\n  N6 PR #4 body — Changes and evidence #5 omit the new repeated-question-text check, the impact text still says \"English columns\", and the evidence cites only the local run → cite CI run 38573011198 (green on 51d99c8) and update the text (round-1 N9)\n  N7 src/content/checks.ts:21-23 — any non-empty category label passes (round-1 N5, not done)\n  N8 src/content/checks.ts:30-58 — unknown keys pass, so a misspelt \"ilustration\" is dropped silently (round-1 N6, not done)\n  N9 docs/specs/DECISIONS.md:570 — DEC-46 lists constitution.md under Affects but the constitution is unchanged (round-1 N8, not done)\n  N10 tests/unit/AC-01-02-4-age-suitability-record.test.js:19,42 — slice(2, 10) cuts off any extra column, so a row with a fifth check cell reading \"fail\" still passes step 3 → take cells.slice(2, -1) and require exactly 8 cells\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 unmet — the record marks 3p-21 and 3p-05 \"One answer: pass\", but each has a second correct answer (my feet; toothpaste) — B1, B2\n  #5 met\n  #6 met\n  #7 met\n```\n"
+}

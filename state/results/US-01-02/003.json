@@ -1,0 +1,80 @@
+{
+  "n": 3,
+  "attempt": 1,
+  "ts": "2026-10-14T13:35:02Z",
+  "story": "US-01-02",
+  "mode": "fix",
+  "parsed": {
+    "result": "ready",
+    "story": "US-01-02",
+    "branch": "feature/US-01-02",
+    "commits": [
+      "9508bde test(content): record and compare the age check in both languages [US-01-02]",
+      "9bfaa40 fix(content): one answer only for the birthday cake and other doubtful 3+ rows [US-01-02]",
+      "30d30e2 feat(content): catch a question text used twice [US-01-02]",
+      "51d99c8 test(acceptance): name the bundle check for every deck [US-01-02]"
+    ],
+    "decisions": [],
+    "evidence": [
+      "#1 50 questions, one answer each, pl and en — AC-01-02-1 (tests/unit/AC-01-02-1-50-questions-one-answer.test.ts), all steps pass in junit/unit.xml",
+      "#2 question at most 100 / answer at most 60 characters — AC-01-02-2 (tests/unit/AC-01-02-2-length-limits.test.ts), pass",
+      "#3 each of the four kinds at least 5 times — AC-01-02-3 (tests/unit/AC-01-02-3-four-kinds.test.ts), pass (13/12/13/12)",
+      "#4 age-suitability check recorded — AC-01-02-4 (tests/unit/AC-01-02-4-age-suitability-record.test.js) compares every row of docs/delivery/content-checks/US-01-02-3-plus.md with the deck in pl and en; all four checks pass; 3p-40 is now \"What do we blow out on a birthday cake?\" / \"Co zdmuchujemy na torcie urodzinowym?\"",
+      "#5 content checks pass, each breakage fails the suite — AC-01-02-5 (tests/unit/AC-01-02-5-content-checks.test.ts), steps 1-4 pass, now including a duplicate question text",
+      "#6 a new question or category changes data only — AC-01-02-6 (tests/unit/AC-01-02-6-content-is-data.test.js), pass",
+      "#7 content ships inside the app — AC-01-02-7 step 1 (unit test) pass; step 2 in scripts/test-acceptance.sh pass (junit/release.xml; release/bundle-content.txt: \"3+: 250 of 250 texts found in the bundle\")"
+    ],
+    "tests": {
+      "run": "test-runs/2026-10-14_153132",
+      "pass": 4,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 0,
+      "manual_tests": [
+        "none"
+      ]
+    },
+    "derived_tests": [
+      "AC-01-02-1",
+      "AC-01-02-2",
+      "AC-01-02-3",
+      "AC-01-02-4",
+      "AC-01-02-5",
+      "AC-01-02-6",
+      "AC-01-02-7"
+    ],
+    "preexisting": "all seven criteria were implemented in round 0 (b9c3d38); this round only fixes the review findings",
+    "gates": [
+      "yarn tsc ok",
+      "yarn lint ok",
+      "yarn format:check ok",
+      "jest (51 tests) ok",
+      "yarn test:acceptance on emulator API 32 ok (exit 0)",
+      "pre-commit hook ok on each commit"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "findings": [
+      "B1 fixed 9bfaa40",
+      "criterion #4 unmet fixed 9bfaa40 (with 9508bde)",
+      "re-check of doubtful rows fixed 9bfaa40 (3p-01, 3p-20, 3p-21, 3p-25, 3p-29 pl, 3p-34 en, 3p-37, 3p-41, 3p-42 pl, 3p-44, 3p-48 changed",
+      "3p-02 \"Dwoje.\" kept, it is the correct Polish for eyes)",
+      "spec N3 fixed 9508bde",
+      "code N7 fixed 30d30e2",
+      "spec N10 fixed 51d99c8",
+      "spec N5, N6, N8, N9 and code N8-N12 not done, as the brief says"
+    ],
+    "notes": "the PR description should be refreshed from docs/delivery/content-checks/US-01-02-3-plus.md, which now has Question (pl) and Answer (pl) columns and the reworded rows (DEC-46).",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [],
+      "blocked": []
+    },
+    "critical_decisions": []
+  },
+  "raw": "Fix round 1 for US-01-02 is finished. The blocking finding B1 is fixed, and so are N3, N7, N10 and the content re-check. I made 4 commits on feature/US-01-02 and did not push. All gates pass. The whole acceptance suite ran on the new head 51d99c8 with a clean tree, on an Android API 32 emulator (the Medium_Phone AVD) that I started and then stopped myself.\n\nRows I reworded after the re-check (in 9bfaa40), and why:\n- 3p-01: lemon instead of \"ripe banana\", because \"ripe\"/\"dojrzały\" is not a 3-year-old's word.\n- 3p-20: \"a lamp or a pillow?\" with the answer \"A lamp.\", so torch or lamp no longer competes with \"light\".\n- 3p-21: \"What moves with you on the ground when the sun shines?\", which drops the slightly spooky \"dark shape\".\n- 3p-25: \"pot of very hot water\", which drops \"boils\".\n- 3p-29: Polish is now \"Co słodkiego robią pszczoły?\", which drops \"przysmak\".\n- 3p-34: English drops \"horse-like\".\n- 3p-37: now the pig (\"oink\" / \"chrum chrum\"), so \"Green\" is no longer used twice.\n- 3p-41: milk in the fridge (\"W lodówce\") instead of \"zamrażarce\".\n- 3p-42: Polish no longer has the awkward \"to\".\n- 3p-44: \"the food we eat in the morning\", which drops \"meal\"/\"posiłek\" and the circular wording.\n- 3p-48: scarf around the neck, so gloves versus mittens no longer matters.\n\nI left 3p-02 \"Dwoje.\" as it is: \"dwoje oczu\" is the correct Polish for eyes.\n\nThe deck still has 50 questions. The longest question is 78 characters (en) and 77 (pl), the longest answer 20 (en) and 26 (pl). Each kind appears at least 12 times (13/12/13/12), and no question text repeats.\n\n```\nRESULT: ready\nSTORY: US-01-02\nBRANCH: feature/US-01-02\nCOMMITS: 9508bde test(content): record and compare the age check in both languages [US-01-02]; 9bfaa40 fix(content): one answer only for the birthday cake and other doubtful 3+ rows [US-01-02]; 30d30e2 feat(content): catch a question text used twice [US-01-02]; 51d99c8 test(acceptance): name the bundle check for every deck [US-01-02]\nDECISIONS: none\nEVIDENCE:\n  #1 50 questions, one answer each, pl and en — AC-01-02-1 (tests/unit/AC-01-02-1-50-questions-one-answer.test.ts), all steps pass in junit/unit.xml\n  #2 question at most 100 / answer at most 60 characters — AC-01-02-2 (tests/unit/AC-01-02-2-length-limits.test.ts), pass\n  #3 each of the four kinds at least 5 times — AC-01-02-3 (tests/unit/AC-01-02-3-four-kinds.test.ts), pass (13/12/13/12)\n  #4 age-suitability check recorded — AC-01-02-4 (tests/unit/AC-01-02-4-age-suitability-record.test.js) compares every row of docs/delivery/content-checks/US-01-02-3-plus.md with the deck in pl and en; all four checks pass; 3p-40 is now \"What do we blow out on a birthday cake?\" / \"Co zdmuchujemy na torcie urodzinowym?\"\n  #5 content checks pass, each breakage fails the suite — AC-01-02-5 (tests/unit/AC-01-02-5-content-checks.test.ts), steps 1-4 pass, now including a duplicate question text\n  #6 a new question or category changes data only — AC-01-02-6 (tests/unit/AC-01-02-6-content-is-data.test.js), pass\n  #7 content ships inside the app — AC-01-02-7 step 1 (unit test) pass; step 2 in scripts/test-acceptance.sh pass (junit/release.xml; release/bundle-content.txt: \"3+: 250 of 250 texts found in the bundle\")\nTESTS: run=test-runs/2026-10-14_153132 pass=4 fail=0 blocked=0 manual=0 manual_tests=none\nDERIVED_TESTS: AC-01-02-1; AC-01-02-2; AC-01-02-3; AC-01-02-4; AC-01-02-5; AC-01-02-6; AC-01-02-7\nPREEXISTING: all seven criteria were implemented in round 0 (b9c3d38); this round only fixes the review findings\nGATES: yarn tsc ok; yarn lint ok; yarn format:check ok; jest (51 tests) ok; yarn test:acceptance on emulator API 32 ok (exit 0); pre-commit hook ok on each commit\nENV_KEYS: none\nMIGRATION: no\nFINDINGS: B1 fixed 9bfaa40; criterion #4 unmet fixed 9bfaa40 (with 9508bde); re-check of doubtful rows fixed 9bfaa40 (3p-01, 3p-20, 3p-21, 3p-25, 3p-29 pl, 3p-34 en, 3p-37, 3p-41, 3p-42 pl, 3p-44, 3p-48 changed; 3p-02 \"Dwoje.\" kept, it is the correct Polish for eyes); spec N3 fixed 9508bde; code N7 fixed 30d30e2; spec N10 fixed 51d99c8; spec N5, N6, N8, N9 and code N8-N12 not done, as the brief says\nNOTES: run.json shows pass=4 skipped=8 (same as round 1): the local collector reads only Maestro output, so the seven Jest-run AC-01-02 tests appear as skipped there. Their real results are in the run's junit/unit.xml (51/51 pass, 36 AC-01-02 cases) and junit/release.xml (7/7 pass), and CI's JUnit is the evidence for this run (tests.evidence: ci).\nNOTES: the PR description should be refreshed from docs/delivery/content-checks/US-01-02-3-plus.md, which now has Question (pl) and Answer (pl) columns and the reworded rows (DEC-46).\n```\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}
