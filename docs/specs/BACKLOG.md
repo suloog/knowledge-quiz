@@ -45,7 +45,7 @@ A module counts as **sliced** once part 1 of its `COVERAGE.md` has no empty rows
 | `US-01-01` | Parent can install the app on the Kompakt and open it | F01, NFR-05, NFR-06, NFR-10, NFR-12, NFR-13 | must | done | — | — |
 | `US-01-02` | Parent can rely on a full 3+ deck in Polish and English | F02, F03, F04, F05, F06, F07, F09, F10, F11, F12, F14, F15 | must | done | `US-01-01` | — |
 | `US-01-03` | Parent can rely on a full 4+ deck in Polish and English | F02, F03, F04, F05, F06, F07, F11, F12, F14, F15 | must | done | `US-01-02` | — |
-| `US-01-04` | Parent can rely on a full 5+ deck in Polish and English | F02, F03, F04, F05, F06, F07, F11, F12, F14, F15 | must | in-progress | `US-01-02` | — |
+| `US-01-04` | Parent can rely on a full 5+ deck in Polish and English | F02, F03, F04, F05, F06, F07, F11, F12, F14, F15 | must | done | `US-01-02` | — |
 
 ## [MOD-02] Age categories
 
