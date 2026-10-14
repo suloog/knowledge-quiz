@@ -39,20 +39,30 @@ describe('AC-01-01-5 The release APK is signed with a key kept outside the repos
     expect(releaseBuildType).not.toContain('signingConfigs.debug');
   });
 
-  it('step 2 — the key comes from KQ_UPLOAD_* Gradle properties or the environment, not from the repository', () => {
+  it('step 2 — the key comes from KQ_UPLOAD_* environment variables or Gradle properties, the environment first, not from the repository', () => {
     expect(UPLOAD_KEYS).toEqual([
       'KQ_UPLOAD_STORE_FILE',
       'KQ_UPLOAD_STORE_PASSWORD',
       'KQ_UPLOAD_KEY_ALIAS',
       'KQ_UPLOAD_KEY_PASSWORD',
     ]);
-    expect(gradle).toContain(
-      'def kqUpload = { String name -> findProperty(name) ?: System.getenv(name) }',
-    );
     UPLOAD_KEYS.forEach(key =>
       expect(releaseSigning).toContain(`kqUpload('${key}')`),
     );
     expect(releaseSigning).not.toMatch(/keystore|android'/);
+
+    // DEC-45: a key passed in through the environment wins over the Gradle property.
+    // Every KQ_UPLOAD_* value is read through kqUpload, and kqUpload asks the environment before
+    // the Gradle properties, so the acceptance run's throwaway key is used even when the upload
+    // key is set in ~/.gradle/gradle.properties.
+    const lookup = gradle.match(/def kqUpload = \{ String name -> (.*) \}/)[1];
+    const lookups = lookup.split('?:').map(part => part.trim());
+    expect(lookups).toEqual(['System.getenv(name)', 'findProperty(name)']);
+    // No KQ_UPLOAD_* value is read past kqUpload.
+    expect(gradle).not.toMatch(
+      /(findProperty|getenv|property|hasProperty)\(\s*['"]KQ_UPLOAD_/,
+    );
+    expect(gradle).not.toMatch(/\bKQ_UPLOAD_\w+\b(?!['"])/);
   });
 
   it('step 3 — a release build without the key fails and names what is missing', () => {

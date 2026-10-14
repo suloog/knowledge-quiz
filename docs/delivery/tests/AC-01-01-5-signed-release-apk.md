@@ -41,7 +41,7 @@ depends_on: [] # test case IDs that must pass first
 | # | Action | Expected result | Evidence |
 | - | ------ | --------------- | -------- |
 | 1 | Generate the app's build configuration and read the release build type | It is signed with the release signing configuration, not the debug key | console |
-| 2 | Read the release signing configuration | The keystore, alias and passwords come from the `KQ_UPLOAD_*` Gradle properties or environment variables, nothing from the repository | console |
+| 2 | Read the release signing configuration | The keystore, alias and passwords come from the `KQ_UPLOAD_*` environment variables or Gradle properties, an environment variable winning over the property of the same name (`DEC-45`), nothing from the repository | console |
 | 3 | Read what a release build does when those properties are missing | It fails and names the missing properties | console |
 | 4 | Build the release APK with a throwaway key passed only through the `KQ_UPLOAD_*` environment variables | The build succeeds and writes `app-release.apk` | console (`release-build.log`) |
 | 5 | Verify the APK's signature with `apksigner verify --print-certs` | It verifies, and its certificate is the throwaway key's, not the debug key's | console (`release/apksigner.txt`) |

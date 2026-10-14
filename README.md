@@ -52,7 +52,8 @@ reports as the artifact `og-test-results`; a new test needs no change to the wor
 
 The APK installed on the Kompakt (`NFR-13`) is the release build, signed with the upload key Maciej
 keeps outside the repository (`NFR-06`, `DEC-09`, `DEC-44`). The build reads the key from four
-Gradle properties — in `~/.gradle/gradle.properties` or as environment variables of the same names:
+Gradle properties — in `~/.gradle/gradle.properties` or as environment variables of the same names;
+an environment variable wins over the Gradle property (`DEC-45`):
 
 | Property | What |
 | --- | --- |

@@ -1,6 +1,8 @@
 // The release APK is signed with the upload key Maciej keeps outside the repository (NFR-06,
 // DEC-09, DEC-44). The keystore path, alias and passwords come from Gradle properties — set in
-// ~/.gradle/gradle.properties or as environment variables of the same names. A release build
+// ~/.gradle/gradle.properties or as environment variables of the same names. An environment
+// variable wins over the property (DEC-45): a key passed in for one build — the acceptance run's
+// throwaway key — is never replaced by the upload key set in gradle.properties. A release build
 // without them fails; it is never signed with the debug key.
 const { withAppBuildGradle } = require('expo/config-plugins');
 
@@ -13,7 +15,8 @@ const UPLOAD_KEYS = [
 
 const SETUP = [
   '// Release signing (NFR-06, DEC-44): the upload key stays outside the repository.',
-  'def kqUpload = { String name -> findProperty(name) ?: System.getenv(name) }',
+  '// The environment first: a key passed in for one build beats the one in gradle.properties (DEC-45).',
+  'def kqUpload = { String name -> System.getenv(name) ?: findProperty(name) }',
   `def kqUploadKeys = [${UPLOAD_KEYS.map(key => `'${key}'`).join(', ')}]`,
   'gradle.taskGraph.whenReady { graph ->',
   '    def missing = kqUploadKeys.findAll { !kqUpload(it) }',

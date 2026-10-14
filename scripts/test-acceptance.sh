@@ -4,7 +4,8 @@
 #   yarn test:acceptance
 #
 # 1. the release APK: built and signed with a throwaway key generated for this run and passed
-#    through the KQ_UPLOAD_* variables (the real upload key stays with Maciej, DEC-09, DEC-44),
+#    through the KQ_UPLOAD_* variables, which win over the Gradle properties of the same names
+#    (DEC-45) — the real upload key stays with Maciej (DEC-09, DEC-44),
 #    then checked with apksigner and aapt (AC-01-01-5, AC-01-01-3);
 # 2. the Maestro flows against the app started with the documented start command (`yarn stack` =
 #    `bash scripts/stack.sh`, which also installs the dependencies on a fresh clone) — the debug
