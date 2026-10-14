@@ -20,7 +20,7 @@ Per-project engineering law. Every module, user story and PR must satisfy this d
 ## Architecture principles
 
 - **Content is data.** Categories, questions, answers and illustrations live in versioned data files in the repository, validated by a schema test; screens never hard-code content.
-- **No network.** No HTTP or analytics libraries; the Android `INTERNET` permission is removed from the manifest.
+- **No network.** No HTTP or analytics libraries; the Android `INTERNET` permission (with the other network permissions) is removed from the release build's manifest — the debug build keeps it to load its code from Metro (`DEC-44`).
 - **E-ink rendering.** Colours only from theme tokens (#000, #FFF); animations and navigation transitions disabled globally; a test or lint check forbids any other colour.
 - **One persistence module** holds the last category, each category's deck order and position, and the language; the app starts cleanly when storage is empty or corrupt.
 - **i18n everywhere.** Every user-facing string goes through i18n (pl, en) — no literal strings in components; content carries both languages per question.

@@ -1,7 +1,7 @@
 const appConfig = require('../../app.json');
 const { setMinSdk, MIN_SDK_VERSION } = require('../withMinSdk');
 
-describe('withMinSdk', () => {
+describe('AC-01-01-1 withMinSdk — the Android version the app is built for', () => {
   it('makes Android 12 (API 31) the oldest Android the app installs on', () => {
     expect(MIN_SDK_VERSION).toBe(31);
     expect(

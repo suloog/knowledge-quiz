@@ -23,17 +23,20 @@ describe('AC-01-01-3 The release build asks for no network permission', () => {
     expect(appConfig.expo.plugins).toContain('./plugins/withReleaseNoNetwork');
 
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'kq-android-'));
-    const config = withReleaseNoNetwork({ name: 'kq', slug: 'kq' });
-    await config.mods.android.dangerous({
-      modRequest: { platformProjectRoot: root },
-    });
+    try {
+      const config = withReleaseNoNetwork({ name: 'kq', slug: 'kq' });
+      await config.mods.android.dangerous({
+        modRequest: { platformProjectRoot: root },
+      });
 
-    expect(
-      fs.readFileSync(
-        path.join(root, 'app', 'src', 'release', 'AndroidManifest.xml'),
-        'utf8',
-      ),
-    ).toBe(releaseManifest());
-    fs.rmSync(root, { recursive: true, force: true });
+      expect(
+        fs.readFileSync(
+          path.join(root, 'app', 'src', 'release', 'AndroidManifest.xml'),
+          'utf8',
+        ),
+      ).toBe(releaseManifest());
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
   });
 });
