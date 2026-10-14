@@ -25,7 +25,7 @@
 #   junit/release.xml            — the release APK's checks (steps 1 and 3)
 #   junit/screen.xml             — TC-02-02 step 2, the category entries' width (step 2)
 #   junit/screen-colours.xml     — AC-02-01-4 step 4, the category screen's pixels (step 2);
-#                                  skipped when the device draws one colour only (no GPU)
+#                                  skipped when the device draws one colour only (nothing rendered)
 #   maestro/report.xml           — Maestro on the debug build (TC-00-01), evidence under maestro/
 #   maestro/report-release.xml   — Maestro on the release build (all other flows), evidence under
 #                                  maestro/release/
@@ -46,18 +46,18 @@ OUT="$(cd "$OUT" && pwd)"
 
 APP_ID="$(node -p "require('./app.json').expo.android.package")"
 CONTENT_TITLE="$(node -p "require('./src/content/app.json').title")"
-# TC-02-01, TC-02-02: the labels of every shipped deck, youngest first by the same rule as
-# src/content/index.ts (a label without a leading age last), as Maestro patterns (3\+) —
-# CATEGORIES, comma-separated — and how many (CATEGORY_COUNT); 3+ alone until US-01-03 and US-01-04
-# ship 4+ and 5+ (DEC-48).
+# TC-02-01, TC-02-02: the categories expected on screen, in order — the labels MOD-02-F02 names,
+# literally "3+", "4+", "5+" (DEC-48), then any other label the shipped decks hold, by its leading
+# age — as Maestro patterns (3\+), comma-separated (CATEGORIES), and how many (CATEGORY_COUNT).
 CATEGORY_ARGS=()
 while read -r arg; do CATEGORY_ARGS+=(-e "$arg"); done < <(node -e '
   const fs = require("fs");
   const dir = "src/content/decks";
+  const known = ["3+", "4+", "5+"];
   const age = c => { const n = Number.parseInt(c, 10); return Number.isNaN(n) ? Number.MAX_SAFE_INTEGER : n; };
-  const expected = fs.readdirSync(dir).filter(f => f.endsWith(".json")).sort()
-    .map(f => JSON.parse(fs.readFileSync(`${dir}/${f}`, "utf8")).category)
-    .sort((a, b) => age(a) - age(b));
+  const shipped = fs.readdirSync(dir).filter(f => f.endsWith(".json")).sort()
+    .map(f => JSON.parse(fs.readFileSync(`${dir}/${f}`, "utf8")).category);
+  const expected = [...known, ...shipped.filter(c => !known.includes(c)).sort((a, b) => age(a) - age(b))];
   console.log(`CATEGORIES=${expected.map(c => c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join(",")}`);
   console.log(`CATEGORY_COUNT=${expected.length}`);
 ')
@@ -258,7 +258,7 @@ else
     fi
 
     # TC-02-02 step 2: each category entry's bounds, from the accessibility layer, against the
-    # screen's width (the override if one is set) — a width Maestro cannot select by (DEC-48).
+    # screen's width (the override if one is set) — a width Maestro cannot select by.
     say "TC-02-02 step 2: the category entries' width"
     screen_width="$("$ADB" shell wm size | tr -d '\r' | awk -F'[ x]' '/^Physical size/ { p = $3 } /^Override size/ { o = $3 } END { print o ? o : p }')"
     "$ADB" shell am force-stop "$APP_ID" >/dev/null 2>&1
