@@ -3,7 +3,7 @@ id: US-00-01 # the foundation story — module 00 is the delivery loop's own; an
 module: MOD-00
 covers: [] # no client requirement: this is the ground every story that delivers one stands on
 ticket:
-status: ready # draft | ready | in-progress | review | done | blocked
+status: in-progress # draft | ready | in-progress | review | done | blocked
 priority: must
 depends_on: []
 ---
@@ -20,7 +20,7 @@ depends_on: []
 | **Module** | `[MOD-00]` Foundation — the delivery loop's own module: no `REQUIREMENTS.md`, no row in `BACKLOG.md` |
 | **Covers** | — *(no client requirement; what every other story needs before it can be built and verified)* |
 | **Priority** | must |
-| **Status** | ready |
+| **Status** | in-progress |
 | **Depends on** | — |
 | **YouTrack** | — |
 | **Open questions** | — |
