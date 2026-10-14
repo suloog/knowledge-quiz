@@ -1,0 +1,606 @@
+{
+  "schemaVersion": 1,
+  "category": "5+",
+  "questions": [
+    {
+      "id": "5p-01",
+      "kind": "educational",
+      "pl": {
+        "question": "Ile miesięcy ma jeden rok?",
+        "answer": "Dwanaście."
+      },
+      "en": {
+        "question": "How many months are there in one year?",
+        "answer": "Twelve."
+      }
+    },
+    {
+      "id": "5p-02",
+      "kind": "educational",
+      "pl": {
+        "question": "Ile godzin mają razem jeden dzień i jedna noc?",
+        "answer": "Dwadzieścia cztery."
+      },
+      "en": {
+        "question": "How many hours are there in one day and one night together?",
+        "answer": "Twenty-four."
+      }
+    },
+    {
+      "id": "5p-03",
+      "kind": "educational",
+      "pl": {
+        "question": "Ile minut ma jedna godzina?",
+        "answer": "Sześćdziesiąt."
+      },
+      "en": {
+        "question": "How many minutes are there in one hour?",
+        "answer": "Sixty."
+      }
+    },
+    {
+      "id": "5p-04",
+      "kind": "educational",
+      "pl": {
+        "question": "Jaki miesiąc jest pierwszy w roku?",
+        "answer": "Styczeń."
+      },
+      "en": {
+        "question": "Which month is the first of the year?",
+        "answer": "January."
+      }
+    },
+    {
+      "id": "5p-05",
+      "kind": "educational",
+      "pl": {
+        "question": "Ile dni mają razem dwa tygodnie?",
+        "answer": "Czternaście."
+      },
+      "en": {
+        "question": "How many days are there in two weeks together?",
+        "answer": "Fourteen."
+      }
+    },
+    {
+      "id": "5p-06",
+      "kind": "educational",
+      "pl": {
+        "question": "Ile to jest dziewięć i jeszcze cztery?",
+        "answer": "Trzynaście."
+      },
+      "en": {
+        "question": "What is nine and four more?",
+        "answer": "Thirteen."
+      }
+    },
+    {
+      "id": "5p-07",
+      "kind": "educational",
+      "pl": {
+        "question": "Jaka liczba jest między czternastką a szesnastką, gdy liczymy po kolei?",
+        "answer": "Piętnaście."
+      },
+      "en": {
+        "question": "Which number comes between fourteen and sixteen when we count in order?",
+        "answer": "Fifteen."
+      }
+    },
+    {
+      "id": "5p-08",
+      "kind": "educational",
+      "pl": {
+        "question": "Która jest godzina, gdy duża wskazówka zegara pokazuje 12, a mała 3?",
+        "answer": "Trzecia."
+      },
+      "en": {
+        "question": "What time is it when the big hand of a clock points to 12 and the small one to 3?",
+        "answer": "Three o'clock."
+      }
+    },
+    {
+      "id": "5p-09",
+      "kind": "educational",
+      "pl": {
+        "question": "Jakie słowo znaczy odwrotnie niż „zawsze”?",
+        "answer": "Nigdy."
+      },
+      "en": {
+        "question": "What word means the opposite of \"always\"?",
+        "answer": "Never."
+      }
+    },
+    {
+      "id": "5p-10",
+      "kind": "educational",
+      "pl": {
+        "question": "Ile to jest dziesięć i jeszcze dziesięć?",
+        "answer": "Dwadzieścia."
+      },
+      "en": {
+        "question": "What is ten and ten more?",
+        "answer": "Twenty."
+      }
+    },
+    {
+      "id": "5p-11",
+      "kind": "educational",
+      "pl": {
+        "question": "Jak nazywamy siostrę naszej mamy?",
+        "answer": "Ciocia."
+      },
+      "en": {
+        "question": "What do we call our mum's sister?",
+        "answer": "Our aunt."
+      }
+    },
+    {
+      "id": "5p-12",
+      "kind": "educational",
+      "pl": {
+        "question": "Jak nazywamy dzień, który był dwa dni przed dzisiejszym?",
+        "answer": "Przedwczoraj."
+      },
+      "en": {
+        "question": "What do we call the day that was two days before today?",
+        "answer": "The day before yesterday."
+      }
+    },
+    {
+      "id": "5p-13",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Która planeta krążąca wokół Słońca jest największa?",
+        "answer": "Jowisz."
+      },
+      "en": {
+        "question": "Which planet that goes round the Sun is the biggest?",
+        "answer": "Jupiter."
+      }
+    },
+    {
+      "id": "5p-14",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Która planeta ma największe i najjaśniejsze pierścienie?",
+        "answer": "Saturn."
+      },
+      "en": {
+        "question": "Which planet has the biggest and brightest rings?",
+        "answer": "Saturn."
+      }
+    },
+    {
+      "id": "5p-15",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Którą planetę nazywamy Czerwoną Planetą?",
+        "answer": "Marsa."
+      },
+      "en": {
+        "question": "Which planet do we call the Red Planet?",
+        "answer": "Mars."
+      }
+    },
+    {
+      "id": "5p-16",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Jak nazywamy wszystkie kości naszego ciała razem?",
+        "answer": "Szkielet."
+      },
+      "en": {
+        "question": "What do we call all the bones of our body together?",
+        "answer": "The skeleton."
+      }
+    },
+    {
+      "id": "5p-17",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Co w naszej klatce piersiowej napełnia się powietrzem, gdy robimy wdech?",
+        "answer": "Płuca."
+      },
+      "en": {
+        "question": "What inside our chest fills with air when we breathe in?",
+        "answer": "The lungs."
+      }
+    },
+    {
+      "id": "5p-18",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Jakie urządzenie z igłą pokazuje nam, gdzie jest północ?",
+        "answer": "Kompas."
+      },
+      "en": {
+        "question": "What tool with a needle shows us which way is north?",
+        "answer": "A compass."
+      }
+    },
+    {
+      "id": "5p-19",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Po której stronie świata Słońce wschodzi rano?",
+        "answer": "Na wschodzie."
+      },
+      "en": {
+        "question": "In which direction does the Sun rise in the morning?",
+        "answer": "In the east."
+      }
+    },
+    {
+      "id": "5p-20",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Jak nazywamy nasz głos, który wraca do nas, gdy krzykniemy w górach?",
+        "answer": "Echo."
+      },
+      "en": {
+        "question": "What do we call our own voice coming back to us when we shout in the mountains?",
+        "answer": "An echo."
+      }
+    },
+    {
+      "id": "5p-21",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Jak nazywamy górę, z której może wypływać gorąca lawa?",
+        "answer": "Wulkan."
+      },
+      "en": {
+        "question": "What do we call a mountain that hot lava can pour out of?",
+        "answer": "A volcano."
+      }
+    },
+    {
+      "id": "5p-22",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Jak nazywamy naukowca, który bada gwiazdy i planety?",
+        "answer": "Astronom."
+      },
+      "en": {
+        "question": "What do we call a scientist who studies the stars and planets?",
+        "answer": "An astronomer."
+      }
+    },
+    {
+      "id": "5p-23",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Jak nazywamy okrągły model Ziemi, który obraca się na podstawce?",
+        "answer": "Globus."
+      },
+      "en": {
+        "question": "What do we call the round model of the Earth that spins on a stand?",
+        "answer": "A globe."
+      }
+    },
+    {
+      "id": "5p-24",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Jak nazywamy siłę, która przyciąga wszystko w dół, do Ziemi?",
+        "answer": "Grawitacja."
+      },
+      "en": {
+        "question": "What do we call the force that pulls everything down towards the Earth?",
+        "answer": "Gravity."
+      }
+    },
+    {
+      "id": "5p-25",
+      "kind": "popular-science",
+      "pl": {
+        "question": "Jak nazywamy książkę, w której są same mapy?",
+        "answer": "Atlas."
+      },
+      "en": {
+        "question": "What do we call a book that is full of maps?",
+        "answer": "An atlas."
+      }
+    },
+    {
+      "id": "5p-26",
+      "kind": "nature",
+      "pl": {
+        "question": "Jak nazywamy małe żabki z ogonkami, które pływają w stawie?",
+        "answer": "Kijanki."
+      },
+      "en": {
+        "question": "What do we call baby frogs with tails that swim in a pond?",
+        "answer": "Tadpoles."
+      }
+    },
+    {
+      "id": "5p-27",
+      "kind": "nature",
+      "pl": {
+        "question": "Który ptak poluje nocą i potrafi obrócić głowę prawie dookoła?",
+        "answer": "Sowa."
+      },
+      "en": {
+        "question": "Which bird hunts at night and can turn its head almost all the way round?",
+        "answer": "An owl."
+      }
+    },
+    {
+      "id": "5p-28",
+      "kind": "nature",
+      "pl": {
+        "question": "Która jaszczurka potrafi zmieniać kolor i ruszać każdym okiem osobno?",
+        "answer": "Kameleon."
+      },
+      "en": {
+        "question": "Which lizard can change its colour and move each of its eyes on its own?",
+        "answer": "A chameleon."
+      }
+    },
+    {
+      "id": "5p-29",
+      "kind": "nature",
+      "pl": {
+        "question": "Które zwierzę biega najszybciej na lądzie?",
+        "answer": "Gepard."
+      },
+      "en": {
+        "question": "Which animal is the fastest runner on land?",
+        "answer": "The cheetah."
+      }
+    },
+    {
+      "id": "5p-30",
+      "kind": "nature",
+      "pl": {
+        "question": "Gdzie wielbłąd ma zapas tłuszczu na długie wędrówki po pustyni?",
+        "answer": "W garbie."
+      },
+      "en": {
+        "question": "Where does a camel keep a store of fat for long walks in the desert?",
+        "answer": "In its hump."
+      }
+    },
+    {
+      "id": "5p-31",
+      "kind": "nature",
+      "pl": {
+        "question": "Jak nazywamy zwierzę, które je tylko rośliny?",
+        "answer": "Roślinożerca."
+      },
+      "en": {
+        "question": "What do we call an animal that eats only plants?",
+        "answer": "A herbivore."
+      }
+    },
+    {
+      "id": "5p-32",
+      "kind": "nature",
+      "pl": {
+        "question": "Jaki słodki sok zbierają pszczoły z kwiatów, żeby zrobić miód?",
+        "answer": "Nektar."
+      },
+      "en": {
+        "question": "What sweet juice do bees collect from flowers to make honey?",
+        "answer": "Nectar."
+      }
+    },
+    {
+      "id": "5p-33",
+      "kind": "nature",
+      "pl": {
+        "question": "Co możemy policzyć po kółkach w ściętym pniu drzewa?",
+        "answer": "Ile lat ma drzewo."
+      },
+      "en": {
+        "question": "What can we count from the rings in a cut tree trunk?",
+        "answer": "How many years old the tree is."
+      }
+    },
+    {
+      "id": "5p-34",
+      "kind": "nature",
+      "pl": {
+        "question": "Które zwierzę lata nocą i śpi, wisząc głową w dół?",
+        "answer": "Nietoperz."
+      },
+      "en": {
+        "question": "Which animal flies at night and sleeps hanging upside down?",
+        "answer": "A bat."
+      }
+    },
+    {
+      "id": "5p-35",
+      "kind": "nature",
+      "pl": {
+        "question": "Który duży ptak nie umie latać, ale bardzo szybko biega po Afryce?",
+        "answer": "Struś."
+      },
+      "en": {
+        "question": "Which big bird cannot fly but runs very fast in Africa?",
+        "answer": "An ostrich."
+      }
+    },
+    {
+      "id": "5p-36",
+      "kind": "nature",
+      "pl": {
+        "question": "Jakie jest największe zwierzę, które skacze i nosi dziecko w torbie?",
+        "answer": "Kangur."
+      },
+      "en": {
+        "question": "What is the biggest animal that hops and carries its baby in a pouch?",
+        "answer": "The kangaroo."
+      }
+    },
+    {
+      "id": "5p-37",
+      "kind": "nature",
+      "pl": {
+        "question": "Które zwierzę buduje na rzekach tamy z gałęzi?",
+        "answer": "Bóbr."
+      },
+      "en": {
+        "question": "Which animal builds dams across rivers out of branches?",
+        "answer": "A beaver."
+      }
+    },
+    {
+      "id": "5p-38",
+      "kind": "nature",
+      "pl": {
+        "question": "Jak nazywamy spiczasty kawałek lodu, który zimą zwisa z dachu?",
+        "answer": "Sopel."
+      },
+      "en": {
+        "question": "What do we call the pointed piece of ice that hangs from a roof in winter?",
+        "answer": "An icicle."
+      }
+    },
+    {
+      "id": "5p-39",
+      "kind": "trivia",
+      "pl": {
+        "question": "Jakie miasto jest stolicą Polski?",
+        "answer": "Warszawa."
+      },
+      "en": {
+        "question": "Which city is the capital of Poland?",
+        "answer": "Warsaw."
+      }
+    },
+    {
+      "id": "5p-40",
+      "kind": "trivia",
+      "pl": {
+        "question": "Ilu piłkarzy jednej drużyny gra na boisku w meczu dorosłych, licząc bramkarza?",
+        "answer": "Jedenastu."
+      },
+      "en": {
+        "question": "How many players of one team are on the pitch in a grown-up football match, counting the goalkeeper?",
+        "answer": "Eleven."
+      }
+    },
+    {
+      "id": "5p-41",
+      "kind": "trivia",
+      "pl": {
+        "question": "Jak nazywamy osobę, której pracą jest pisanie książek?",
+        "answer": "Pisarz."
+      },
+      "en": {
+        "question": "What do we call a person whose job is writing books?",
+        "answer": "A writer."
+      }
+    },
+    {
+      "id": "5p-42",
+      "kind": "trivia",
+      "pl": {
+        "question": "W jakim kraju jest Paryż z wieżą Eiffla?",
+        "answer": "We Francji."
+      },
+      "en": {
+        "question": "In which country is Paris, with the Eiffel Tower?",
+        "answer": "In France."
+      }
+    },
+    {
+      "id": "5p-43",
+      "kind": "trivia",
+      "pl": {
+        "question": "W jakiej książce sprawdzamy, co znaczy jakieś słowo?",
+        "answer": "W słowniku."
+      },
+      "en": {
+        "question": "Which book do we look in to find out what a word means?",
+        "answer": "A dictionary."
+      }
+    },
+    {
+      "id": "5p-44",
+      "kind": "trivia",
+      "pl": {
+        "question": "Z jakiego budynku pożyczamy książki, które potem oddajemy?",
+        "answer": "Z biblioteki."
+      },
+      "en": {
+        "question": "Which building do we borrow books from and later bring them back?",
+        "answer": "From a library."
+      }
+    },
+    {
+      "id": "5p-45",
+      "kind": "trivia",
+      "pl": {
+        "question": "Jakiego koloru jest najwyższe z trzech świateł dla samochodów?",
+        "answer": "Czerwonego."
+      },
+      "en": {
+        "question": "What colour is the highest of the three traffic lights for cars?",
+        "answer": "Red."
+      }
+    },
+    {
+      "id": "5p-46",
+      "kind": "trivia",
+      "pl": {
+        "question": "Jak nazywamy wysoką wieżę nad morzem, której światło nocą wskazuje drogę statkom?",
+        "answer": "Latarnia morska."
+      },
+      "en": {
+        "question": "What do we call the tall tower by the sea whose light shows ships the way at night?",
+        "answer": "A lighthouse."
+      }
+    },
+    {
+      "id": "5p-47",
+      "kind": "trivia",
+      "pl": {
+        "question": "Gdzie startują i lądują samoloty z pasażerami?",
+        "answer": "Na lotnisku."
+      },
+      "en": {
+        "question": "Where do aeroplanes with passengers take off and land?",
+        "answer": "At an airport."
+      }
+    },
+    {
+      "id": "5p-48",
+      "kind": "trivia",
+      "pl": {
+        "question": "Jakie dwa kolory są na fladze Polski?",
+        "answer": "Biały i czerwony."
+      },
+      "en": {
+        "question": "What two colours are on the flag of Poland?",
+        "answer": "White and red."
+      }
+    },
+    {
+      "id": "5p-49",
+      "kind": "trivia",
+      "pl": {
+        "question": "Kto stoi przed orkiestrą i prowadzi ją małą pałeczką?",
+        "answer": "Dyrygent."
+      },
+      "en": {
+        "question": "Who stands in front of an orchestra and leads it with a small stick?",
+        "answer": "The conductor."
+      }
+    },
+    {
+      "id": "5p-50",
+      "kind": "trivia",
+      "pl": {
+        "question": "Jaki ptak jest w godle Polski?",
+        "answer": "Biały orzeł."
+      },
+      "en": {
+        "question": "Which bird is on Poland's coat of arms?",
+        "answer": "A white eagle."
+      }
+    }
+  ]
+}
