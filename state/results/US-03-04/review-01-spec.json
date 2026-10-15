@@ -1,0 +1,38 @@
+{
+  "story": "US-03-04",
+  "attempt": 1,
+  "round": 1,
+  "sha": "8cff7d47030c74ec14cb1a675c29e5d29436c226",
+  "reviewer": "spec",
+  "ts": "2026-10-15T10:22:44Z",
+  "parsed": {
+    "review": "clean",
+    "story": "US-03-04",
+    "impact": "Return to the categories from any card via Android back or a small 20pt control above the card (outside its touch area, guarded, deck untouched); category entry no longer opens cards twice — all TC-03-16..19 green on CI head 8cff7d4.",
+    "findings": [],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      }
+    ],
+    "stray": []
+  },
+  "raw": "PR #14 / US-03-04 round 1 spec-compliance: compliant, no findings. CI run 38716989324 on 8cff7d4 success (Gates and Acceptance); jest src/app 37/37 in a worktree. All four criteria, MOD-03-F12/F13 and the DEC-38 edge case met and tested; out-of-scope fence holds; index.tsx double-open fix in scope (DEC-58, unit test). NFR-03/05/07 and i18n hold. DEC-58 routine, append-only. og-test-results: every report 0 failures (unit 220, release 8, pl 11, en 1, deck-state 2, saved-deck 1, TC-03-12..15, screen, screen-colours); AC-02-01-4 passed.\n\n```\nREVIEW: clean\nSTORY: US-03-04\nIMPACT: Return to the categories from any card via Android back or a small 20pt control above the card (outside its touch area, guarded, deck untouched); category entry no longer opens cards twice — all TC-03-16..19 green on CI head 8cff7d4.\nFINDINGS:\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 met\n```\n"
+}

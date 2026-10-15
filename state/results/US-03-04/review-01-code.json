@@ -1,0 +1,74 @@
+{
+  "story": "US-03-04",
+  "attempt": 1,
+  "round": 1,
+  "sha": "8cff7d47030c74ec14cb1a675c29e5d29436c226",
+  "reviewer": "code",
+  "ts": "2026-10-15T10:01:32Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-03-04",
+    "impact": "Return control and the canGoBack guard are correct and tested; the new host helper server on port 8765 has lifecycle gaps that can make acceptance evidence silently wrong or fail the run on re-runs.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:226 — the saved-deck server is killed only on the normal path; the EXIT trap (on_exit, line 127) does not stop it, so an aborted run leaves it on 8765, and the next run's readiness probe succeeds against the stale server while the new node dies on EADDRINUSE, so flows pass but evidence goes into the old dir → kill the server in on_exit (keep a global SERVER_PID) and fail run_deck_state_flows if the new node process exits or `kill -0` fails after the probe"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:233 — the 20×0.5s readiness loop proceeds silently when the server never answers, so the flows then fail on an empty body with an unrelated JSON.parse error → after the loop, check readiness and `say`/set status=1 with a clear message"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/saved-deck-server.js:16 — no server 'error' handler and an unguarded decodeURIComponent: a malformed % in the URL or a bind error throws uncaught and kills the process mid-run → wrap the decode in try/catch (or use the raw url) and add `.on('error', e => { console.error(e.message); process.exit(1); })`"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/saved-deck-server.js:15 — the server never checks the method or Host header and accepts any local request, which also writes files into the evidence dir; harmless data but needless surface for a loopback listener → reject non-GET and Host other than 127.0.0.1:<port> (optional)"
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/index.tsx:10 — `canGoBack()` as the \"already open\" test assumes the category screen is the stack bottom; a future screen below it would silently stop categories opening → keep, but the comment could name the assumption as an invariant (DEC-58 already notes it)"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Round 1 review of PR #14 (US-03-04): no blockers, five non-blocking. Gates pass; acceptance pending. Attribution clean. Return control outside the card's Pressable, same ready() guard, dismissTo('/'), no markSeen. canGoBack() guard cannot block a legitimate open today. saved-deck-server.js: read-only, loopback only, no shell injection path; lifecycle gaps. test-acceptance.sh clean under bash 3.2 / set -u; deck-state flows run once.\n\n```\nREVIEW: findings\nSTORY: US-03-04\nIMPACT: Return control and the canGoBack guard are correct and tested; the new host helper server on port 8765 has lifecycle gaps that can make acceptance evidence silently wrong or fail the run on re-runs.\nFINDINGS:\n  N1 scripts/test-acceptance.sh:226 — the saved-deck server is killed only on the normal path; the EXIT trap (on_exit, line 127) does not stop it, so an aborted run leaves it on 8765, and the next run's readiness probe succeeds against the stale server while the new node dies on EADDRINUSE, so flows pass but evidence goes into the old dir → kill the server in on_exit (keep a global SERVER_PID) and fail run_deck_state_flows if the new node process exits or `kill -0` fails after the probe\n  N2 scripts/test-acceptance.sh:233 — the 20×0.5s readiness loop proceeds silently when the server never answers, so the flows then fail on an empty body with an unrelated JSON.parse error → after the loop, check readiness and `say`/set status=1 with a clear message\n  N3 scripts/saved-deck-server.js:16 — no server 'error' handler and an unguarded decodeURIComponent: a malformed % in the URL or a bind error throws uncaught and kills the process mid-run → wrap the decode in try/catch (or use the raw url) and add `.on('error', e => { console.error(e.message); process.exit(1); })`\n  N4 scripts/saved-deck-server.js:15 — the server never checks the method or Host header and accepts any local request, which also writes files into the evidence dir; harmless data but needless surface for a loopback listener → reject non-GET and Host other than 127.0.0.1:<port> (optional)\n  N5 src/app/index.tsx:10 — `canGoBack()` as the \"already open\" test assumes the category screen is the stack bottom; a future screen below it would silently stop categories opening → keep, but the comment could name the assumption as an invariant (DEC-58 already notes it)\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 met\n```\n"
+}

@@ -1,0 +1,55 @@
+{
+  "n": 1,
+  "attempt": 1,
+  "ts": "2026-10-15T09:58:52Z",
+  "story": "US-03-04",
+  "mode": "implement",
+  "parsed": {
+    "result": "ready",
+    "story": "US-03-04",
+    "branch": "feature/US-03-04",
+    "commits": [
+      "aa940c6 feat(cards): return control and back to the categories [US-03-04]",
+      "8cff7d4 test(cards): acceptance flows for back to the categories [US-03-04]"
+    ],
+    "decisions": [
+      "DEC-58 routine Return control: a small 'Categories' line above the card, guarded, back to the screen below",
+      "a category opens its cards once"
+    ],
+    "evidence": [
+      "#1 Android back from any card shows the category screen — TC-03-16 (tests/maestro/TC-03-16-back-from-card.yaml) pass on the release build; unit \"Android's back action shows the category screen (#1)\" in src/app/__tests__/cards.test.tsx",
+      "#2 Small control outside the card's touch area shows the category screen — TC-03-17 (tests/maestro/TC-03-17-return-control.yaml: control visible, not a child of card-0; touch shows category-screen) pass; unit tests \"every card shows a small control outside the card…\", \"the control shows the category screen, with no second one stacked\", English variant",
+      "#3 Touching the control never reveals or moves on — TC-03-18 (tests/maestro/TC-03-18-return-control-no-reveal.yaml: same question, answer hidden, saved deck read as root identical at step 1 and step 2, kept in maestro/release-deck-state/TC-03-18-step-0N.json) pass; unit tests for hidden and revealed answers, and the 0.5 s guard on the control",
+      "#4 After returning, the same category resumes where it was left — TC-03-19 (two answers revealed, back, saved deck seen=2 read as root, reopening shows card-2 with answer hidden and the deck unchanged) pass; unit tests \"after returning, the category resumes where it was left (#4)\" and the DEC-38 edge case (back with the answer hidden leaves seen=0, same card returns)"
+    ],
+    "tests": {
+      "run": "/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-15_114726",
+      "pass": 24,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 0
+    },
+    "derived_tests": [],
+    "preexisting": "#1 Android back already returned to the category screen through the stack default (US-03-01); #4 resuming came from US-03-02's saved deck. Both were kept and now have evidence. DEC-38 already held, because markSeen only runs on reveal; a unit test now covers it.",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test ok (220 tests, 99.4% lines)"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "notes": "An earlier dev run (not the counted one) failed AC-02-01-4 step 4: a grey #ECECEC highlight on the \"3+\" entry, likely Android's focus highlight; not seen again in 4 relaunches or the counted run — most likely an emulator flake. TC-03-18 and TC-03-19 (tag deck-state) need adb root and use host port 8765 for the saved-deck server.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [],
+      "blocked": []
+    },
+    "critical_decisions": []
+  },
+  "raw": "US-03-04 implemented on feature/US-03-04 (two commits, nothing pushed). Whole acceptance suite passed on 8cff7d4, clean tree: 24 pass, 0 fail, 0 blocked; TC-03-16..19 passed every step. Return control \"‹ Kategorie\"/\"‹ Categories\" above the card, outside its touch area, router.dismissTo('/'), guarded; strings in src/strings.json. Android back unchanged (stack default), now evidenced. index.tsx opens cards only while the category screen is the stack bottom (canGoBack check). scripts/saved-deck-server.js on host loopback reads the saved deck as root for TC-03-18/19 app-state steps. DEC-58 appended.\n\n```\nRESULT: ready\nSTORY: US-03-04\nBRANCH: feature/US-03-04\nCOMMITS: aa940c6 feat(cards): return control and back to the categories [US-03-04]; 8cff7d4 test(cards): acceptance flows for back to the categories [US-03-04]\nDECISIONS: DEC-58 routine Return control: a small 'Categories' line above the card, guarded, back to the screen below; a category opens its cards once\nEVIDENCE:\n  #1 Android back from any card shows the category screen — TC-03-16 (tests/maestro/TC-03-16-back-from-card.yaml) pass on the release build; unit \"Android's back action shows the category screen (#1)\" in src/app/__tests__/cards.test.tsx\n  #2 Small control outside the card's touch area shows the category screen — TC-03-17 (tests/maestro/TC-03-17-return-control.yaml: control visible, not a child of card-0; touch shows category-screen) pass; unit tests \"every card shows a small control outside the card…\", \"the control shows the category screen, with no second one stacked\", English variant\n  #3 Touching the control never reveals or moves on — TC-03-18 (tests/maestro/TC-03-18-return-control-no-reveal.yaml: same question, answer hidden, saved deck read as root identical at step 1 and step 2, kept in maestro/release-deck-state/TC-03-18-step-0N.json) pass; unit tests for hidden and revealed answers, and the 0.5 s guard on the control\n  #4 After returning, the same category resumes where it was left — TC-03-19 (two answers revealed, back, saved deck seen=2 read as root, reopening shows card-2 with answer hidden and the deck unchanged) pass; unit tests \"after returning, the category resumes where it was left (#4)\" and the DEC-38 edge case (back with the answer hidden leaves seen=0, same card returns)\nTESTS: run=/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-15_114726 pass=24 fail=0 blocked=0 manual=0\nDERIVED_TESTS: none\nPREEXISTING: #1 Android back already returned to the category screen through the stack default (US-03-01); #4 resuming came from US-03-02's saved deck. Both were kept and now have evidence. DEC-38 already held, because markSeen only runs on reveal; a unit test now covers it.\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test ok (220 tests, 99.4% lines)\nENV_KEYS: none\nMIGRATION: no\nNOTES: An earlier dev run (not the counted one) failed AC-02-01-4 step 4: a grey #ECECEC highlight on the \"3+\" entry, likely Android's focus highlight; not seen again in 4 relaunches or the counted run — most likely an emulator flake. TC-03-18 and TC-03-19 (tag deck-state) need adb root and use host port 8765 for the saved-deck server.\n```\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}

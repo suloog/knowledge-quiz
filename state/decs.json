@@ -126,5 +126,13 @@
     "title": "UI strings in a Polish and English table in src/strings.json, following the device language",
     "file": "docs/specs/DECISIONS.md",
     "ts": "2026-10-15T08:43:55Z"
+  },
+  {
+    "dec": "DEC-58",
+    "story": "US-03-04",
+    "attempt": 1,
+    "title": "Return control: a small 'Categories' line above the card, guarded, back to the screen below; a category opens its cards once",
+    "file": "docs/specs/DECISIONS.md",
+    "ts": "2026-10-15T09:31:16Z"
   }
 ]
