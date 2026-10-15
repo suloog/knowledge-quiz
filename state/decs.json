@@ -78,5 +78,21 @@
     "title": "What makes the 5+ deck harder than 4+, and what counts as a repeat",
     "file": "docs/specs/DECISIONS.md",
     "ts": "2026-10-14T23:03:29Z"
+  },
+  {
+    "dec": "DEC-52",
+    "story": "US-03-01",
+    "attempt": 1,
+    "title": "Cards follow the device language until the in-app switch (US-02-03)",
+    "file": "docs/specs/DECISIONS.md",
+    "ts": "2026-10-15T05:48:45Z"
+  },
+  {
+    "dec": "DEC-53",
+    "story": "US-03-01",
+    "attempt": 1,
+    "title": "Card layout: largest type shrunk to fit, answer area reserved, deck in data order until US-03-02",
+    "file": "docs/specs/DECISIONS.md",
+    "ts": "2026-10-15T05:48:45Z"
   }
 ]

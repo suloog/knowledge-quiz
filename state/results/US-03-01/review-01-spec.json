@@ -1,0 +1,70 @@
+{
+  "story": "US-03-01",
+  "attempt": 1,
+  "round": 1,
+  "sha": "86f7c4b25af9db11ef8c7169e2f4a41dc07038cf",
+  "reviewer": "spec",
+  "ts": "2026-10-15T07:29:42Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-03-01",
+    "impact": "Core card loop (open category, reveal, next, 0.5 s guard, device-language cards) delivered and green in unit and Maestro (pl 5/5, en 1/1); only non-blocking notes on DEC-53's reading of #1, the untested no-redraw edge case and DEC-52's Decided-by label.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/cards/[category].tsx:30 — cardType sets about 30% of Polish questions (3+ 15/50, 4+ 13/50, 5+ 15/50 at 411 dp, down to 43 pt) below the app's largest type (64, the category entries), so #1's \"largest type of the app\" holds literally only for short-word questions; DEC-53 files this reading of a must criterion as routine (the alternative, words split mid-way, would breach MOD-03-U01), and cards.test.tsx:114 only checks short-word mocks → have the owner acknowledge DEC-53's reading of #1 at PR review, and add a unit case where a long-word question is still the largest text on the card"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/__tests__/cards.test.tsx:131 — the story's edge case \"each step changes the screen once; nothing else redraws\" (NFR-04) has no test: the reveal test checks only the question's text, not that its size and position are unchanged → assert the question node's style/fontSize are identical before and after the reveal"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/DECISIONS.md:640 — DEC-52 \"Decided by: Maciej (owner)\" does not use the log's roles (client/analyst/tech lead/developer); the constitution names Maciej tech lead → write \"tech lead (Maciej, owner)\" while the entry is still unmerged"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 6,
+        "verdict": "external",
+        "note": ""
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Spec-compliance review of US-03-01, PR #11 (head 86f7c4b), round 1: no blocking items. CI run 38697490998 complete: Gates pass (166 unit tests); report-release-pl.xml 5/5 (TC-03-01..05 on Polish), report-release-en.xml 1/1 (TC-03-05 on English); other reports 0 failures. DEC-52 records the owner's ruling faithfully; DEC-53 within scope, no schema change; DECISIONS.md append-only (24 added, 0 removed). Out-of-scope fences hold (the deck wraps as a DEC-53 placeholder until US-03-03). No constitution violations.\n\n```\nREVIEW: findings\nSTORY: US-03-01\nIMPACT: Core card loop (open category, reveal, next, 0.5 s guard, device-language cards) delivered and green in unit and Maestro (pl 5/5, en 1/1); only non-blocking notes on DEC-53's reading of #1, the untested no-redraw edge case and DEC-52's Decided-by label.\nFINDINGS:\n  N1 src/app/cards/[category].tsx:30 — cardType sets about 30% of Polish questions (3+ 15/50, 4+ 13/50, 5+ 15/50 at 411 dp, down to 43 pt) below the app's largest type (64, the category entries), so #1's \"largest type of the app\" holds literally only for short-word questions; DEC-53 files this reading of a must criterion as routine (the alternative, words split mid-way, would breach MOD-03-U01), and cards.test.tsx:114 only checks short-word mocks → have the owner acknowledge DEC-53's reading of #1 at PR review, and add a unit case where a long-word question is still the largest text on the card\n  N2 src/app/__tests__/cards.test.tsx:131 — the story's edge case \"each step changes the screen once; nothing else redraws\" (NFR-04) has no test: the reveal test checks only the question's text, not that its size and position are unchanged → assert the question node's style/fontSize are identical before and after the reveal\n  N3 docs/specs/DECISIONS.md:640 — DEC-52 \"Decided by: Maciej (owner)\" does not use the log's roles (client/analyst/tech lead/developer); the constitution names Maciej tech lead → write \"tech lead (Maciej, owner)\" while the entry is still unmerged\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 met\n  #5 met\n  #6 external\n```\n"
+}

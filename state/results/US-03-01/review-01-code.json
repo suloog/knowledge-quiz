@@ -1,0 +1,84 @@
+{
+  "story": "US-03-01",
+  "attempt": 1,
+  "round": 1,
+  "sha": "86f7c4b25af9db11ef8c7169e2f4a41dc07038cf",
+  "reviewer": "code",
+  "ts": "2026-10-15T07:29:14Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-03-01",
+    "impact": "Cards reveal the answer and move on with a working 0.5 s guard; unit tests and Maestro flows pass in CI; only robustness nits remain (silent green when root is unavailable, locale-tag parsing, long-word sizing heuristic).",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:171 — when `adb root` or the locale change fails, run_language_flows only says BLOCKED and `status` stays 0, so TC-03-01…05 can go unrun on a device or image where root is not available (physical device, a Play image) and yarn test:acceptance still exits 0 → fail on CI (e.g. when CI is set) or at least add a `record … fail` so the gap is visible in the exit code"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:147 — the \"-LANG-rREGION-\" match for `am get-config` assumes a tag with a region: a restored original of \"en\" (no region) builds \"-en-ren-\", never matches, and the restore waits 180 s then only warns; scripts with a script subtag (zh-Hans-CN) do not match either → derive the config string only from the language-region form, or compare against `getprop persist.sys.locale` / `Locale` instead of am get-config"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/cards/[category].tsx:28 — cardType() sizes by CHARACTER_WIDTH 0.6 of the window width and ignores the system font scale (PixelRatio.getFontScale()), the horizontal safe-area insets and wide capitals (W, Ł, Ż); a long word in capitals or at font scale >1 can still be split mid-word, because adjustsFontSizeToFit only shrinks for height, not for width → divide by the font scale and keep the heuristic documented as approximate (not blocking at default settings)"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/index.tsx:16 — router.push in the category Pressable has no guard, so a child's quick double touch on a category (before the new screen is drawn) can push the card screen twice, leaving two stacked cards for the later back story (US-03-04) → use router.navigate, or push once; today it is harmless because there is no back"
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:408 — the locale is restored with a second framework restart (about 1 minute) and an `unroot`, also on throwaway CI emulators; it also writes persist.sys.locale where it was empty before → acceptable as written (it protects a local device); optionally skip the restore when $CI is set"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 6,
+        "verdict": "external",
+        "note": ""
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Round 1 review of PR #11 (US-03-01, head 86f7c4b): no blocking findings, five non-blocking. CI: both checks pass (Gates 47 s, Acceptance 12m20s); device-language flows ran on pl-PL in CI (TC-03-01, 03, 04 seen passing). AI attribution clean. Touch guard traced, no bug: a second touch is ignored before the frame or inside the 0.5 s window; guard tests fail if the guard is removed. Maestro 1 s waits only respect the guard and hide no defect.\n\n```\nREVIEW: findings\nSTORY: US-03-01\nIMPACT: Cards reveal the answer and move on with a working 0.5 s guard; unit tests and Maestro flows pass in CI; only robustness nits remain (silent green when root is unavailable, locale-tag parsing, long-word sizing heuristic).\nFINDINGS:\n  N1 scripts/test-acceptance.sh:171 — when `adb root` or the locale change fails, run_language_flows only says BLOCKED and `status` stays 0, so TC-03-01…05 can go unrun on a device or image where root is not available (physical device, a Play image) and yarn test:acceptance still exits 0 → fail on CI (e.g. when CI is set) or at least add a `record … fail` so the gap is visible in the exit code\n  N2 scripts/test-acceptance.sh:147 — the \"-LANG-rREGION-\" match for `am get-config` assumes a tag with a region: a restored original of \"en\" (no region) builds \"-en-ren-\", never matches, and the restore waits 180 s then only warns; scripts with a script subtag (zh-Hans-CN) do not match either → derive the config string only from the language-region form, or compare against `getprop persist.sys.locale` / `Locale` instead of am get-config\n  N3 src/app/cards/[category].tsx:28 — cardType() sizes by CHARACTER_WIDTH 0.6 of the window width and ignores the system font scale (PixelRatio.getFontScale()), the horizontal safe-area insets and wide capitals (W, Ł, Ż); a long word in capitals or at font scale >1 can still be split mid-word, because adjustsFontSizeToFit only shrinks for height, not for width → divide by the font scale and keep the heuristic documented as approximate (not blocking at default settings)\n  N4 src/app/index.tsx:16 — router.push in the category Pressable has no guard, so a child's quick double touch on a category (before the new screen is drawn) can push the card screen twice, leaving two stacked cards for the later back story (US-03-04) → use router.navigate, or push once; today it is harmless because there is no back\n  N5 scripts/test-acceptance.sh:408 — the locale is restored with a second framework restart (about 1 minute) and an `unroot`, also on throwaway CI emulators; it also writes persist.sys.locale where it was empty before → acceptable as written (it protects a local device); optionally skip the restore when $CI is set\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 met\n  #5 met\n  #6 external\n```\n"
+}
