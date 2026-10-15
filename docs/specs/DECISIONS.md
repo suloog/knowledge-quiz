@@ -717,3 +717,15 @@
 - **Scope effect:** within scope
 - **Resolves:** —
 - **Status:** accepted
+
+## [DEC-59] Continue entry: an inverted 'Continue 4+' line between the title and the list, last category saved when opened
+
+- **Date:** 2026-10-15
+- **Decided by:** developer (delivery loop)
+- **Source:** implementation (`US-02-02`)
+- **Affects:** `US-02-02`, `MOD-02-F05`…`MOD-02-F09`, `MOD-02-U01`, `MOD-02-U02`, `DEC-21`, `DEC-54`, `DEC-55`, `DEC-56`, `DEC-57`, `TC-02-05`…`TC-02-09`
+- **Decision:** The last category opened is saved under `last-category` through the one persistence module (`src/storage.ts`, `DEC-54`), at the moment a category is opened from the category screen, by its list entry or by the continue entry. The category screen reads it once when the app starts; from then on it is the only place a category is opened, so it knows the last one without reading again. A saved value that cannot be read, or is not a category the content holds, counts as nothing: no continue entry, as on first launch. The continue entry stands between the title and the list, full width, inverted (white bold type on black, the theme's two colours) and as large as the entries, shrunk only as far as its words need to fit one line. It says "Kontynuuj 4+" / "Continue 4+" through the string table of `DEC-57`. Touching it opens the category exactly as its list entry does: at its first unseen card, or on its end card when the deck is finished (`DEC-56`). The list below keeps its order. The acceptance flows of `TC-02-08` and `TC-02-09` start from saved data that `scripts/test-acceptance.sh` writes as root (the 3+ deck finished and used last; every saved file unreadable), as `TC-03-11` does, since the release build has no app-state bridge (`DEC-55`).
+- **Why:** Saving on opening is what "once a category has been used" reads as most simply, and it needs no new state beyond one name. Inverted is the example `MOD-02-U02` gives and keeps to black and white (`NFR-07`). Opening through the same path as the list entry reuses the deck's resume and end card unchanged.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted

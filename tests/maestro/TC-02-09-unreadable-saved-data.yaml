@@ -1,0 +1,38 @@
+appId: ${APP_ID}
+name: TC-02-09 Unreadable saved data makes the category screen behave as on first launch
+# Run by scripts/test-acceptance.sh alone, after it has written content that is not JSON, as root,
+# over every file the app saves (the last category used and each category's deck) and read the last
+# category's back (SAVED_DATA): the release build has no app-state bridge (DEC-55). The device is
+# set to Polish; the app follows the device's language (DEC-52).
+tags:
+  - saved-deck
+---
+# Step 1 — the app's saved data has been replaced with unreadable content (read back from the
+# device: not JSON). The saved files are kept beside this flow's output (saved-*-before.txt).
+- evalScript: ${output.unreadable = (function () { try { JSON.parse(SAVED_DATA); return false; } catch (e) { return true; } })()}
+- assertTrue:
+    condition: ${SAVED_DATA.length > 0 && output.unreadable}
+    label: the saved data is unreadable
+- takeScreenshot: step-01-saved-data-unreadable
+# Step 2 — open the app: the category screen without an error, no continue entry — the screen's
+# only words of its own until the language switch (US-02-03) — and the list, as on first launch.
+- launchApp:
+    clearState: false
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+- assertNotVisible:
+    text: ".*(Error|isn't responding|keeps stopping|has stopped|nie odpowiada|zatrzymuje się|przestała działać).*"
+- assertNotVisible:
+    id: continue-entry
+- assertVisible:
+    id: category-0
+    text: 3\+
+- assertVisible:
+    id: category-1
+    text: 4\+
+- assertVisible:
+    id: category-2
+    text: 5\+
+- takeScreenshot: step-02-as-on-first-launch
