@@ -657,3 +657,27 @@
 - **Scope effect:** within scope
 - **Resolves:** —
 - **Status:** accepted
+
+## [DEC-54] Deck progress saved through expo-file-system, one JSON file per key
+
+- **Date:** 2026-10-15
+- **Decided by:** developer (delivery loop)
+- **Source:** implementation (`US-03-02`)
+- **Affects:** `US-03-02`, `MOD-03-F08`, `DEC-22`, `DEC-42`, `constitution.md` (One persistence module), `package.json`
+- **Decision:** The one persistence module is `src/storage.ts`: `load(key)` and `save(key, value)`, each key a JSON file in the app's private files (`expo-file-system`, `File` in `Paths.document`), read and written synchronously. A file that is missing or is not JSON loads as nothing, so the caller starts afresh. `expo-file-system` (~57.0.7) is added to `package.json` as a direct runtime dependency. It is already in the app: `expo` itself depends on it, so the lock file and the APK do not change, and nothing new is downloaded or linked. Its download and upload functions are not used, and the release build still has no network permission (`DEC-44`). AsyncStorage, which `DEC-42` left out, is not brought back.
+- **Why:** `US-03-02` is the first story that keeps anything on the device, and React Native has no storage of its own. `expo-file-system` adds no code to the app and nothing to install, and its synchronous reads let a card screen open straight at the saved card without a loading state. A plain file is also what the acceptance test for an unreadable saved deck (`TC-03-11`) can overwrite on the release build (`DEC-55`). AsyncStorage would add a new native library and an asynchronous start. Classed critical because it declares a runtime dependency; the PR waits for the owner under the merge rule for dependency changes.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
+
+## [DEC-55] Deck order and resume: shuffle on first open, new shuffle after the last card until US-03-03, added questions mixed into the unseen rest
+
+- **Date:** 2026-10-15
+- **Decided by:** developer (delivery loop)
+- **Source:** implementation (`US-03-02`)
+- **Affects:** `US-03-02`, `US-03-03`, `MOD-03-F06`, `MOD-03-F07`, `MOD-03-F08`, `DEC-22`, `DEC-38`, `DEC-53`, `Q37`, `TC-03-11`
+- **Decision:** A category's deck is saved under `deck-<category>` as its shuffled order of question ids and how many of them have been seen. The deck only moves forward, so the seen cards are always the first ones in the order. It is shuffled and saved the first time the category is opened, before any answer is revealed, so a question closed unrevealed comes back. A reveal counts the card as seen and saves at once. Opening the category shows the first unseen card. With content changed by a new version (`Q37`), the saved order is kept and questions no longer in the deck are skipped. Each new question goes to a random place among the unseen ones, and those keep their saved order. A saved deck that cannot be read, or whose order is not a list of distinct ids with a valid position, is replaced by a new shuffle. Until `US-03-03` brings the end card, touching on after the last answer, or opening a deck that has been gone through, starts a new shuffle with every card unseen. That replaces `DEC-53`'s start-over in data order. `TC-03-11` overwrites the saved deck's file as root from `scripts/test-acceptance.sh` before its flow opens the app. The release build the flows run on has no app-state bridge.
+- **Why:** Keeping the order and a count is the least state that satisfies `DEC-22` and `DEC-38`, and it cannot record a repeat. Mixing new questions in at random places is the plainest reading of `Q37`'s default ("join the unseen remainder in shuffled order") that keeps the saved order. A new shuffle after the last card is what the end card's "again" will do (`MOD-03-F10`), so `US-03-03` only puts the end card before it.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted

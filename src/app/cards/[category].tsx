@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { decks } from '@/content';
 import { deviceLanguage } from '@/language';
+import { type Progress, markSeen, openDeck } from '@/progress';
 import { colors, largestType, ruleWidth } from '@/theme';
 import { useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -16,7 +17,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 // never reveals and skips a card in one go (MOD-03-F14, DEC-40).
 export const TOUCH_GUARD_MS = 500;
 
-type Card = { position: number; revealed: boolean };
+// Where the category's deck stands, and whether the card on screen has its answer revealed: then it
+// is the last seen card, otherwise the first unseen one.
+type Card = { progress: Progress; revealed: boolean };
 
 // The card's padding on either side.
 const PADDING = 24;
@@ -37,13 +40,16 @@ export const cardType = (text: string, width: number) => {
 
 // The cards of one category, one at a time: a touch anywhere reveals the answer below the
 // question, the next touch shows the next question (MOD-03-F01…F05). Both change the content in
-// place — no transition, no animation (NFR-03). The deck is gone through in its data order and
-// starts over after its last card until US-03-02 shuffles it and US-03-03 ends it (DEC-53).
+// place — no transition, no animation (NFR-03). The deck is shuffled once and gone through without
+// repeats, resuming where it was left (MOD-03-F06…F08); after its last card a new shuffle starts
+// until US-03-03 ends it (DEC-55).
 const CardScreen = () => {
   const { category } = useLocalSearchParams<{ category: string }>();
   const deck = decks.find(d => d.category === category);
   const { width } = useWindowDimensions();
-  const [card, setCard] = useState<Card>({ position: 0, revealed: false });
+  const [card, setCard] = useState<Card | null>(() =>
+    deck ? { progress: openDeck(deck), revealed: false } : null,
+  );
   // When touches count again; null until the new frame is drawn.
   const readyAt = useRef<number | null>(null);
 
@@ -57,24 +63,33 @@ const CardScreen = () => {
     return () => cancelAnimationFrame(frame);
   }, [card]);
 
-  if (!deck) return null;
-  const count = deck.questions.length;
-  const text = deck.questions[card.position][deviceLanguage()];
+  if (!deck || !card) return null;
+  const { progress, revealed } = card;
+  const position = revealed ? progress.seen - 1 : progress.seen;
+  const id = progress.order[position];
+  const text = deck.questions.find(question => question.id === id)![
+    deviceLanguage()
+  ];
 
+  // A reveal makes the card seen and saves it (MOD-03-F07); the next touch shows the first unseen
+  // card, or a new shuffle once none is left.
   const touch = () => {
     if (readyAt.current === null || Date.now() < readyAt.current) return;
     readyAt.current = null;
-    setCard(current =>
-      current.revealed
-        ? { position: (current.position + 1) % count, revealed: false }
-        : { ...current, revealed: true },
-    );
+    if (!revealed)
+      setCard({ progress: markSeen(deck.category, progress), revealed: true });
+    else
+      setCard({
+        progress:
+          progress.seen < progress.order.length ? progress : openDeck(deck),
+        revealed: false,
+      });
   };
 
   return (
     <SafeAreaView testID="card-screen" style={styles.screen}>
       <Pressable
-        testID={`card-${card.position}`}
+        testID={`card-${position}`}
         onPressIn={touch}
         style={styles.card}>
         {/* The answer's place is kept while it is hidden, so revealing it draws the rule and the
@@ -91,7 +106,7 @@ const CardScreen = () => {
           </Text>
         </View>
         <View style={styles.answerArea}>
-          {card.revealed && (
+          {revealed && (
             <>
               <View testID="rule" style={styles.rule} />
               <Text
