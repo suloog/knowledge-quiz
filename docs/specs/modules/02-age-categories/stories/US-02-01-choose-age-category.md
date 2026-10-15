@@ -51,5 +51,5 @@ The screen the app opens on: the age categories 3+, 4+ and 5+, listed from the c
 ## Technical notes
 
 - Establish the app-wide theme here: #000/#FFF tokens, animations and navigation transitions disabled globally (constitution: *E-ink rendering*).
-- Category list built from the content data (`MOD-02-F03`); labels via i18n.
+- Category list built from the content data (`MOD-02-F03`); label from the deck's category field, no i18n (`DEC-48`).
 - Touch-target size judged on the Kompakt, no fixed number (`DEC-17`); launch time measured by hand (`NFR-02`).

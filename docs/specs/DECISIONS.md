@@ -588,7 +588,7 @@
 
 ## [DEC-48] Category screen: order by age; US-02-01 merges once the 4+ and 5+ decks are on main, with TC-02-01/02 checking all three
 
-- **Date:** 2026-10-14
+- **Date:** 2026-10-15
 - **Decided by:** product owner (delivery loop, 2026-10-15 — first option a, then superseded in the session by the content-first order)
 - **Source:** implementation (`US-02-01`, code review round 1, finding B1)
 - **Affects:** `US-02-01`, `US-01-03`, `US-01-04`, `MOD-02-F02`, `MOD-02-F03`, `MOD-02-U03`, `TC-02-01`, `TC-02-02`, `src/content/index.ts`, `scripts/test-acceptance.sh`
