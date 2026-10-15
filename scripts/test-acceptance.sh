@@ -23,8 +23,8 @@
 # JUnit reports land in $OG_RUN_DIR (default: test-results/):
 #   junit/unit.xml               — Jest
 #   junit/release.xml            — the release APK's checks (steps 1 and 3)
-#   junit/screen.xml             — TC-02-02 step 2, the category entries' width (step 2)
-#   junit/screen-colours.xml     — AC-02-01-4 step 4, the category screen's pixels (step 2);
+#   junit/screen.xml             — TC-02-02 step 2, the category entries' width (step 3)
+#   junit/screen-colours.xml     — AC-02-01-4 step 4, the category screen's pixels (step 3);
 #                                  skipped when the device draws one colour only (nothing rendered)
 #   maestro/report.xml           — Maestro on the debug build (TC-00-01), evidence under maestro/
 #   maestro/report-release.xml   — Maestro on the release build (all other flows), evidence under
@@ -252,42 +252,9 @@ else
       --include-tags debug-build \
       -e APP_ID="$APP_ID" \
       -e CONTENT_TITLE="$CONTENT_TITLE" \
-      "${CATEGORY_ARGS[@]}" \
       tests/maestro; then
       status=1
     fi
-
-    # TC-02-02 step 2: each category entry's bounds, from the accessibility layer, against the
-    # screen's width (the override if one is set) — a width Maestro cannot select by.
-    say "TC-02-02 step 2: the category entries' width"
-    screen_width="$("$ADB" shell wm size | tr -d '\r' | awk -F'[ x]' '/^Physical size/ { p = $3 } /^Override size/ { o = $3 } END { print o ? o : p }')"
-    "$ADB" shell am force-stop "$APP_ID" >/dev/null 2>&1
-    "$ADB" shell monkey -p "$APP_ID" -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1
-    # A file left by an earlier run into the same directory would end the wait at once.
-    rm -f "$OUT/maestro/TC-02-02-hierarchy.txt"
-    for _ in $(seq 1 60); do
-      "$ADB" shell uiautomator dump /sdcard/kq-ui.xml >/dev/null 2>&1 &&
-        "$ADB" exec-out cat /sdcard/kq-ui.xml >"$OUT/maestro/TC-02-02-hierarchy.txt" 2>/dev/null
-      grep -q 'resource-id="category-0"' "$OUT/maestro/TC-02-02-hierarchy.txt" 2>/dev/null && break
-      sleep 1
-    done
-    if ! node scripts/check-full-width.js "$OUT/maestro/TC-02-02-hierarchy.txt" "$screen_width" \
-      "$(printf '%s\n' "${CATEGORY_ARGS[@]}" | sed -n 's/^CATEGORY_COUNT=//p')" "$OUT/junit/screen.xml"; then
-      status=1
-    fi
-
-    # AC-02-01-4 step 4: the same screen's pixels — #000000 and #FFFFFF only outside the text
-    # glyphs (NFR-07). The raw screenshot is read by the check; the PNG is kept as evidence.
-    say "AC-02-01-4 step 4: the category screen's colours on the device"
-    density="$("$ADB" shell wm density | tr -d '\r' | awk -F': ' '/^Physical density/ { p = $2 } /^Override density/ { o = $2 } END { print o ? o : p }')"
-    rm -f "$OUT/maestro/AC-02-01-4-screen.raw"
-    "$ADB" exec-out screencap >"$OUT/maestro/AC-02-01-4-screen.raw" 2>/dev/null
-    "$ADB" exec-out screencap -p >"$OUT/maestro/AC-02-01-4-step-04-screen.png" 2>/dev/null
-    if ! node scripts/check-black-and-white.js "$OUT/maestro/AC-02-01-4-screen.raw" \
-      "$OUT/maestro/TC-02-02-hierarchy.txt" "$density" "$OUT/junit/screen-colours.xml"; then
-      status=1
-    fi
-    rm -f "$OUT/maestro/AC-02-01-4-screen.raw"
   fi
   stop_stack
 
@@ -336,6 +303,7 @@ else
         --exclude-tags debug-build \
         -e APP_ID="$APP_ID" \
         -e CONTENT_TITLE="$CONTENT_TITLE" \
+        ${CATEGORY_ARGS[@]+"${CATEGORY_ARGS[@]}"} \
         tests/maestro; then
         status=1
       fi
@@ -347,6 +315,38 @@ else
       else
         record "$POST" ok
       fi
+
+      # TC-02-02 step 2: each category entry's bounds, from the accessibility layer, against the
+      # screen's width (the override if one is set) — a width Maestro cannot select by.
+      say "TC-02-02 step 2: the category entries' width"
+      screen_width="$("$ADB" shell wm size | tr -d '\r' | awk -F'[ x]' '/^Physical size/ { p = $3 } /^Override size/ { o = $3 } END { print o ? o : p }')"
+      "$ADB" shell am force-stop "$APP_ID" >/dev/null 2>&1
+      "$ADB" shell monkey -p "$APP_ID" -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1
+      # A file left by an earlier run into the same directory would end the wait at once.
+      rm -f "$OUT/maestro/TC-02-02-hierarchy.txt"
+      for _ in $(seq 1 60); do
+        "$ADB" shell uiautomator dump /sdcard/kq-ui.xml >/dev/null 2>&1 &&
+          "$ADB" exec-out cat /sdcard/kq-ui.xml >"$OUT/maestro/TC-02-02-hierarchy.txt" 2>/dev/null
+        grep -q 'resource-id="category-0"' "$OUT/maestro/TC-02-02-hierarchy.txt" 2>/dev/null && break
+        sleep 1
+      done
+      if ! node scripts/check-full-width.js "$OUT/maestro/TC-02-02-hierarchy.txt" "$screen_width" \
+        "$(printf '%s\n' ${CATEGORY_ARGS[@]+"${CATEGORY_ARGS[@]}"} | sed -n 's/^CATEGORY_COUNT=//p')" "$OUT/junit/screen.xml"; then
+        status=1
+      fi
+
+      # AC-02-01-4 step 4: the same screen's pixels — #000000 and #FFFFFF only outside the text
+      # glyphs (NFR-07). The raw screenshot is read by the check; the PNG is kept as evidence.
+      say "AC-02-01-4 step 4: the category screen's colours on the device"
+      density="$("$ADB" shell wm density | tr -d '\r' | awk -F': ' '/^Physical density/ { p = $2 } /^Override density/ { o = $2 } END { print o ? o : p }')"
+      rm -f "$OUT/maestro/AC-02-01-4-screen.raw"
+      "$ADB" exec-out screencap >"$OUT/maestro/AC-02-01-4-screen.raw" 2>/dev/null
+      "$ADB" exec-out screencap -p >"$OUT/maestro/AC-02-01-4-step-04-screen.png" 2>/dev/null
+      if ! node scripts/check-black-and-white.js "$OUT/maestro/AC-02-01-4-screen.raw" \
+        "$OUT/maestro/TC-02-02-hierarchy.txt" "$density" "$OUT/junit/screen-colours.xml"; then
+        status=1
+      fi
+      rm -f "$OUT/maestro/AC-02-01-4-screen.raw"
     fi
     # The flow switches the network back on itself; this covers a flow that never ran.
     "$ADB" shell cmd connectivity airplane-mode disable >/dev/null 2>&1 || true
