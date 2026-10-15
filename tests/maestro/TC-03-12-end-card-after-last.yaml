@@ -1,0 +1,30 @@
+appId: ${APP_ID}
+name: TC-03-12 After the last card the end card appears
+# Run by scripts/test-acceptance.sh alone, after it has written the saved 3+ deck with 49 of its
+# 50 answers revealed as root (the release build has no app-state bridge: DEC-55, DEC-56) and read
+# it back: SAVED_SEEN of SAVED_TOTAL seen, the last card at LAST_POSITION asking LAST_QUESTION. The
+# device is set to Polish, the test case's test data; the end card's words are END_FINISHED,
+# END_AGAIN and END_CATEGORIES (src/strings.json).
+tags:
+  - saved-deck
+---
+# Step 1 — the 3+ deck set to 49 answers revealed: the saved state shows one card left.
+- assertTrue:
+    condition: ${SAVED_TOTAL == 50 && SAVED_SEEN == 49}
+    label: the saved 3+ deck has 49 of 50 answers revealed, one card left
+- takeScreenshot: step-01-deck-one-card-left
+# Step 2 — choose 3+, reveal the last answer and touch again: an end card says the deck is
+# finished and offers "again" and "categories".
+- runFlow: subflows/end-card.yaml
+- assertVisible:
+    id: deck-finished
+    text: ${END_FINISHED}
+- assertVisible:
+    id: again
+    text: ${END_AGAIN}
+- assertVisible:
+    id: categories
+    text: ${END_CATEGORIES}
+- assertNotVisible:
+    id: question
+- takeScreenshot: step-02-end-card

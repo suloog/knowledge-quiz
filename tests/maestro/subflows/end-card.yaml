@@ -1,0 +1,42 @@
+appId: ${APP_ID}
+name: Bring 3+ to its end card
+# From a saved 3+ deck with one card left (written by scripts/test-acceptance.sh as root, its
+# position in LAST_POSITION): open the app, choose 3+, reveal the last answer and touch again.
+---
+- launchApp:
+    clearState: false
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+- tapOn:
+    id: category-0
+- assertVisible:
+    id: card-${LAST_POSITION}
+- assertVisible:
+    id: question
+    text: ${LAST_QUESTION}
+# Each new screen is shown for 1 s before it is touched: a touch within 0.5 s of it being drawn is
+# ignored (MOD-03-F14, DEC-40). What is waited on stays on screen, so the wait runs out (optional)
+# after 1 s.
+- extendedWaitUntil:
+    notVisible:
+      id: question
+    timeout: 1000
+    optional: true
+    label: the last card shown for 1 s
+- tapOn:
+    id: card-${LAST_POSITION}
+- assertVisible:
+    id: answer
+    text: .+
+- extendedWaitUntil:
+    notVisible:
+      id: answer
+    timeout: 1000
+    optional: true
+    label: the last answer shown for 1 s
+- tapOn:
+    id: card-${LAST_POSITION}
+- assertVisible:
+    id: end-card

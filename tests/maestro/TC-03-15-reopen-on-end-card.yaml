@@ -1,0 +1,35 @@
+appId: ${APP_ID}
+name: TC-03-15 An app closed on the end card reopens the category on its end card
+# Run by scripts/test-acceptance.sh alone, after it has written the saved 3+ deck with one card
+# left as root (DEC-55, DEC-56). The device is set to Polish.
+tags:
+  - saved-deck
+---
+# Step 1 — bring 3+ to its end card.
+- runFlow: subflows/end-card.yaml
+- assertVisible:
+    id: deck-finished
+    text: ${END_FINISHED}
+- takeScreenshot: step-01-end-card
+# Step 2 — close the app fully (stopped, its data kept), open it and choose 3+: the end card again.
+- stopApp
+- launchApp:
+    clearState: false
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+- tapOn:
+    id: category-0
+- assertVisible:
+    id: end-card
+- assertVisible:
+    id: deck-finished
+    text: ${END_FINISHED}
+- assertVisible:
+    id: again
+    text: ${END_AGAIN}
+- assertVisible:
+    id: categories
+    text: ${END_CATEGORIES}
+- takeScreenshot: step-02-end-card-after-restart

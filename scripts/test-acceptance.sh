@@ -18,7 +18,8 @@
 #    the device set to Polish — their test data — and TC-03-05 once more on the device set to
 #    English: until the language switch (US-02-03) the app follows the device's language (DEC-52).
 #    TC-03-11 (tagged `saved-deck`) runs on its own, still in Polish, after its saved deck has been
-#    made unreadable as root (DEC-55). The device's
+#    made unreadable as root (DEC-55); so does each of TC-03-12…TC-03-15 (the end card, also tagged
+#    `saved-deck`), after its saved deck has been written one card from its end (DEC-56). The device's
 #    language is set as root (system locale property, then a restart of the Android framework) and
 #    put back afterwards. The debug build crashes
 #    intermittently on `launchApp: clearState` (a native SIGSEGV on the JS thread mqt_v_js right
@@ -43,6 +44,9 @@
 #   maestro/report-release-saved-deck.xml
 #                                — TC-03-11, evidence (the saved deck before and after) under
 #                                  maestro/release-saved-deck/
+#   maestro/report-release-TC-03-12.xml … report-release-TC-03-15.xml
+#                                — the end card, one flow each; evidence (the saved deck written,
+#                                  before and after) under maestro/release-end-card/<TC>/
 # The consoles are kept beside them: release-build.log, stack.log; the APK checks under release/.
 #
 # Needs a running Android device (the emulator CI boots, or one you start first): the release
@@ -221,6 +225,79 @@ run_saved_deck_flow() {
     status=1
   fi
   "$ADB" shell cat "$files/deck-3%2B.json" >"$dir/saved-deck-after.txt" 2>&1
+}
+
+# run_end_card_flow <flow> <report> <output dir>: TC-03-12…TC-03-15 — the saved 3+ deck written, as
+# root, with 49 of its 50 answers revealed (its questions in data order), so the flow reaches the
+# end card in one card, not fifty; then the flow, given what the saved deck holds read back from the
+# device (SAVED_SEEN of SAVED_TOTAL), the last card (LAST_POSITION, LAST_QUESTION in Polish) and the
+# end card's words (src/strings.json). The release build has no app-state bridge (DEC-55, DEC-56).
+# TC-03-13's step 2 then checks the saved deck after "again": 0 of 50 seen, a new order. Needs the
+# device rooted and set to Polish, as run_language_flows leaves it.
+run_end_card_flow() {
+  local flow="$1" report="$2" dir="$3" home="/data/data/$APP_ID" files owner name args=()
+  files="$home/files"
+  name="$(basename "$flow" .yaml)"
+  say "$name: the saved 3+ deck one card from its end, then the app opened on it"
+  mkdir -p "$dir"
+  node -e '
+    const deck = require("./src/content/decks/3-plus.json");
+    const order = deck.questions.map(q => q.id);
+    process.stdout.write(JSON.stringify({ order, seen: order.length - 1 }));
+  ' >"$dir/saved-deck-written.json"
+  "$ADB" shell pm clear "$APP_ID" >/dev/null 2>&1
+  owner="$("$ADB" shell stat -c %u "$home" 2>/dev/null | tr -d '\r')"
+  if [ "$("$ADB" shell id -u 2>/dev/null | tr -d '\r')" != 0 ] || [ -z "$owner" ] ||
+    ! "$ADB" push "$dir/saved-deck-written.json" /data/local/tmp/kq-deck.json >/dev/null 2>&1 ||
+    ! "$ADB" shell "mkdir -p $files && cp /data/local/tmp/kq-deck.json $files/deck-3%2B.json && rm /data/local/tmp/kq-deck.json && chown -R $owner:$owner $files && restorecon -R $files"; then
+    # No results: the collector counts the flow as not run (blocked), not failed.
+    say "BLOCKED: could not write the saved deck as root (adb root needs an emulator image without Google Play)"
+    return
+  fi
+  "$ADB" shell cat "$files/deck-3%2B.json" >"$dir/saved-deck-before.json" 2>&1
+  while read -r arg; do args+=(-e "$arg"); done < <(node -e '
+    const fs = require("fs");
+    const regex = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const deck = require("./src/content/decks/3-plus.json");
+    const strings = require("./src/strings.json").pl;
+    let saved = {};
+    try { saved = JSON.parse(fs.readFileSync(process.argv[1], "utf8")); } catch {}
+    const order = Array.isArray(saved.order) ? saved.order : [];
+    const last = deck.questions.find(q => q.id === order[saved.seen]);
+    console.log(`SAVED_SEEN=${saved.seen}`);
+    console.log(`SAVED_TOTAL=${order.length}`);
+    console.log(`LAST_POSITION=${saved.seen}`);
+    console.log(`LAST_QUESTION=${last ? regex(last.pl.question) : "(none)"}`);
+    console.log(`END_FINISHED=${regex(strings.deckFinished)}`);
+    console.log(`END_AGAIN=${regex(strings.again)}`);
+    console.log(`END_CATEGORIES=${regex(strings.categories)}`);
+  ' "$dir/saved-deck-before.json")
+  if ! "$MAESTRO" test \
+    --format JUNIT \
+    --output "$report" \
+    --test-output-dir "$dir" \
+    -e APP_ID="$APP_ID" \
+    ${args[@]+"${args[@]}"} \
+    "$flow"; then
+    status=1
+  fi
+  "$ADB" shell cat "$files/deck-3%2B.json" >"$dir/saved-deck-after.json" 2>&1
+  if [ "$name" = TC-03-13-again-restarts-deck ]; then
+    local check="TC-03-13 step 2 — after \"again\" the saved 3+ deck shows 0 of 50 seen and a new order"
+    local why
+    why="$(node -e '
+      const fs = require("fs");
+      const ids = require("./src/content/decks/3-plus.json").questions.map(q => q.id);
+      const before = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+      let after;
+      try { after = JSON.parse(fs.readFileSync(process.argv[2], "utf8")); } catch { console.log("the saved deck after \"again\" is not readable"); process.exit(); }
+      const order = after.order || [];
+      if (after.seen !== 0) console.log(`${after.seen} of ${order.length} seen, not 0`);
+      else if (order.length !== 50 || [...order].sort().join() !== [...ids].sort().join()) console.log("the order is not the 50 questions of 3+, each once");
+      else if (order.join() === before.order.join()) console.log("the order is the one saved before");
+    ' "$dir/saved-deck-before.json" "$dir/saved-deck-after.json" 2>&1)"
+    if [ -z "$why" ]; then record "$check" ok; else record "$check" fail "$why (saved-deck-after.json)"; fi
+  fi
 }
 
 # ---------------------------------------------------------------- 1. release APK
@@ -448,6 +525,10 @@ else
       run_language_flows pl-PL pl "$OUT/maestro/report-release-pl.xml" "$OUT/maestro/release-pl" \
         --include-tags device-language tests/maestro
       run_saved_deck_flow "$OUT/maestro/report-release-saved-deck.xml" "$OUT/maestro/release-saved-deck"
+      for flow in tests/maestro/TC-03-1[2-5]-*.yaml; do
+        name="$(basename "$flow" .yaml)"
+        run_end_card_flow "$flow" "$OUT/maestro/report-release-${name%%-[a-z]*}.xml" "$OUT/maestro/release-end-card/${name%%-[a-z]*}"
+      done
       run_language_flows en-US en "$OUT/maestro/report-release-en.xml" "$OUT/maestro/release-en" \
         tests/maestro/TC-03-05-cards-in-chosen-language.yaml
       say "putting the device's language back to $original_locale"
