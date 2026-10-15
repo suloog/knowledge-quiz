@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "status": "stopped",
+  "status": "active",
   "language": "en",
   "input": "no-tests",
   "base": "main",

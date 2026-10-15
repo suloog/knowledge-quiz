@@ -189,3 +189,4 @@
 {"ts": "2026-10-15T10:23:39Z", "event": "merged", "story": "US-03-04", "pr": "https://github.com/suloog/knowledge-quiz/pull/14", "sha": "954fd394a17ee2a1bb11ba33ccbafd748d144edb", "method": "squash", "policy": "auto", "approved_by": null, "tests_evidence": "ci", "ci_run": "https://github.com/suloog/knowledge-quiz/actions/runs/38716989324", "session": "0811fcaa-1d7c-4ea0-83f3-d685a8a6e3bc"}
 {"ts": "2026-10-15T10:24:26Z", "event": "story_done", "story": "US-03-04", "pr": "https://github.com/suloog/knowledge-quiz/pull/14", "session": "0811fcaa-1d7c-4ea0-83f3-d685a8a6e3bc"}
 {"ts": "2026-10-15T10:24:26Z", "event": "stopped", "by": "Maciej", "note": "owner: stop after US-03-04; resume later in a context-friendlier mode (og-deliver-run)", "session": "0811fcaa-1d7c-4ea0-83f3-d685a8a6e3bc"}
+{"ts": "2026-10-15T10:43:46Z", "event": "resumed", "by": "Maciej", "note": "resume for og-deliver-run", "session": "0811fcaa-1d7c-4ea0-83f3-d685a8a6e3bc"}
