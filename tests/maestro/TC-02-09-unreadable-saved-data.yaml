@@ -8,7 +8,7 @@ tags:
   - saved-deck
 ---
 # Step 1 — the app's saved data has been replaced with unreadable content (read back from the
-# device: not JSON). The saved files are kept beside this flow's output (saved-*-before.txt).
+# device: not JSON). The saved files are kept beside this flow's output (<name>.before: last-category.json.before, deck-<category>.json.before).
 - evalScript: ${output.unreadable = (function () { try { JSON.parse(SAVED_DATA); return false; } catch (e) { return true; } })()}
 - assertTrue:
     condition: ${SAVED_DATA.length > 0 && output.unreadable}
