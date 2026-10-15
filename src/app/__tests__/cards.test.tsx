@@ -292,17 +292,102 @@ describe('Deck without repeats, resumed where it was left (US-03-02)', () => {
       seen: 0,
     });
   });
+});
 
-  it('after the last card a new shuffle starts, until US-03-03 (DEC-55)', async () => {
+// The child waits out the guard, then touches one of the end card's choices.
+const choose = async (testID: string, wait = TOUCH_GUARD_MS + 100) => {
+  await fireEvent(screen.getByTestId(testID), 'pressIn');
+  await act(async () => {
+    jest.advanceTimersByTime(wait);
+  });
+};
+
+describe('End of the deck (US-03-03)', () => {
+  cardSetUp();
+
+  // The 3+ deck of two cards: both answers revealed, the last one touched again.
+  const finishDeck = async () => {
     await openCards();
     for (let i = 0; i < 4; i++) await touch();
+  };
 
-    expect(screen.getByTestId('card-0')).toBeOnTheScreen();
-    expect(screen.queryByTestId('answer')).toBeNull();
+  it('after the last answer the next touch shows the end card with "again" and "categories" (#1)', async () => {
+    await finishDeck();
+
+    expect(screen.getByTestId('end-card')).toBeOnTheScreen();
+    expect(screen.getByTestId('deck-finished')).toHaveTextContent(
+      'Talia skończona',
+    );
+    expect(screen.getByTestId('again')).toHaveTextContent('Jeszcze raz');
+    expect(screen.getByTestId('categories')).toHaveTextContent('Kategorie');
+    expect(screen.queryByTestId('question')).toBeNull();
     expect(JSON.parse(mockSaved.get('deck-3+')!)).toEqual({
       order: ['q1', 'q2'],
+      seen: 2,
+    });
+  });
+
+  it('the last answer stays until it is touched again (#1)', async () => {
+    await openCards();
+    for (let i = 0; i < 3; i++) await touch();
+
+    expect(screen.getByTestId('card-1')).toBeOnTheScreen();
+    expect(screen.getByTestId('answer')).toHaveTextContent('Odpowiedź druga.');
+    expect(screen.queryByTestId('end-card')).toBeNull();
+  });
+
+  it('on a device set to English the end card is in English (DEC-52, DEC-57)', async () => {
+    deviceLocale('en_US');
+    await finishDeck();
+
+    expect(screen.getByTestId('deck-finished')).toHaveTextContent(
+      'The deck is finished',
+    );
+    expect(screen.getByTestId('again')).toHaveTextContent('Again');
+    expect(screen.getByTestId('categories')).toHaveTextContent('Categories');
+  });
+
+  it('"again" starts the category over in a new shuffled order, every card unseen (#2)', async () => {
+    await finishDeck();
+    shuffleSwapsTwo();
+    await choose('again');
+
+    expect(screen.getByTestId('card-0')).toBeOnTheScreen();
+    expect(screen.getByTestId('question')).toHaveTextContent('Pytanie drugie?');
+    expect(screen.queryByTestId('answer')).toBeNull();
+    expect(JSON.parse(mockSaved.get('deck-3+')!)).toEqual({
+      order: ['q2', 'q1'],
       seen: 0,
     });
+  });
+
+  it('"categories" shows the category screen, with no second one stacked (#3)', async () => {
+    await finishDeck();
+    await choose('categories');
+
+    expect(screen.getByTestId('category-screen')).toBeOnTheScreen();
+    expect(screen.queryByTestId('end-card')).toBeNull();
+    expect(router.canGoBack()).toBe(false);
+  });
+
+  it('a touch on a choice before the end card has been shown for 0.5 s is ignored (MOD-03-F14)', async () => {
+    await openCards();
+    for (let i = 0; i < 3; i++) await touch();
+    await touch(200);
+    await choose('again');
+
+    expect(screen.getByTestId('end-card')).toBeOnTheScreen();
+    expect(JSON.parse(mockSaved.get('deck-3+')!).seen).toBe(2);
+  });
+
+  it('closed on the end card, the category opens on its end card again (edge case, MOD-03-F09)', async () => {
+    await finishDeck();
+    await restartApp();
+
+    await openCards();
+
+    expect(screen.getByTestId('end-card')).toBeOnTheScreen();
+    expect(screen.queryByTestId('question')).toBeNull();
   });
 });
 

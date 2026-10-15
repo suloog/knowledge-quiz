@@ -1,5 +1,12 @@
 import type { Deck } from '../content';
-import { markSeen, openDeck, restore, shuffle } from '../progress';
+import {
+  isFinished,
+  markSeen,
+  openDeck,
+  restartDeck,
+  restore,
+  shuffle,
+} from '../progress';
 
 const mockSaved = new Map<string, string>();
 jest.mock('../storage', () => ({
@@ -169,9 +176,30 @@ describe('openDeck and markSeen — the deck kept on the device (MOD-03-F06…F0
     expect(savedDeck()).toEqual(progress);
   });
 
-  it('starts a new shuffle once every card has been seen, until US-03-03 (DEC-55)', () => {
+  it('opens a deck gone through to the end still finished, for its end card (MOD-03-F09)', () => {
     mockSaved.set('deck-3+', JSON.stringify({ order: ids(3), seen: 3 }));
+    const progress = openDeck(deckOf(ids(3)));
 
-    expect(openDeck(deckOf(ids(3))).seen).toBe(0);
+    expect(progress).toEqual({ order: ids(3), seen: 3 });
+    expect(isFinished(progress)).toBe(true);
+  });
+});
+
+describe('isFinished and restartDeck — the end card (US-03-03)', () => {
+  it('a deck is finished once every card is seen, not before', () => {
+    expect(isFinished({ order: ids(50), seen: 49 })).toBe(false);
+    expect(isFinished({ order: ids(50), seen: 50 })).toBe(true);
+  });
+
+  it('starts the category again in a new shuffled order, every card unseen, saved (MOD-03-F10)', () => {
+    const deck = deckOf(ids(50));
+    mockSaved.set('deck-3+', JSON.stringify({ order: ids(50), seen: 50 }));
+    const progress = restartDeck(deck);
+
+    expect(progress.seen).toBe(0);
+    expect([...progress.order].sort()).toEqual([...ids(50)].sort());
+    expect(progress.order).not.toEqual(ids(50));
+    expect(savedDeck()).toEqual(progress);
+    expect(openDeck(deck)).toEqual(progress);
   });
 });

@@ -681,3 +681,27 @@
 - **Scope effect:** within scope
 - **Resolves:** —
 - **Status:** accepted
+
+## [DEC-56] End card: a finished deck stays finished; again reshuffles, categories goes back (replaces DEC-55's restart)
+
+- **Date:** 2026-10-15
+- **Decided by:** developer (delivery loop)
+- **Source:** implementation (`US-03-03`)
+- **Affects:** `US-03-03`, `MOD-03-F09`, `MOD-03-F10`, `MOD-03-F11`, `MOD-03-F14`, `DEC-23`, `DEC-40`, `DEC-55`, `TC-03-12`, `TC-03-13`, `TC-03-14`, `TC-03-15`
+- **Decision:** A deck is finished when every card of its saved order has been seen. The saved deck keeps its shape (`DEC-55`: the order and how many are seen). Touching the 50th card after its answer is revealed shows the end card in place of a new shuffle. Opening a finished category shows its end card again, also when the app was closed on the last answer before the touch. This replaces `DEC-55`'s rule that touching on after the last answer, or opening a deck gone through, starts a new shuffle. The end card says the deck is finished and offers two full-width choices, "again" and "categories". "Again" shuffles the category anew with every card unseen, saves it at once and shows its first card. "Categories" goes back to the category screen already below the card screen (`router.dismissTo('/')`), so no second category screen is stacked. The 0.5 s touch guard (`DEC-40`) also covers the end card, so a child's double touch on the last answer cannot also choose. The end card is a state of the card screen, not a route of its own. Its acceptance flows (`TC-03-12`…`TC-03-15`) start from a saved 3+ deck with 49 of 50 answers revealed. `scripts/test-acceptance.sh` writes that deck as root before each flow, as `TC-03-11` does. The script reads the saved deck back from the device to evidence "app state": one card left before `TC-03-12`, and 0 of 50 seen in a new order after "again" in `TC-03-13`.
+- **Why:** `DEC-23` asks for an explicit end in place of a silent restart. Keeping the finished deck as it is saved is the least state that lets the end card come back after a restart (the story's edge case), and it needs no change to what is stored. Going back to the screen below avoids stacking a duplicate. Writing the saved deck spares every flow fifty cards; the release build has no app-state bridge.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
+
+## [DEC-57] UI strings in a Polish and English table in src/strings.json, following the device language
+
+- **Date:** 2026-10-15
+- **Decided by:** developer (delivery loop)
+- **Source:** implementation (`US-03-03`)
+- **Affects:** `US-03-03`, `US-02-03`, `DEC-33`, `DEC-52`, `constitution.md` (i18n everywhere)
+- **Decision:** The end card is the app's first text of its own (the title and the cards come from the content data). Its words go through i18n as the constitution asks: a table of the app's strings in Polish and English (`src/strings.json`) and `t(key)` in `src/i18n.ts`, which picks the app's language. Until the switch on the category screen (`US-02-03`), that is the device's language (`DEC-52`): Polish on a device set to Polish, English otherwise. The end card says "Talia skończona" / "The deck is finished", "Jeszcze raz" / "Again" and "Kategorie" / "Categories". No i18n library is added. The table is JSON so the acceptance script can give the flows the words they check.
+- **Why:** Three strings in two languages do not justify a runtime dependency. A typed table keeps a missing translation a type error. `US-02-03` only has to change where the language comes from.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
