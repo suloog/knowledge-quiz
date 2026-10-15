@@ -94,5 +94,21 @@
     "title": "Card layout: largest type shrunk to fit, answer area reserved, deck in data order until US-03-02",
     "file": "docs/specs/DECISIONS.md",
     "ts": "2026-10-15T05:48:45Z"
+  },
+  {
+    "dec": "DEC-54",
+    "story": "US-03-02",
+    "attempt": 1,
+    "title": "Deck progress saved through expo-file-system, one JSON file per key",
+    "file": "docs/specs/DECISIONS.md",
+    "ts": "2026-10-15T07:37:29Z"
+  },
+  {
+    "dec": "DEC-55",
+    "story": "US-03-02",
+    "attempt": 1,
+    "title": "Deck order and resume: shuffle on first open, new shuffle after the last card until US-03-03, added questions mixed into the unseen rest",
+    "file": "docs/specs/DECISIONS.md",
+    "ts": "2026-10-15T07:37:29Z"
   }
 ]

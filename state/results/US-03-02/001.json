@@ -1,0 +1,61 @@
+{
+  "n": 1,
+  "attempt": 1,
+  "ts": "2026-10-15T08:16:41Z",
+  "story": "US-03-02",
+  "mode": "implement",
+  "parsed": {
+    "result": "ready",
+    "story": "US-03-02",
+    "branch": "feature/US-03-02",
+    "commits": [
+      "42815e9 feat(cards): shuffled deck without repeats, resumed [US-03-02]",
+      "66b1212 test(acceptance): deck flows TC-03-07 to TC-03-11 [US-03-02]",
+      "971b12b test(acceptance): mark deck flow steps for the collector [US-03-02]"
+    ],
+    "decisions": [
+      "DEC-54 critical Deck progress saved through expo-file-system, one JSON file per key",
+      "DEC-55 routine Deck order and resume: shuffle on first open, new shuffle after the last card until US-03-03, added questions mixed into the unseen rest"
+    ],
+    "evidence": [
+      "#1 No repeats over 50 cards — TC-03-07 (tests/maestro/TC-03-07-deck-no-repeats.yaml): 50 cards revealed and moved on from, each question noted; the sorted list equals the 3+ deck's 50 Polish questions; pass. Unit: src/__tests__/progress.test.ts \"shows each of 50 questions exactly once\", src/app/__tests__/cards.test.tsx #1",
+      "#2 Closed before the reveal → same question, answer hidden — TC-03-08 (stopApp/launchApp without clearState; same text, card-0, no answer); pass. Unit: cards.test.tsx #2",
+      "#3 Closed after the reveal → next unseen question — TC-03-09 (card-1, a different question, no answer); pass. Unit: cards.test.tsx #3",
+      "#4 Separate decks — TC-03-10 (3 answers of 3+ revealed, Android back, 4+ at card-0, back, 3+ at card-3 with none of the 3 seen questions); pass. Unit: progress.test.ts \"keeps each category apart\", cards.test.tsx #4"
+    ],
+    "tests": {
+      "run": "/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-15_100414",
+      "pass": 17,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 0,
+      "manual_tests": [
+        "none"
+      ]
+    },
+    "derived_tests": [],
+    "preexisting": "none — US-03-01 left the deck in data order, starting over after the last card (DEC-53); this story replaces that",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test ok (199 tests, 35 suites)"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "notes": "package.json declares expo-file-system ~57.0.7 (DEC-54, critical; already a dependency of expo, so yarn.lock does not change and nothing new is linked) — the merge waits for the owner. TC-03-11's spec still says \"app-state bridge\"; the release build has none, so scripts/test-acceptance.sh overwrites the saved file as root before the flow. TC-03-11 is read-only to me; the owner may want the precondition reworded. Q37 is still an open [A] assumption; its default is implemented (DEC-55).\nTC-03-07 takes about 6.5 min (50 cards, a 1 s guard wait before each touch). Not changed: the router.push double-touch in src/app/index.tsx. After the last card a new shuffle starts until US-03-03 adds the end card.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [],
+      "blocked": []
+    },
+    "critical_decisions": [
+      "DEC-54 critical Deck progress saved through expo-file-system, one JSON file per key"
+    ]
+  },
+  "raw": "US-03-02 implemented on feature/US-03-02 (3 commits, not pushed). Whole acceptance suite passed on the exact head (17/17), gates green. DEC-54 (critical) declares expo-file-system as a direct runtime dependency; recorded and went on per the brief; the merge waits for the owner under the dependency rule.\n\n```\nRESULT: ready\nSTORY: US-03-02\nBRANCH: feature/US-03-02\nCOMMITS: 42815e9 feat(cards): shuffled deck without repeats, resumed [US-03-02]; 66b1212 test(acceptance): deck flows TC-03-07 to TC-03-11 [US-03-02]; 971b12b test(acceptance): mark deck flow steps for the collector [US-03-02]\nDECISIONS: DEC-54 critical Deck progress saved through expo-file-system, one JSON file per key; DEC-55 routine Deck order and resume: shuffle on first open, new shuffle after the last card until US-03-03, added questions mixed into the unseen rest\nEVIDENCE:\n  #1 No repeats over 50 cards — TC-03-07 (tests/maestro/TC-03-07-deck-no-repeats.yaml): 50 cards revealed and moved on from, each question noted; the sorted list equals the 3+ deck's 50 Polish questions; pass. Unit: src/__tests__/progress.test.ts \"shows each of 50 questions exactly once\", src/app/__tests__/cards.test.tsx #1\n  #2 Closed before the reveal → same question, answer hidden — TC-03-08 (stopApp/launchApp without clearState; same text, card-0, no answer); pass. Unit: cards.test.tsx #2\n  #3 Closed after the reveal → next unseen question — TC-03-09 (card-1, a different question, no answer); pass. Unit: cards.test.tsx #3\n  #4 Separate decks — TC-03-10 (3 answers of 3+ revealed, Android back, 4+ at card-0, back, 3+ at card-3 with none of the 3 seen questions); pass. Unit: progress.test.ts \"keeps each category apart\", cards.test.tsx #4\nTESTS: run=/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-15_100414 pass=17 fail=0 blocked=0 manual=0 manual_tests=none\nDERIVED_TESTS: none\nPREEXISTING: none — US-03-01 left the deck in data order, starting over after the last card (DEC-53); this story replaces that\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test ok (199 tests, 35 suites)\nENV_KEYS: none\nMIGRATION: no\nNOTES: package.json declares expo-file-system ~57.0.7 (DEC-54, critical; already a dependency of expo, so yarn.lock does not change and nothing new is linked) — the merge waits for the owner. TC-03-11's spec still says \"app-state bridge\"; the release build has none, so scripts/test-acceptance.sh overwrites the saved file as root before the flow. TC-03-11 is read-only to me; the owner may want the precondition reworded. Q37 is still an open [A] assumption; its default is implemented (DEC-55).\nTC-03-07 takes about 6.5 min (50 cards, a 1 s guard wait before each touch). Not changed: the router.push double-touch in src/app/index.tsx. After the last card a new shuffle starts until US-03-03 adds the end card.\n```\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}

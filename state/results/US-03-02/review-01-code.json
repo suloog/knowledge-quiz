@@ -1,0 +1,67 @@
+{
+  "story": "US-03-02",
+  "attempt": 1,
+  "round": 1,
+  "sha": "971b12b84210f4e89a6f95eda1cebc907fe42621",
+  "reviewer": "code",
+  "ts": "2026-10-15T08:19:23Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-03-02",
+    "impact": "Per-category shuffled deck without repeats, saved as one JSON file per key through the new `src/storage.ts` and resumed on reopen; unit and Maestro coverage is in place and the gates pass, with only the emulator acceptance run still pending. The new direct `expo-file-system` dependency is classed critical (DEC-54), so the PR waits for the owner.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/storage.ts:20 — `save` has no try/catch while `load` does. A failed write (disk full, unwritable file) throws inside the press handler (`markSeen`) or the `useState` initializer (`openDeck`), which crashes the card screen, whereas an unreadable file is handled gracefully → wrap the write in try/catch and treat a failed save as \"progress not remembered\", or state in DEC-54 that crashing is accepted."
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/storage.ts:21 — `File.write` on Android truncates and then writes in place (`outputStream(append=false)`), so a kill mid-write leaves an empty or partial file. That reads back as unreadable and the deck restarts with a new shuffle, losing progress and allowing repeats. The window is tiny with a ~1 KB file → either write to `<key>.json.tmp` and move it over, or note the accepted risk in DEC-54."
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/progress.ts:77 — When the last card is passed, `openDeck` reshuffles with no check against the last seen question. With probability 1/n the first card of the new shuffle is the one just shown, which breaks the story's \"never the same question twice in a row\". DEC-55 makes this an interim state until US-03-03 → optionally reshuffle once if `order[0]` equals the last seen id, or leave it to US-03-03 and say so in the story."
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/__tests__/cards.test.tsx:226 — The screen-level \"each question once (#1)\" test uses a 2-card deck with a mocked, deterministic `Math.random`, so it would pass even with a broken shuffle. The real check is the 50-card test in progress.test.ts:139 plus Maestro TC-03-07 → no change needed, but TC-03-07 to TC-03-11 on the emulator should be green before merge."
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Round 1 review of PR #12 (US-03-02, head 971b12b): no blockers, 4 non-blocking. Read the diff and code; nothing run locally. Gates pass; Acceptance was pending. Attribution clean. Shuffle/no-repeat/resume logic, write ordering, the 0.5 s guard, expo-file-system API use, yarn.lock and the TC-03-11 script step all checked and fine.\n\n```\nREVIEW: findings\nSTORY: US-03-02\nIMPACT: Per-category shuffled deck without repeats, saved as one JSON file per key through the new `src/storage.ts` and resumed on reopen; unit and Maestro coverage is in place and the gates pass, with only the emulator acceptance run still pending. The new direct `expo-file-system` dependency is classed critical (DEC-54), so the PR waits for the owner.\nFINDINGS:\n  N1 src/storage.ts:20 — `save` has no try/catch while `load` does. A failed write (disk full, unwritable file) throws inside the press handler (`markSeen`) or the `useState` initializer (`openDeck`), which crashes the card screen, whereas an unreadable file is handled gracefully → wrap the write in try/catch and treat a failed save as \"progress not remembered\", or state in DEC-54 that crashing is accepted.\n  N2 src/storage.ts:21 — `File.write` on Android truncates and then writes in place (`outputStream(append=false)`), so a kill mid-write leaves an empty or partial file. That reads back as unreadable and the deck restarts with a new shuffle, losing progress and allowing repeats. The window is tiny with a ~1 KB file → either write to `<key>.json.tmp` and move it over, or note the accepted risk in DEC-54.\n  N3 src/progress.ts:77 — When the last card is passed, `openDeck` reshuffles with no check against the last seen question. With probability 1/n the first card of the new shuffle is the one just shown, which breaks the story's \"never the same question twice in a row\". DEC-55 makes this an interim state until US-03-03 → optionally reshuffle once if `order[0]` equals the last seen id, or leave it to US-03-03 and say so in the story.\n  N4 src/app/__tests__/cards.test.tsx:226 — The screen-level \"each question once (#1)\" test uses a 2-card deck with a mocked, deterministic `Math.random`, so it would pass even with a broken shuffle. The real check is the 50-card test in progress.test.ts:139 plus Maestro TC-03-07 → no change needed, but TC-03-07 to TC-03-11 on the emulator should be green before merge.\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 met\n```\n"
+}
