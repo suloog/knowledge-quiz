@@ -1,9 +1,8 @@
 appId: ${APP_ID}
 name: AC-01-01-4 The app starts and runs with the device's network switched off
-# Runs against the release APK only (scripts/test-acceptance.sh, step 3): Metro stopped, adb reverse
-# removed, the JavaScript embedded in the APK. The debug build cannot start without Metro.
-tags:
-  - release-build
+# Runs against the release APK, like every flow not tagged `debug-build` (scripts/test-acceptance.sh,
+# step 3): Metro stopped, adb reverse removed, the JavaScript embedded in the APK. The debug build
+# cannot start without Metro.
 # Cleanup — switch the network back on, whatever happened in the steps.
 onFlowComplete:
   - setAirplaneMode: disabled

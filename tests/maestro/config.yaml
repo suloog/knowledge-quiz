@@ -1,9 +1,4 @@
-# TC-00-01 checks the app as `yarn stack` left it, so it runs first; later flows relaunch the app.
-# flowsOrder names flows by their `name:`. Flows tagged `release-build` run apart, against the release
-# APK with Metro stopped (scripts/test-acceptance.sh).
+# Flows tagged `debug-build` (TC-00-01, the app as `yarn stack` left it) run on the debug build; all
+# others run on the release APK with Metro stopped (scripts/test-acceptance.sh).
 flows:
   - '*.yaml'
-executionOrder:
-  continueOnFailure: true
-  flowsOrder:
-    - TC-00-01 The documented start command builds the app and starts it on the Android emulator

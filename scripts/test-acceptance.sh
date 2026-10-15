@@ -8,23 +8,28 @@
 #    (DEC-45) — the real upload key stays with Maciej (DEC-09, DEC-44),
 #    then checked with apksigner and aapt (AC-01-01-5, AC-01-01-3), and its embedded bundle for
 #    the shipped content (AC-01-02-7);
-# 2. the Maestro flows against the app started with the documented start command (`yarn stack` =
-#    `bash scripts/stack.sh`, which also installs the dependencies on a fresh clone) — the debug
-#    build, its JavaScript served by Metro;
-# 3. the flows tagged `release-build` (AC-01-01-4, the app offline) against that release APK, with
-#    Metro stopped: a debug build cannot start without Metro, so offline only the release build
-#    proves anything;
+# 2. the flows tagged `debug-build` — TC-00-01 only, the one test of the debug start itself — against
+#    the app started with the documented start command (`yarn stack` = `bash scripts/stack.sh`,
+#    which also installs the dependencies on a fresh clone): the debug build, its JavaScript served
+#    by Metro;
+# 3. every other flow (TC-00-03, TC-01-01, AC-01-01-4 offline, and any new flow by default) against
+#    that release APK, installed on the device with Metro stopped. The debug build crashes
+#    intermittently on `launchApp: clearState` (a native SIGSEGV on the JS thread mqt_v_js right
+#    after `Running "main"`, about 1 flow in 6 per run, a different flow each time), so the owner
+#    decided on 2026-10-15 that the flows run on the release build; offline, only the release build
+#    can start at all (a debug build needs Metro);
 # 4. the unit tests.
 #
 # JUnit reports land in $OG_RUN_DIR (default: test-results/):
 #   junit/unit.xml               — Jest
 #   junit/release.xml            — the release APK's checks (steps 1 and 3)
-#   maestro/report.xml           — Maestro on the debug build, each flow's evidence under maestro/
-#   maestro/report-release.xml   — Maestro on the release build, evidence under maestro/release/
+#   maestro/report.xml           — Maestro on the debug build (TC-00-01), evidence under maestro/
+#   maestro/report-release.xml   — Maestro on the release build (all other flows), evidence under
+#                                  maestro/release/
 # The consoles are kept beside them: release-build.log, stack.log; the APK checks under release/.
 #
 # Needs a running Android device (the emulator CI boots, or one you start first): the release
-# flows run on it after the stack stops, so it must outlive the start command. Exits at once when
+# APK is installed and its flows run on it after the stack stops, so it must outlive the start command. Exits at once when
 # none is attached.
 #
 # Exits non-zero when any test failed or the stack could not be started.
@@ -226,7 +231,7 @@ else
       --format JUNIT \
       --output "$OUT/maestro/report.xml" \
       --test-output-dir "$OUT/maestro" \
-      --exclude-tags release-build \
+      --include-tags debug-build \
       -e APP_ID="$APP_ID" \
       -e CONTENT_TITLE="$CONTENT_TITLE" \
       tests/maestro; then
@@ -236,10 +241,10 @@ else
   stop_stack
 
   # -------------------------------------------------- 3. release build, Maestro
-  # Metro is stopped and the port forwarding `expo run:android` set up (adb reverse, which airplane
-  # mode does not cut) is removed: nothing on the device can reach a bundler. The app must run the
-  # JavaScript embedded in the APK.
-  FLOW=tests/maestro/AC-01-01-4-opens-offline.yaml
+  # Every flow not tagged `debug-build`. Metro is stopped and the port forwarding
+  # `expo run:android` set up (adb reverse, which airplane mode does not cut) is removed: nothing on
+  # the device can reach a bundler. The app must run the JavaScript embedded in the APK. The
+  # release APK has the debug build's package, so `launchApp` / `clearState` reach it by APP_ID.
   if [ -z "$built" ]; then
     record "$PRE" fail "no release APK was built"
   elif ! "$ADB" get-state >/dev/null 2>&1; then
@@ -277,8 +282,10 @@ else
         --format JUNIT \
         --output "$OUT/maestro/report-release.xml" \
         --test-output-dir "$OUT/maestro/release" \
+        --exclude-tags debug-build \
         -e APP_ID="$APP_ID" \
-        "$FLOW"; then
+        -e CONTENT_TITLE="$CONTENT_TITLE" \
+        tests/maestro; then
         status=1
       fi
       "$ADB" logcat -d >"$OUT/release/AC-01-01-4-logcat.txt" 2>&1
