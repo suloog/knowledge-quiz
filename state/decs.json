@@ -182,5 +182,21 @@
     "title": "The category screen fits a 640 dp high screen: the list entries give up their spacing first",
     "file": "docs/specs/DECISIONS.md",
     "ts": "2026-10-15T18:45:21Z"
+  },
+  {
+    "dec": "DEC-65",
+    "story": "US-03-05",
+    "attempt": 1,
+    "title": "Illustrations: five 1-bit silhouettes on five questions, drawn one image pixel to one screen pixel below the question",
+    "file": "docs/specs/DECISIONS.md",
+    "ts": "2026-10-15T22:09:34Z"
+  },
+  {
+    "dec": "DEC-66",
+    "story": "US-03-05",
+    "attempt": 1,
+    "title": "Illustration acceptance flows: saved 3+ deck written with the needed question first; device language switched mid-flow without a framework restart",
+    "file": "docs/specs/DECISIONS.md",
+    "ts": "2026-10-15T22:09:34Z"
   }
 ]
