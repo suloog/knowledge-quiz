@@ -1,7 +1,12 @@
-import { Stack } from 'expo-router';
+import { navigationTheme, stackScreenOptions } from '@/theme';
+import { Stack, ThemeProvider } from 'expo-router';
 
 const RootLayout = () => {
-  return <Stack screenOptions={{ headerShown: false, animation: 'none' }} />;
+  return (
+    <ThemeProvider value={navigationTheme}>
+      <Stack screenOptions={stackScreenOptions} />
+    </ThemeProvider>
+  );
 };
 
 export default RootLayout;

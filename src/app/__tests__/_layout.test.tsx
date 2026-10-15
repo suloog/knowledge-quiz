@@ -1,16 +1,12 @@
 import { screen } from '@testing-library/react-native';
 import { renderRouter } from 'expo-router/testing-library';
 import RootLayout from '../_layout';
-import HomeScreen from '../index';
-
-jest.mock('@/content', () => ({
-  appContent: { title: 'Value from the content data' },
-}));
+import CategoriesScreen from '../index';
 
 describe('RootLayout', () => {
-  it('opens the app on the home screen', async () => {
-    await renderRouter({ _layout: RootLayout, index: HomeScreen });
+  it('opens the app on the category screen', async () => {
+    await renderRouter({ _layout: RootLayout, index: CategoriesScreen });
 
-    expect(screen.getByTestId('content-title')).toBeOnTheScreen();
+    expect(screen.getByTestId('category-screen')).toBeOnTheScreen();
   });
 });

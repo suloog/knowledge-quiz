@@ -3,7 +3,7 @@ id: US-02-01 # US-NN-MM — NN is the parent module, MM a counter inside it; nev
 module: MOD-02
 covers: [MOD-02-F01, MOD-02-F02, MOD-02-F03, MOD-02-U01, MOD-02-U03, MOD-02-U05, NFR-02, NFR-03, NFR-04, NFR-07, NFR-08, NFR-09] # every requirement this story delivers
 ticket: # optional YouTrack ID — filled by /og:sync-youtrack
-status: ready # draft | ready | in-progress | review | done | blocked
+status: done # draft | ready | in-progress | review | done | blocked
 priority: must # must | should | nice-to-have — inherited from the requirement
 depends_on: [US-01-02] # story IDs that must be done first
 ---
@@ -17,7 +17,7 @@ depends_on: [US-01-02] # story IDs that must be done first
 | **Module** | `[MOD-02]` Age categories — `docs/specs/modules/02-age-categories/REQUIREMENTS.md` |
 | **Covers** | `MOD-02-F01`, `F02`, `F03`, `U01`, `U03`, `U05`, `NFR-02`, `NFR-03`, `NFR-04`, `NFR-07`, `NFR-08`, `NFR-09` |
 | **Priority** | must |
-| **Status** | ready |
+| **Status** | done |
 | **Depends on** | `US-01-02` |
 | **YouTrack** | — |
 | **Open questions** | — |
@@ -51,5 +51,5 @@ The screen the app opens on: the age categories 3+, 4+ and 5+, listed from the c
 ## Technical notes
 
 - Establish the app-wide theme here: #000/#FFF tokens, animations and navigation transitions disabled globally (constitution: *E-ink rendering*).
-- Category list built from the content data (`MOD-02-F03`); labels via i18n.
+- Category list built from the content data (`MOD-02-F03`); label from the deck's category field, no i18n (`DEC-48`).
 - Touch-target size judged on the Kompakt, no fixed number (`DEC-17`); launch time measured by hand (`NFR-02`).
