@@ -633,3 +633,27 @@
 - **Scope effect:** within scope
 - **Resolves:** —
 - **Status:** accepted
+
+## [DEC-52] Cards follow the device language until the in-app switch (US-02-03)
+
+- **Date:** 2026-10-15
+- **Decided by:** Maciej (owner), 2026-10-15
+- **Source:** implementation (`US-03-01`)
+- **Affects:** `US-03-01`, `TC-03-05`, `MOD-03-U05`, `US-02-03`
+- **Decision:** Option "Język urządzenia (Rekomendowane)" (device language). `US-03-01#5` ("Cards are shown in the language chosen on the category screen") is delivered in `US-03-01` as: the cards follow the app's current language, Polish on a device set to Polish and English otherwise (`DEC-33`), read from the device's locale when the app starts. No language switch is built in `US-03-01`. `TC-03-05` is automated for now by setting the emulator's language to Polish, then to English, instead of the switch on the category screen (`scripts/test-acceptance.sh`, the flow's comments say so); `US-02-03` adds the switch and runs `TC-03-05` as written.
+- **Why:** The language switch is `US-02-03`, which comes later in the order and depends on `US-03-02`; building it here would pull another story's scope into this one. The device language is what the app starts in anyway (`DEC-33`), so the cards are in the chosen language whenever no other has been chosen.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
+
+## [DEC-53] Card layout: largest type shrunk to fit, answer area reserved, deck in data order until US-03-02
+
+- **Date:** 2026-10-15
+- **Decided by:** developer (delivery loop)
+- **Source:** implementation (`US-03-01`)
+- **Affects:** `US-03-01`, `MOD-03-F05`, `MOD-03-U01`, `MOD-03-U04`
+- **Decision:** The question and the answer are set in the app's largest type (64, the category entries' size, now the theme's `largestType`), bold for the question and regular for the answer. A text is set smaller only as far as it needs to fit: when its longest word would not fit one line of the card (Android would split the word mid-way; the size is worked out from the word's length and the screen's width), and when it is still too tall for its part of the card (`adjustsFontSizeToFit`). The question has the upper three fifths of the card, the answer the lower two, kept empty while the answer is hidden, so a reveal draws the rule and the answer and moves nothing else. The 0.5 s touch guard (`DEC-40`) starts on the first animation frame after a change is committed. Until `US-03-02` shuffles the deck and `US-03-03` ends it, the cards come in the deck's data order and the deck starts over after its last card.
+- **Why:** A 100-character question (`DEC-39`) does not fit the Kompakt's screen at 64 without scrolling, and a long word at 64 is wider than the emulator's screen ("dzisiejszym?" was split as "dz / isiejszym?"), so the largest type has to give way for such texts to be read whole; a fixed place for the answer keeps each step a single change (edge case of `US-03-01`). Data order and starting over are the simplest behaviour that leaves shuffling and the end card to their own stories.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
