@@ -1,0 +1,5330 @@
+{
+  "schema": "og-run/1",
+  "run": {
+    "id": "2026-10-15_185912",
+    "started": "2026-10-15T19:19:43+02:00",
+    "finished": "2026-10-15T19:19:43+02:00",
+    "duration_ms": 817708,
+    "environment": "local",
+    "scope": "",
+    "targets": {
+      "build": "checkout"
+    },
+    "repo": {
+      "branch": "feature/US-02-03",
+      "commit": "a58279b78669196b6077d6f3c808acd1f8021de1",
+      "dirty": false,
+      "snapshot": true,
+      "changed_during_run": false,
+      "build": {
+        "environment": "local",
+        "source": "checkout",
+        "commit": "a58279b78669196b6077d6f3c808acd1f8021de1"
+      }
+    },
+    "project": {
+      "name": "Knowledge Quiz",
+      "client": "Order Group (internal)",
+      "language": "pl"
+    },
+    "tools": {
+      "node": "v24.18.0",
+      "maestro": "2.11.0"
+    }
+  },
+  "totals": {
+    "pass": 27,
+    "fail": 1,
+    "blocked": 0,
+    "manual": 7,
+    "skipped": 9
+  },
+  "tests": [
+    {
+      "id": "TC-00-01",
+      "title": "The documented start command builds the app and starts it on the Android emulator",
+      "module": "MOD-00",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-00-01#1"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/00-foundation/tests/TC-00-01-stack-starts.md",
+      "status": "pass",
+      "duration_ms": 2249,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Start the app with the command the README names, and with nothing else",
+          "expected": "the command builds the app, installs it on the emulator and reports it started; nothing was done by hand",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/2026-10-15_190046/TC-00-01 The documented start command builds the app and starts it on the Android emulator/takeScreenshot/step-01-started-by-yarn-stack.png",
+              "label": "step-01-started-by-yarn-stack"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Look at the emulator",
+          "expected": "the app is open on its first screen, with no error dialog",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/2026-10-15_190046/TC-00-01 The documented start command builds the app and starts it on the Android emulator/takeScreenshot/step-02-first-screen.png",
+              "label": "step-02-first-screen"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "console",
+          "path": "maestro/2026-10-15_190046/TC-00-01 The documented start command builds the app and starts it on the Android emulator/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/2026-10-15_190046/TC-00-01 The documented start command builds the app and starts it on the Android emulator/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-00-02",
+      "title": "The pull request's own workflow run publishes the acceptance tests' results",
+      "module": "MOD-00",
+      "layer": "api",
+      "type": "happy-path",
+      "automation": "manual-only",
+      "covers": [
+        "US-00-01#2"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/00-foundation/tests/TC-00-02-ci-publishes-results.md",
+      "status": "manual",
+      "duration_ms": 0,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Open the pull request and look at its checks",
+          "expected": "the acceptance workflow ran on the pull request's head commit",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 2,
+          "action": "Open that workflow run",
+          "expected": "it lists an artifact named `og-test-results`",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 3,
+          "action": "Download the artifact and open it",
+          "expected": "it holds a JUnit report (`*.xml`) whose tests carry `TC-00-01` and `TC-00-03` in their names",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 4,
+          "action": "Read the workflow file in the pull request",
+          "expected": "it runs on pull requests; the acceptance tests are run by one command of the repository and are not listed in the workflow; the step that uploads the reports runs whether the tests passed or failed, and fails when there is no report",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        }
+      ],
+      "logs": [],
+      "error": null
+    },
+    {
+      "id": "TC-00-03",
+      "title": "The first screen shows a value read from the app's bundled content data",
+      "module": "MOD-00",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-00-01#3"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/00-foundation/tests/TC-00-03-path-through-every-layer.md",
+      "status": "pass",
+      "duration_ms": 2054,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Open the app on the emulator",
+          "expected": "it opens without an error",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release/2026-10-15_190054/TC-00-03 The first screen shows a value read from the app's bundled content data/takeScreenshot/step-01-opened.png",
+              "label": "step-01-opened"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Look at what the first screen shows",
+          "expected": "the value kept in the content data is shown — read from the data at run time, not written into the screen",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release/2026-10-15_190054/TC-00-03 The first screen shows a value read from the app's bundled content data/takeScreenshot/step-02-content-value.png",
+              "label": "step-02-content-value"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "console",
+          "path": "maestro/release/2026-10-15_190054/TC-00-03 The first screen shows a value read from the app's bundled content data/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release/2026-10-15_190054/TC-00-03 The first screen shows a value read from the app's bundled content data/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-00-04",
+      "title": "The commit and push gates are detected and green on a clean checkout",
+      "module": "MOD-00",
+      "layer": "api",
+      "type": "happy-path",
+      "automation": "manual-only",
+      "covers": [
+        "US-00-01#4"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/00-foundation/tests/TC-00-04-gates.md",
+      "status": "manual",
+      "duration_ms": 0,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "List the gates: `/og:pre-push`, or `detect-stack.sh commit .` and `detect-stack.sh push .` from the og plugin's `hooks/scripts/`",
+          "expected": "each list names a format check, a linter and the unit tests, and a type check where the language has one",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 2,
+          "action": "Run every command listed",
+          "expected": "each of them ends green",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 3,
+          "action": "Break the formatting of one file and commit it from a Claude Code session with the og plugin",
+          "expected": "the commit is refused, and the refusal names the gate that failed",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        }
+      ],
+      "logs": [],
+      "error": null
+    },
+    {
+      "id": "TC-01-01",
+      "title": "The app installs and opens on an Android 12 emulator",
+      "module": "MOD-01",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-01-01#2",
+        "NFR-10"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/01-question-content/tests/TC-01-01-opens-on-emulator.md",
+      "status": "pass",
+      "duration_ms": 1922,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Install the app on a clean Android 12 (API 31) emulator",
+          "expected": "Installation completes without error",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release/2026-10-15_190054/TC-01-01 The app installs and opens on an Android 12 emulator/takeScreenshot/step-01-installed.png",
+              "label": "step-01-installed"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Open the app",
+          "expected": "The app opens and shows its first screen without an error dialog",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release/2026-10-15_190054/TC-01-01 The app installs and opens on an Android 12 emulator/takeScreenshot/step-02-first-screen.png",
+              "label": "step-02-first-screen"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "console",
+          "path": "maestro/release/2026-10-15_190054/TC-01-01 The app installs and opens on an Android 12 emulator/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release/2026-10-15_190054/TC-01-01 The app installs and opens on an Android 12 emulator/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-01-02",
+      "title": "The app opens and plays a card with the network switched off",
+      "module": "MOD-01",
+      "layer": "mobile",
+      "type": "edge",
+      "automation": "auto",
+      "covers": [
+        "US-01-01#4",
+        "US-01-02#7",
+        "NFR-12"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/01-question-content/tests/TC-01-02-works-offline.md",
+      "status": "skipped",
+      "duration_ms": 0,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Switch the emulator's network off (airplane mode)",
+          "expected": "The network is off",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 2,
+          "action": "Open the app",
+          "expected": "The category screen appears",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 3,
+          "action": "Choose 3+ and touch the card",
+          "expected": "A question appears, then its answer",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        }
+      ],
+      "logs": [],
+      "error": null
+    },
+    {
+      "id": "TC-01-03",
+      "title": "The app installs and opens on the Mudita Kompakt",
+      "module": "MOD-01",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "manual-only",
+      "covers": [
+        "US-01-01#2",
+        "NFR-11"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/01-question-content/tests/TC-01-03-opens-on-kompakt.md",
+      "status": "manual",
+      "duration_ms": 0,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Install the release APK on the Kompakt",
+          "expected": "Installation completes",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 2,
+          "action": "Open the app",
+          "expected": "The category screen appears, legible and black and white",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        }
+      ],
+      "logs": [],
+      "error": null
+    },
+    {
+      "id": "TC-02-01",
+      "title": "Launch opens on the category screen listing 3+, 4+ and 5+ in that order",
+      "module": "MOD-02",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-02-01#1",
+        "US-02-01#2"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/02-age-categories/tests/TC-02-01-opens-on-categories.md",
+      "status": "pass",
+      "duration_ms": 3195,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Open the app",
+          "expected": "The category screen is shown",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release/2026-10-15_190054/TC-02-01 Launch opens on the category screen listing 3+, 4+ and 5+ in that order/takeScreenshot/step-01-category-screen.png",
+              "label": "step-01-category-screen"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Read the list",
+          "expected": "Three entries in the order \"3+\", \"4+\", \"5+\"",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release/2026-10-15_190054/TC-02-01 Launch opens on the category screen listing 3+, 4+ and 5+ in that order/takeScreenshot/step-02-categories-in-order.png",
+              "label": "step-02-categories-in-order"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "console",
+          "path": "maestro/release/2026-10-15_190054/TC-02-01 Launch opens on the category screen listing 3+, 4+ and 5+ in that order/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release/2026-10-15_190054/TC-02-01 Launch opens on the category screen listing 3+, 4+ and 5+ in that order/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-02-02",
+      "title": "Each category entry spans the full width of the screen",
+      "module": "MOD-02",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-02-01#6"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/02-age-categories/tests/TC-02-02-full-width-entries.md",
+      "status": "pass",
+      "duration_ms": 1597,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Open the app",
+          "expected": "The category screen is shown",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release/2026-10-15_190054/TC-02-02 Each category entry spans the full width of the screen/takeScreenshot/step-01-category-screen.png",
+              "label": "step-01-category-screen"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Compare each entry's width with the screen's width",
+          "expected": "Each of the three entries is as wide as the screen",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release/2026-10-15_190054/TC-02-02 Each category entry spans the full width of the screen/takeScreenshot/step-02-full-width-entries.png",
+              "label": "step-02-full-width-entries"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "console",
+          "path": "maestro/release/2026-10-15_190054/TC-02-02 Each category entry spans the full width of the screen/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release/2026-10-15_190054/TC-02-02 Each category entry spans the full width of the screen/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-02-03",
+      "title": "The category screen appears within 3 s of launch on the Kompakt",
+      "module": "MOD-02",
+      "layer": "mobile",
+      "type": "nfr",
+      "automation": "manual-only",
+      "covers": [
+        "US-02-01#7",
+        "NFR-02"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/02-age-categories/tests/TC-02-03-categories-within-3s.md",
+      "status": "manual",
+      "duration_ms": 0,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Close the app fully and start a recording",
+          "expected": "—",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 2,
+          "action": "Open the app",
+          "expected": "The category screen is fully drawn",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 3,
+          "action": "Measure the time from the touch on the app icon to the drawn screen",
+          "expected": "At most 3 s, measured three times",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        }
+      ],
+      "logs": [],
+      "error": null
+    },
+    {
+      "id": "TC-02-04",
+      "title": "The category screen is pure black and white with no animation on the Kompakt",
+      "module": "MOD-02",
+      "layer": "mobile",
+      "type": "nfr",
+      "automation": "manual-only",
+      "covers": [
+        "NFR-03",
+        "NFR-07"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/02-age-categories/tests/TC-02-04-eink-look-on-kompakt.md",
+      "status": "manual",
+      "duration_ms": 0,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Open the app on the Kompakt",
+          "expected": "The category screen is shown",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 2,
+          "action": "Look at every element, then choose a category and come back",
+          "expected": "Only black and white, nothing moves or fades between screens",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        }
+      ],
+      "logs": [],
+      "error": null
+    },
+    {
+      "id": "TC-02-05",
+      "title": "First launch shows no continue entry",
+      "module": "MOD-02",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-02-02#1"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/02-age-categories/tests/TC-02-05-no-continue-on-first-launch.md",
+      "status": "skipped",
+      "duration_ms": 0,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Open the app",
+          "expected": "Only the list 3+, 4+, 5+ is shown; there is no continue entry above it",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        }
+      ],
+      "logs": [],
+      "error": null
+    },
+    {
+      "id": "TC-02-06",
+      "title": "After a category is used, a continue entry for it stands above the unchanged list",
+      "module": "MOD-02",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-02-02#2"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/02-age-categories/tests/TC-02-06-continue-after-use.md",
+      "status": "skipped",
+      "duration_ms": 0,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Open the app and choose 4+",
+          "expected": "A 4+ card is shown",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 2,
+          "action": "Go back to the categories",
+          "expected": "A continue entry naming 4+ stands above the list, visibly set apart",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 3,
+          "action": "Read the list below it",
+          "expected": "Still \"3+\", \"4+\", \"5+\" in that order",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        }
+      ],
+      "logs": [],
+      "error": null
+    },
+    {
+      "id": "TC-02-07",
+      "title": "After a restart, continue resumes the last category at its first unseen card",
+      "module": "MOD-02",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-02-02#3"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/02-age-categories/tests/TC-02-07-continue-after-restart.md",
+      "status": "skipped",
+      "duration_ms": 0,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Open 4+ and reveal three answers, noting the fourth question",
+          "expected": "Three answers revealed; the fourth question is on screen",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 2,
+          "action": "Close the app fully and open it again",
+          "expected": "The category screen shows a continue entry for 4+",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 3,
+          "action": "Touch the continue entry",
+          "expected": "The noted fourth question is shown, answer hidden",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        }
+      ],
+      "logs": [],
+      "error": null
+    },
+    {
+      "id": "TC-02-08",
+      "title": "Continue on a finished deck opens its end card",
+      "module": "MOD-02",
+      "layer": "mobile",
+      "type": "edge",
+      "automation": "auto",
+      "covers": [
+        "US-02-02#4"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/02-age-categories/tests/TC-02-08-continue-finished-deck.md",
+      "status": "skipped",
+      "duration_ms": 0,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Set the 3+ deck to all 50 answers revealed, last used 3+",
+          "expected": "The saved state shows 3+ finished",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 2,
+          "action": "Open the app",
+          "expected": "A continue entry for 3+ is shown",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 3,
+          "action": "Touch the continue entry",
+          "expected": "The 3+ end card is shown",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        }
+      ],
+      "logs": [],
+      "error": null
+    },
+    {
+      "id": "TC-02-09",
+      "title": "Unreadable saved data makes the category screen behave as on first launch",
+      "module": "MOD-02",
+      "layer": "mobile",
+      "type": "edge",
+      "automation": "auto",
+      "covers": [
+        "MOD-02-F08"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/02-age-categories/tests/TC-02-09-unreadable-saved-data.md",
+      "status": "skipped",
+      "duration_ms": 0,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Replace the app's saved data with unreadable content",
+          "expected": "The saved data is unreadable",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 2,
+          "action": "Open the app",
+          "expected": "The category screen opens without an error, with no continue entry, in the device language",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        }
+      ],
+      "logs": [],
+      "error": null
+    },
+    {
+      "id": "TC-02-10",
+      "title": "On a Polish device the first launch is in Polish",
+      "module": "MOD-02",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-02-03#1"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/02-age-categories/tests/TC-02-10-polish-device.md",
+      "status": "pass",
+      "duration_ms": 1559,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Set the emulator language to Polish and open the app",
+          "expected": "Every text on the category screen is Polish; the switch shows Polish as active",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-02-10 On a Polish device the first launch is in Polish/takeScreenshot/step-01-polish.png",
+              "label": "step-01-polish"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-02-10 On a Polish device the first launch is in Polish/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-02-10 On a Polish device the first launch is in Polish/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-02-11",
+      "title": "On a device set to another language the first launch is in English",
+      "module": "MOD-02",
+      "layer": "mobile",
+      "type": "edge",
+      "automation": "auto",
+      "covers": [
+        "US-02-03#2"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/02-age-categories/tests/TC-02-11-other-language-device.md",
+      "status": "pass",
+      "duration_ms": 1915,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Set the emulator language to German and open the app",
+          "expected": "Every text on the category screen is English; the switch shows English as active",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-de/2026-10-15_191014/TC-02-11 On a device set to another language the first launch is in English/takeScreenshot/step-01-english.png",
+              "label": "step-01-english"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "console",
+          "path": "maestro/release-de/2026-10-15_191014/TC-02-11 On a device set to another language the first launch is in English/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-de/2026-10-15_191014/TC-02-11 On a device set to another language the first launch is in English/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-02-12",
+      "title": "A language switch changes every text and survives a restart",
+      "module": "MOD-02",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-02-03#3"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/02-age-categories/tests/TC-02-12-switch-survives-restart.md",
+      "status": "fail",
+      "duration_ms": 24051,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Open the app (Polish) and switch to English",
+          "expected": "Every text on the category screen is English",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-02-12 A language switch changes every text and survives a restart/takeScreenshot/step-01-switched-to-english.png",
+              "label": "step-01-switched-to-english"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Close the app fully and open it again",
+          "expected": "The category screen is in English",
+          "status": "fail",
+          "duration_ms": 0,
+          "observed": "Assertion is false: \"‹ Categories\", id: return-control is visible",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-02-12 A language switch changes every text and survives a restart/takeScreenshot/step-02-english-after-restart.png",
+              "label": "step-02-english-after-restart"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "action": "Choose 3+",
+          "expected": "The question on the card is in English",
+          "status": "blocked",
+          "duration_ms": 0,
+          "observed": "not reached — an earlier step failed",
+          "evidence": []
+        }
+      ],
+      "logs": [
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-02-12 A language switch changes every text and survives a restart/screenshots/step-023-assertCondition-${JSON.parse(STRINGS).en.png",
+          "label": "step-023-assertCondition-${JSON.parse(STRINGS).en"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-02-12 A language switch changes every text and survives a restart/screen-hierarchy/step-023-assertCondition-${JSON.parse(STRINGS).en.json",
+          "label": "step-023-assertCondition-${JSON.parse(STRINGS).en"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-02-12 A language switch changes every text and survives a restart/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-02-12 A language switch changes every text and survives a restart/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": {
+        "at_step": 2,
+        "message": "Assertion is false: \"‹ Categories\", id: return-control is visible",
+        "snippet": "Assertion is false: \"‹ Categories\", id: return-control is visible"
+      }
+    },
+    {
+      "id": "TC-02-13",
+      "title": "A language switch keeps every deck's position",
+      "module": "MOD-02",
+      "layer": "mobile",
+      "type": "edge",
+      "automation": "auto",
+      "covers": [
+        "US-02-03#4"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/02-age-categories/tests/TC-02-13-switch-keeps-decks.md",
+      "status": "pass",
+      "duration_ms": 25187,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Open 3+, reveal three answers, note the fourth question, go back",
+          "expected": "Back on the category screen",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-deck-state/2026-10-15_190801/TC-02-13 A language switch keeps every deck's position/takeScreenshot/step-01-back-on-categories.png",
+              "label": "step-01-back-on-categories"
+            },
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-deck-state/2026-10-15_190801/TC-02-13 A language switch keeps every deck's position/takeScreenshot/step-01-fourth-question.png",
+              "label": "step-01-fourth-question"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Switch to English and open 3+",
+          "expected": "The noted fourth question is shown, in English, answer hidden",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-deck-state/2026-10-15_190801/TC-02-13 A language switch keeps every deck's position/takeScreenshot/step-02-fourth-question-in-english.png",
+              "label": "step-02-fourth-question-in-english"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-02-13 A language switch keeps every deck's position/screenshots/step-008-assertCondition-question.png",
+          "label": "step-008-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-02-13 A language switch keeps every deck's position/screenshots/step-011-assertCondition-answer.png",
+          "label": "step-011-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-02-13 A language switch keeps every deck's position/screenshots/step-014-assertCondition-question.png",
+          "label": "step-014-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-02-13 A language switch keeps every deck's position/screenshots/step-017-assertCondition-answer.png",
+          "label": "step-017-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-02-13 A language switch keeps every deck's position/screenshots/step-020-assertCondition-question.png",
+          "label": "step-020-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-02-13 A language switch keeps every deck's position/screenshots/step-023-assertCondition-answer.png",
+          "label": "step-023-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-02-13 A language switch keeps every deck's position/screen-hierarchy/step-008-assertCondition-question.json",
+          "label": "step-008-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-02-13 A language switch keeps every deck's position/screen-hierarchy/step-011-assertCondition-answer.json",
+          "label": "step-011-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-02-13 A language switch keeps every deck's position/screen-hierarchy/step-014-assertCondition-question.json",
+          "label": "step-014-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-02-13 A language switch keeps every deck's position/screen-hierarchy/step-017-assertCondition-answer.json",
+          "label": "step-017-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-02-13 A language switch keeps every deck's position/screen-hierarchy/step-020-assertCondition-question.json",
+          "label": "step-020-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-02-13 A language switch keeps every deck's position/screen-hierarchy/step-023-assertCondition-answer.json",
+          "label": "step-023-assertCondition-answer"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-02-13 A language switch keeps every deck's position/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-02-13 A language switch keeps every deck's position/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-02-14",
+      "title": "Android back on the category screen closes the app",
+      "module": "MOD-02",
+      "layer": "mobile",
+      "type": "edge",
+      "automation": "auto",
+      "covers": [
+        "NFR-09"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/02-age-categories/tests/TC-02-14-back-closes-app.md",
+      "status": "pass",
+      "duration_ms": 3549,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Open the app",
+          "expected": "The category screen is shown",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release/2026-10-15_190054/TC-02-14 Android back on the category screen closes the app/takeScreenshot/step-01-category-screen.png",
+              "label": "step-01-category-screen"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Press the Android back action",
+          "expected": "The app closes and the home screen is shown",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release/2026-10-15_190054/TC-02-14 Android back on the category screen closes the app/takeScreenshot/step-02-home-screen.png",
+              "label": "step-02-home-screen"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "console",
+          "path": "maestro/release/2026-10-15_190054/TC-02-14 Android back on the category screen closes the app/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release/2026-10-15_190054/TC-02-14 Android back on the category screen closes the app/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-03-01",
+      "title": "A new card shows only its question, with no buttons, choices or score",
+      "module": "MOD-03",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-03-01#1"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/03-question-cards/tests/TC-03-01-card-shows-question-only.md",
+      "status": "pass",
+      "duration_ms": 5350,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Open the app and choose 3+",
+          "expected": "A card shows one question in the largest type of the app; no answer, buttons, choices or score on it",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-03-01 A new card shows only its question, with no buttons, choices or score/takeScreenshot/step-01-question-alone.png",
+              "label": "step-01-question-alone"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-01 A new card shows only its question, with no buttons, choices or score/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-01 A new card shows only its question, with no buttons, choices or score/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-03-02",
+      "title": "Touching the card reveals the answer below a line, and the question stays",
+      "module": "MOD-03",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-03-01#2"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/03-question-cards/tests/TC-03-02-touch-reveals-answer.md",
+      "status": "pass",
+      "duration_ms": 6919,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Choose 3+",
+          "expected": "A question is shown",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-03-02 Touching the card reveals the answer below a line, and the question stays/takeScreenshot/step-01-question.png",
+              "label": "step-01-question"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Touch the middle of the card",
+          "expected": "The answer appears below the question, separated by a horizontal line; the question is still there",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-03-02 Touching the card reveals the answer below a line, and the question stays/takeScreenshot/step-02-answer-below-question.png",
+              "label": "step-02-answer-below-question"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-02 Touching the card reveals the answer below a line, and the question stays/screenshots/step-011-assertCondition-question.png",
+          "label": "step-011-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-02 Touching the card reveals the answer below a line, and the question stays/screen-hierarchy/step-011-assertCondition-question.json",
+          "label": "step-011-assertCondition-question"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-02 Touching the card reveals the answer below a line, and the question stays/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-02 Touching the card reveals the answer below a line, and the question stays/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-03-03",
+      "title": "Touching a revealed card shows the next question alone",
+      "module": "MOD-03",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-03-01#3"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/03-question-cards/tests/TC-03-03-touch-shows-next.md",
+      "status": "pass",
+      "duration_ms": 9767,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Choose 3+ and touch to reveal",
+          "expected": "The answer is shown",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-03-03 Touching a revealed card shows the next question alone/takeScreenshot/step-01-answer.png",
+              "label": "step-01-answer"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Wait 1 s and touch the card again",
+          "expected": "A different question appears alone",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-03-03 Touching a revealed card shows the next question alone/takeScreenshot/step-02-next-question-alone.png",
+              "label": "step-02-next-question-alone"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-03 Touching a revealed card shows the next question alone/screenshots/step-009-assertCondition-question.png",
+          "label": "step-009-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-03 Touching a revealed card shows the next question alone/screenshots/step-013-assertCondition-answer.png",
+          "label": "step-013-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-03 Touching a revealed card shows the next question alone/screen-hierarchy/step-009-assertCondition-question.json",
+          "label": "step-009-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-03 Touching a revealed card shows the next question alone/screen-hierarchy/step-013-assertCondition-answer.json",
+          "label": "step-013-assertCondition-answer"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-03 Touching a revealed card shows the next question alone/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-03 Touching a revealed card shows the next question alone/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-03-04",
+      "title": "A double touch within 0.5 s never skips an answer",
+      "module": "MOD-03",
+      "layer": "mobile",
+      "type": "negative",
+      "automation": "auto",
+      "covers": [
+        "US-03-01#4"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/03-question-cards/tests/TC-03-04-double-touch-no-skip.md",
+      "status": "pass",
+      "duration_ms": 6579,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Choose 3+",
+          "expected": "A question is shown",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-03-04 A double touch within 0.5 s never skips an answer/takeScreenshot/step-01-question.png",
+              "label": "step-01-question"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Touch the card twice within 0.3 s",
+          "expected": "The answer of the same question is shown; the deck position has not moved",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-03-04 A double touch within 0.5 s never skips an answer/takeScreenshot/step-02-same-card-answer.png",
+              "label": "step-02-same-card-answer"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-04 A double touch within 0.5 s never skips an answer/screenshots/step-011-assertCondition-question.png",
+          "label": "step-011-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-04 A double touch within 0.5 s never skips an answer/screen-hierarchy/step-011-assertCondition-question.json",
+          "label": "step-011-assertCondition-question"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-04 A double touch within 0.5 s never skips an answer/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-04 A double touch within 0.5 s never skips an answer/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-03-05",
+      "title": "Cards appear in the language chosen on the category screen",
+      "module": "MOD-03",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-03-01#5"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/03-question-cards/tests/TC-03-05-cards-in-chosen-language.md",
+      "status": "pass",
+      "duration_ms": 7923,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Switch to English on the category screen and choose 3+",
+          "expected": "The question is in English",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-03-05 Cards appear in the language chosen on the category screen/takeScreenshot/step-01-question-in-english.png",
+              "label": "step-01-question-in-english"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Touch the card",
+          "expected": "The answer is in English",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-03-05 Cards appear in the language chosen on the category screen/takeScreenshot/step-02-answer-in-english.png",
+              "label": "step-02-answer-in-english"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-05 Cards appear in the language chosen on the category screen/screenshots/step-013-assertCondition-question.png",
+          "label": "step-013-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-05 Cards appear in the language chosen on the category screen/screen-hierarchy/step-013-assertCondition-question.json",
+          "label": "step-013-assertCondition-question"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-05 Cards appear in the language chosen on the category screen/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-05 Cards appear in the language chosen on the category screen/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-03-06",
+      "title": "On the Kompakt the answer appears within 1 s of a touch, with no animation",
+      "module": "MOD-03",
+      "layer": "mobile",
+      "type": "nfr",
+      "automation": "manual-only",
+      "covers": [
+        "US-03-01#6",
+        "NFR-01",
+        "NFR-03"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/03-question-cards/tests/TC-03-06-reveal-within-1s-kompakt.md",
+      "status": "manual",
+      "duration_ms": 0,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Choose 3+ on the Kompakt and start a recording",
+          "expected": "A question is shown",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 2,
+          "action": "Touch the card; repeat for five cards",
+          "expected": "Each answer is fully drawn within 1 s, with no animation",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        }
+      ],
+      "logs": [],
+      "error": null
+    },
+    {
+      "id": "TC-03-07",
+      "title": "A whole category shows each of its 50 questions exactly once",
+      "module": "MOD-03",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-03-02#1"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/03-question-cards/tests/TC-03-07-deck-no-repeats.md",
+      "status": "pass",
+      "duration_ms": 540346,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Choose 3+",
+          "expected": "The first question is shown",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/takeScreenshot/step-01-first-question.png",
+              "label": "step-01-first-question"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Reveal and move on through 50 cards, noting each question",
+          "expected": "50 questions are noted",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/takeScreenshot/step-02-after-50-cards.png",
+              "label": "step-02-after-50-cards"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "action": "Compare the noted questions",
+          "expected": "All 50 are different, and together they are the 3+ deck",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/takeScreenshot/step-03-compared.png",
+              "label": "step-03-compared"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-014-assertCondition-question.png",
+          "label": "step-014-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-017-assertCondition-answer.png",
+          "label": "step-017-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-022-assertCondition-question.png",
+          "label": "step-022-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-025-assertCondition-answer.png",
+          "label": "step-025-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-030-assertCondition-question.png",
+          "label": "step-030-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-033-assertCondition-answer.png",
+          "label": "step-033-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-038-assertCondition-question.png",
+          "label": "step-038-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-041-assertCondition-answer.png",
+          "label": "step-041-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-046-assertCondition-question.png",
+          "label": "step-046-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-049-assertCondition-answer.png",
+          "label": "step-049-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-054-assertCondition-question.png",
+          "label": "step-054-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-057-assertCondition-answer.png",
+          "label": "step-057-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-062-assertCondition-question.png",
+          "label": "step-062-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-065-assertCondition-answer.png",
+          "label": "step-065-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-070-assertCondition-question.png",
+          "label": "step-070-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-073-assertCondition-answer.png",
+          "label": "step-073-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-078-assertCondition-question.png",
+          "label": "step-078-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-081-assertCondition-answer.png",
+          "label": "step-081-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-086-assertCondition-question.png",
+          "label": "step-086-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-089-assertCondition-answer.png",
+          "label": "step-089-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-094-assertCondition-question.png",
+          "label": "step-094-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-097-assertCondition-answer.png",
+          "label": "step-097-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-102-assertCondition-question.png",
+          "label": "step-102-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-105-assertCondition-answer.png",
+          "label": "step-105-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-110-assertCondition-question.png",
+          "label": "step-110-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-113-assertCondition-answer.png",
+          "label": "step-113-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-118-assertCondition-question.png",
+          "label": "step-118-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-121-assertCondition-answer.png",
+          "label": "step-121-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-126-assertCondition-question.png",
+          "label": "step-126-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-129-assertCondition-answer.png",
+          "label": "step-129-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-134-assertCondition-question.png",
+          "label": "step-134-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-137-assertCondition-answer.png",
+          "label": "step-137-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-142-assertCondition-question.png",
+          "label": "step-142-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-145-assertCondition-answer.png",
+          "label": "step-145-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-150-assertCondition-question.png",
+          "label": "step-150-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-153-assertCondition-answer.png",
+          "label": "step-153-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-158-assertCondition-question.png",
+          "label": "step-158-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-161-assertCondition-answer.png",
+          "label": "step-161-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-166-assertCondition-question.png",
+          "label": "step-166-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-169-assertCondition-answer.png",
+          "label": "step-169-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-174-assertCondition-question.png",
+          "label": "step-174-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-177-assertCondition-answer.png",
+          "label": "step-177-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-182-assertCondition-question.png",
+          "label": "step-182-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-185-assertCondition-answer.png",
+          "label": "step-185-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-190-assertCondition-question.png",
+          "label": "step-190-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-193-assertCondition-answer.png",
+          "label": "step-193-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-198-assertCondition-question.png",
+          "label": "step-198-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-201-assertCondition-answer.png",
+          "label": "step-201-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-206-assertCondition-question.png",
+          "label": "step-206-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-209-assertCondition-answer.png",
+          "label": "step-209-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-214-assertCondition-question.png",
+          "label": "step-214-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-217-assertCondition-answer.png",
+          "label": "step-217-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-222-assertCondition-question.png",
+          "label": "step-222-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-225-assertCondition-answer.png",
+          "label": "step-225-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-230-assertCondition-question.png",
+          "label": "step-230-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-233-assertCondition-answer.png",
+          "label": "step-233-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-238-assertCondition-question.png",
+          "label": "step-238-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-241-assertCondition-answer.png",
+          "label": "step-241-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-246-assertCondition-question.png",
+          "label": "step-246-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-249-assertCondition-answer.png",
+          "label": "step-249-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-254-assertCondition-question.png",
+          "label": "step-254-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-257-assertCondition-answer.png",
+          "label": "step-257-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-262-assertCondition-question.png",
+          "label": "step-262-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-265-assertCondition-answer.png",
+          "label": "step-265-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-270-assertCondition-question.png",
+          "label": "step-270-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-273-assertCondition-answer.png",
+          "label": "step-273-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-278-assertCondition-question.png",
+          "label": "step-278-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-281-assertCondition-answer.png",
+          "label": "step-281-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-286-assertCondition-question.png",
+          "label": "step-286-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-289-assertCondition-answer.png",
+          "label": "step-289-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-294-assertCondition-question.png",
+          "label": "step-294-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-297-assertCondition-answer.png",
+          "label": "step-297-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-302-assertCondition-question.png",
+          "label": "step-302-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-305-assertCondition-answer.png",
+          "label": "step-305-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-310-assertCondition-question.png",
+          "label": "step-310-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-313-assertCondition-answer.png",
+          "label": "step-313-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-318-assertCondition-question.png",
+          "label": "step-318-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-321-assertCondition-answer.png",
+          "label": "step-321-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-326-assertCondition-question.png",
+          "label": "step-326-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-329-assertCondition-answer.png",
+          "label": "step-329-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-334-assertCondition-question.png",
+          "label": "step-334-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-337-assertCondition-answer.png",
+          "label": "step-337-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-342-assertCondition-question.png",
+          "label": "step-342-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-345-assertCondition-answer.png",
+          "label": "step-345-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-350-assertCondition-question.png",
+          "label": "step-350-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-353-assertCondition-answer.png",
+          "label": "step-353-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-358-assertCondition-question.png",
+          "label": "step-358-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-361-assertCondition-answer.png",
+          "label": "step-361-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-366-assertCondition-question.png",
+          "label": "step-366-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-369-assertCondition-answer.png",
+          "label": "step-369-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-374-assertCondition-question.png",
+          "label": "step-374-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-377-assertCondition-answer.png",
+          "label": "step-377-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-382-assertCondition-question.png",
+          "label": "step-382-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-385-assertCondition-answer.png",
+          "label": "step-385-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-390-assertCondition-question.png",
+          "label": "step-390-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-393-assertCondition-answer.png",
+          "label": "step-393-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-398-assertCondition-question.png",
+          "label": "step-398-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-401-assertCondition-answer.png",
+          "label": "step-401-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-406-assertCondition-question.png",
+          "label": "step-406-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screenshots/step-409-assertCondition-answer.png",
+          "label": "step-409-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-014-assertCondition-question.json",
+          "label": "step-014-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-017-assertCondition-answer.json",
+          "label": "step-017-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-022-assertCondition-question.json",
+          "label": "step-022-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-025-assertCondition-answer.json",
+          "label": "step-025-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-030-assertCondition-question.json",
+          "label": "step-030-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-033-assertCondition-answer.json",
+          "label": "step-033-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-038-assertCondition-question.json",
+          "label": "step-038-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-041-assertCondition-answer.json",
+          "label": "step-041-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-046-assertCondition-question.json",
+          "label": "step-046-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-049-assertCondition-answer.json",
+          "label": "step-049-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-054-assertCondition-question.json",
+          "label": "step-054-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-057-assertCondition-answer.json",
+          "label": "step-057-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-062-assertCondition-question.json",
+          "label": "step-062-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-065-assertCondition-answer.json",
+          "label": "step-065-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-070-assertCondition-question.json",
+          "label": "step-070-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-073-assertCondition-answer.json",
+          "label": "step-073-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-078-assertCondition-question.json",
+          "label": "step-078-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-081-assertCondition-answer.json",
+          "label": "step-081-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-086-assertCondition-question.json",
+          "label": "step-086-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-089-assertCondition-answer.json",
+          "label": "step-089-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-094-assertCondition-question.json",
+          "label": "step-094-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-097-assertCondition-answer.json",
+          "label": "step-097-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-102-assertCondition-question.json",
+          "label": "step-102-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-105-assertCondition-answer.json",
+          "label": "step-105-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-110-assertCondition-question.json",
+          "label": "step-110-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-113-assertCondition-answer.json",
+          "label": "step-113-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-118-assertCondition-question.json",
+          "label": "step-118-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-121-assertCondition-answer.json",
+          "label": "step-121-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-126-assertCondition-question.json",
+          "label": "step-126-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-129-assertCondition-answer.json",
+          "label": "step-129-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-134-assertCondition-question.json",
+          "label": "step-134-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-137-assertCondition-answer.json",
+          "label": "step-137-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-142-assertCondition-question.json",
+          "label": "step-142-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-145-assertCondition-answer.json",
+          "label": "step-145-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-150-assertCondition-question.json",
+          "label": "step-150-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-153-assertCondition-answer.json",
+          "label": "step-153-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-158-assertCondition-question.json",
+          "label": "step-158-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-161-assertCondition-answer.json",
+          "label": "step-161-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-166-assertCondition-question.json",
+          "label": "step-166-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-169-assertCondition-answer.json",
+          "label": "step-169-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-174-assertCondition-question.json",
+          "label": "step-174-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-177-assertCondition-answer.json",
+          "label": "step-177-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-182-assertCondition-question.json",
+          "label": "step-182-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-185-assertCondition-answer.json",
+          "label": "step-185-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-190-assertCondition-question.json",
+          "label": "step-190-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-193-assertCondition-answer.json",
+          "label": "step-193-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-198-assertCondition-question.json",
+          "label": "step-198-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-201-assertCondition-answer.json",
+          "label": "step-201-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-206-assertCondition-question.json",
+          "label": "step-206-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-209-assertCondition-answer.json",
+          "label": "step-209-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-214-assertCondition-question.json",
+          "label": "step-214-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-217-assertCondition-answer.json",
+          "label": "step-217-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-222-assertCondition-question.json",
+          "label": "step-222-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-225-assertCondition-answer.json",
+          "label": "step-225-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-230-assertCondition-question.json",
+          "label": "step-230-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-233-assertCondition-answer.json",
+          "label": "step-233-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-238-assertCondition-question.json",
+          "label": "step-238-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-241-assertCondition-answer.json",
+          "label": "step-241-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-246-assertCondition-question.json",
+          "label": "step-246-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-249-assertCondition-answer.json",
+          "label": "step-249-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-254-assertCondition-question.json",
+          "label": "step-254-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-257-assertCondition-answer.json",
+          "label": "step-257-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-262-assertCondition-question.json",
+          "label": "step-262-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-265-assertCondition-answer.json",
+          "label": "step-265-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-270-assertCondition-question.json",
+          "label": "step-270-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-273-assertCondition-answer.json",
+          "label": "step-273-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-278-assertCondition-question.json",
+          "label": "step-278-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-281-assertCondition-answer.json",
+          "label": "step-281-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-286-assertCondition-question.json",
+          "label": "step-286-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-289-assertCondition-answer.json",
+          "label": "step-289-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-294-assertCondition-question.json",
+          "label": "step-294-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-297-assertCondition-answer.json",
+          "label": "step-297-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-302-assertCondition-question.json",
+          "label": "step-302-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-305-assertCondition-answer.json",
+          "label": "step-305-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-310-assertCondition-question.json",
+          "label": "step-310-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-313-assertCondition-answer.json",
+          "label": "step-313-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-318-assertCondition-question.json",
+          "label": "step-318-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-321-assertCondition-answer.json",
+          "label": "step-321-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-326-assertCondition-question.json",
+          "label": "step-326-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-329-assertCondition-answer.json",
+          "label": "step-329-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-334-assertCondition-question.json",
+          "label": "step-334-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-337-assertCondition-answer.json",
+          "label": "step-337-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-342-assertCondition-question.json",
+          "label": "step-342-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-345-assertCondition-answer.json",
+          "label": "step-345-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-350-assertCondition-question.json",
+          "label": "step-350-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-353-assertCondition-answer.json",
+          "label": "step-353-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-358-assertCondition-question.json",
+          "label": "step-358-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-361-assertCondition-answer.json",
+          "label": "step-361-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-366-assertCondition-question.json",
+          "label": "step-366-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-369-assertCondition-answer.json",
+          "label": "step-369-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-374-assertCondition-question.json",
+          "label": "step-374-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-377-assertCondition-answer.json",
+          "label": "step-377-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-382-assertCondition-question.json",
+          "label": "step-382-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-385-assertCondition-answer.json",
+          "label": "step-385-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-390-assertCondition-question.json",
+          "label": "step-390-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-393-assertCondition-answer.json",
+          "label": "step-393-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-398-assertCondition-question.json",
+          "label": "step-398-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-401-assertCondition-answer.json",
+          "label": "step-401-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-406-assertCondition-question.json",
+          "label": "step-406-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/screen-hierarchy/step-409-assertCondition-answer.json",
+          "label": "step-409-assertCondition-answer"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-07 A whole category shows each of its 50 questions exactly once/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-03-08",
+      "title": "Closing before the reveal brings back the same question",
+      "module": "MOD-03",
+      "layer": "mobile",
+      "type": "edge",
+      "automation": "auto",
+      "covers": [
+        "US-03-02#2"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/03-question-cards/tests/TC-03-08-closed-before-reveal.md",
+      "status": "pass",
+      "duration_ms": 8001,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Choose 3+ and note the question, answer hidden",
+          "expected": "The question is shown",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-03-08 Closing before the reveal brings back the same question/takeScreenshot/step-01-question-answer-hidden.png",
+              "label": "step-01-question-answer-hidden"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Close the app fully, open it and choose 3+",
+          "expected": "The same question is shown, answer hidden",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-03-08 Closing before the reveal brings back the same question/takeScreenshot/step-02-same-question-after-restart.png",
+              "label": "step-02-same-question-after-restart"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-08 Closing before the reveal brings back the same question/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-08 Closing before the reveal brings back the same question/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-03-09",
+      "title": "Closing after the reveal resumes at the next unseen question",
+      "module": "MOD-03",
+      "layer": "mobile",
+      "type": "edge",
+      "automation": "auto",
+      "covers": [
+        "US-03-02#3"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/03-question-cards/tests/TC-03-09-closed-after-reveal.md",
+      "status": "pass",
+      "duration_ms": 9656,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Choose 3+, reveal the answer, note the question",
+          "expected": "The answer is shown",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-03-09 Closing after the reveal resumes at the next unseen question/takeScreenshot/step-01-answer-revealed.png",
+              "label": "step-01-answer-revealed"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Close the app fully, open it and choose 3+",
+          "expected": "A different question is shown, answer hidden",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-03-09 Closing after the reveal resumes at the next unseen question/takeScreenshot/step-02-next-question-after-restart.png",
+              "label": "step-02-next-question-after-restart"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-09 Closing after the reveal resumes at the next unseen question/screenshots/step-009-assertCondition-question.png",
+          "label": "step-009-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-09 Closing after the reveal resumes at the next unseen question/screen-hierarchy/step-009-assertCondition-question.json",
+          "label": "step-009-assertCondition-question"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-09 Closing after the reveal resumes at the next unseen question/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-09 Closing after the reveal resumes at the next unseen question/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-03-10",
+      "title": "Each category keeps its own position",
+      "module": "MOD-03",
+      "layer": "mobile",
+      "type": "edge",
+      "automation": "auto",
+      "covers": [
+        "US-03-02#4"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/03-question-cards/tests/TC-03-10-separate-decks.md",
+      "status": "pass",
+      "duration_ms": 33992,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Choose 3+ and reveal three answers, go back",
+          "expected": "Back on the category screen",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-03-10 Each category keeps its own position/takeScreenshot/step-01-back-on-categories.png",
+              "label": "step-01-back-on-categories"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Choose 4+",
+          "expected": "4+ shows its first card",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-03-10 Each category keeps its own position/takeScreenshot/step-02-4-plus-first-card.png",
+              "label": "step-02-4-plus-first-card"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "action": "Go back and choose 3+",
+          "expected": "3+ shows its fourth card",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-03-10 Each category keeps its own position/takeScreenshot/step-03-3-plus-fourth-card.png",
+              "label": "step-03-3-plus-fourth-card"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-10 Each category keeps its own position/screenshots/step-011-assertCondition-question.png",
+          "label": "step-011-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-10 Each category keeps its own position/screenshots/step-014-assertCondition-answer.png",
+          "label": "step-014-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-10 Each category keeps its own position/screenshots/step-019-assertCondition-question.png",
+          "label": "step-019-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-10 Each category keeps its own position/screenshots/step-022-assertCondition-answer.png",
+          "label": "step-022-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-10 Each category keeps its own position/screenshots/step-027-assertCondition-question.png",
+          "label": "step-027-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-10 Each category keeps its own position/screen-hierarchy/step-011-assertCondition-question.json",
+          "label": "step-011-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-10 Each category keeps its own position/screen-hierarchy/step-014-assertCondition-answer.json",
+          "label": "step-014-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-10 Each category keeps its own position/screen-hierarchy/step-019-assertCondition-question.json",
+          "label": "step-019-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-10 Each category keeps its own position/screen-hierarchy/step-022-assertCondition-answer.json",
+          "label": "step-022-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-10 Each category keeps its own position/screen-hierarchy/step-027-assertCondition-question.json",
+          "label": "step-027-assertCondition-question"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-10 Each category keeps its own position/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-10 Each category keeps its own position/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-03-11",
+      "title": "An unreadable saved deck starts a fresh shuffle",
+      "module": "MOD-03",
+      "layer": "mobile",
+      "type": "edge",
+      "automation": "auto",
+      "covers": [
+        "MOD-03-F08"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/03-question-cards/tests/TC-03-11-unreadable-saved-deck.md",
+      "status": "pass",
+      "duration_ms": 5366,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Replace the saved 3+ deck with unreadable content",
+          "expected": "The saved deck is unreadable",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-saved-deck/2026-10-15_190854/TC-03-11 An unreadable saved deck starts a fresh shuffle/takeScreenshot/step-01-saved-deck-unreadable.png",
+              "label": "step-01-saved-deck-unreadable"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Open the app and choose 3+",
+          "expected": "A question is shown without an error; the deck starts from its first card",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-saved-deck/2026-10-15_190854/TC-03-11 An unreadable saved deck starts a fresh shuffle/takeScreenshot/step-02-fresh-deck-first-card.png",
+              "label": "step-02-fresh-deck-first-card"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "console",
+          "path": "maestro/release-saved-deck/2026-10-15_190854/TC-03-11 An unreadable saved deck starts a fresh shuffle/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-saved-deck/2026-10-15_190854/TC-03-11 An unreadable saved deck starts a fresh shuffle/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-03-12",
+      "title": "After the last card the end card appears",
+      "module": "MOD-03",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-03-03#1"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/03-question-cards/tests/TC-03-12-end-card-after-last.md",
+      "status": "pass",
+      "duration_ms": 18291,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Set the 3+ deck to 49 answers revealed",
+          "expected": "The saved state shows one card left",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-end-card/TC-03-12/2026-10-15_190903/TC-03-12 After the last card the end card appears/takeScreenshot/step-01-deck-one-card-left.png",
+              "label": "step-01-deck-one-card-left"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Choose 3+, reveal the last answer and touch again",
+          "expected": "An end card says the deck is finished and offers \"again\" and \"categories\"",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-end-card/TC-03-12/2026-10-15_190903/TC-03-12 After the last card the end card appears/takeScreenshot/step-02-end-card.png",
+              "label": "step-02-end-card"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-end-card/TC-03-12/2026-10-15_190903/TC-03-12 After the last card the end card appears/screenshots/step-012-assertCondition-question.png",
+          "label": "step-012-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-end-card/TC-03-12/2026-10-15_190903/TC-03-12 After the last card the end card appears/screenshots/step-015-assertCondition-answer.png",
+          "label": "step-015-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-end-card/TC-03-12/2026-10-15_190903/TC-03-12 After the last card the end card appears/screen-hierarchy/step-012-assertCondition-question.json",
+          "label": "step-012-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-end-card/TC-03-12/2026-10-15_190903/TC-03-12 After the last card the end card appears/screen-hierarchy/step-015-assertCondition-answer.json",
+          "label": "step-015-assertCondition-answer"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-end-card/TC-03-12/2026-10-15_190903/TC-03-12 After the last card the end card appears/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-end-card/TC-03-12/2026-10-15_190903/TC-03-12 After the last card the end card appears/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-03-13",
+      "title": "\"Again\" restarts the category with every card unseen",
+      "module": "MOD-03",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-03-03#2"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/03-question-cards/tests/TC-03-13-again-restarts-deck.md",
+      "status": "pass",
+      "duration_ms": 22335,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Bring 3+ to its end card",
+          "expected": "The end card is shown",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-end-card/TC-03-13/2026-10-15_190917/TC-03-13 Again restarts the category with every card unseen/takeScreenshot/step-01-end-card.png",
+              "label": "step-01-end-card"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Touch \"again\"",
+          "expected": "A question is shown; the saved state shows 0 of 50 seen and a new order",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-end-card/TC-03-13/2026-10-15_190917/TC-03-13 Again restarts the category with every card unseen/takeScreenshot/step-02-deck-started-over.png",
+              "label": "step-02-deck-started-over"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-end-card/TC-03-13/2026-10-15_190917/TC-03-13 Again restarts the category with every card unseen/screenshots/step-010-assertCondition-question.png",
+          "label": "step-010-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-end-card/TC-03-13/2026-10-15_190917/TC-03-13 Again restarts the category with every card unseen/screenshots/step-013-assertCondition-answer.png",
+          "label": "step-013-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-end-card/TC-03-13/2026-10-15_190917/TC-03-13 Again restarts the category with every card unseen/screenshots/step-018-assertCondition-end-card.png",
+          "label": "step-018-assertCondition-end-card"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-end-card/TC-03-13/2026-10-15_190917/TC-03-13 Again restarts the category with every card unseen/screen-hierarchy/step-010-assertCondition-question.json",
+          "label": "step-010-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-end-card/TC-03-13/2026-10-15_190917/TC-03-13 Again restarts the category with every card unseen/screen-hierarchy/step-013-assertCondition-answer.json",
+          "label": "step-013-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-end-card/TC-03-13/2026-10-15_190917/TC-03-13 Again restarts the category with every card unseen/screen-hierarchy/step-018-assertCondition-end-card.json",
+          "label": "step-018-assertCondition-end-card"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-end-card/TC-03-13/2026-10-15_190917/TC-03-13 Again restarts the category with every card unseen/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-end-card/TC-03-13/2026-10-15_190917/TC-03-13 Again restarts the category with every card unseen/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-03-14",
+      "title": "\"Categories\" on the end card returns to the category screen",
+      "module": "MOD-03",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-03-03#3"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/03-question-cards/tests/TC-03-14-end-card-to-categories.md",
+      "status": "pass",
+      "duration_ms": 20483,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Bring 3+ to its end card",
+          "expected": "The end card is shown",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-end-card/TC-03-14/2026-10-15_190934/TC-03-14 Categories on the end card returns to the category screen/takeScreenshot/step-01-end-card.png",
+              "label": "step-01-end-card"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Touch \"categories\"",
+          "expected": "The category screen is shown",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-end-card/TC-03-14/2026-10-15_190934/TC-03-14 Categories on the end card returns to the category screen/takeScreenshot/step-02-category-screen.png",
+              "label": "step-02-category-screen"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-end-card/TC-03-14/2026-10-15_190934/TC-03-14 Categories on the end card returns to the category screen/screenshots/step-010-assertCondition-question.png",
+          "label": "step-010-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-end-card/TC-03-14/2026-10-15_190934/TC-03-14 Categories on the end card returns to the category screen/screenshots/step-013-assertCondition-answer.png",
+          "label": "step-013-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-end-card/TC-03-14/2026-10-15_190934/TC-03-14 Categories on the end card returns to the category screen/screenshots/step-018-assertCondition-end-card.png",
+          "label": "step-018-assertCondition-end-card"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-end-card/TC-03-14/2026-10-15_190934/TC-03-14 Categories on the end card returns to the category screen/screen-hierarchy/step-010-assertCondition-question.json",
+          "label": "step-010-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-end-card/TC-03-14/2026-10-15_190934/TC-03-14 Categories on the end card returns to the category screen/screen-hierarchy/step-013-assertCondition-answer.json",
+          "label": "step-013-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-end-card/TC-03-14/2026-10-15_190934/TC-03-14 Categories on the end card returns to the category screen/screen-hierarchy/step-018-assertCondition-end-card.json",
+          "label": "step-018-assertCondition-end-card"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-end-card/TC-03-14/2026-10-15_190934/TC-03-14 Categories on the end card returns to the category screen/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-end-card/TC-03-14/2026-10-15_190934/TC-03-14 Categories on the end card returns to the category screen/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-03-15",
+      "title": "An app closed on the end card reopens the category on its end card",
+      "module": "MOD-03",
+      "layer": "mobile",
+      "type": "edge",
+      "automation": "auto",
+      "covers": [
+        "MOD-03-F09"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/03-question-cards/tests/TC-03-15-reopen-on-end-card.md",
+      "status": "pass",
+      "duration_ms": 20739,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Bring 3+ to its end card",
+          "expected": "The end card is shown",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-end-card/TC-03-15/2026-10-15_190950/TC-03-15 An app closed on the end card reopens the category on its end card/takeScreenshot/step-01-end-card.png",
+              "label": "step-01-end-card"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Close the app fully, open it and choose 3+",
+          "expected": "The end card is shown again",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-end-card/TC-03-15/2026-10-15_190950/TC-03-15 An app closed on the end card reopens the category on its end card/takeScreenshot/step-02-end-card-after-restart.png",
+              "label": "step-02-end-card-after-restart"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-end-card/TC-03-15/2026-10-15_190950/TC-03-15 An app closed on the end card reopens the category on its end card/screenshots/step-010-assertCondition-question.png",
+          "label": "step-010-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-end-card/TC-03-15/2026-10-15_190950/TC-03-15 An app closed on the end card reopens the category on its end card/screenshots/step-013-assertCondition-answer.png",
+          "label": "step-013-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-end-card/TC-03-15/2026-10-15_190950/TC-03-15 An app closed on the end card reopens the category on its end card/screen-hierarchy/step-010-assertCondition-question.json",
+          "label": "step-010-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-end-card/TC-03-15/2026-10-15_190950/TC-03-15 An app closed on the end card reopens the category on its end card/screen-hierarchy/step-013-assertCondition-answer.json",
+          "label": "step-013-assertCondition-answer"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-end-card/TC-03-15/2026-10-15_190950/TC-03-15 An app closed on the end card reopens the category on its end card/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-end-card/TC-03-15/2026-10-15_190950/TC-03-15 An app closed on the end card reopens the category on its end card/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-03-16",
+      "title": "Android back on a card returns to the categories",
+      "module": "MOD-03",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-03-04#1"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/03-question-cards/tests/TC-03-16-back-from-card.md",
+      "status": "pass",
+      "duration_ms": 4877,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Choose 3+",
+          "expected": "A card is shown",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-03-16 Android back on a card returns to the categories/takeScreenshot/step-01-card.png",
+              "label": "step-01-card"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Press the Android back action",
+          "expected": "The category screen is shown",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-03-16 Android back on a card returns to the categories/takeScreenshot/step-02-category-screen.png",
+              "label": "step-02-category-screen"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-16 Android back on a card returns to the categories/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-16 Android back on a card returns to the categories/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-03-17",
+      "title": "The return control on a card returns to the categories",
+      "module": "MOD-03",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-03-04#2"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/03-question-cards/tests/TC-03-17-return-control.md",
+      "status": "pass",
+      "duration_ms": 6585,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Choose 3+",
+          "expected": "A card is shown with a small return control outside the card",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-03-17 The return control on a card returns to the categories/takeScreenshot/step-01-card-with-return-control.png",
+              "label": "step-01-card-with-return-control"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Touch the return control",
+          "expected": "The category screen is shown",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-pl/2026-10-15_190124/TC-03-17 The return control on a card returns to the categories/takeScreenshot/step-02-category-screen.png",
+              "label": "step-02-category-screen"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-17 The return control on a card returns to the categories/screenshots/step-011-assertCondition-return-control.png",
+          "label": "step-011-assertCondition-return-control"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-17 The return control on a card returns to the categories/screen-hierarchy/step-011-assertCondition-return-control.json",
+          "label": "step-011-assertCondition-return-control"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-17 The return control on a card returns to the categories/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-pl/2026-10-15_190124/TC-03-17 The return control on a card returns to the categories/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-03-18",
+      "title": "Touching the return control never reveals an answer or moves on",
+      "module": "MOD-03",
+      "layer": "mobile",
+      "type": "negative",
+      "automation": "auto",
+      "covers": [
+        "US-03-04#3"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/03-question-cards/tests/TC-03-18-return-control-no-reveal.md",
+      "status": "pass",
+      "duration_ms": 8878,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Choose 3+ and note the deck state, answer hidden",
+          "expected": "A question is shown",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-deck-state/2026-10-15_190801/TC-03-18 Touching the return control never reveals an answer or moves on/takeScreenshot/step-01-question-answer-hidden.png",
+              "label": "step-01-question-answer-hidden"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Touch the return control, then choose 3+ again",
+          "expected": "The same question is shown, answer hidden; the deck state is unchanged",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-deck-state/2026-10-15_190801/TC-03-18 Touching the return control never reveals an answer or moves on/takeScreenshot/step-02-same-question-deck-unchanged.png",
+              "label": "step-02-same-question-deck-unchanged"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-03-18 Touching the return control never reveals an answer or moves on/screenshots/step-014-assertCondition-return-control.png",
+          "label": "step-014-assertCondition-return-control"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-03-18 Touching the return control never reveals an answer or moves on/screen-hierarchy/step-014-assertCondition-return-control.json",
+          "label": "step-014-assertCondition-return-control"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-03-18 Touching the return control never reveals an answer or moves on/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-03-18 Touching the return control never reveals an answer or moves on/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-03-19",
+      "title": "After returning to the categories, the category resumes where it was left",
+      "module": "MOD-03",
+      "layer": "mobile",
+      "type": "edge",
+      "automation": "auto",
+      "covers": [
+        "US-03-04#4"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/03-question-cards/tests/TC-03-19-resume-after-return.md",
+      "status": "pass",
+      "duration_ms": 14343,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Choose 3+, reveal two answers, go back with the Android back action",
+          "expected": "The category screen is shown",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-deck-state/2026-10-15_190801/TC-03-19 After returning to the categories, the category resumes where it was left/takeScreenshot/step-01-back-on-categories.png",
+              "label": "step-01-back-on-categories"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Choose 3+ again",
+          "expected": "The third card is shown, answer hidden",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release-deck-state/2026-10-15_190801/TC-03-19 After returning to the categories, the category resumes where it was left/takeScreenshot/step-02-third-card.png",
+              "label": "step-02-third-card"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-03-19 After returning to the categories, the category resumes where it was left/screenshots/step-010-assertCondition-question.png",
+          "label": "step-010-assertCondition-question"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-03-19 After returning to the categories, the category resumes where it was left/screenshots/step-013-assertCondition-answer.png",
+          "label": "step-013-assertCondition-answer"
+        },
+        {
+          "kind": "screenshot",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-03-19 After returning to the categories, the category resumes where it was left/screenshots/step-018-assertCondition-question.png",
+          "label": "step-018-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-03-19 After returning to the categories, the category resumes where it was left/screen-hierarchy/step-010-assertCondition-question.json",
+          "label": "step-010-assertCondition-question"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-03-19 After returning to the categories, the category resumes where it was left/screen-hierarchy/step-013-assertCondition-answer.json",
+          "label": "step-013-assertCondition-answer"
+        },
+        {
+          "kind": "hierarchy",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-03-19 After returning to the categories, the category resumes where it was left/screen-hierarchy/step-018-assertCondition-question.json",
+          "label": "step-018-assertCondition-question"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-03-19 After returning to the categories, the category resumes where it was left/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release-deck-state/2026-10-15_190801/TC-03-19 After returning to the categories, the category resumes where it was left/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-03-20",
+      "title": "A question without an illustration shows no placeholder",
+      "module": "MOD-03",
+      "layer": "mobile",
+      "type": "edge",
+      "automation": "auto",
+      "covers": [
+        "US-03-05#1"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/03-question-cards/tests/TC-03-20-no-illustration-placeholder.md",
+      "status": "skipped",
+      "duration_ms": 0,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Open a category on a question that has no illustration",
+          "expected": "Only the question text is on the card, with no empty frame or placeholder",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        }
+      ],
+      "logs": [],
+      "error": null
+    },
+    {
+      "id": "TC-03-21",
+      "title": "An illustration shows with its question from the start and after the reveal",
+      "module": "MOD-03",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-03-05#3"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/03-question-cards/tests/TC-03-21-illustration-with-question.md",
+      "status": "skipped",
+      "duration_ms": 0,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Open a category on a question that has an illustration",
+          "expected": "The illustration is shown with the question, before any touch",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 2,
+          "action": "Touch the card",
+          "expected": "The answer appears; the illustration is still shown",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        }
+      ],
+      "logs": [],
+      "error": null
+    },
+    {
+      "id": "TC-03-22",
+      "title": "A question shows the same illustration in both languages",
+      "module": "MOD-03",
+      "layer": "mobile",
+      "type": "edge",
+      "automation": "auto",
+      "covers": [
+        "US-03-05#4"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/03-question-cards/tests/TC-03-22-illustration-both-languages.md",
+      "status": "skipped",
+      "duration_ms": 0,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Open the illustrated question in Polish",
+          "expected": "The illustration is shown",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 2,
+          "action": "Switch to English and open the same question",
+          "expected": "The same illustration is shown, with no text in it",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        }
+      ],
+      "logs": [],
+      "error": null
+    },
+    {
+      "id": "TC-03-23",
+      "title": "Every illustration is legible on the Kompakt",
+      "module": "MOD-03",
+      "layer": "mobile",
+      "type": "nfr",
+      "automation": "manual-only",
+      "covers": [
+        "US-03-05#5"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/03-question-cards/tests/TC-03-23-illustrations-legible-kompakt.md",
+      "status": "manual",
+      "duration_ms": 0,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Go through every illustrated question on the Kompakt",
+          "expected": "Each illustration is shown",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 2,
+          "action": "Judge each illustration",
+          "expected": "The subject of each picture is recognisable at arm's length",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        }
+      ],
+      "logs": [],
+      "error": null
+    }
+  ],
+  "coverage": [
+    {
+      "criterion": "MOD-02-F01",
+      "text": "`US-02-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-F02",
+      "text": "`US-02-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-F03",
+      "text": "`US-02-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-F04",
+      "text": "`US-03-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-F05",
+      "text": "`US-02-02`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-F06",
+      "text": "`US-02-02`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-F07",
+      "text": "`US-02-02`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-F08",
+      "text": "`US-02-02`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-F09",
+      "text": "`US-02-02`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-F10",
+      "text": "`US-02-03`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-F11",
+      "text": "`US-02-03`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-F12",
+      "text": "`US-02-03`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-F13",
+      "text": "`US-02-03`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-U01",
+      "text": "`US-02-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-U02",
+      "text": "`US-02-02`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-U03",
+      "text": "`US-02-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-U04",
+      "text": "`US-02-03`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-U05",
+      "text": "`US-02-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "US-02-01#1",
+      "text": "Every launch opens on the category screen.",
+      "tests": [
+        "TC-02-01"
+      ],
+      "automation": "auto",
+      "status": "pass",
+      "note": "—"
+    },
+    {
+      "criterion": "US-02-01#2",
+      "text": "The screen lists the categories found in the content data…",
+      "tests": [
+        "TC-02-01"
+      ],
+      "automation": "auto",
+      "status": "pass",
+      "note": "—"
+    },
+    {
+      "criterion": "US-02-01#3",
+      "text": "A category added to the content data appears on the scree…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — a fixture category appears without screen change"
+    },
+    {
+      "criterion": "US-02-01#4",
+      "text": "Every element on screen is pure black or pure white; a te…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — colour check (#000/#FFF only); on device `TC-02-04`"
+    },
+    {
+      "criterion": "US-02-01#5",
+      "text": "Nothing animates and no transition is animated; a test fa…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — animation check; on device `TC-02-04`"
+    },
+    {
+      "criterion": "US-02-01#6",
+      "text": "Each category entry spans the full width of the screen.",
+      "tests": [
+        "TC-02-02"
+      ],
+      "automation": "auto",
+      "status": "pass",
+      "note": "—"
+    },
+    {
+      "criterion": "US-02-01#7",
+      "text": "On the Mudita Kompakt the screen appears within 3 s of la…",
+      "tests": [
+        "TC-02-03"
+      ],
+      "automation": "manual-only",
+      "status": "manual",
+      "note": "Kompakt only — out of the executor's reach"
+    },
+    {
+      "criterion": "US-02-02#1",
+      "text": "First launch",
+      "tests": [
+        "TC-02-05"
+      ],
+      "automation": "auto",
+      "status": "skipped",
+      "note": "—"
+    },
+    {
+      "criterion": "US-02-02#2",
+      "text": "After use",
+      "tests": [
+        "TC-02-06"
+      ],
+      "automation": "auto",
+      "status": "skipped",
+      "note": "—"
+    },
+    {
+      "criterion": "US-02-02#3",
+      "text": "After a restart",
+      "tests": [
+        "TC-02-07"
+      ],
+      "automation": "auto",
+      "status": "skipped",
+      "note": "—"
+    },
+    {
+      "criterion": "US-02-02#4",
+      "text": "Finished deck",
+      "tests": [
+        "TC-02-08"
+      ],
+      "automation": "auto",
+      "status": "skipped",
+      "note": "—"
+    },
+    {
+      "criterion": "US-02-03#1",
+      "text": "Polish device",
+      "tests": [
+        "TC-02-10"
+      ],
+      "automation": "auto",
+      "status": "pass",
+      "note": "—"
+    },
+    {
+      "criterion": "US-02-03#2",
+      "text": "Other device language",
+      "tests": [
+        "TC-02-11"
+      ],
+      "automation": "auto",
+      "status": "pass",
+      "note": "—"
+    },
+    {
+      "criterion": "US-02-03#3",
+      "text": "Switch and restart",
+      "tests": [
+        "TC-02-12"
+      ],
+      "automation": "auto",
+      "status": "fail",
+      "note": "—"
+    },
+    {
+      "criterion": "US-02-03#4",
+      "text": "Decks kept",
+      "tests": [
+        "TC-02-13"
+      ],
+      "automation": "auto",
+      "status": "pass",
+      "note": "—"
+    },
+    {
+      "criterion": "NFR-02",
+      "text": "`TC-02-03`",
+      "tests": [],
+      "automation": "manual-only",
+      "status": "manual",
+      "note": ""
+    },
+    {
+      "criterion": "NFR-03",
+      "text": "`TC-02-04`",
+      "tests": [],
+      "automation": "manual-only",
+      "status": "manual",
+      "note": ""
+    },
+    {
+      "criterion": "NFR-07",
+      "text": "`TC-02-04`",
+      "tests": [],
+      "automation": "manual-only",
+      "status": "manual",
+      "note": ""
+    },
+    {
+      "criterion": "NFR-08",
+      "text": "`TC-02-02`",
+      "tests": [],
+      "automation": "partly manual",
+      "status": "manual",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F01",
+      "text": "`US-01-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F02",
+      "text": "`US-01-02`, `US-01-03`, `US-01-04`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F03",
+      "text": "`US-01-02`, `US-01-03`, `US-01-04`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F04",
+      "text": "`US-01-02`, `US-01-03`, `US-01-04`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F05",
+      "text": "`US-01-02`, `US-01-03`, `US-01-04`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F06",
+      "text": "`US-01-02`, `US-01-03`, `US-01-04`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F07",
+      "text": "`US-01-02`, `US-01-03`, `US-01-04`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F08",
+      "text": "`US-03-05`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F09",
+      "text": "`US-01-02`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F10",
+      "text": "`US-01-02`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F11",
+      "text": "`US-01-02`, `US-01-03`, `US-01-04`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F12",
+      "text": "`US-01-02`, `US-01-03`, `US-01-04`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F13",
+      "text": "`US-03-05`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F14",
+      "text": "`US-01-02`, `US-01-03`, `US-01-04`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F15",
+      "text": "`US-01-02`, `US-01-03`, `US-01-04`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "US-01-01#1",
+      "text": "The app is built on the company's mobile app foundation a…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "PR review — platform versions recorded in the upgrade PR"
+    },
+    {
+      "criterion": "US-01-01#2",
+      "text": "The app installs and starts on an Android 12 emulator and…",
+      "tests": [
+        "TC-01-01",
+        "TC-01-03"
+      ],
+      "automation": "auto",
+      "status": "manual",
+      "note": "—"
+    },
+    {
+      "criterion": "US-01-01#3",
+      "text": "The installed app asks for no network permission.",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — manifest check (no network permission)"
+    },
+    {
+      "criterion": "US-01-01#4",
+      "text": "The app starts and runs with the device's network switche…",
+      "tests": [
+        "TC-01-02"
+      ],
+      "automation": "auto",
+      "status": "skipped",
+      "note": "—"
+    },
+    {
+      "criterion": "US-01-01#5",
+      "text": "A signed release APK can be built; the signing key is kep…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "release build — signed APK built by Maciej; key outside the repo (`DEC-09`)"
+    },
+    {
+      "criterion": "US-01-02#1",
+      "text": "The 3+ category holds exactly 50 questions, each with exa…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — content checks (count, one answer per language)"
+    },
+    {
+      "criterion": "US-01-02#2",
+      "text": "Every question is at most 100 characters and every answer…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — content checks (length limits)"
+    },
+    {
+      "criterion": "US-01-02#3",
+      "text": "Each of the four kinds of content (educational, popular-s…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — content checks (kinds, at least 5 each)"
+    },
+    {
+      "criterion": "US-01-02#4",
+      "text": "The pull request records the age-suitability check of eve…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "PR review — age-suitability check recorded in the PR (Q29)"
+    },
+    {
+      "criterion": "US-01-02#5",
+      "text": "All automatic content checks pass; breaking any one of th…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — a broken check fails the suite"
+    },
+    {
+      "criterion": "US-01-02#6",
+      "text": "Adding a question or a new age category requires a change…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — a fixture question/category added as data only"
+    },
+    {
+      "criterion": "US-01-02#7",
+      "text": "All content ships inside the app; nothing is downloaded.",
+      "tests": [
+        "TC-01-02"
+      ],
+      "automation": "auto",
+      "status": "skipped",
+      "note": "—"
+    },
+    {
+      "criterion": "US-01-03#1",
+      "text": "The 4+ category holds exactly 50 questions, each with exa…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — content checks (count, one answer per language)"
+    },
+    {
+      "criterion": "US-01-03#2",
+      "text": "Every question is at most 100 characters and every answer…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — content checks (length limits)"
+    },
+    {
+      "criterion": "US-01-03#3",
+      "text": "Each of the four kinds of content (educational, popular-s…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — content checks (kinds, at least 5 each)"
+    },
+    {
+      "criterion": "US-01-03#4",
+      "text": "The pull request records the age-suitability check of eve…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "PR review — age-suitability check recorded in the PR (Q29)"
+    },
+    {
+      "criterion": "US-01-03#5",
+      "text": "All automatic content checks pass; breaking any one of th…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — a broken check fails the suite"
+    },
+    {
+      "criterion": "US-01-03#6",
+      "text": "None of the 4+ questions repeats a 3+ question.",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — no question repeated across decks"
+    },
+    {
+      "criterion": "US-01-04#1",
+      "text": "The 5+ category holds exactly 50 questions, each with exa…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — content checks (count, one answer per language)"
+    },
+    {
+      "criterion": "US-01-04#2",
+      "text": "Every question is at most 100 characters and every answer…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — content checks (length limits)"
+    },
+    {
+      "criterion": "US-01-04#3",
+      "text": "Each of the four kinds of content (educational, popular-s…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — content checks (kinds, at least 5 each)"
+    },
+    {
+      "criterion": "US-01-04#4",
+      "text": "The pull request records the age-suitability check of eve…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "PR review — age-suitability check recorded in the PR (Q29)"
+    },
+    {
+      "criterion": "US-01-04#5",
+      "text": "All automatic content checks pass; breaking any one of th…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — a broken check fails the suite"
+    },
+    {
+      "criterion": "US-01-04#6",
+      "text": "None of the 5+ questions repeats a 3+ or 4+ question.",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — no question repeated across decks"
+    },
+    {
+      "criterion": "NFR-10",
+      "text": "`TC-01-01`",
+      "tests": [],
+      "automation": "—",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "NFR-11",
+      "text": "`TC-01-03`",
+      "tests": [],
+      "automation": "manual-only",
+      "status": "manual",
+      "note": ""
+    },
+    {
+      "criterion": "NFR-12",
+      "text": "`TC-01-02`",
+      "tests": [],
+      "automation": "—",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "NFR-05",
+      "text": "—",
+      "tests": [],
+      "automation": "no executor test",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F01",
+      "text": "`US-03-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F02",
+      "text": "`US-03-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F03",
+      "text": "`US-03-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F04",
+      "text": "`US-03-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F05",
+      "text": "`US-03-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F06",
+      "text": "`US-03-02`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F07",
+      "text": "`US-03-02`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F08",
+      "text": "`US-03-02`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F09",
+      "text": "`US-03-03`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F10",
+      "text": "`US-03-03`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F11",
+      "text": "`US-03-03`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F12",
+      "text": "`US-03-04`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F13",
+      "text": "`US-03-04`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F14",
+      "text": "`US-03-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-U01",
+      "text": "`US-03-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-U02",
+      "text": "`US-03-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-U03",
+      "text": "`US-03-05`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-U04",
+      "text": "`US-03-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-U05",
+      "text": "`US-03-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "US-03-01#1",
+      "text": "Card appears",
+      "tests": [
+        "TC-03-01"
+      ],
+      "automation": "auto",
+      "status": "pass",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-01#2",
+      "text": "Reveal",
+      "tests": [
+        "TC-03-02"
+      ],
+      "automation": "auto",
+      "status": "pass",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-01#3",
+      "text": "Next",
+      "tests": [
+        "TC-03-03"
+      ],
+      "automation": "auto",
+      "status": "pass",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-01#4",
+      "text": "Double touch",
+      "tests": [
+        "TC-03-04"
+      ],
+      "automation": "auto",
+      "status": "pass",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-01#5",
+      "text": "Cards are shown in the language chosen on the category sc…",
+      "tests": [
+        "TC-03-05"
+      ],
+      "automation": "auto",
+      "status": "pass",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-01#6",
+      "text": "On the Mudita Kompakt the answer appears within 1 s of a…",
+      "tests": [
+        "TC-03-06"
+      ],
+      "automation": "manual-only",
+      "status": "manual",
+      "note": "Kompakt only — out of the executor's reach"
+    },
+    {
+      "criterion": "US-03-02#1",
+      "text": "No repeats",
+      "tests": [
+        "TC-03-07"
+      ],
+      "automation": "auto",
+      "status": "pass",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-02#2",
+      "text": "Closed before the reveal",
+      "tests": [
+        "TC-03-08"
+      ],
+      "automation": "auto",
+      "status": "pass",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-02#3",
+      "text": "Closed after the reveal",
+      "tests": [
+        "TC-03-09"
+      ],
+      "automation": "auto",
+      "status": "pass",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-02#4",
+      "text": "Separate decks",
+      "tests": [
+        "TC-03-10"
+      ],
+      "automation": "auto",
+      "status": "pass",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-03#1",
+      "text": "End card",
+      "tests": [
+        "TC-03-12"
+      ],
+      "automation": "auto",
+      "status": "pass",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-03#2",
+      "text": "Again",
+      "tests": [
+        "TC-03-13"
+      ],
+      "automation": "auto",
+      "status": "pass",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-03#3",
+      "text": "Categories",
+      "tests": [
+        "TC-03-14"
+      ],
+      "automation": "auto",
+      "status": "pass",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-04#1",
+      "text": "From any card, the Android back action shows the category…",
+      "tests": [
+        "TC-03-16"
+      ],
+      "automation": "auto",
+      "status": "pass",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-04#2",
+      "text": "Every card shows a small control, outside the card's touc…",
+      "tests": [
+        "TC-03-17"
+      ],
+      "automation": "auto",
+      "status": "pass",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-04#3",
+      "text": "Touching the control never reveals an answer or moves to…",
+      "tests": [
+        "TC-03-18"
+      ],
+      "automation": "auto",
+      "status": "pass",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-04#4",
+      "text": "After returning, opening the same category resumes where…",
+      "tests": [
+        "TC-03-19"
+      ],
+      "automation": "auto",
+      "status": "pass",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-05#1",
+      "text": "Only questions where a picture helps carry an illustratio…",
+      "tests": [
+        "TC-03-20"
+      ],
+      "automation": "auto",
+      "status": "skipped",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-05#2",
+      "text": "Every illustration is pure black and white; a test fails…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — illustration pixel check (pure black and white)"
+    },
+    {
+      "criterion": "US-03-05#3",
+      "text": "An illustration is shown with its question as soon as the…",
+      "tests": [
+        "TC-03-21"
+      ],
+      "automation": "auto",
+      "status": "skipped",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-05#4",
+      "text": "The same question shows the same illustration in both lan…",
+      "tests": [
+        "TC-03-22"
+      ],
+      "automation": "auto",
+      "status": "skipped",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-05#5",
+      "text": "On the Mudita Kompakt every illustration is legible (chec…",
+      "tests": [
+        "TC-03-23"
+      ],
+      "automation": "manual-only",
+      "status": "manual",
+      "note": "Kompakt only — out of the executor's reach"
+    },
+    {
+      "criterion": "NFR-01",
+      "text": "`TC-03-06`",
+      "tests": [],
+      "automation": "manual-only",
+      "status": "manual",
+      "note": ""
+    },
+    {
+      "criterion": "NFR-03",
+      "text": "`TC-03-06`",
+      "tests": [],
+      "automation": "manual-only",
+      "status": "manual",
+      "note": ""
+    },
+    {
+      "criterion": "NFR-04",
+      "text": "`TC-03-06`",
+      "tests": [],
+      "automation": "manual-only",
+      "status": "manual",
+      "note": ""
+    }
+  ],
+  "not_covered": [
+    {
+      "criterion": "MOD-02-F01",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-F02",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-F03",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-F04",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-F05",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-F06",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-F07",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-F08",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-F09",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-F10",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-F11",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-F12",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-F13",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-U01",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-U02",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-U03",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-U04",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-U05",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-02-01#3",
+      "kind": "no-test",
+      "reason": "unit test suite — a fixture category appears without screen change"
+    },
+    {
+      "criterion": "US-02-01#4",
+      "kind": "no-test",
+      "reason": "unit test suite — colour check (#000/#FFF only); on device `TC-02-04`"
+    },
+    {
+      "criterion": "US-02-01#5",
+      "kind": "no-test",
+      "reason": "unit test suite — animation check; on device `TC-02-04`"
+    },
+    {
+      "criterion": "US-02-01#7",
+      "kind": "manual-only",
+      "reason": "Kompakt only — out of the executor's reach"
+    },
+    {
+      "criterion": "NFR-02",
+      "kind": "manual-only",
+      "reason": ""
+    },
+    {
+      "criterion": "NFR-03",
+      "kind": "manual-only",
+      "reason": ""
+    },
+    {
+      "criterion": "NFR-07",
+      "kind": "manual-only",
+      "reason": ""
+    },
+    {
+      "criterion": "NFR-08",
+      "kind": "manual-only",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F01",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F02",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F03",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F04",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F05",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F06",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F07",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F08",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F09",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F10",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F11",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F12",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F13",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F14",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F15",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-01-01#1",
+      "kind": "no-test",
+      "reason": "PR review — platform versions recorded in the upgrade PR"
+    },
+    {
+      "criterion": "US-01-01#2",
+      "kind": "manual-only",
+      "reason": ""
+    },
+    {
+      "criterion": "US-01-01#3",
+      "kind": "no-test",
+      "reason": "unit test suite — manifest check (no network permission)"
+    },
+    {
+      "criterion": "US-01-01#5",
+      "kind": "no-test",
+      "reason": "release build — signed APK built by Maciej; key outside the repo (`DEC-09`)"
+    },
+    {
+      "criterion": "US-01-02#1",
+      "kind": "no-test",
+      "reason": "unit test suite — content checks (count, one answer per language)"
+    },
+    {
+      "criterion": "US-01-02#2",
+      "kind": "no-test",
+      "reason": "unit test suite — content checks (length limits)"
+    },
+    {
+      "criterion": "US-01-02#3",
+      "kind": "no-test",
+      "reason": "unit test suite — content checks (kinds, at least 5 each)"
+    },
+    {
+      "criterion": "US-01-02#4",
+      "kind": "no-test",
+      "reason": "PR review — age-suitability check recorded in the PR (Q29)"
+    },
+    {
+      "criterion": "US-01-02#5",
+      "kind": "no-test",
+      "reason": "unit test suite — a broken check fails the suite"
+    },
+    {
+      "criterion": "US-01-02#6",
+      "kind": "no-test",
+      "reason": "unit test suite — a fixture question/category added as data only"
+    },
+    {
+      "criterion": "US-01-03#1",
+      "kind": "no-test",
+      "reason": "unit test suite — content checks (count, one answer per language)"
+    },
+    {
+      "criterion": "US-01-03#2",
+      "kind": "no-test",
+      "reason": "unit test suite — content checks (length limits)"
+    },
+    {
+      "criterion": "US-01-03#3",
+      "kind": "no-test",
+      "reason": "unit test suite — content checks (kinds, at least 5 each)"
+    },
+    {
+      "criterion": "US-01-03#4",
+      "kind": "no-test",
+      "reason": "PR review — age-suitability check recorded in the PR (Q29)"
+    },
+    {
+      "criterion": "US-01-03#5",
+      "kind": "no-test",
+      "reason": "unit test suite — a broken check fails the suite"
+    },
+    {
+      "criterion": "US-01-03#6",
+      "kind": "no-test",
+      "reason": "unit test suite — no question repeated across decks"
+    },
+    {
+      "criterion": "US-01-04#1",
+      "kind": "no-test",
+      "reason": "unit test suite — content checks (count, one answer per language)"
+    },
+    {
+      "criterion": "US-01-04#2",
+      "kind": "no-test",
+      "reason": "unit test suite — content checks (length limits)"
+    },
+    {
+      "criterion": "US-01-04#3",
+      "kind": "no-test",
+      "reason": "unit test suite — content checks (kinds, at least 5 each)"
+    },
+    {
+      "criterion": "US-01-04#4",
+      "kind": "no-test",
+      "reason": "PR review — age-suitability check recorded in the PR (Q29)"
+    },
+    {
+      "criterion": "US-01-04#5",
+      "kind": "no-test",
+      "reason": "unit test suite — a broken check fails the suite"
+    },
+    {
+      "criterion": "US-01-04#6",
+      "kind": "no-test",
+      "reason": "unit test suite — no question repeated across decks"
+    },
+    {
+      "criterion": "NFR-10",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "NFR-11",
+      "kind": "manual-only",
+      "reason": ""
+    },
+    {
+      "criterion": "NFR-12",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "NFR-05",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F01",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F02",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F03",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F04",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F05",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F06",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F07",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F08",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F09",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F10",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F11",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F12",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F13",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F14",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-U01",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-U02",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-U03",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-U04",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-U05",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-03-01#6",
+      "kind": "manual-only",
+      "reason": "Kompakt only — out of the executor's reach"
+    },
+    {
+      "criterion": "US-03-05#2",
+      "kind": "no-test",
+      "reason": "unit test suite — illustration pixel check (pure black and white)"
+    },
+    {
+      "criterion": "US-03-05#5",
+      "kind": "manual-only",
+      "reason": "Kompakt only — out of the executor's reach"
+    },
+    {
+      "criterion": "NFR-01",
+      "kind": "manual-only",
+      "reason": ""
+    },
+    {
+      "criterion": "NFR-03",
+      "kind": "manual-only",
+      "reason": ""
+    },
+    {
+      "criterion": "NFR-04",
+      "kind": "manual-only",
+      "reason": ""
+    }
+  ],
+  "notes": []
+}
