@@ -60,7 +60,9 @@ tags:
 - assertTrue:
     condition: ${JSON.parse(EN_QUESTIONS).indexOf(maestro.copiedText) >= 0}
     label: the question is one of the 3+ deck's English questions
-# The return control's words, as drawn (the control itself is announced by its label).
+# The return control's words, as drawn inside it (the control itself is announced by its label).
 - assertVisible:
     text: ${JSON.parse(STRINGS).en.backToCategories}
+    childOf:
+      id: return-control
 - takeScreenshot: step-03-question-in-english
