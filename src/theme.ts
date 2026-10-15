@@ -7,6 +7,9 @@ export const colors = {
   paper: '#FFFFFF',
 } as const;
 
+// The app's largest type: the category entries and the card's question and answer (MOD-03-U01).
+export const largestType = 64;
+
 // The width of every rule (border) the app draws: an even number of whole device pixels, about
 // 2 dp. Android strokes a border on its centre line, so a fractional or odd pixel count is drawn
 // with a grey row of anti-aliasing on either side — and the screen must have no greys (NFR-07):
