@@ -49,7 +49,8 @@ export const cardType = (text: string, width: number) => {
 // question, the next touch shows the next question (MOD-03-F01…F05). Both change the content in
 // place — no transition, no animation (NFR-03). The deck is shuffled once and gone through without
 // repeats, resuming where it was left (MOD-03-F06…F08); after its last card the end card offers to
-// start it again or go back to the categories (MOD-03-F09…F11, DEC-56).
+// start it again or go back to the categories (MOD-03-F09…F11, DEC-56). From any card, Android's back
+// action or the small control above the card returns to the categories (MOD-03-F12, F13).
 const CardScreen = () => {
   const { category } = useLocalSearchParams<{ category: string }>();
   const deck = decks.find(d => d.category === category);
@@ -80,13 +81,15 @@ const CardScreen = () => {
     return true;
   };
 
+  // Back to the category screen below this one, never a second one on top (MOD-03-F11, F13). The
+  // deck stays as it is: a card left unrevealed is not seen (DEC-38).
+  const categories = () => {
+    if (ready()) router.dismissTo('/');
+  };
+
   if (!revealed && isFinished(progress)) {
     const again = () => {
       if (ready()) setCard({ progress: restartDeck(deck), revealed: false });
-    };
-    // Back to the category screen below this one, never a second one on top (MOD-03-F11).
-    const categories = () => {
-      if (ready()) router.dismissTo('/');
     };
     return (
       <SafeAreaView testID="end-card" style={styles.screen}>
@@ -137,6 +140,19 @@ const CardScreen = () => {
 
   return (
     <SafeAreaView testID="card-screen" style={styles.screen}>
+      {/* The way back to the categories besides Android's back: a small line above the card, set
+          apart by a rule and outside its touch area, so touching it never reveals or moves on
+          (MOD-03-F13, DEC-58). */}
+      <View style={styles.returnBar}>
+        <Pressable
+          testID="return-control"
+          role="button"
+          accessibilityLabel={t('backToCategoriesLabel')}
+          onPressIn={categories}
+          style={styles.returnControl}>
+          <Text style={styles.returnText}>{t('backToCategories')}</Text>
+        </Pressable>
+      </View>
       <Pressable
         testID={`card-${position}`}
         onPressIn={touch}
@@ -179,6 +195,21 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: colors.paper,
+  },
+  // Small beside the card's type, but a touch target a finger finds (NFR-08).
+  returnBar: {
+    flexDirection: 'row',
+    borderBottomWidth: ruleWidth,
+    borderColor: colors.ink,
+  },
+  returnControl: {
+    minHeight: 48,
+    justifyContent: 'center',
+    paddingHorizontal: PADDING,
+  },
+  returnText: {
+    fontSize: 20,
+    color: colors.ink,
   },
   card: {
     flex: 1,

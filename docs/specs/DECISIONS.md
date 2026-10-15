@@ -705,3 +705,15 @@
 - **Scope effect:** within scope
 - **Resolves:** —
 - **Status:** accepted
+
+## [DEC-58] Return control: a small 'Categories' line above the card, guarded, back to the screen below; a category opens its cards once
+
+- **Date:** 2026-10-15
+- **Decided by:** developer (delivery loop)
+- **Source:** implementation (`US-03-04`)
+- **Affects:** `US-03-04`, `MOD-03-F12`, `MOD-03-F13`, `MOD-03-F14`, `MOD-03-U02`, `MOD-02-F04`, `DEC-38`, `DEC-40`, `DEC-55`, `DEC-56`, `DEC-57`, `TC-03-16`, `TC-03-17`, `TC-03-18`, `TC-03-19`
+- **Decision:** Every card shows a small line above it, set apart from the card by a full-width rule, holding one control: "‹ Kategorie" / "‹ Categories" (read out as "Wróć do kategorii" / "Back to categories"), through the string table of `DEC-57`. It sits outside the card's touch area, at 20 pt with a 48 dp touch target, black on white, with no animation. Touching it goes back to the category screen already below the card screen (`router.dismissTo('/')`, as the end card's "categories" does), so no second category screen is stacked. It changes nothing in the deck: a card left with its answer hidden is not seen (`DEC-38`), a revealed one stays seen. The 0.5 s touch guard (`DEC-40`) covers it as it covers the card. The end card keeps its own "categories" choice and has no extra line. Android's back action keeps the navigation stack's default and also leaves the deck as it is. A category entry opens its cards only while the category screen is the bottom of the stack, so a fast double touch on an entry no longer opens the card screen twice. The acceptance flows of `TC-03-18` and `TC-03-19` note the app state from the saved 3+ deck. `scripts/test-acceptance.sh` serves it on the host's loopback (`scripts/saved-deck-server.js`) and reads it from the device as root whenever a step asks, because the release build has no app-state bridge (`DEC-55`).
+- **Why:** A line above the card is the simplest place that is visibly outside the card, so the card keeps no button of its own (`MOD-03-U02`). Going back to the screen below matches `DEC-56`. Leaving the deck untouched is what `DEC-38` and the module's edge case for the return control ask for. Reading the saved deck while a flow runs is the only way to note it between two steps of one flow.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
