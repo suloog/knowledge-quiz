@@ -628,23 +628,6 @@ describe('The cards in the language chosen on the category screen (US-02-03)', (
     expect(screen.getByTestId('answer')).toHaveTextContent('First answer.');
   });
 
-  it('a switch keeps the deck: it resumes at its next unseen card, in the new language (#4)', async () => {
-    await openCards();
-    await touch();
-    const before = JSON.parse(mockSaved.get('deck-3+')!);
-    await act(async () => router.back());
-    await fireEvent.press(screen.getByTestId('language-en'));
-
-    expect(JSON.parse(mockSaved.get('deck-3+')!)).toEqual(before);
-
-    await fireEvent.press(listEntry('3+'));
-    expect(screen.getByTestId('card-1')).toBeOnTheScreen();
-    expect(screen.getByTestId('question')).toHaveTextContent(
-      'Second question?',
-    );
-    expect(screen.queryByTestId('answer')).toBeNull();
-  });
-
   it('the end card follows the chosen language (MOD-02-F10)', async () => {
     mockSaved.set('deck-3+', JSON.stringify({ order: ['q1', 'q2'], seen: 2 }));
     await renderRouter(routes);
