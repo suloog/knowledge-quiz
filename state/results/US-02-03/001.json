@@ -1,0 +1,78 @@
+{
+  "n": 1,
+  "attempt": 1,
+  "ts": "2026-10-15T13:14:59Z",
+  "story": "US-02-03",
+  "mode": "implement",
+  "parsed": {
+    "result": "needs_decision",
+    "story": "US-02-03",
+    "branch": "feature/US-02-03",
+    "commits": [
+      "473757d chore(categories): wip, waiting for DEC-61 [US-02-03]"
+    ],
+    "decisions": [
+      "DEC-60 routine Language switch: two-part Polski | English control under the title, choice kept in app state and saved under language",
+      "DEC-61 critical The app title on the category screen in Polish and English"
+    ],
+    "question": "DEC-61",
+    "evidence": [
+      "#1 Polish device: every text in Polish, Polish shown active — not yet evidenced: unit tests in src/app/__tests__/index.test.tsx pass; flow tests/maestro/TC-02-10-polish-device.yaml written, not run; the title depends on DEC-61",
+      "#2 Other device language: English — not yet evidenced: unit tests pass; flow tests/maestro/TC-02-11-other-language-device.yaml written, not run",
+      "#3 Switch and restart: English including questions — not yet evidenced: unit tests in index.test.tsx and cards.test.tsx pass; flow tests/maestro/TC-02-12-switch-survives-restart.yaml written, not run",
+      "#4 Decks kept: 3+ resumes at its fourth card in the new language — not yet evidenced: unit test in cards.test.tsx passes; flow tests/maestro/TC-02-13-switch-keeps-decks.yaml written, not run"
+    ],
+    "tests": {
+      "run": "none",
+      "pass": 0,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 0,
+      "manual_tests": [
+        "none"
+      ]
+    },
+    "derived_tests": [],
+    "preexisting": "The device-language detection (src/language.ts, DEC-52) and the Polish/English string table (src/strings.json, src/i18n.ts, DEC-57) were already there. The cards already carried both languages, and decks were saved as question ids, so criterion #4 needed no deck changes.",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test ok (239 passed, 99.5% lines)"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "notes": "Waiting on the owner's answer to DEC-61. The acceptance suite was not run: the resumed run applies the answer, then runs the whole suite on the final head.\nUS-02-02 (PR #15) also changes src/app/index.tsx, so expect a conflict there when one of the two merges first.\nI wrapped the screen in LanguageProvider in three derived unit tests from US-02-01 (AC-02-01-3, -4, -5); their assertions are unchanged.",
+    "ask": {
+      "summary": "The category screen's title \"Knowledge Quiz\" is English only. Should it be in Polish on a Polish device?",
+      "context": "The title comes from the content data (src/content/app.json) and has one language only. The story's first criterion and TC-02-10 ask for every text on the category screen to be Polish on a Polish device. Everything else on the screen already switches; the category labels 3+, 4+, 5+ are the same in both languages. The constitution says a change to the content data schema needs Maciej's approval.",
+      "points": [],
+      "options": [
+        {
+          "id": "a",
+          "label": "Title in both languages: \"Quiz wiedzy\" / \"Knowledge Quiz\"",
+          "detail": "The content data's title gets a Polish and an English value and follows the switch. This changes the content data schema, and the foundation test TC-00-03 then reads the title in the app's language. The Polish name is my suggestion; you can give another."
+        },
+        {
+          "id": "b",
+          "label": "Keep \"Knowledge Quiz\" as the app's name in both languages",
+          "detail": "Nothing changes in the content data. The title is treated as a name, like 3+. On a Polish device the screen keeps one English phrase, which narrows \"every text\" in the first criterion."
+        }
+      ],
+      "recommended": "a",
+      "why": "The criterion and TC-02-10 say every text on the screen is Polish. A title that stays English is the first thing a reviewer or the client would notice. The schema change is small: one field with two values."
+    },
+    "ask_problems": [],
+    "question_text": "The category screen's title \"Knowledge Quiz\" is English only. Should it be in Polish on a Polish device?\n\nThe title comes from the content data (src/content/app.json) and has one language only. The story's first criterion and TC-02-10 ask for every text on the category screen to be Polish on a Polish device. Everything else on the screen already switches; the category labels 3+, 4+, 5+ are the same in both languages. The constitution says a change to the content data schema needs Maciej's approval.\n\na) Title in both languages: \"Quiz wiedzy\" / \"Knowledge Quiz\" — The content data's title gets a Polish and an English value and follows the switch. This changes the content data schema, and the foundation test TC-00-03 then reads the title in the app's language. The Polish name is my suggestion; you can give another. (recommended)\nb) Keep \"Knowledge Quiz\" as the app's name in both languages — Nothing changes in the content data. The title is treated as a name, like 3+. On a Polish device the screen keeps one English phrase, which narrows \"every text\" in the first criterion.\n\nWhy a: The criterion and TC-02-10 say every text on the screen is Polish. A title that stays English is the first thing a reviewer or the client would notice. The schema change is small: one field with two values.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [],
+      "blocked": []
+    },
+    "critical_decisions": [
+      "DEC-61 critical The app title on the category screen in Polish and English"
+    ]
+  },
+  "raw": "US-02-03 is parked on one critical decision, DEC-61: whether the title on the category screen should be translated. The rest of the story is built and committed as WIP 473757d on feature/US-02-03. Unit tests and gates pass. The new Maestro flows are written but have not run on the emulator.\n\n**What is built**\n- **The switch:** a \"Polski | English\" row under the title on the category screen. The active half is shown inverted (white on black).\n- **Language behaviour:** the choice is saved under the key `language` through `src/storage.ts`. If nothing is saved, or the saved value is not `pl`/`en`, the app uses the device language. Cards, the end card and the return control all follow the chosen language.\n- **Decks:** switching leaves every deck's order and position unchanged.\n- **Tests:** new flows TC-02-10 to TC-02-13. TC-03-05 now uses the switch as its test case is written. `scripts/test-acceptance.sh` runs TC-02-11 with the device set to German instead of the English TC-03-05 run.\n- **Changed tests from US-02-01:** I wrapped the screen in `LanguageProvider` in three of its derived unit tests (AC-02-01-3, -4, -5). Their assertions are unchanged.\n\n**What the resumed run must do**\n- Apply the owner's answer to the title.\n- Add a title assertion to flows TC-02-10, TC-02-11 and TC-02-12.\n- Fill in DEC-61 with the owner's answer and finalise its status.\n- Run the whole acceptance suite on the final head.\n\nUS-02-02 (PR #15) also adds a \"continue\" entry to `src/app/index.tsx`, so expect a merge conflict there.\n\n```\nRESULT: needs_decision\nSTORY: US-02-03\nBRANCH: feature/US-02-03\nCOMMITS: 473757d chore(categories): wip, waiting for DEC-61 [US-02-03]\nDECISIONS: DEC-60 routine Language switch: two-part Polski | English control under the title, choice kept in app state and saved under language; DEC-61 critical The app title on the category screen in Polish and English\nQUESTION: DEC-61\nASK_SUMMARY: The category screen's title \"Knowledge Quiz\" is English only. Should it be in Polish on a Polish device?\nASK_CONTEXT: The title comes from the content data (src/content/app.json) and has one language only. The story's first criterion and TC-02-10 ask for every text on the category screen to be Polish on a Polish device. Everything else on the screen already switches; the category labels 3+, 4+, 5+ are the same in both languages. The constitution says a change to the content data schema needs Maciej's approval.\nASK_OPTION a: Title in both languages: \"Quiz wiedzy\" / \"Knowledge Quiz\" | The content data's title gets a Polish and an English value and follows the switch. This changes the content data schema, and the foundation test TC-00-03 then reads the title in the app's language. The Polish name is my suggestion; you can give another.\nASK_OPTION b: Keep \"Knowledge Quiz\" as the app's name in both languages | Nothing changes in the content data. The title is treated as a name, like 3+. On a Polish device the screen keeps one English phrase, which narrows \"every text\" in the first criterion.\nASK_RECOMMEND: a\nASK_WHY: The criterion and TC-02-10 say every text on the screen is Polish. A title that stays English is the first thing a reviewer or the client would notice. The schema change is small: one field with two values.\nEVIDENCE:\n  #1 Polish device: every text in Polish, Polish shown active — not yet evidenced: unit tests in src/app/__tests__/index.test.tsx pass; flow tests/maestro/TC-02-10-polish-device.yaml written, not run; the title depends on DEC-61\n  #2 Other device language: English — not yet evidenced: unit tests pass; flow tests/maestro/TC-02-11-other-language-device.yaml written, not run\n  #3 Switch and restart: English including questions — not yet evidenced: unit tests in index.test.tsx and cards.test.tsx pass; flow tests/maestro/TC-02-12-switch-survives-restart.yaml written, not run\n  #4 Decks kept: 3+ resumes at its fourth card in the new language — not yet evidenced: unit test in cards.test.tsx passes; flow tests/maestro/TC-02-13-switch-keeps-decks.yaml written, not run\nTESTS: run=none pass=0 fail=0 blocked=0 manual=0 manual_tests=none\nDERIVED_TESTS: none\nPREEXISTING: The device-language detection (src/language.ts, DEC-52) and the Polish/English string table (src/strings.json, src/i18n.ts, DEC-57) were already there. The cards already carried both languages, and decks were saved as question ids, so criterion #4 needed no deck changes.\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test ok (239 passed, 99.5% lines)\nENV_KEYS: none\nMIGRATION: no\nNOTES: Waiting on the owner's answer to DEC-61. The acceptance suite was not run: the resumed run applies the answer, then runs the whole suite on the final head.\nUS-02-02 (PR #15) also changes src/app/index.tsx, so expect a conflict there when one of the two merges first.\nI wrapped the screen in LanguageProvider in three derived unit tests from US-02-01 (AC-02-01-3, -4, -5); their assertions are unchanged.\n```\n",
+  "evidence": []
+}

@@ -142,5 +142,21 @@
     "title": "Continue entry: an inverted 'Continue 4+' line between the title and the list, last category saved when opened",
     "file": "docs/specs/DECISIONS.md",
     "ts": "2026-10-15T11:01:18Z"
+  },
+  {
+    "dec": "DEC-60",
+    "story": "US-02-03",
+    "attempt": 1,
+    "title": "Language switch: two-part Polski | English control under the title, choice kept in app state and saved under language",
+    "file": "docs/specs/DECISIONS.md",
+    "ts": "2026-10-15T13:10:21Z"
+  },
+  {
+    "dec": "DEC-61",
+    "story": "US-02-03",
+    "attempt": 1,
+    "title": "The app title on the category screen in Polish and English",
+    "file": "docs/specs/DECISIONS.md",
+    "ts": "2026-10-15T13:10:21Z"
   }
 ]
