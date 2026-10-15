@@ -1,0 +1,74 @@
+{
+  "story": "US-02-03",
+  "attempt": 1,
+  "round": 2,
+  "sha": "043a4c11de8e63701ab765f62e15315af4415508",
+  "reviewer": "spec",
+  "ts": "2026-10-15T18:04:54Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-02-03",
+    "impact": "src/app/index.tsx is the category screen every launch opens on (US-02-01 AC-02-01-4 pixel check, US-02-02 continue entry TC-02-05..09): the switch row's pixel edges sit above both, and the continue entry now reads t() from the language context. strings.json moved the language names to a top-level languageNames, so StringKey no longer holds 'pl'/'en' (tsc clean, no remaining t('pl'|'en')). The cards and end card read the language from LanguageProvider.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/index.tsx:126 — local NFR-07 checks (AC-02-01-4 step 4, TC-02-08 step 2) fail at row 419, 540 px #FDFDFD = bottom row of the English half [540,265][1080,420]; this is the switch from this story, not the full-width-rule failures main shows locally; unchanged by 0c968ff/0fbe8df → becomes blocking if CI acceptance on 043a4c1 (run 38781983403, in progress at review) fails there; fix by putting the switch edges on whole pixels (whole-pixel title height)"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "test-runs/2026-10-15_193724/run.json — totals 34/0 and TC-02-08 step 2 \"pass\" while junit/continue-screen-colours.xml and screen-colours.xml failed and acceptance.log ends exit=1 → collector should fold those JUnit cases in; PR body should name the two failures instead of quoting a green run"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/__tests__/continue.test.tsx:176 — test labelled US-02-03#3 but checks a switch without restart (F10) → relabel to MOD-02-F10"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/DECISIONS.md DEC-59 — says continue stands \"between the title and the list\"; after the merge the order is title, switch, continue, list → state the order in DEC-60 (still in this PR)"
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/index.tsx:128 — with minHeight the comment's \"a whole number of device pixels high\" no longer holds under larger system text, and no test pins minHeight → correct the comment, add a test if the behaviour matters"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Spec-compliance review, round 2: PR #16 / US-02-03 (diff 334163a..043a4c1). Verdict: no blocking findings. All four criteria are met on the head, round-1 B1 is fixed, and US-02-02's criteria still hold after the merge. No TC-*.md was edited. CI run 38781983403 on 043a4c1: the gates pass, and acceptance was still in progress.\n\nREVIEW: findings\nSTORY: US-02-03\nIMPACT: src/app/index.tsx is the category screen every launch opens on (US-02-01 AC-02-01-4 pixel check, US-02-02 continue entry TC-02-05..09): the switch row's pixel edges sit above both, and the continue entry now reads t() from the language context. strings.json moved the language names to a top-level languageNames, so StringKey no longer holds 'pl'/'en' (tsc clean, no remaining t('pl'|'en')). The cards and end card read the language from LanguageProvider.\nFINDINGS:\n  N1 src/app/index.tsx:126 — local NFR-07 checks (AC-02-01-4 step 4, TC-02-08 step 2) fail at row 419, 540 px #FDFDFD = bottom row of the English half [540,265][1080,420]; this is the switch from this story, not the full-width-rule failures main shows locally; unchanged by 0c968ff/0fbe8df → becomes blocking if CI acceptance on 043a4c1 (run 38781983403, in progress at review) fails there; fix by putting the switch edges on whole pixels (whole-pixel title height)\n  N2 test-runs/2026-10-15_193724/run.json — totals 34/0 and TC-02-08 step 2 \"pass\" while junit/continue-screen-colours.xml and screen-colours.xml failed and acceptance.log ends exit=1 → collector should fold those JUnit cases in; PR body should name the two failures instead of quoting a green run\n  N3 src/app/__tests__/continue.test.tsx:176 — test labelled US-02-03#3 but checks a switch without restart (F10) → relabel to MOD-02-F10\n  N4 docs/specs/DECISIONS.md DEC-59 — says continue stands \"between the title and the list\"; after the merge the order is title, switch, continue, list → state the order in DEC-60 (still in this PR)\n  N5 src/app/index.tsx:128 — with minHeight the comment's \"a whole number of device pixels high\" no longer holds under larger system text, and no test pins minHeight → correct the comment, add a test if the behaviour matters\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 met\n"
+}
