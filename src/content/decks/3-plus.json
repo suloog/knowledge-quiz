@@ -84,7 +84,8 @@
       "en": {
         "question": "How many fingers does one human hand have, counting the thumb?",
         "answer": "Five."
-      }
+      },
+      "illustration": "hand.png"
     },
     {
       "id": "3p-08",

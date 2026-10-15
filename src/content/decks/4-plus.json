@@ -300,7 +300,8 @@
       "en": {
         "question": "How many legs does a spider have?",
         "answer": "Eight."
-      }
+      },
+      "illustration": "spider.png"
     },
     {
       "id": "4p-26",
@@ -312,7 +313,8 @@
       "en": {
         "question": "How many legs does an ant have?",
         "answer": "Six."
-      }
+      },
+      "illustration": "ant.png"
     },
     {
       "id": "4p-27",

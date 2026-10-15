@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import {
+  Image,
+  type ImageSourcePropType,
+  PixelRatio,
   Pressable,
   StyleSheet,
   Text,
   View,
   useWindowDimensions,
 } from 'react-native';
-import { decks } from '@/content';
+import { decks, illustrations } from '@/content';
 import { t } from '@/i18n';
 import { deviceLanguage } from '@/language';
 import {
@@ -42,6 +45,22 @@ export const cardType = (text: string, width: number) => {
   return Math.min(
     largestType,
     Math.floor((width - 2 * PADDING) / (longestWord * CHARACTER_WIDTH)),
+  );
+};
+
+// A question's illustration, drawn one image pixel to one screen pixel: scaled, its black-and-white
+// edges would be smoothed into greys (NFR-07, MOD-01-F13).
+const Illustration = ({ source }: { source: ImageSourcePropType }) => {
+  const { width, height } = Image.resolveAssetSource(source);
+  return (
+    <Image
+      testID="illustration"
+      source={source}
+      style={{
+        width: width / PixelRatio.get(),
+        height: height / PixelRatio.get(),
+      }}
+    />
   );
 };
 
@@ -125,9 +144,14 @@ const CardScreen = () => {
 
   const position = revealed ? progress.seen - 1 : progress.seen;
   const id = progress.order[position];
-  const text = deck.questions.find(question => question.id === id)![
-    deviceLanguage()
-  ];
+  const question = deck.questions.find(q => q.id === id)!;
+  const text = question[deviceLanguage()];
+  // Only a question that has one shows an illustration; the others have no place kept for it
+  // (MOD-01-F08). The same picture in either language (US-03-05#4).
+  const illustration =
+    question.illustration === undefined
+      ? undefined
+      : illustrations[question.illustration];
 
   // A reveal makes the card seen and saves it (MOD-03-F07); the next touch shows the first unseen
   // card, or the end card once none is left.
@@ -169,6 +193,13 @@ const CardScreen = () => {
             ]}>
             {text.question}
           </Text>
+          {/* With the question from the moment the card appears, and still there once the answer
+              is revealed (MOD-03-U03). */}
+          {illustration && (
+            <View style={styles.illustration}>
+              <Illustration source={illustration} />
+            </View>
+          )}
         </View>
         <View style={styles.answerArea}>
           {revealed && (
@@ -221,6 +252,10 @@ const styles = StyleSheet.create({
   },
   answerArea: {
     flex: 2,
+  },
+  illustration: {
+    alignItems: 'center',
+    paddingVertical: 8,
   },
   // The app's largest type, shrunk only as far as a long question needs to fit (MOD-03-U01, DEC-53).
   question: {
