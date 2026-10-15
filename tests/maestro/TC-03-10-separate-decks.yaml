@@ -1,0 +1,82 @@
+appId: ${APP_ID}
+name: TC-03-10 Each category keeps its own position
+# Run by scripts/test-acceptance.sh on a device set to Polish, the test case's test data. "Go back"
+# is Android's back action, the navigation stack's own.
+tags:
+  - device-language
+---
+# Precondition — the app installed, its data cleared: first launch on the category screen.
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+# Step 1 — choose 3+ and reveal three answers, noting their questions, then go back: the category
+# screen. App state: the cards were card-0, card-1 and card-2. Each card, and each answer, has been
+# shown for 1 s before it is touched (MOD-03-F14, DEC-40); the waits run out (optional) after 1 s.
+- tapOn:
+    id: category-0
+- evalScript: ${output.noted = []}
+- repeat:
+    times: 3
+    commands:
+      - assertVisible:
+          id: card-${output.noted.length}
+      - copyTextFrom:
+          id: question
+      - evalScript: ${output.noted.push(maestro.copiedText)}
+      - extendedWaitUntil:
+          notVisible:
+            id: question
+          timeout: 1000
+          optional: true
+          label: the card shown for 1 s
+      - tapOn:
+          id: card-.*
+      - assertVisible:
+          id: answer
+          text: .+
+      - runFlow:
+          when:
+            true: ${output.noted.length < 3}
+          commands:
+            - extendedWaitUntil:
+                notVisible:
+                  id: answer
+                timeout: 1000
+                optional: true
+                label: the answer shown for 1 s
+            - tapOn:
+                id: card-.*
+- back
+- assertVisible:
+    id: category-screen
+    label: step-01 back on the category screen after three answers of 3+
+# Step 2 — choose 4+: 4+ shows its first card (card-0).
+- tapOn:
+    id: category-1
+- assertVisible:
+    id: card-0
+- assertVisible:
+    id: question
+    text: .+
+- assertNotVisible:
+    id: answer
+- takeScreenshot: step-02-4-plus-first-card
+# Step 3 — go back and choose 3+: 3+ shows its fourth card (card-3), none of the three seen.
+- back
+- assertVisible:
+    id: category-screen
+- tapOn:
+    id: category-0
+- assertVisible:
+    id: card-3
+- assertNotVisible:
+    id: answer
+- copyTextFrom:
+    id: question
+- assertTrue:
+    condition: ${output.noted.indexOf(maestro.copiedText) < 0}
+    label: the question is none of the three already seen
+- takeScreenshot: step-03-3-plus-fourth-card

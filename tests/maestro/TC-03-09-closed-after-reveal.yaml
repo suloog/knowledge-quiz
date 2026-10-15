@@ -1,0 +1,59 @@
+appId: ${APP_ID}
+name: TC-03-09 Closing after the reveal resumes at the next unseen question
+# Run by scripts/test-acceptance.sh on a device set to Polish, the test case's test data.
+tags:
+  - device-language
+---
+# Precondition — the app installed, its data cleared: first launch on the category screen.
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+# Step 1 — choose 3+, reveal the answer, note the question. App state: card-0, the deck's first
+# card. The card has been shown for 1 s before it is touched (MOD-03-F14, DEC-40); the wait runs out
+# (optional) after 1 s.
+- tapOn:
+    id: category-0
+- assertVisible:
+    id: card-0
+- copyTextFrom:
+    id: question
+- evalScript: ${output.question = maestro.copiedText}
+- extendedWaitUntil:
+    notVisible:
+      id: question
+    timeout: 1000
+    optional: true
+    label: the card shown for 1 s
+- tapOn:
+    id: card-0
+- assertVisible:
+    id: answer
+    text: .+
+- takeScreenshot: step-01-answer-revealed
+# Step 2 — close the app fully (stopped, its data kept), open it and choose 3+: a different
+# question, answer hidden. App state: card-1, the deck's next card.
+- stopApp
+- launchApp:
+    clearState: false
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+- tapOn:
+    id: category-0
+- assertVisible:
+    id: card-1
+- assertVisible:
+    id: question
+    text: .+
+- copyTextFrom:
+    id: question
+- assertTrue:
+    condition: ${maestro.copiedText != output.question}
+    label: a different question is shown
+- assertNotVisible:
+    id: answer
+- takeScreenshot: step-02-next-question-after-restart

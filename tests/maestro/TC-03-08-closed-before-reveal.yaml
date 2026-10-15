@@ -1,0 +1,48 @@
+appId: ${APP_ID}
+name: TC-03-08 Closing before the reveal brings back the same question
+# Run by scripts/test-acceptance.sh on a device set to Polish, the test case's test data.
+tags:
+  - device-language
+---
+# Precondition — the app installed, its data cleared: first launch on the category screen.
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+# Step 1 — choose 3+ and note the question, answer hidden. App state: card-0, the deck's first card.
+- tapOn:
+    id: category-0
+- assertVisible:
+    id: card-0
+- assertVisible:
+    id: question
+    text: .+
+- assertNotVisible:
+    id: answer
+- copyTextFrom:
+    id: question
+- evalScript: ${output.question = maestro.copiedText}
+- takeScreenshot: step-01-question-answer-hidden
+# Step 2 — close the app fully (stopped, its data kept), open it and choose 3+: the same question,
+# answer hidden.
+- stopApp
+- launchApp:
+    clearState: false
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+- tapOn:
+    id: category-0
+- assertVisible:
+    id: card-0
+- copyTextFrom:
+    id: question
+- assertTrue:
+    condition: ${maestro.copiedText == output.question}
+    label: the same question is shown
+- assertNotVisible:
+    id: answer
+- takeScreenshot: step-02-same-question-after-restart
