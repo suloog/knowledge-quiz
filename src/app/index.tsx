@@ -8,7 +8,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { type Language, appContent, categories } from '@/content';
-import { useLanguage } from '@/i18n';
+import { languageName, useLanguage } from '@/i18n';
 import { lastCategory, rememberCategory } from '@/lastCategory';
 import { colors, largestType, ruleWidth } from '@/theme';
 import { router } from 'expo-router';
@@ -42,7 +42,8 @@ const CategoriesScreen = () => {
       <Text testID="content-title" role="heading" style={styles.title}>
         {appContent.title[language]}
       </Text>
-      {/* Each language named in itself; the active one drawn inverted, white on black. */}
+      {/* Each language named in itself, the same in either app language; the active one drawn
+          inverted, white on black. */}
       <View
         testID="language-switch"
         role="radiogroup"
@@ -63,7 +64,7 @@ const CategoriesScreen = () => {
                   styles.languageText,
                   active && styles.activeLanguageText,
                 ]}>
-                {t(option)}
+                {languageName(option)}
               </Text>
             </Pressable>
           );

@@ -7,6 +7,10 @@ import strings from '@/strings.json';
 // its own two languages (DEC-57).
 export type StringKey = keyof (typeof strings)['en'];
 
+// Each language named in itself, the same whichever language the app is in (MOD-02-F10).
+export const languageName = (language: Language) =>
+  strings.languageNames[language];
+
 type AppLanguage = {
   language: Language;
   choose: (language: Language) => void;
