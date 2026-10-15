@@ -174,5 +174,13 @@
     "title": "Illustration tests: the question brought to the front through the saved deck; TC-03-22 in two device languages",
     "file": "docs/specs/DECISIONS.md",
     "ts": "2026-10-15T13:25:53Z"
+  },
+  {
+    "dec": "DEC-64",
+    "story": "US-02-03",
+    "attempt": 1,
+    "title": "The category screen fits a 640 dp high screen: the list entries give up their spacing first",
+    "file": "docs/specs/DECISIONS.md",
+    "ts": "2026-10-15T18:45:21Z"
   }
 ]

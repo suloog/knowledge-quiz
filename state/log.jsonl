@@ -228,3 +228,7 @@
 {"ts": "2026-10-15T18:05:04Z", "event": "review_end", "story": "US-02-03", "rounds": 2, "sha": "043a4c11de8e63701ab765f62e15315af4415508", "session": "745f787d-c854-4fcd-a5e4-608e5015db0c"}
 {"ts": "2026-10-15T18:05:16Z", "event": "test_end", "story": "US-02-03", "pass": 34, "fail": 0, "blocked": 0, "manual": 0, "manual_tests": [], "run": "test-runs/2026-10-15_193724", "session": "745f787d-c854-4fcd-a5e4-608e5015db0c"}
 {"ts": "2026-10-15T18:05:59Z", "event": "merge_pending", "story": "US-02-03", "pr": "https://github.com/suloog/knowledge-quiz/pull/16", "reason": "ci", "why": "CI is still running on 043a4c1", "session": "745f787d-c854-4fcd-a5e4-608e5015db0c"}
+{"ts": "2026-10-15T18:36:44Z", "event": "resumed", "by": "Maciej", "session": "0811fcaa-1d7c-4ea0-83f3-d685a8a6e3bc"}
+{"ts": "2026-10-15T18:37:58Z", "event": "wait", "from": "2026-10-15T18:07:43Z", "to": "2026-10-15T18:36:20Z", "seconds": 1716, "reason": "idle gap — a turn ended without a wake-up (hard limit, interrupted or closed session)", "story": "US-03-05", "session": "41bcb6e6-8d16-426e-97ac-599766b8bef2"}
+{"ts": "2026-10-15T18:38:19Z", "event": "merge_retry", "story": "US-02-03", "session": "41bcb6e6-8d16-426e-97ac-599766b8bef2"}
+{"ts": "2026-10-15T18:38:51Z", "event": "checks_fix", "story": "US-02-03", "session": "41bcb6e6-8d16-426e-97ac-599766b8bef2"}
