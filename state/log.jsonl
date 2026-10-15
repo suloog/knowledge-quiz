@@ -192,3 +192,4 @@
 {"ts": "2026-10-15T10:43:46Z", "event": "resumed", "by": "Maciej", "note": "resume for og-deliver-run", "session": "0811fcaa-1d7c-4ea0-83f3-d685a8a6e3bc"}
 {"ts": "2026-10-15T10:54:23Z", "event": "story_start", "story": "US-02-02", "branch": "feature/US-02-02", "base": "main", "attempt": 1, "model": "claude-opus-5-5", "effort": "medium", "session": "acad7584-1b24-43f9-a369-2dfaf7640e90"}
 {"ts": "2026-10-15T11:54:13Z", "event": "wait", "from": "2026-10-15T11:15:04Z", "to": "2026-10-15T11:51:49Z", "seconds": 2204, "reason": "idle gap — a turn ended without a wake-up (hard limit, interrupted or closed session)", "story": "US-02-02", "session": "3b42e6d0-89e1-4b14-adb8-07e4b6223213"}
+{"ts": "2026-10-15T11:55:07Z", "event": "wait_start", "reason": "weekly window at 100% (pause at 100%); extra credits off", "five_hour": 59.0, "seven_day": 100.0, "resets_at": "2026-10-19T20:00:00Z", "session": "1de0517d-aa79-45ca-8020-d9b54512f84b"}
