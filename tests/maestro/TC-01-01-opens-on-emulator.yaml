@@ -2,7 +2,7 @@ appId: ${APP_ID}
 name: TC-01-01 The app installs and opens on an Android 12 emulator
 ---
 # Step 1 — install the app on a clean Android 12 emulator: scripts/test-acceptance.sh removes any
-# copy left on the device, then the start command builds and installs this build (stack.log).
+# copy left on the device, then installs the release APK it built (release/install.txt).
 # Installation completed when the app's launcher activity can be started.
 - launchApp:
     clearState: true
