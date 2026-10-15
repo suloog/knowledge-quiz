@@ -29,7 +29,7 @@
 #    TC-03-19 (tagged `deck-state`) run after the Polish flows, still in Polish, with
 #    scripts/saved-deck-server.js reading the saved 3+ deck from the device as root while they run
 #    (DECK_STATE_URL), for the app state their steps note (DEC-58). The device's
-#    language is set as root (system locale property, then a restart of the Android framework) and
+#    language is set as root (system locale property and setting, then a restart of the Android framework) and
 #    put back afterwards. The debug build crashes
 #    intermittently on `launchApp: clearState` (a native SIGSEGV on the JS thread mqt_v_js right
 #    after `Running "main"`, about 1 flow in 6 per run, a different flow each time), so the owner
@@ -176,15 +176,26 @@ write_junit() {
 
 # ------------------------------------------------------- the device's language
 # set_device_locale <pl-PL|en-US…>: the device's system language, as root (an emulator image
-# without Google Play): the locale property, then a restart of the Android framework, waited out
-# until the new configuration is in force and the package manager answers again.
+# without Google Play): the locale property and the system_locales setting, then a restart of the
+# Android framework, waited out until the new configuration is in force and the package manager
+# answers again. The setting wins over the property when the framework starts, and a language
+# changed in the running system (Settings, or SetLocale in TC-03-22) leaves it written; the
+# restart waits until the settings file on disk has changed, or it would lose the new value.
 set_device_locale() {
-  local tag="$1" config
+  local tag="$1" config settings_file=/data/system/users/0/settings_system.xml before
   config="-$(printf '%s' "${tag%%-*}")-r$(printf '%s' "${tag#*-}")-"
   "$ADB" root >/dev/null 2>&1 || return 1
   "$ADB" wait-for-device
   [ "$("$ADB" shell id -u 2>/dev/null | tr -d '\r')" = 0 ] || return 1
   if "$ADB" shell am get-config 2>/dev/null | grep -q -- "$config"; then return 0; fi
+  if [ "$("$ADB" shell settings get system system_locales | tr -d '\r')" != "$tag" ]; then
+    before="$("$ADB" shell md5sum "$settings_file")"
+    "$ADB" shell settings put system system_locales "$tag" || return 1
+    for _ in $(seq 1 40); do
+      [ "$("$ADB" shell md5sum "$settings_file")" != "$before" ] && break
+      sleep 0.5
+    done
+  fi
   "$ADB" shell "setprop persist.sys.locale $tag; setprop ctl.restart zygote" || return 1
   for _ in $(seq 1 90); do
     sleep 2
@@ -764,7 +775,10 @@ else
       # TC-03-01…TC-03-05, TC-03-07…TC-03-11: the cards, with the device set to Polish (their test
       # data); TC-03-05 again with it set to English. The app reads the device's language when it
       # starts (DEC-52).
-      original_locale="$("$ADB" shell getprop persist.sys.locale | tr -d '\r')"
+      original_locale="$("$ADB" shell settings get system system_locales | tr -d '\r')"
+      original_locale="${original_locale%%,*}"
+      [ "$original_locale" != null ] || original_locale=""
+      [ -n "$original_locale" ] || original_locale="$("$ADB" shell getprop persist.sys.locale | tr -d '\r')"
       [ -n "$original_locale" ] || original_locale="$("$ADB" shell getprop ro.product.locale | tr -d '\r')"
       [ -n "$original_locale" ] || original_locale=en-US
       run_language_flows pl-PL pl "$OUT/maestro/report-release-pl.xml" "$OUT/maestro/release-pl" \
