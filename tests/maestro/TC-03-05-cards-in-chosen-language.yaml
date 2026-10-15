@@ -1,0 +1,44 @@
+appId: ${APP_ID}
+name: TC-03-05 Cards appear in the language chosen on the category screen
+# The language switch on the category screen comes with US-02-03; until then the app follows the
+# device's language (DEC-52). scripts/test-acceptance.sh therefore runs this flow twice, with the
+# emulator set to Polish and then to English instead of switching on the category screen, and
+# passes the language (LANGUAGE) and the 3+ deck's questions and answers in it (CARD_QUESTIONS,
+# CARD_ANSWERS: JSON lists, in the deck's order). US-02-03 brings the switch and runs this test
+# case as written.
+tags:
+  - device-language
+---
+# Precondition — the app installed, its data cleared: first launch on the category screen.
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+# Step 1 — (the device set to LANGUAGE) choose 3+: the question is one of the deck's questions in
+# that language.
+- tapOn:
+    id: category-0
+- assertVisible:
+    id: question
+    text: .+
+- copyTextFrom:
+    id: question
+- evalScript: ${output.card = JSON.parse(CARD_QUESTIONS).indexOf(maestro.copiedText)}
+- assertTrue:
+    condition: ${output.card >= 0}
+    label: the question is in ${LANGUAGE}
+- takeScreenshot: step-01-question-in-language
+# Step 2 — touch the card: the answer is that question's answer in the same language.
+- tapOn:
+    id: card-.*
+- assertVisible:
+    id: answer
+    text: .+
+- copyTextFrom:
+    id: answer
+- assertTrue:
+    condition: ${maestro.copiedText == JSON.parse(CARD_ANSWERS)[output.card]}
+    label: the answer is in ${LANGUAGE}
+- takeScreenshot: step-02-answer-in-language

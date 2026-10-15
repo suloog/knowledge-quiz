@@ -1,0 +1,54 @@
+appId: ${APP_ID}
+name: TC-03-03 Touching a revealed card shows the next question alone
+# Run by scripts/test-acceptance.sh on a device set to Polish, the test case's test data.
+tags:
+  - device-language
+---
+# Precondition — the app installed, its data cleared: first launch on the category screen.
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+# Step 1 — choose 3+ and touch to reveal: the answer is shown.
+- tapOn:
+    id: category-0
+- assertVisible:
+    id: question
+    text: .+
+- copyTextFrom:
+    id: question
+- evalScript: ${output.question = maestro.copiedText}
+- tapOn:
+    id: card-0
+- assertVisible:
+    id: answer
+    text: .+
+- takeScreenshot: step-01-answer
+# Step 2 — wait 1 s and touch the card again: a different question appears alone. The wait is
+# the test case's own: the answer stays on screen for it, so the wait runs out (optional) after 1 s.
+# App state: the card in the accessibility tree is card-1, the deck's next position.
+- extendedWaitUntil:
+    notVisible:
+      id: answer
+    timeout: 1000
+    optional: true
+    label: wait 1 s
+- tapOn:
+    id: card-0
+- assertVisible:
+    id: card-1
+- assertVisible:
+    id: question
+    text: .+
+- assertNotVisible:
+    id: answer
+- assertNotVisible:
+    id: rule
+- copyTextFrom:
+    id: question
+- assertTrue:
+    condition: ${maestro.copiedText != output.question}
+    label: the question on screen is a different one
+- takeScreenshot: step-02-next-question-alone

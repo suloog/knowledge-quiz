@@ -13,7 +13,12 @@
 #    which also installs the dependencies on a fresh clone): the debug build, its JavaScript served
 #    by Metro;
 # 3. every other flow (TC-00-03, TC-01-01, AC-01-01-4 offline, and any new flow by default) against
-#    that release APK, installed on the device with Metro stopped. The debug build crashes
+#    that release APK, installed on the device with Metro stopped. The flows tagged
+#    `device-language` (the cards, TC-03-01…TC-03-05) run after the others, on the device set to
+#    Polish — their test data — and TC-03-05 once more on the device set to English: until the
+#    language switch (US-02-03) the app follows the device's language (DEC-52). The device's
+#    language is set as root (system locale property, then a restart of the Android framework) and
+#    put back afterwards. The debug build crashes
 #    intermittently on `launchApp: clearState` (a native SIGSEGV on the JS thread mqt_v_js right
 #    after `Running "main"`, about 1 flow in 6 per run, a different flow each time), so the owner
 #    decided on 2026-10-15 that the flows run on the release build; offline, only the release build
@@ -29,6 +34,10 @@
 #   maestro/report.xml           — Maestro on the debug build (TC-00-01), evidence under maestro/
 #   maestro/report-release.xml   — Maestro on the release build (all other flows), evidence under
 #                                  maestro/release/
+#   maestro/report-release-pl.xml, maestro/report-release-en.xml
+#                                — the `device-language` flows on the device set to Polish, and
+#                                  TC-03-05 on it set to English; evidence under maestro/release-pl/
+#                                  and maestro/release-en/
 # The consoles are kept beside them: release-build.log, stack.log; the APK checks under release/.
 #
 # Needs a running Android device (the emulator CI boots, or one you start first): the release
@@ -130,6 +139,52 @@ write_junit() {
     printf '%s' "$CASES"
     printf '  </testsuite>\n</testsuites>\n'
   } >"$OUT/junit/release.xml"
+}
+
+# ------------------------------------------------------- the device's language
+# set_device_locale <pl-PL|en-US…>: the device's system language, as root (an emulator image
+# without Google Play): the locale property, then a restart of the Android framework, waited out
+# until the new configuration is in force and the package manager answers again.
+set_device_locale() {
+  local tag="$1" config
+  config="-$(printf '%s' "${tag%%-*}")-r$(printf '%s' "${tag#*-}")-"
+  "$ADB" root >/dev/null 2>&1 || return 1
+  "$ADB" wait-for-device
+  [ "$("$ADB" shell id -u 2>/dev/null | tr -d '\r')" = 0 ] || return 1
+  if "$ADB" shell am get-config 2>/dev/null | grep -q -- "$config"; then return 0; fi
+  "$ADB" shell "setprop persist.sys.locale $tag; setprop ctl.restart zygote" || return 1
+  for _ in $(seq 1 90); do
+    sleep 2
+    "$ADB" shell am get-config 2>/dev/null | grep -q -- "$config" || continue
+    "$ADB" shell pm path android >/dev/null 2>&1 || continue
+    "$ADB" shell dumpsys window 2>/dev/null | grep -q 'mCurrentFocus=Window' || continue
+    return 0
+  done
+  return 1
+}
+# run_language_flows <locale> <language> <report> <output dir> <maestro arguments…>: the flows on
+# the device set to that language, given the 3+ deck's questions and answers in it (TC-03-05).
+run_language_flows() {
+  local tag="$1" language="$2" report="$3" dir="$4"
+  shift 4
+  say "maestro flows on the release build, the device set to $tag"
+  if ! set_device_locale "$tag"; then
+    # No results: the collector counts these flows as not run (blocked), not failed.
+    say "BLOCKED: could not set the device's language to $tag (adb root needs an emulator image without Google Play)"
+    return
+  fi
+  if ! "$MAESTRO" test \
+    --format JUNIT \
+    --output "$report" \
+    --test-output-dir "$dir" \
+    --exclude-tags debug-build \
+    -e APP_ID="$APP_ID" \
+    -e LANGUAGE="$language" \
+    -e CARD_QUESTIONS="$(node -p "JSON.stringify(require('./src/content/decks/3-plus.json').questions.map(q => q['$language'].question))")" \
+    -e CARD_ANSWERS="$(node -p "JSON.stringify(require('./src/content/decks/3-plus.json').questions.map(q => q['$language'].answer))")" \
+    "$@"; then
+    status=1
+  fi
 }
 
 # ---------------------------------------------------------------- 1. release APK
@@ -300,7 +355,7 @@ else
         --format JUNIT \
         --output "$OUT/maestro/report-release.xml" \
         --test-output-dir "$OUT/maestro/release" \
-        --exclude-tags debug-build \
+        --exclude-tags debug-build,device-language \
         -e APP_ID="$APP_ID" \
         -e CONTENT_TITLE="$CONTENT_TITLE" \
         ${CATEGORY_ARGS[@]+"${CATEGORY_ARGS[@]}"} \
@@ -347,6 +402,20 @@ else
         status=1
       fi
       rm -f "$OUT/maestro/AC-02-01-4-screen.raw"
+
+      # TC-03-01…TC-03-05: the cards, with the device set to Polish (their test data); TC-03-05
+      # again with it set to English. The app reads the device's language when it starts (DEC-52).
+      original_locale="$("$ADB" shell getprop persist.sys.locale | tr -d '\r')"
+      [ -n "$original_locale" ] || original_locale="$("$ADB" shell getprop ro.product.locale | tr -d '\r')"
+      [ -n "$original_locale" ] || original_locale=en-US
+      run_language_flows pl-PL pl "$OUT/maestro/report-release-pl.xml" "$OUT/maestro/release-pl" \
+        --include-tags device-language tests/maestro
+      run_language_flows en-US en "$OUT/maestro/report-release-en.xml" "$OUT/maestro/release-en" \
+        tests/maestro/TC-03-05-cards-in-chosen-language.yaml
+      say "putting the device's language back to $original_locale"
+      set_device_locale "$original_locale" || say "WARNING: could not put the device's language back to $original_locale"
+      "$ADB" unroot >/dev/null 2>&1 || true
+      "$ADB" wait-for-device
     fi
     # The flow switches the network back on itself; this covers a flow that never ran.
     "$ADB" shell cmd connectivity airplane-mode disable >/dev/null 2>&1 || true
