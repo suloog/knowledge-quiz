@@ -55,8 +55,10 @@ tags:
           id: card-.*
 - assertTrue:
     condition: ${output.noted.length == 50}
-    label: step-02 50 questions are noted
+    label: 50 questions are noted
+- takeScreenshot: step-02-after-50-cards
 # Step 3 — compare the noted questions: all 50 are different, and together they are the 3+ deck.
 - assertTrue:
     condition: ${JSON.stringify(output.noted.slice().sort()) == JSON.stringify(JSON.parse(CARD_QUESTIONS).sort())}
-    label: step-03 the 50 noted questions are all different and together are the 3+ deck
+    label: the 50 noted questions are all different and together are the 3+ deck
+- takeScreenshot: step-03-compared

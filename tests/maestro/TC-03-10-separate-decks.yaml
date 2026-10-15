@@ -18,8 +18,9 @@ tags:
 - tapOn:
     id: category-0
 - evalScript: ${output.noted = []}
+# The first two cards: revealed, then moved on from.
 - repeat:
-    times: 3
+    times: 2
     commands:
       - assertVisible:
           id: card-${output.noted.length}
@@ -37,22 +38,35 @@ tags:
       - assertVisible:
           id: answer
           text: .+
-      - runFlow:
-          when:
-            true: ${output.noted.length < 3}
-          commands:
-            - extendedWaitUntil:
-                notVisible:
-                  id: answer
-                timeout: 1000
-                optional: true
-                label: the answer shown for 1 s
-            - tapOn:
-                id: card-.*
+      - extendedWaitUntil:
+          notVisible:
+            id: answer
+          timeout: 1000
+          optional: true
+          label: the answer shown for 1 s
+      - tapOn:
+          id: card-.*
+# The third card: revealed, then left.
+- assertVisible:
+    id: card-2
+- copyTextFrom:
+    id: question
+- evalScript: ${output.noted.push(maestro.copiedText)}
+- extendedWaitUntil:
+    notVisible:
+      id: question
+    timeout: 1000
+    optional: true
+    label: the card shown for 1 s
+- tapOn:
+    id: card-2
+- assertVisible:
+    id: answer
+    text: .+
 - back
 - assertVisible:
     id: category-screen
-    label: step-01 back on the category screen after three answers of 3+
+- takeScreenshot: step-01-back-on-categories
 # Step 2 — choose 4+: 4+ shows its first card (card-0).
 - tapOn:
     id: category-1

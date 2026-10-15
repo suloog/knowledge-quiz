@@ -11,7 +11,10 @@ tags:
 - evalScript: ${output.unreadable = (function () { try { JSON.parse(SAVED_DECK); return false; } catch (e) { return true; } })()}
 - assertTrue:
     condition: ${SAVED_DECK.length > 0 && output.unreadable}
-    label: step-01 the saved 3+ deck is unreadable
+    label: the saved 3+ deck is unreadable
+# The device before the app is opened; the saved deck itself is kept beside this flow's output
+# (saved-deck-before.txt, and saved-deck-after.txt once the flow has run).
+- takeScreenshot: step-01-saved-deck-unreadable
 # Step 2 — open the app and choose 3+: a question is shown without an error, the deck at its first
 # card (card-0).
 - launchApp:
