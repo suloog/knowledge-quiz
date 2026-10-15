@@ -143,12 +143,14 @@ describe('Question cards (US-03-01)', () => {
     expect(screen.getByTestId('question')).toHaveStyle({
       fontSize: Math.max(...fontSizes()),
     });
-    expect(texts(subtree(screen.toJSON() as Tree, 'card-screen'))).toHaveLength(
-      1,
-    );
+    // The card itself; the return control sits above it, outside it (US-03-04).
+    const cardTree = subtree(screen.toJSON() as Tree, 'card-0');
+    expect(texts(cardTree)).toHaveLength(1);
     expect(screen.queryByTestId('answer')).toBeNull();
     expect(screen.queryByTestId('rule')).toBeNull();
-    expect(screen.queryByRole('button')).toBeNull();
+    expect(
+      hostNodes(cardTree).filter(node => node.props.role === 'button'),
+    ).toHaveLength(0);
   });
 
   it('a touch reveals the answer below a rule; the question stays (#2)', async () => {
@@ -388,6 +390,129 @@ describe('End of the deck (US-03-03)', () => {
 
     expect(screen.getByTestId('end-card')).toBeOnTheScreen();
     expect(screen.queryByTestId('question')).toBeNull();
+  });
+});
+
+describe('Back to the categories from any card (US-03-04)', () => {
+  cardSetUp();
+
+  const saved = () => JSON.parse(mockSaved.get('deck-3+')!);
+
+  it("Android's back action shows the category screen (#1)", async () => {
+    await openCards();
+    await act(async () => router.back());
+
+    expect(screen.getByTestId('category-screen')).toBeOnTheScreen();
+    expect(screen.queryByTestId('card-screen')).toBeNull();
+  });
+
+  it('every card shows a small control outside the card, in the app language (#2)', async () => {
+    await openCards();
+    const tree = screen.toJSON() as Tree;
+
+    expect(screen.getByTestId('return-control')).toHaveTextContent(
+      '‹ Kategorie',
+    );
+    expect(screen.getByLabelText('Wróć do kategorii')).toBeOnTheScreen();
+    expect(subtree(subtree(tree, 'card-0'), 'return-control')).toBeNull();
+    expect(subtree(tree, 'return-control')).not.toBeNull();
+
+    await touch();
+    expect(screen.getByTestId('return-control')).toBeOnTheScreen();
+    await touch();
+    expect(screen.getByTestId('card-1')).toBeOnTheScreen();
+    expect(screen.getByTestId('return-control')).toBeOnTheScreen();
+  });
+
+  it('on a device set to English the control is in English (DEC-52, DEC-57)', async () => {
+    deviceLocale('en_US');
+    await openCards();
+
+    expect(screen.getByTestId('return-control')).toHaveTextContent(
+      '‹ Categories',
+    );
+    expect(screen.getByLabelText('Back to categories')).toBeOnTheScreen();
+  });
+
+  it('the control shows the category screen, with no second one stacked (#2)', async () => {
+    await openCards();
+    await choose('return-control');
+
+    expect(screen.getByTestId('category-screen')).toBeOnTheScreen();
+    expect(screen.queryByTestId('card-screen')).toBeNull();
+    expect(router.canGoBack()).toBe(false);
+  });
+
+  it('touching the control never reveals an answer or moves on: the deck is unchanged (#3)', async () => {
+    await openCards();
+    const before = saved();
+    await choose('return-control');
+
+    expect(saved()).toEqual(before);
+    expect(screen.queryByTestId('answer')).toBeNull();
+
+    await fireEvent.press(screen.getByText('3+'));
+    expect(screen.getByTestId('card-0')).toBeOnTheScreen();
+    expect(screen.getByTestId('question')).toHaveTextContent(
+      'Pytanie pierwsze?',
+    );
+    expect(screen.queryByTestId('answer')).toBeNull();
+    expect(saved()).toEqual(before);
+  });
+
+  it('touching the control on a revealed answer does not move on to the next card (#3)', async () => {
+    await openCards();
+    await touch();
+    const before = saved();
+    await choose('return-control');
+
+    expect(saved()).toEqual(before);
+    expect(screen.getByTestId('category-screen')).toBeOnTheScreen();
+  });
+
+  it('a touch on the control before the card has been shown for 0.5 s is ignored (MOD-03-F14)', async () => {
+    await openCards();
+    await touch(200);
+    await choose('return-control');
+
+    expect(screen.getByTestId('card-screen')).toBeOnTheScreen();
+  });
+
+  it('after returning, the category resumes where it was left (#4)', async () => {
+    await openCards();
+    await touch();
+    await act(async () => router.back());
+    await fireEvent.press(screen.getByText('3+'));
+
+    expect(screen.getByTestId('card-1')).toBeOnTheScreen();
+    expect(screen.getByTestId('question')).toHaveTextContent('Pytanie drugie?');
+    expect(screen.queryByTestId('answer')).toBeNull();
+  });
+
+  it('back while the answer is hidden: that card is not counted as seen (edge case, DEC-38)', async () => {
+    await openCards();
+    await act(async () => router.back());
+
+    expect(saved().seen).toBe(0);
+
+    await fireEvent.press(screen.getByText('3+'));
+    expect(screen.getByTestId('card-0')).toBeOnTheScreen();
+    expect(screen.getByTestId('question')).toHaveTextContent(
+      'Pytanie pierwsze?',
+    );
+    expect(screen.queryByTestId('answer')).toBeNull();
+  });
+
+  it('a fast double touch on a category opens its cards once (DEC-58)', async () => {
+    await renderRouter(routes);
+    // The second touch reaches the entry the first one already acted on.
+    const entry = screen.getByText('3+');
+    await fireEvent.press(entry);
+    await fireEvent.press(entry);
+    await act(async () => router.back());
+
+    expect(screen.getByTestId('category-screen')).toBeOnTheScreen();
+    expect(router.canGoBack()).toBe(false);
   });
 });
 

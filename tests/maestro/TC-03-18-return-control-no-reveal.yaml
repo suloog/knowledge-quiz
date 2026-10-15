@@ -1,0 +1,64 @@
+appId: ${APP_ID}
+name: TC-03-18 Touching the return control never reveals an answer or moves on
+# Run by scripts/test-acceptance.sh on a device set to Polish, the test case's test data. The app
+# state is the saved 3+ deck, read from the device as root through scripts/saved-deck-server.js
+# (DECK_STATE_URL): the release build has no app-state bridge (DEC-55). What it read is kept as
+# TC-03-18-step-0N.json beside the flow's evidence.
+tags:
+  - deck-state
+---
+# Precondition — the app installed, its data cleared: first launch on the category screen.
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+# Step 1 — choose 3+ and note the deck state, answer hidden: a question is shown (card-0); the
+# saved deck has none of its cards seen.
+- tapOn:
+    id: category-0
+- assertVisible:
+    id: card-0
+- assertVisible:
+    id: question
+    text: .+
+- assertNotVisible:
+    id: answer
+- copyTextFrom:
+    id: question
+- evalScript: ${output.question = maestro.copiedText}
+- evalScript: ${output.before = http.get(DECK_STATE_URL + '/TC-03-18-step-01').body}
+- assertTrue:
+    condition: ${JSON.parse(output.before).seen == 0}
+    label: the saved deck is noted, no card seen
+- takeScreenshot: step-01-question-answer-hidden
+# Step 2 — touch the return control, then choose 3+ again: the same question, answer hidden; the
+# saved deck is what step 1 noted. The card has been shown for 1 s before the control is touched
+# (MOD-03-F14, DEC-40); the wait runs out (optional) after 1 s.
+- extendedWaitUntil:
+    notVisible:
+      id: return-control
+    timeout: 1000
+    optional: true
+    label: the card shown for 1 s
+- tapOn:
+    id: return-control
+- assertVisible:
+    id: category-screen
+- tapOn:
+    id: category-0
+- assertVisible:
+    id: card-0
+- copyTextFrom:
+    id: question
+- assertTrue:
+    condition: ${maestro.copiedText == output.question}
+    label: the same question is shown
+- assertNotVisible:
+    id: answer
+- evalScript: ${output.after = http.get(DECK_STATE_URL + '/TC-03-18-step-02').body}
+- assertTrue:
+    condition: ${output.after == output.before}
+    label: the saved deck is unchanged
+- takeScreenshot: step-02-same-question-deck-unchanged

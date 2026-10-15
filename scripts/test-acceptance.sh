@@ -14,12 +14,15 @@
 #    by Metro;
 # 3. every other flow (TC-00-03, TC-01-01, AC-01-01-4 offline, and any new flow by default) against
 #    that release APK, installed on the device with Metro stopped. The flows tagged
-#    `device-language` (the cards, TC-03-01…TC-03-05, TC-03-07…TC-03-10) run after the others, on
+#    `device-language` (the cards, TC-03-01…TC-03-05, TC-03-07…TC-03-10, TC-03-16, TC-03-17) run after the others, on
 #    the device set to Polish — their test data — and TC-03-05 once more on the device set to
 #    English: until the language switch (US-02-03) the app follows the device's language (DEC-52).
 #    TC-03-11 (tagged `saved-deck`) runs on its own, still in Polish, after its saved deck has been
 #    made unreadable as root (DEC-55); so does each of TC-03-12…TC-03-15 (the end card, also tagged
-#    `saved-deck`), after its saved deck has been written one card from its end (DEC-56). The device's
+#    `saved-deck`), after its saved deck has been written one card from its end (DEC-56). TC-03-18 and
+#    TC-03-19 (tagged `deck-state`) run after the Polish flows, still in Polish, with
+#    scripts/saved-deck-server.js reading the saved 3+ deck from the device as root while they run
+#    (DECK_STATE_URL), for the app state their steps note (DEC-58). The device's
 #    language is set as root (system locale property, then a restart of the Android framework) and
 #    put back afterwards. The debug build crashes
 #    intermittently on `launchApp: clearState` (a native SIGSEGV on the JS thread mqt_v_js right
@@ -41,6 +44,9 @@
 #                                — the `device-language` flows on the device set to Polish, and
 #                                  TC-03-05 on it set to English; evidence under maestro/release-pl/
 #                                  and maestro/release-en/
+#   maestro/report-release-deck-state.xml
+#                                — TC-03-18, TC-03-19 on the device set to Polish; evidence under
+#                                  maestro/release-deck-state/, the saved deck each step read beside it
 #   maestro/report-release-saved-deck.xml
 #                                — TC-03-11, evidence (the saved deck before and after) under
 #                                  maestro/release-saved-deck/
@@ -194,6 +200,40 @@ run_language_flows() {
     "$@"; then
     status=1
   fi
+}
+
+# run_deck_state_flows <report> <output dir>: TC-03-18, TC-03-19 — the flows tagged `deck-state`,
+# with scripts/saved-deck-server.js on the host's loopback reading the saved 3+ deck from the device
+# as root whenever a step notes the app state (DECK_STATE_URL); what it read is kept in the output
+# dir, named after the step. The release build has no app-state bridge (DEC-55, DEC-58). Needs the
+# device rooted and set to Polish, as run_language_flows leaves it.
+run_deck_state_flows() {
+  local report="$1" dir="$2" port=8765 server
+  say "TC-03-18, TC-03-19: the flows that note the saved deck, read from the device as root"
+  mkdir -p "$dir"
+  if [ "$("$ADB" shell id -u 2>/dev/null | tr -d '\r')" != 0 ]; then
+    # No results: the collector counts these flows as not run (blocked), not failed.
+    say "BLOCKED: could not read the saved deck as root (adb root needs an emulator image without Google Play)"
+    return
+  fi
+  node scripts/saved-deck-server.js "$ADB" "$APP_ID" "$port" "$dir" &
+  server=$!
+  for _ in $(seq 1 20); do
+    curl -fs "http://127.0.0.1:$port/" >/dev/null 2>&1 && break
+    sleep 0.5
+  done
+  if ! "$MAESTRO" test \
+    --format JUNIT \
+    --output "$report" \
+    --test-output-dir "$dir" \
+    --include-tags deck-state \
+    -e APP_ID="$APP_ID" \
+    -e DECK_STATE_URL="http://127.0.0.1:$port" \
+    tests/maestro; then
+    status=1
+  fi
+  kill "$server" 2>/dev/null || true
+  wait "$server" 2>/dev/null || true
 }
 
 # run_saved_deck_flow <report> <output dir>: TC-03-11 — the saved 3+ deck replaced, as root, with
@@ -468,7 +508,7 @@ else
         --format JUNIT \
         --output "$OUT/maestro/report-release.xml" \
         --test-output-dir "$OUT/maestro/release" \
-        --exclude-tags debug-build,device-language,saved-deck \
+        --exclude-tags debug-build,device-language,saved-deck,deck-state \
         -e APP_ID="$APP_ID" \
         -e CONTENT_TITLE="$CONTENT_TITLE" \
         ${CATEGORY_ARGS[@]+"${CATEGORY_ARGS[@]}"} \
@@ -524,6 +564,7 @@ else
       [ -n "$original_locale" ] || original_locale=en-US
       run_language_flows pl-PL pl "$OUT/maestro/report-release-pl.xml" "$OUT/maestro/release-pl" \
         --include-tags device-language tests/maestro
+      run_deck_state_flows "$OUT/maestro/report-release-deck-state.xml" "$OUT/maestro/release-deck-state"
       run_saved_deck_flow "$OUT/maestro/report-release-saved-deck.xml" "$OUT/maestro/release-saved-deck"
       for flow in tests/maestro/TC-03-1[2-5]-*.yaml; do
         name="$(basename "$flow" .yaml)"
