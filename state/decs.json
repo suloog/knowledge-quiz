@@ -158,5 +158,21 @@
     "title": "The app title on the category screen in Polish and English",
     "file": "docs/specs/DECISIONS.md",
     "ts": "2026-10-15T13:10:21Z"
+  },
+  {
+    "dec": "DEC-62",
+    "story": "US-03-05",
+    "attempt": 1,
+    "title": "Five code-drawn 1-bit illustrations, shown at one image pixel per screen pixel",
+    "file": "docs/specs/DECISIONS.md",
+    "ts": "2026-10-15T13:25:53Z"
+  },
+  {
+    "dec": "DEC-63",
+    "story": "US-03-05",
+    "attempt": 1,
+    "title": "Illustration tests: the question brought to the front through the saved deck; TC-03-22 in two device languages",
+    "file": "docs/specs/DECISIONS.md",
+    "ts": "2026-10-15T13:25:53Z"
   }
 ]
