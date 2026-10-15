@@ -209,6 +209,32 @@ blocked() {
     say "BLOCKED: $1 (adb root needs an emulator image without Google Play)"
   fi
 }
+# device_back: before each group of flows that needs root, the device attached, booted and rooted.
+# An emulator that dropped off adb mid-run (on CI its adbd restarted under load, unrooted, and the
+# groups after it were all blocked within a second) is waited for, up to three minutes, and rooted
+# again, so the groups after it still run. Nothing is re-run: a flow that failed while it was gone
+# stays failed. An image that cannot be rooted is not waited on: the group says so as blocked.
+device_back() {
+  local _
+  if [ "$("$ADB" get-state 2>/dev/null)" != device ]; then
+    say "the device is no longer attached: waiting for it (up to 3 minutes)"
+    for _ in $(seq 1 90); do
+      [ "$("$ADB" get-state 2>/dev/null)" = device ] && break
+      sleep 2
+    done
+  fi
+  for _ in $(seq 1 60); do
+    [ "$("$ADB" shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = 1 ] && break
+    sleep 2
+  done
+  [ "$("$ADB" shell id -u 2>/dev/null | tr -d '\r')" = 0 ] && return 0
+  "$ADB" root >/dev/null 2>&1 || return 1
+  for _ in $(seq 1 15); do
+    [ "$("$ADB" shell id -u 2>/dev/null | tr -d '\r')" = 0 ] && return 0
+    sleep 1
+  done
+  return 1
+}
 # set_device_locale <pl-PL|en-US…>: the device's system language, as root (an emulator image
 # without Google Play): the locale property and the system_locales setting, then a restart of the
 # Android framework, waited out until the new configuration is in force and the package manager
@@ -818,15 +844,23 @@ else
       [ -n "$original_locale" ] || original_locale="$(device_locale)"
       run_language_flows pl-PL pl "$OUT/maestro/report-release-pl.xml" "$OUT/maestro/release-pl" \
         --include-tags device-language tests/maestro
+      # Each group after the first waits for the device, should it have dropped off (device_back).
+      device_back
       run_deck_state_flows "$OUT/maestro/report-release-deck-state.xml" "$OUT/maestro/release-deck-state"
+      device_back
       run_saved_deck_flow "$OUT/maestro/report-release-saved-deck.xml" "$OUT/maestro/release-saved-deck"
       for flow in tests/maestro/TC-03-1[2-5]-*.yaml; do
         name="$(basename "$flow" .yaml)"
+        device_back
         run_end_card_flow "$flow" "$OUT/maestro/report-release-${name%%-[a-z]*}.xml" "$OUT/maestro/release-end-card/${name%%-[a-z]*}"
       done
+      device_back
       run_continue_finished_flow "$OUT/maestro/report-release-TC-02-08.xml" "$OUT/maestro/release-continue/TC-02-08"
+      device_back
       run_unreadable_data_flow "$OUT/maestro/report-release-TC-02-09.xml" "$OUT/maestro/release-continue/TC-02-09"
+      device_back
       run_illustration_flows "$OUT/maestro/release-illustrations"
+      device_back
       run_language_flows de-DE en "$OUT/maestro/report-release-de.xml" "$OUT/maestro/release-de" \
         --include-tags other-device-language tests/maestro
       say "putting the device's language back to $original_locale"
