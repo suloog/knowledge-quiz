@@ -63,7 +63,7 @@ A module counts as **sliced** once part 1 of its `COVERAGE.md` has no empty rows
 
 | Story | Title | Covers | Prio | Status | Depends on | YouTrack |
 | ----- | ----- | ------ | ---- | ------ | ---------- | -------- |
-| `US-03-01` | Child can touch a card to see the answer and touch again for the next question | MOD-02-F04, F01, F02, F03, F04, F05, F14, U01, U02, U04, U05, NFR-01, NFR-03, NFR-04 | must | in-progress | `US-02-01` | — |
+| `US-03-01` | Child can touch a card to see the answer and touch again for the next question | MOD-02-F04, F01, F02, F03, F04, F05, F14, U01, U02, U04, U05, NFR-01, NFR-03, NFR-04 | must | done | `US-02-01` | — |
 | `US-03-02` | Parent can go through a category without repeats and come back where we left off | F06, F07, F08 | must | ready | `US-03-01` | — |
 | `US-03-03` | Parent can see when a deck is finished and start it again or go back | F09, F10, F11 | must | ready | `US-03-02` | — |
 | `US-03-04` | Parent can go back to the categories from any card | F12, F13 | must | ready | `US-03-01` | — |
