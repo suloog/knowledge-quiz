@@ -5,6 +5,7 @@ import {
   type TextStyle,
 } from 'react-native';
 import { act, fireEvent, screen } from '@testing-library/react-native';
+import { router } from 'expo-router';
 import { renderRouter } from 'expo-router/testing-library';
 import { hostNodes } from '../../../tests/unit/support/app-tree';
 import RootLayout from '../_layout';
@@ -40,6 +41,22 @@ jest.mock('@/content/decks', () => ({
     },
   ],
 }));
+
+// What the app keeps on the device, in memory: key → JSON.
+const mockSaved = new Map<string, string>();
+jest.mock('@/storage', () => ({
+  load: (key: string) => {
+    const value = mockSaved.get(key);
+    return value === undefined ? undefined : JSON.parse(value);
+  },
+  save: (key: string, value: unknown) =>
+    mockSaved.set(key, JSON.stringify(value)),
+}));
+
+// Math.random() just below 1 leaves a shuffled deck in its data order; 0 reverses two cards.
+const shuffleKeepsOrder = () =>
+  jest.spyOn(Math, 'random').mockReturnValue(0.999);
+const shuffleSwapsTwo = () => jest.spyOn(Math, 'random').mockReturnValue(0);
 
 const deviceLocale = (localeIdentifier: string) =>
   jest.spyOn(I18nManager, 'getConstants').mockReturnValue({
@@ -93,15 +110,21 @@ const fontSizes = () =>
         .fontSize as number,
   );
 
-describe('Question cards (US-03-01)', () => {
+const cardSetUp = () => {
   beforeEach(() => {
     jest.useFakeTimers();
     deviceLocale('pl_PL');
+    mockSaved.clear();
+    shuffleKeepsOrder();
   });
   afterEach(() => {
     jest.useRealTimers();
-    jest.mocked(I18nManager.getConstants).mockRestore();
+    jest.restoreAllMocks();
   });
+};
+
+describe('Question cards (US-03-01)', () => {
+  cardSetUp();
 
   it('choosing a category opens its first card (MOD-02-F04)', async () => {
     await renderRouter(routes);
@@ -189,17 +212,97 @@ describe('Question cards (US-03-01)', () => {
     },
   );
 
-  it('after the last card the deck starts over, until US-03-02/03 (DEC-53)', async () => {
-    await openCards();
-    for (let i = 0; i < 4; i++) await touch();
-
-    expect(screen.getByTestId('card-0')).toBeOnTheScreen();
-  });
-
   it('a category the content does not hold shows nothing', async () => {
     await renderRouter(routes, { initialUrl: '/cards/9' });
 
     expect(screen.queryByTestId('card-screen')).toBeNull();
+  });
+});
+
+// The app closed fully and opened again: everything drawn is gone, only what was saved is left.
+const restartApp = async () => {
+  await act(async () => screen.unmount());
+};
+
+describe('Deck without repeats, resumed where it was left (US-03-02)', () => {
+  cardSetUp();
+
+  it('shows each question of the category once (#1)', async () => {
+    await openCards();
+    const shown = [screen.getByTestId('question').props.children];
+    await touch();
+    await touch();
+    shown.push(screen.getByTestId('question').props.children);
+
+    expect(shown.sort()).toEqual(['Pytanie drugie?', 'Pytanie pierwsze?']);
+  });
+
+  it('closed before the reveal, the same question comes back, answer hidden (#2)', async () => {
+    shuffleSwapsTwo();
+    await openCards();
+    expect(screen.getByTestId('question')).toHaveTextContent('Pytanie drugie?');
+    await restartApp();
+
+    shuffleKeepsOrder();
+    await openCards();
+
+    expect(screen.getByTestId('card-0')).toBeOnTheScreen();
+    expect(screen.getByTestId('question')).toHaveTextContent('Pytanie drugie?');
+    expect(screen.queryByTestId('answer')).toBeNull();
+  });
+
+  it('closed after the reveal, the next unseen question comes, answer hidden (#3)', async () => {
+    await openCards();
+    await touch();
+    await restartApp();
+
+    await openCards();
+
+    expect(screen.getByTestId('card-1')).toBeOnTheScreen();
+    expect(screen.getByTestId('question')).toHaveTextContent('Pytanie drugie?');
+    expect(screen.queryByTestId('answer')).toBeNull();
+  });
+
+  it('each category keeps its own position (#4)', async () => {
+    await openCards('3+');
+    await touch();
+    await act(async () => router.back());
+    await fireEvent.press(screen.getByText('4+'));
+
+    expect(screen.getByTestId('card-0')).toBeOnTheScreen();
+    expect(screen.getByTestId('question')).toHaveTextContent('Pytanie z 4+?');
+
+    await act(async () => router.back());
+    await fireEvent.press(screen.getByText('3+'));
+
+    expect(screen.getByTestId('card-1')).toBeOnTheScreen();
+    expect(screen.getByTestId('question')).toHaveTextContent('Pytanie drugie?');
+  });
+
+  it('an unreadable saved deck starts a fresh shuffle, without an error (MOD-03-F08)', async () => {
+    mockSaved.set('deck-3+', '"unreadable"');
+    await openCards();
+
+    expect(screen.getByTestId('card-0')).toBeOnTheScreen();
+    expect(screen.getByTestId('question')).toHaveTextContent(
+      'Pytanie pierwsze?',
+    );
+    expect(JSON.parse(mockSaved.get('deck-3+')!)).toEqual({
+      order: ['q1', 'q2'],
+      seen: 0,
+    });
+  });
+
+  it('after the last card a new shuffle starts, until US-03-03 (DEC-55)', async () => {
+    await openCards();
+    for (let i = 0; i < 4; i++) await touch();
+
+    expect(screen.getByTestId('card-0')).toBeOnTheScreen();
+    expect(screen.queryByTestId('answer')).toBeNull();
+    expect(JSON.parse(mockSaved.get('deck-3+')!)).toEqual({
+      order: ['q1', 'q2'],
+      seen: 0,
+    });
   });
 });
 

@@ -1,0 +1,37 @@
+appId: ${APP_ID}
+name: TC-03-11 An unreadable saved deck starts a fresh shuffle
+# Run by scripts/test-acceptance.sh alone, after it has written unreadable content over the saved
+# 3+ deck as root (the release build has no app-state bridge: DEC-55) and read it back into
+# SAVED_DECK. The device is set to Polish, the test case's test data.
+tags:
+  - saved-deck
+---
+# Step 1 — the saved 3+ deck has been replaced with unreadable content (the file the app keeps it
+# in, read back from the device: not JSON).
+- evalScript: ${output.unreadable = (function () { try { JSON.parse(SAVED_DECK); return false; } catch (e) { return true; } })()}
+- assertTrue:
+    condition: ${SAVED_DECK.length > 0 && output.unreadable}
+    label: the saved 3+ deck is unreadable
+# The device before the app is opened; the saved deck itself is kept beside this flow's output
+# (saved-deck-before.txt, and saved-deck-after.txt once the flow has run).
+- takeScreenshot: step-01-saved-deck-unreadable
+# Step 2 — open the app and choose 3+: a question is shown without an error, the deck at its first
+# card (card-0).
+- launchApp:
+    clearState: false
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+- tapOn:
+    id: category-0
+- assertVisible:
+    id: card-0
+- assertVisible:
+    id: question
+    text: .+
+- assertNotVisible:
+    id: answer
+- assertNotVisible:
+    text: ".*(Error|isn't responding|keeps stopping|has stopped|nie odpowiada|zatrzymuje się|przestała działać).*"
+- takeScreenshot: step-02-fresh-deck-first-card

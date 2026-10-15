@@ -1,0 +1,64 @@
+appId: ${APP_ID}
+name: TC-03-07 A whole category shows each of its 50 questions exactly once
+# Run by scripts/test-acceptance.sh on a device set to Polish, the test case's test data, given the
+# 3+ deck's questions in that language (CARD_QUESTIONS: a JSON list).
+tags:
+  - device-language
+---
+# Precondition — the app installed, its data cleared: first launch on the category screen.
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+# Step 1 — choose 3+: the first question is shown.
+- tapOn:
+    id: category-0
+- assertVisible:
+    id: card-0
+- assertVisible:
+    id: question
+    text: .+
+- takeScreenshot: step-01-first-question
+# Step 2 — reveal and move on through 50 cards, noting each question. App state: the card in the
+# accessibility tree is card-<n>, its place in the deck, n = 0…49. Each card, and each answer, has
+# been shown for 1 s before it is touched: a touch within 0.5 s of the screen changing is ignored
+# (MOD-03-F14, DEC-40); the waits run out (optional) after 1 s.
+- evalScript: ${output.noted = []}
+- repeat:
+    times: 50
+    commands:
+      - assertVisible:
+          id: card-${output.noted.length}
+      - copyTextFrom:
+          id: question
+      - evalScript: ${output.noted.push(maestro.copiedText)}
+      - extendedWaitUntil:
+          notVisible:
+            id: question
+          timeout: 1000
+          optional: true
+          label: the card shown for 1 s
+      - tapOn:
+          id: card-.*
+      - assertVisible:
+          id: answer
+          text: .+
+      - extendedWaitUntil:
+          notVisible:
+            id: answer
+          timeout: 1000
+          optional: true
+          label: the answer shown for 1 s
+      - tapOn:
+          id: card-.*
+- assertTrue:
+    condition: ${output.noted.length == 50}
+    label: 50 questions are noted
+- takeScreenshot: step-02-after-50-cards
+# Step 3 — compare the noted questions: all 50 are different, and together they are the 3+ deck.
+- assertTrue:
+    condition: ${JSON.stringify(output.noted.slice().sort()) == JSON.stringify(JSON.parse(CARD_QUESTIONS).sort())}
+    label: the 50 noted questions are all different and together are the 3+ deck
+- takeScreenshot: step-03-compared

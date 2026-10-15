@@ -14,9 +14,11 @@
 #    by Metro;
 # 3. every other flow (TC-00-03, TC-01-01, AC-01-01-4 offline, and any new flow by default) against
 #    that release APK, installed on the device with Metro stopped. The flows tagged
-#    `device-language` (the cards, TC-03-01…TC-03-05) run after the others, on the device set to
-#    Polish — their test data — and TC-03-05 once more on the device set to English: until the
-#    language switch (US-02-03) the app follows the device's language (DEC-52). The device's
+#    `device-language` (the cards, TC-03-01…TC-03-05, TC-03-07…TC-03-10) run after the others, on
+#    the device set to Polish — their test data — and TC-03-05 once more on the device set to
+#    English: until the language switch (US-02-03) the app follows the device's language (DEC-52).
+#    TC-03-11 (tagged `saved-deck`) runs on its own, still in Polish, after its saved deck has been
+#    made unreadable as root (DEC-55). The device's
 #    language is set as root (system locale property, then a restart of the Android framework) and
 #    put back afterwards. The debug build crashes
 #    intermittently on `launchApp: clearState` (a native SIGSEGV on the JS thread mqt_v_js right
@@ -38,6 +40,9 @@
 #                                — the `device-language` flows on the device set to Polish, and
 #                                  TC-03-05 on it set to English; evidence under maestro/release-pl/
 #                                  and maestro/release-en/
+#   maestro/report-release-saved-deck.xml
+#                                — TC-03-11, evidence (the saved deck before and after) under
+#                                  maestro/release-saved-deck/
 # The consoles are kept beside them: release-build.log, stack.log; the APK checks under release/.
 #
 # Needs a running Android device (the emulator CI boots, or one you start first): the release
@@ -185,6 +190,37 @@ run_language_flows() {
     "$@"; then
     status=1
   fi
+}
+
+# run_saved_deck_flow <report> <output dir>: TC-03-11 — the saved 3+ deck replaced, as root, with
+# content that is not JSON (no double quotes in it: Maestro's -e splits a value at them), in the file the app keeps it in (src/storage.ts:
+# deck-3%2B.json in its private files); then the flow opens the app on it, given what the file
+# holds (SAVED_DECK). The release build has no app-state bridge (DEC-55). Needs the device rooted,
+# as run_language_flows leaves it.
+run_saved_deck_flow() {
+  local report="$1" dir="$2" home="/data/data/$APP_ID" files owner
+  files="$home/files"
+  say "TC-03-11: the saved 3+ deck made unreadable, then the app opened on it"
+  mkdir -p "$dir"
+  "$ADB" shell pm clear "$APP_ID" >/dev/null 2>&1
+  owner="$("$ADB" shell stat -c %u "$home" 2>/dev/null | tr -d '\r')"
+  if [ "$("$ADB" shell id -u 2>/dev/null | tr -d '\r')" != 0 ] || [ -z "$owner" ] ||
+    ! "$ADB" shell "mkdir -p $files && printf '%s' '{order: [3p-0' >$files/deck-3%2B.json && chown -R $owner:$owner $files && restorecon -R $files"; then
+    # No results: the collector counts the flow as not run (blocked), not failed.
+    say "BLOCKED: could not replace the saved deck as root (adb root needs an emulator image without Google Play)"
+    return
+  fi
+  "$ADB" shell cat "$files/deck-3%2B.json" >"$dir/saved-deck-before.txt" 2>&1
+  if ! "$MAESTRO" test \
+    --format JUNIT \
+    --output "$report" \
+    --test-output-dir "$dir" \
+    -e APP_ID="$APP_ID" \
+    -e SAVED_DECK="$(cat "$dir/saved-deck-before.txt")" \
+    tests/maestro/TC-03-11-unreadable-saved-deck.yaml; then
+    status=1
+  fi
+  "$ADB" shell cat "$files/deck-3%2B.json" >"$dir/saved-deck-after.txt" 2>&1
 }
 
 # ---------------------------------------------------------------- 1. release APK
@@ -355,7 +391,7 @@ else
         --format JUNIT \
         --output "$OUT/maestro/report-release.xml" \
         --test-output-dir "$OUT/maestro/release" \
-        --exclude-tags debug-build,device-language \
+        --exclude-tags debug-build,device-language,saved-deck \
         -e APP_ID="$APP_ID" \
         -e CONTENT_TITLE="$CONTENT_TITLE" \
         ${CATEGORY_ARGS[@]+"${CATEGORY_ARGS[@]}"} \
@@ -403,13 +439,15 @@ else
       fi
       rm -f "$OUT/maestro/AC-02-01-4-screen.raw"
 
-      # TC-03-01…TC-03-05: the cards, with the device set to Polish (their test data); TC-03-05
-      # again with it set to English. The app reads the device's language when it starts (DEC-52).
+      # TC-03-01…TC-03-05, TC-03-07…TC-03-11: the cards, with the device set to Polish (their test
+      # data); TC-03-05 again with it set to English. The app reads the device's language when it
+      # starts (DEC-52).
       original_locale="$("$ADB" shell getprop persist.sys.locale | tr -d '\r')"
       [ -n "$original_locale" ] || original_locale="$("$ADB" shell getprop ro.product.locale | tr -d '\r')"
       [ -n "$original_locale" ] || original_locale=en-US
       run_language_flows pl-PL pl "$OUT/maestro/report-release-pl.xml" "$OUT/maestro/release-pl" \
         --include-tags device-language tests/maestro
+      run_saved_deck_flow "$OUT/maestro/report-release-saved-deck.xml" "$OUT/maestro/release-saved-deck"
       run_language_flows en-US en "$OUT/maestro/report-release-en.xml" "$OUT/maestro/release-en" \
         tests/maestro/TC-03-05-cards-in-chosen-language.yaml
       say "putting the device's language back to $original_locale"
