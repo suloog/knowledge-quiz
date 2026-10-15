@@ -22,7 +22,10 @@
 #    made unreadable as root (DEC-55); so does each of TC-03-12…TC-03-15 (the end card, also tagged
 #    `saved-deck`), after its saved deck has been written one card from its end (DEC-56); so do TC-02-08
 #    (`saved-deck`: the 3+ deck saved finished and used last) and TC-02-09 (`saved-deck`: every saved
-#    file made unreadable), each after its saved data has been written as root (DEC-59). TC-03-18 and
+#    file made unreadable), each after its saved data has been written as root (DEC-59); so does each of
+#    TC-03-20…TC-03-22 (the illustrations, tagged `illustration`), after its saved 3+ deck has been
+#    written with the question it needs first, TC-03-22 switching the device to English in the middle
+#    of its flow (DEC-66). TC-03-18 and
 #    TC-03-19 (tagged `deck-state`) run after the Polish flows, still in Polish, with
 #    scripts/saved-deck-server.js reading the saved 3+ deck from the device as root while they run
 #    (DECK_STATE_URL), for the app state their steps note (DEC-58). The device's
@@ -62,6 +65,10 @@
 #   maestro/report-release-TC-02-08.xml, report-release-TC-02-09.xml
 #                                — the continue entry on saved data written as root; evidence (the
 #                                  saved files written and read back) under maestro/release-continue/<TC>/
+#   maestro/report-release-TC-03-20.xml … report-release-TC-03-22.xml
+#                                — the illustrations, one flow each; evidence (the saved deck written
+#                                  and read back) under maestro/release-illustrations/<TC>/, where
+#                                  each picture was found on the screen beside them
 # The consoles are kept beside them: release-build.log, stack.log; the APK checks under release/.
 #
 # Needs a running Android device (the emulator CI boots, or one you start first): the release
@@ -461,6 +468,83 @@ run_unreadable_data_flow() {
   fi
 }
 
+# run_illustration_flows <output dir>: TC-03-20…TC-03-22 — each after the saved 3+ deck has been
+# written as root with the question its test case needs first and nothing seen (TC-03-20: the first
+# question without an illustration; TC-03-21, TC-03-22: the first with one), and read back for the
+# flow: the question in Polish and English (QUESTION, QUESTION_PL, QUESTION_EN) and its picture's file
+# (ILLUSTRATION), with every shipped picture's file (ILLUSTRATIONS). scripts/illustration-server.js
+# runs on the host's loopback (ILLUSTRATION_URL) to look for a picture on the screen and, for
+# TC-03-22, to set the device's language, through scripts/SetLocale.java compiled here (javac, d8).
+# The release build has no app-state bridge (DEC-55). Needs the device rooted and set to Polish, as
+# run_language_flows leaves it; TC-03-22 leaves it set to English.
+run_illustration_flows() {
+  local dir="$1" port=8766 dex=/data/local/tmp/kq-set-locale.dex classes server flow name tc first args
+  say "TC-03-20…TC-03-22: the illustrations, each on the saved 3+ deck with its question first"
+  mkdir -p "$dir"
+  classes="$(mktemp -d "${RUNNER_TEMP:-${TMPDIR:-/tmp}}/kq-set-locale.XXXXXX")"
+  if ! javac --release 8 -d "$classes" scripts/SetLocale.java >"$dir/set-locale-build.log" 2>&1 ||
+    ! "$BUILD_TOOLS/d8" --min-api 31 --output "$classes" "$classes/SetLocale.class" >>"$dir/set-locale-build.log" 2>&1 ||
+    ! "$ADB" push "$classes/classes.dex" "$dex" >>"$dir/set-locale-build.log" 2>&1; then
+    rm -rf "$classes"
+    # No results: the collector counts these flows as not run (blocked), not failed.
+    say "BLOCKED: could not build the language switch for the device (set-locale-build.log)"
+    return
+  fi
+  rm -rf "$classes"
+  node scripts/illustration-server.js "$ADB" "$port" "$dir" "$dex" &
+  server=$!
+  for _ in $(seq 1 20); do
+    curl -s "http://127.0.0.1:$port/" >/dev/null 2>&1 && break
+    sleep 0.5
+  done
+  for flow in tests/maestro/TC-03-2[0-2]-*.yaml; do
+    name="$(basename "$flow" .yaml)"
+    tc="${name%%-[a-z]*}"
+    first=illustrated
+    [ "$tc" = TC-03-20 ] && first=text-only
+    mkdir -p "$dir/$tc"
+    node -e '
+      const questions = require("./src/content/decks/3-plus.json").questions;
+      const pick = process.argv[1] === "text-only" ? q => !q.illustration : q => q.illustration;
+      const ids = questions.map(q => q.id);
+      const first = questions.find(pick).id;
+      process.stdout.write(JSON.stringify({ order: [first, ...ids.filter(id => id !== first)], seen: 0 }));
+    ' "$first" >"$dir/$tc/deck-3%2B.json"
+    if ! write_app_files "$dir/$tc" deck-3%2B.json; then
+      # No results: the collector counts the flow as not run (blocked), not failed.
+      say "BLOCKED: $tc could not write the saved deck as root (adb root needs an emulator image without Google Play)"
+      continue
+    fi
+    args=()
+    while read -r arg; do args+=(-e "$arg"); done < <(node -e '
+      const fs = require("fs");
+      const regex = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      let saved = {};
+      try { saved = JSON.parse(fs.readFileSync(process.argv[1], "utf8")); } catch {}
+      const question = require("./src/content/decks/3-plus.json").questions.find(q => q.id === (saved.order || [])[0]);
+      console.log(`QUESTION=${question ? regex(question.pl.question) : "(none)"}`);
+      console.log(`QUESTION_PL=${question ? regex(question.pl.question) : "(none)"}`);
+      console.log(`QUESTION_EN=${question ? regex(question.en.question) : "(none)"}`);
+      console.log(`ILLUSTRATION=${(question && question.illustration) || "(none)"}`);
+      console.log(`ILLUSTRATIONS=${fs.readdirSync("src/content/illustrations").filter(f => f.endsWith(".png")).join(",")}`);
+    ' "$dir/$tc/deck-3%2B.json.before")
+    say "$tc: the saved 3+ deck with $(head -c 200 "$dir/$tc/deck-3%2B.json.before" | sed -E 's/.*"order":\["([^"]*)".*/\1/') first"
+    if ! "$MAESTRO" test \
+      --format JUNIT \
+      --output "$OUT/maestro/report-release-$tc.xml" \
+      --test-output-dir "$dir/$tc" \
+      -e APP_ID="$APP_ID" \
+      -e ILLUSTRATION_URL="http://127.0.0.1:$port" \
+      ${args[@]+"${args[@]}"} \
+      "$flow"; then
+      status=1
+    fi
+  done
+  kill "$server" 2>/dev/null || true
+  wait "$server" 2>/dev/null || true
+  "$ADB" shell rm -f "$dex" >/dev/null 2>&1 || true
+}
+
 # ---------------------------------------------------------------- 1. release APK
 STEP4="AC-01-01-5 step 4 — a release APK is built, signed with a key from outside the repository passed through KQ_UPLOAD_*"
 STEP5="AC-01-01-5 step 5 — apksigner verifies the APK's signature, made with that key and not the debug key"
@@ -629,7 +713,7 @@ else
         --format JUNIT \
         --output "$OUT/maestro/report-release.xml" \
         --test-output-dir "$OUT/maestro/release" \
-        --exclude-tags debug-build,device-language,saved-deck,deck-state \
+        --exclude-tags debug-build,device-language,saved-deck,deck-state,illustration \
         -e APP_ID="$APP_ID" \
         -e CONTENT_TITLE="$CONTENT_TITLE" \
         ${CATEGORY_ARGS[@]+"${CATEGORY_ARGS[@]}"} \
@@ -693,6 +777,7 @@ else
       done
       run_continue_finished_flow "$OUT/maestro/report-release-TC-02-08.xml" "$OUT/maestro/release-continue/TC-02-08"
       run_unreadable_data_flow "$OUT/maestro/report-release-TC-02-09.xml" "$OUT/maestro/release-continue/TC-02-09"
+      run_illustration_flows "$OUT/maestro/release-illustrations"
       run_language_flows en-US en "$OUT/maestro/report-release-en.xml" "$OUT/maestro/release-en" \
         tests/maestro/TC-03-05-cards-in-chosen-language.yaml
       say "putting the device's language back to $original_locale"

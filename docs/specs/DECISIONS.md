@@ -729,3 +729,27 @@
 - **Scope effect:** within scope
 - **Resolves:** —
 - **Status:** accepted
+
+## [DEC-65] Illustrations: five 1-bit silhouettes on five questions, drawn one image pixel to one screen pixel below the question
+
+- **Date:** 2026-10-16
+- **Decided by:** developer (delivery loop)
+- **Source:** implementation (`US-03-05`)
+- **Affects:** `US-03-05`, `MOD-01-F08`, `MOD-01-F13`, `MOD-03-U03`, `NFR-07`, `DEC-12`, `DEC-28`
+- **Decision:** Five questions carry an illustration, each a question about something a child counts or reads off a picture: the hand (3+, `3p-07`), the spider and the ant (4+, `4p-25`, `4p-26`), the clock (5+, `5p-08`) and the tree rings (5+, `5p-33`). Every other question stays text-only. Each illustration is a 180 x 180 PNG of 1-bit greyscale in `src/content/illustrations/`, a plain black silhouette or line drawing with no text. A question names its file in an optional `illustration` field of its content entry, shared by both languages. `src/content/illustrations/index.ts` lists every file, and a Jest check fails on a file that is not listed, on a question naming one that is not, and on a file no question uses. The card draws the illustration below the question, inside the question's area, from the moment the card appears and still after the reveal. It is drawn at one image pixel to one screen pixel (its size in dp is its size in pixels divided by the device's pixel ratio), because a scaled 1-bit picture would be smoothed into greys (`NFR-07`). A question without one keeps no place for it. The technical note's "AI-generated then converted" describes how a picture may be made; what is checked is the result: the pixel test (`MOD-01-F13`) and the owner's legibility review on the Kompakt (`TC-03-23`), which drops any picture that is not legible (`DEC-28`).
+- **Why:** `DEC-28` sets no target count and asks for a picture only where it genuinely helps. Five questions whose answer is a count or a reading of the thing pictured are the clearest such cases. Drawing at the native pixel size is the only way to keep a 1-bit picture pure black and white on screen without a scaling step that adds greys.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
+
+## [DEC-66] Illustration acceptance flows: saved 3+ deck written with the needed question first; device language switched mid-flow without a framework restart
+
+- **Date:** 2026-10-16
+- **Decided by:** developer (delivery loop)
+- **Source:** implementation (`US-03-05`)
+- **Affects:** `US-03-05`, `TC-03-20`, `TC-03-21`, `TC-03-22`, `DEC-52`, `DEC-55`, `DEC-58`
+- **Decision:** The test cases' precondition "the app-state bridge brings a chosen question to the front of the deck" is met the way `DEC-56` and `DEC-59` meet theirs, because the release build has no bridge (`DEC-55`). `scripts/test-acceptance.sh` writes the saved 3+ deck as root, with the question the test case needs first and nothing seen. For `TC-03-20` that is the first 3+ question without an illustration; for `TC-03-21` and `TC-03-22` it is the first with one. Each flow then opens 3+ on that question. `scripts/illustration-server.js` runs on the host's loopback while the flows run. It takes a screenshot and looks for the question's shipped picture in it, pixel for pixel. A picture found that way is exactly the shipped file at one image pixel to one screen pixel, so the same picture is proven in both languages and nothing is drawn into it. Until the language switch (`US-02-03`) the app follows the device's language (`DEC-52`), so `TC-03-22` step 2 switches the device to English in the middle of its flow. It does so through the activity manager's persistent configuration (`scripts/SetLocale.java`, compiled with javac and d8 and run with `app_process`), as the Settings app does. Then the flow starts the app again. The framework restart that `scripts/test-acceptance.sh` uses between flows would cut Maestro's connection to the device in the middle of a flow. Once `US-02-03` lands, `TC-03-22` can switch with the in-app control instead.
+- **Why:** This keeps each test case one flow that runs all of its steps in order, on the release build the other flows use, without a test-only path in the app.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted

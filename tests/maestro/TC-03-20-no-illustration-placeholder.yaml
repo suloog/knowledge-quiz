@@ -1,0 +1,30 @@
+appId: ${APP_ID}
+name: TC-03-20 A question without an illustration shows no placeholder
+# Run by scripts/test-acceptance.sh alone, on the device set to Polish, after it has written as root
+# the saved 3+ deck with a question without an illustration first and nothing seen — the release
+# build has no app-state bridge to bring a question to the front (DEC-55) — and read it back
+# (QUESTION, in Polish). It passes the shipped illustrations' files (ILLUSTRATIONS, comma-separated) and
+# scripts/illustration-server.js (ILLUSTRATION_URL), which looks for each of them on the screen.
+tags:
+  - illustration
+---
+# Precondition — the app installed, its data cleared but for the saved deck: not cleared again here.
+- launchApp
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+# Step 1 — open 3+ on the question without an illustration: only its text is on the card — no
+# illustration element and none of the shipped pictures anywhere on the screen.
+- tapOn:
+    id: category-0
+- assertVisible:
+    id: question
+    text: ${QUESTION}
+- assertNotVisible:
+    id: illustration
+- evalScript: ${output.shown = ILLUSTRATIONS.split(',').filter(file => JSON.parse(http.get(ILLUSTRATION_URL + '/illustration/' + file + '/TC-03-20-step-01-' + file).body).found)}
+- assertTrue:
+    condition: ${output.shown.length == 0}
+    label: no picture is drawn on the card
+- takeScreenshot: step-01-text-only
