@@ -84,6 +84,27 @@ const restart = async () => {
 };
 const listOrder = () =>
   [0, 1, 2].map(i => screen.getByTestId(`category-${i}`).props.children);
+// The test ids on screen, in the order they are drawn: top to bottom.
+const drawOrder = () => {
+  const ids: string[] = [];
+  const walk = (node: ReturnType<typeof screen.toJSON> | string) => {
+    if (!node || typeof node === 'string') return;
+    if (Array.isArray(node)) return node.forEach(walk);
+    if (typeof node.props.testID === 'string') ids.push(node.props.testID);
+    node.children?.forEach(walk);
+  };
+  walk(screen.toJSON());
+  return ids;
+};
+// The continue entry as it is drawn: its two lines, and the type each is set in.
+const continueLines = () =>
+  ['continue', 'continue-category'].map(id => {
+    const line = screen.getByTestId(id);
+    return {
+      text: line.props.children,
+      fontSize: StyleSheet.flatten(line.props.style).fontSize,
+    };
+  });
 
 beforeEach(() => {
   jest.useFakeTimers();
@@ -114,23 +135,26 @@ describe('Continue the last-used category (US-02-02)', () => {
     await choose('4+');
     await backToCategories();
 
-    expect(screen.getByTestId('continue')).toHaveTextContent('Kontynuuj 4+');
+    // "Kontynuuj" and "4+" on lines of their own, each at the largest type its screen's width allows
+    // (DEC-53), never shrunk to one line: on one line, Android drew only "Kontynuuj".
+    expect(continueLines()).toEqual([
+      { text: 'Kontynuuj', fontSize: 64 },
+      { text: '4+', fontSize: 64 },
+    ]);
+    expect(screen.getByTestId('continue').props.numberOfLines).toBeUndefined();
     expect(listOrder()).toEqual(['3+', '4+', '5+']);
-    const children = screen.getByTestId('category-screen').props.children;
-    const order = [children]
-      .flat(2)
-      .filter(Boolean)
-      .map(child => child.props.testID ?? child.props.children?.props.testID);
+    const order = drawOrder();
     expect(order.indexOf('continue-entry')).toBeGreaterThanOrEqual(0);
-    expect(order.indexOf('continue-entry')).toBeLessThan(
+    expect(order.indexOf('continue-category')).toBeLessThan(
       order.indexOf('category-0'),
     );
     expect(
       StyleSheet.flatten(screen.getByTestId('continue-entry').props.style),
     ).toMatchObject({ backgroundColor: colors.ink });
-    expect(
-      StyleSheet.flatten(screen.getByTestId('continue').props.style),
-    ).toMatchObject({ color: colors.paper });
+    for (const id of ['continue', 'continue-category'])
+      expect(
+        StyleSheet.flatten(screen.getByTestId(id).props.style),
+      ).toMatchObject({ color: colors.paper });
   });
 
   it('names the last category opened, in English on a device set to English', async () => {
@@ -145,7 +169,8 @@ describe('Continue the last-used category (US-02-02)', () => {
     await choose('5+');
     await backToCategories();
 
-    expect(screen.getByTestId('continue')).toHaveTextContent('Continue 5+');
+    expect(screen.getByTestId('continue')).toHaveTextContent('Continue');
+    expect(screen.getByTestId('continue-category')).toHaveTextContent('5+');
   });
 
   it('after a restart, continue opens 4+ at its fourth card when three answers were revealed (#3, MOD-02-F06, F07)', async () => {
@@ -156,7 +181,7 @@ describe('Continue the last-used category (US-02-02)', () => {
 
     await restart();
 
-    expect(screen.getByTestId('continue')).toHaveTextContent('Kontynuuj 4+');
+    expect(screen.getByTestId('continue-category')).toHaveTextContent('4+');
     await fireEvent.press(screen.getByTestId('continue-entry'));
     expect(await screen.findByTestId('card-3')).toBeOnTheScreen();
     expect(screen.getByTestId('question')).toHaveTextContent('Pytanie q5?');

@@ -63,7 +63,12 @@ tags:
     timeout: 120000
 - assertVisible:
     id: continue
-    text: .*4\+
+    text: Kontynuuj
+- assertVisible:
+    id: continue-category
+    text: 4\+
+    below:
+      id: continue
 - takeScreenshot: step-02-continue-after-restart
 # Step 3 — touch the continue entry: the noted fourth question, answer hidden. App state: card-3.
 - tapOn:

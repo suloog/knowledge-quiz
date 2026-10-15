@@ -29,7 +29,12 @@ tags:
     id: category-screen
 - assertVisible:
     id: continue
-    text: .*4\+
+    text: Kontynuuj
+- assertVisible:
+    id: continue-category
+    text: 4\+
+    below:
+      id: continue
 - assertVisible:
     id: category-0
     below:

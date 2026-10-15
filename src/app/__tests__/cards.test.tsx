@@ -71,10 +71,17 @@ const routes = {
   'cards/[category]': CardScreen,
 };
 
+// A category's entry in the list — once a category was opened, the continue entry above the list
+// names it too (US-02-02).
+const listEntry = (category: string) =>
+  screen
+    .getAllByTestId(/^category-\d+$/)
+    .find(entry => entry.props.children === category)!;
+
 // Choose the category on the category screen; its first card is drawn, then the guard runs out.
 const openCards = async (category = '3+') => {
   await renderRouter(routes);
-  await fireEvent.press(screen.getByText(category));
+  await fireEvent.press(listEntry(category));
   await act(async () => {
     jest.advanceTimersByTime(TOUCH_GUARD_MS + 100);
   });
@@ -128,7 +135,7 @@ describe('Question cards (US-03-01)', () => {
 
   it('choosing a category opens its first card (MOD-02-F04)', async () => {
     await renderRouter(routes);
-    await fireEvent.press(screen.getByText('4+'));
+    await fireEvent.press(listEntry('4+'));
 
     expect(await screen.findByTestId('card-screen')).toBeOnTheScreen();
     expect(screen.getByTestId('question')).toHaveTextContent('Pytanie z 4+?');
@@ -190,7 +197,7 @@ describe('Question cards (US-03-01)', () => {
 
   it('a touch before the new card has been shown for 0.5 s is ignored (MOD-03-F14)', async () => {
     await renderRouter(routes);
-    await fireEvent.press(screen.getByText('3+'));
+    await fireEvent.press(listEntry('3+'));
     await act(async () => {
       jest.advanceTimersByTime(TOUCH_GUARD_MS - 100);
     });
@@ -269,13 +276,13 @@ describe('Deck without repeats, resumed where it was left (US-03-02)', () => {
     await openCards('3+');
     await touch();
     await act(async () => router.back());
-    await fireEvent.press(screen.getByText('4+'));
+    await fireEvent.press(listEntry('4+'));
 
     expect(screen.getByTestId('card-0')).toBeOnTheScreen();
     expect(screen.getByTestId('question')).toHaveTextContent('Pytanie z 4+?');
 
     await act(async () => router.back());
-    await fireEvent.press(screen.getByText('3+'));
+    await fireEvent.press(listEntry('3+'));
 
     expect(screen.getByTestId('card-1')).toBeOnTheScreen();
     expect(screen.getByTestId('question')).toHaveTextContent('Pytanie drugie?');
@@ -451,7 +458,7 @@ describe('Back to the categories from any card (US-03-04)', () => {
     expect(saved()).toEqual(before);
     expect(screen.queryByTestId('answer')).toBeNull();
 
-    await fireEvent.press(screen.getByText('3+'));
+    await fireEvent.press(listEntry('3+'));
     expect(screen.getByTestId('card-0')).toBeOnTheScreen();
     expect(screen.getByTestId('question')).toHaveTextContent(
       'Pytanie pierwsze?',
@@ -482,7 +489,7 @@ describe('Back to the categories from any card (US-03-04)', () => {
     await openCards();
     await touch();
     await act(async () => router.back());
-    await fireEvent.press(screen.getByText('3+'));
+    await fireEvent.press(listEntry('3+'));
 
     expect(screen.getByTestId('card-1')).toBeOnTheScreen();
     expect(screen.getByTestId('question')).toHaveTextContent('Pytanie drugie?');
@@ -495,7 +502,7 @@ describe('Back to the categories from any card (US-03-04)', () => {
 
     expect(saved().seen).toBe(0);
 
-    await fireEvent.press(screen.getByText('3+'));
+    await fireEvent.press(listEntry('3+'));
     expect(screen.getByTestId('card-0')).toBeOnTheScreen();
     expect(screen.getByTestId('question')).toHaveTextContent(
       'Pytanie pierwsze?',
@@ -506,7 +513,7 @@ describe('Back to the categories from any card (US-03-04)', () => {
   it('a fast double touch on a category opens its cards once (DEC-58)', async () => {
     await renderRouter(routes);
     // The second touch reaches the entry the first one already acted on.
-    const entry = screen.getByText('3+');
+    const entry = listEntry('3+');
     await fireEvent.press(entry);
     await fireEvent.press(entry);
     await act(async () => router.back());

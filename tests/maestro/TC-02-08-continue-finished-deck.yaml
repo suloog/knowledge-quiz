@@ -8,7 +8,7 @@ tags:
   - saved-deck
 ---
 # Step 1 — the saved state shows 3+ finished: every card of its deck seen, 3+ used last. The saved
-# files themselves are kept beside this flow's output (saved-*-before.json).
+# files themselves are kept beside this flow's output (<name>.before: deck-3%2B.json.before, last-category.json.before).
 - assertTrue:
     condition: ${SAVED_TOTAL == 50 && SAVED_SEEN == SAVED_TOTAL}
     label: the saved 3+ deck has all 50 answers revealed
@@ -25,7 +25,12 @@ tags:
     timeout: 120000
 - assertVisible:
     id: continue
-    text: .*3\+
+    text: Kontynuuj
+- assertVisible:
+    id: continue-category
+    text: 3\+
+    below:
+      id: continue
 - takeScreenshot: step-02-continue-entry
 # Step 3 — touch the continue entry: the 3+ end card is shown.
 - tapOn:
