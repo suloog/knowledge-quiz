@@ -200,6 +200,15 @@ LANGUAGE_ARGS=(
   -e EN_QUESTIONS="$(node -p "JSON.stringify(require('./src/content/decks/3-plus.json').questions.map(q => q.en.question))")"
   -e EN_ANSWERS="$(node -p "JSON.stringify(require('./src/content/decks/3-plus.json').questions.map(q => q.en.answer))")"
 )
+# blocked <what failed>: why a group of flows could not run. A device that is no longer attached
+# (an emulator lost mid-run) is said as such, not mistaken for an image that cannot be rooted.
+blocked() {
+  if [ "$("$ADB" get-state 2>/dev/null)" != device ]; then
+    say "BLOCKED: $1 (the device is no longer attached: lost mid-run)"
+  else
+    say "BLOCKED: $1 (adb root needs an emulator image without Google Play)"
+  fi
+}
 # set_device_locale <pl-PL|en-US…>: the device's system language, as root (an emulator image
 # without Google Play): the locale property and the system_locales setting, then a restart of the
 # Android framework, waited out until the new configuration is in force and the package manager
@@ -240,7 +249,7 @@ run_language_flows() {
   say "maestro flows on the release build, the device set to $tag"
   if ! set_device_locale "$tag"; then
     # No results: the collector counts these flows as not run (blocked), not failed.
-    say "BLOCKED: could not set the device's language to $tag (adb root needs an emulator image without Google Play)"
+    blocked "could not set the device's language to $tag"
     return
   fi
   if ! "$MAESTRO" test \
@@ -265,11 +274,11 @@ run_language_flows() {
 # device rooted and set to Polish, as run_language_flows leaves it.
 run_deck_state_flows() {
   local report="$1" dir="$2" port=8765 server
-  say "TC-03-18, TC-03-19: the flows that note the saved deck, read from the device as root"
+  say "TC-03-18, TC-03-19, TC-02-13: the flows that note the saved deck, read from the device as root"
   mkdir -p "$dir"
   if [ "$("$ADB" shell id -u 2>/dev/null | tr -d '\r')" != 0 ]; then
     # No results: the collector counts these flows as not run (blocked), not failed.
-    say "BLOCKED: could not read the saved deck as root (adb root needs an emulator image without Google Play)"
+    blocked "could not read the saved deck as root"
     return
   fi
   node scripts/saved-deck-server.js "$ADB" "$APP_ID" "$port" "$dir" &
@@ -308,7 +317,7 @@ run_saved_deck_flow() {
   if [ "$("$ADB" shell id -u 2>/dev/null | tr -d '\r')" != 0 ] || [ -z "$owner" ] ||
     ! "$ADB" shell "mkdir -p $files && printf '%s' '{order: [3p-0' >$files/deck-3%2B.json && chown -R $owner:$owner $files && restorecon -R $files"; then
     # No results: the collector counts the flow as not run (blocked), not failed.
-    say "BLOCKED: could not replace the saved deck as root (adb root needs an emulator image without Google Play)"
+    blocked "could not replace the saved deck as root"
     return
   fi
   "$ADB" shell cat "$files/deck-3%2B.json" >"$dir/saved-deck-before.txt" 2>&1
@@ -348,7 +357,7 @@ run_end_card_flow() {
     ! "$ADB" push "$dir/saved-deck-written.json" /data/local/tmp/kq-deck.json >/dev/null 2>&1 ||
     ! "$ADB" shell "mkdir -p $files && cp /data/local/tmp/kq-deck.json $files/deck-3%2B.json && rm /data/local/tmp/kq-deck.json && chown -R $owner:$owner $files && restorecon -R $files"; then
     # No results: the collector counts the flow as not run (blocked), not failed.
-    say "BLOCKED: could not write the saved deck as root (adb root needs an emulator image without Google Play)"
+    blocked "could not write the saved deck as root"
     return
   fi
   "$ADB" shell cat "$files/deck-3%2B.json" >"$dir/saved-deck-before.json" 2>&1
@@ -432,7 +441,7 @@ run_continue_finished_flow() {
   printf '"3+"' >"$dir/last-category.json"
   if ! write_app_files "$dir" deck-3%2B.json last-category.json; then
     # No results: the collector counts the flow as not run (blocked), not failed.
-    say "BLOCKED: could not write the saved data as root (adb root needs an emulator image without Google Play)"
+    blocked "could not write the saved data as root"
     return
   fi
   while read -r arg; do args+=(-e "$arg"); done < <(node -e '
@@ -493,7 +502,7 @@ run_unreadable_data_flow() {
     console.log(encodeURIComponent(require(`./src/content/decks/${f}`).category))')
   if ! write_app_files "$dir" "${names[@]}"; then
     # No results: the collector counts the flow as not run (blocked), not failed.
-    say "BLOCKED: could not replace the saved data as root (adb root needs an emulator image without Google Play)"
+    blocked "could not replace the saved data as root"
     return
   fi
   if ! "$MAESTRO" test \
