@@ -1,0 +1,57 @@
+{
+  "n": 1,
+  "attempt": 1,
+  "ts": "2026-10-15T12:20:30Z",
+  "story": "US-02-02",
+  "mode": "implement",
+  "parsed": {
+    "result": "ready",
+    "story": "US-02-02",
+    "branch": "feature/US-02-02",
+    "commits": [
+      "2324806 feat(categories): continue the last-used category [US-02-02]"
+    ],
+    "decisions": [
+      "DEC-59 routine Continue entry: an inverted 'Continue 4+' line between the title and the list, last category saved when opened"
+    ],
+    "evidence": [
+      "#1 First launch: no continue entry, only the list — TC-02-05 (tests/maestro/TC-02-05-no-continue-on-first-launch.yaml) pass; unit \"on first launch there is no continue entry\" (src/app/__tests__/continue.test.tsx)",
+      "#2 After use: an inverted continue entry for 4+ above the list, which stays 3+, 4+, 5+ — TC-02-06 pass; unit test checks the position, the white-on-black colours and the list order",
+      "#3 After a restart: the continue entry for 4+ opens its fourth card — TC-02-07 pass (stopApp and relaunch, same fourth question, answer hidden); unit restart test (card-3)",
+      "#4 Finished deck: continue shows the end card — TC-02-08 pass (finished 3+ deck and last category written as root); unit test",
+      "edge (MOD-02-F08) Saved data unreadable: no continue entry — TC-02-09 pass; unit it.each (unreadable, unknown category, not a name)"
+    ],
+    "tests": {
+      "run": "/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-15_140122",
+      "pass": 30,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 0,
+      "manual_tests": [
+        "none"
+      ]
+    },
+    "derived_tests": [],
+    "preexisting": "All four criteria and the edge case were already built and tested in commit 2324806 from the earlier session, which was never pushed. It holds src/lastCategory.ts, the continue entry in src/app/index.tsx, the strings in src/strings.json, src/app/__tests__/continue.test.tsx, the Maestro flows TC-02-05 to TC-02-09, the TC-02-08/09 setup as root in scripts/test-acceptance.sh, DEC-59 (reserved for this story in decs.json), and the status set to in-progress in the story and BACKLOG.md. I kept it as it was.",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test ok (228/228, coverage 100% on the changed files)"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "notes": "The local run's check \"AC-02-01-4 step 4\" (US-02-01's black-and-white pixel check) fails on rows 970, 1326 and 1332, which are #FDFDFD, #FEFEFE and #020202, at the edges of the dividing lines. It is not in run.json. This story did not cause it: a release build of main gives the same failure on this emulator. The emulator was rebooted at about 13:03 onto the SwiftShader renderer, and every run since then has failed it; the 11:47 run of main passed.\nCI also uses swiftshader_indirect, so check that step on the PR's CI run. A spec-compliance review found the story compliant. TC-02-05 to TC-02-09 still have status: draft (unchanged, read-only to the loop).",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [],
+      "blocked": []
+    },
+    "critical_decisions": []
+  },
+  "raw": "US-02-02 is ready. The commit from the earlier session, 2324806, already did all of the story, so I added no new commits. I checked each criterion against it, ran the gates and ran the whole acceptance suite on that clean head. Every test passed except one regression check from US-02-01, which this story did not cause (see NOTES).\n\nRESULT: ready\nSTORY: US-02-02\nBRANCH: feature/US-02-02\nCOMMITS: 2324806 feat(categories): continue the last-used category [US-02-02]\nDECISIONS: DEC-59 routine Continue entry: an inverted 'Continue 4+' line between the title and the list, last category saved when opened\nEVIDENCE:\n  #1 First launch: no continue entry, only the list — TC-02-05 (tests/maestro/TC-02-05-no-continue-on-first-launch.yaml) pass; unit \"on first launch there is no continue entry\" (src/app/__tests__/continue.test.tsx)\n  #2 After use: an inverted continue entry for 4+ above the list, which stays 3+, 4+, 5+ — TC-02-06 pass; unit test checks the position, the white-on-black colours and the list order\n  #3 After a restart: the continue entry for 4+ opens its fourth card — TC-02-07 pass (stopApp and relaunch, same fourth question, answer hidden); unit restart test (card-3)\n  #4 Finished deck: continue shows the end card — TC-02-08 pass (finished 3+ deck and last category written as root); unit test\n  edge (MOD-02-F08) Saved data unreadable: no continue entry — TC-02-09 pass; unit it.each (unreadable, unknown category, not a name)\nTESTS: run=/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-15_140122 pass=30 fail=0 blocked=0 manual=0 manual_tests=none\nDERIVED_TESTS: none\nPREEXISTING: All four criteria and the edge case were already built and tested in commit 2324806 from the earlier session, which was never pushed. It holds src/lastCategory.ts, the continue entry in src/app/index.tsx, the strings in src/strings.json, src/app/__tests__/continue.test.tsx, the Maestro flows TC-02-05 to TC-02-09, the TC-02-08/09 setup as root in scripts/test-acceptance.sh, DEC-59 (reserved for this story in decs.json), and the status set to in-progress in the story and BACKLOG.md. I kept it as it was.\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test ok (228/228, coverage 100% on the changed files)\nENV_KEYS: none\nMIGRATION: no\nNOTES: The local run's check \"AC-02-01-4 step 4\" (US-02-01's black-and-white pixel check) fails on rows 970, 1326 and 1332, which are #FDFDFD, #FEFEFE and #020202, at the edges of the dividing lines. It is not in run.json. This story did not cause it: a release build of main gives the same failure on this emulator. The emulator was rebooted at about 13:03 onto the SwiftShader renderer, and every run since then has failed it; the 11:47 run of main passed.\nCI also uses swiftshader_indirect, so check that step on the PR's CI run. A spec-compliance review found the story compliant. TC-02-05 to TC-02-09 still have status: draft (unchanged, read-only to the loop).\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "story": "US-02-02",
+  "attempt": 1,
+  "round": 1,
+  "sha": "23248061a08e585066cc557b1f126172907b220d",
+  "reviewer": "code",
+  "ts": "2026-10-15T12:24:56Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-02-02",
+    "impact": "`src/app/index.tsx` is the launch screen, so every flow starts there; the only visible change is an extra entry above the list once a category has been opened. `openDeck` and the card screen are reused unchanged, and `src/lastCategory.ts` adds one new storage key, `last-category`. In `scripts/test-acceptance.sh`, flows that tap `category-N` by id are unaffected, because the continue text (\"Kontynuuj 3+\") differs from the list entry text, which the existing flows match with an exact regex such as `3\\+`.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/__tests__/continue.test.tsx:117 — the \"above the list\" check walks the React element tree by hand (`props.children` flattened, `child.props.children?.props.testID`). It breaks silently if the screen's children are wrapped or reordered into a fragment, and a failure there would point at the test rather than the cause → use a `toJSON()` tree walk, or `within(screen.getByTestId('category-screen'))` with a helper that lists test IDs in render order."
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:349 — the new `write_app_files` repeats the root steps of `run_saved_deck_flow` and `run_end_card_flow` (`pm clear`, owner `stat`, root check, `mkdir`, `chown`, `restorecon`, read-back). The three copies will drift when the storage layout changes → switch the two older helpers to `write_app_files` in a follow-up. Not needed for this PR if you would rather keep the diff small."
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/index.tsx:35 — the continue entry's accessible name is only the visible text \"Kontynuuj 4+\". A screen reader announces it as a button with that text, which is acceptable, but nothing says it resumes the deck. MOD-02-U01 and NFR-08 do not require more → optional: add an `accessibilityLabel`, or leave as is."
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/__tests__/continue.test.tsx:126 — the \"set apart\" check asserts only `backgroundColor: ink` and `color: paper`. That matches MOD-02-U02's example and is enough for the unit layer; the screenshots in TC-02-06 carry the rest. No change needed."
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": "unit test \"first launch\": no `continue-entry`, list 3+, 4+, 5+. TC-02-05 automates it on the device."
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": "unit test checks the continue text, the entry before `category-0` in render order, ink background with paper text, and the list order unchanged. TC-02-06 automates it with screenshots."
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": "the unit restart test unmounts and re-renders after 3 revealed answers and lands on `card-3` with question \"q5\" and the answer hidden. TC-02-07 automates it on the device with `stopApp`."
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": "the unit test with a saved finished 3+ deck and `last-category` saved as 3+ shows `end-card`. TC-02-08 automates it with root-written saved data."
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Review of PR #15 (US-02-02, commit 2324806, diff origin/main...2324806). I found no blocking issue. I ran the gates at that commit: jest (36 suites, 228 tests), `tsc`, `lint` and `format:check` all pass, and `bash -n` on `scripts/test-acceptance.sh` is clean. I could not run the Maestro flows (TC-02-05…09) here; I only read them and the script that drives them.\n\nREVIEW: findings\nSTORY: US-02-02\nIMPACT: `src/app/index.tsx` is the launch screen, so every flow starts there; the only visible change is an extra entry above the list once a category has been opened. `openDeck` and the card screen are reused unchanged, and `src/lastCategory.ts` adds one new storage key, `last-category`. In `scripts/test-acceptance.sh`, flows that tap `category-N` by id are unaffected, because the continue text (\"Kontynuuj 3+\") differs from the list entry text, which the existing flows match with an exact regex such as `3\\+`.\nFINDINGS:\n  N1 src/app/__tests__/continue.test.tsx:117 — the \"above the list\" check walks the React element tree by hand (`props.children` flattened, `child.props.children?.props.testID`). It breaks silently if the screen's children are wrapped or reordered into a fragment, and a failure there would point at the test rather than the cause → use a `toJSON()` tree walk, or `within(screen.getByTestId('category-screen'))` with a helper that lists test IDs in render order.\n  N2 scripts/test-acceptance.sh:349 — the new `write_app_files` repeats the root steps of `run_saved_deck_flow` and `run_end_card_flow` (`pm clear`, owner `stat`, root check, `mkdir`, `chown`, `restorecon`, read-back). The three copies will drift when the storage layout changes → switch the two older helpers to `write_app_files` in a follow-up. Not needed for this PR if you would rather keep the diff small.\n  N3 src/app/index.tsx:35 — the continue entry's accessible name is only the visible text \"Kontynuuj 4+\". A screen reader announces it as a button with that text, which is acceptable, but nothing says it resumes the deck. MOD-02-U01 and NFR-08 do not require more → optional: add an `accessibilityLabel`, or leave as is.\n  N4 src/app/__tests__/continue.test.tsx:126 — the \"set apart\" check asserts only `backgroundColor: ink` and `color: paper`. That matches MOD-02-U02's example and is enough for the unit layer; the screenshots in TC-02-06 carry the rest. No change needed.\nCRITERIA:\n  #1 met — unit test \"first launch\": no `continue-entry`, list 3+, 4+, 5+. TC-02-05 automates it on the device.\n  #2 met — unit test checks the continue text, the entry before `category-0` in render order, ink background with paper text, and the list order unchanged. TC-02-06 automates it with screenshots.\n  #3 met — the unit restart test unmounts and re-renders after 3 revealed answers and lands on `card-3` with question \"q5\" and the answer hidden. TC-02-07 automates it on the device with `stopApp`.\n  #4 met — the unit test with a saved finished 3+ deck and `last-category` saved as 3+ shows `end-card`. TC-02-08 automates it with root-written saved data.\n"
+}

@@ -1,0 +1,74 @@
+{
+  "n": 2,
+  "attempt": 1,
+  "ts": "2026-10-15T12:58:02Z",
+  "story": "US-02-02",
+  "mode": "fix",
+  "parsed": {
+    "result": "ready",
+    "story": "US-02-02",
+    "branch": "feature/US-02-02",
+    "commits": [
+      "f36e556 fix(categories): name the category on its own continue line [US-02-02]",
+      "126f855 test(categories): name the saved files TC-02-09 keeps [US-02-02]",
+      "ed010fd test(acceptance): colour check on the continue entry screen [US-02-02]"
+    ],
+    "decisions": [
+      "DEC-59 routine Continue entry: an inverted 'Continue' / '4+' entry between the title and the list, last category saved when opened (amended in this round",
+      "no new DEC)"
+    ],
+    "evidence": [
+      "#1 First launch: no continue entry, only the list — TC-02-05 (Maestro, pass); unit continue.test.tsx \"on first launch there is no continue entry\"",
+      "#2 After use: continue entry for 4+ above the list, set apart, list keeps 3+, 4+, 5+ — TC-02-06 (Maestro, pass: continue-category \"4+\" visible below continue, list order asserted; step-02 screenshot shows \"Kontynuuj\" / \"4+\" white on black); unit \"after 4+ was opened…\" (two lines at 64, draw order, inverted colours)",
+      "#3 After a restart: continue for 4+, opens the fourth card — TC-02-07 (Maestro, pass); unit \"after a restart, continue opens 4+ at its fourth card\"",
+      "#4 Finished deck: continue opens that category's end card — TC-02-08 (Maestro, pass); unit \"continue on a finished deck shows that category's end card\""
+    ],
+    "tests": {
+      "run": "test-runs/2026-10-15_143215",
+      "pass": 30,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 0,
+      "manual_tests": [
+        "none"
+      ]
+    },
+    "derived_tests": [],
+    "preexisting": "none (fix round on this story's own branch)",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test ok (36 suites, 228 tests)"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "findings": [
+      "B1 fixed f36e556",
+      "code-N1 fixed f36e556 (drawOrder() walks screen.toJSON() and replaces the hand-walked element tree)",
+      "code-N2 refused: follow-up, the duplicated root steps in write_app_files vs run_saved_deck_flow/run_end_card_flow belong to the US-03 flows and refactoring them is outside this story",
+      "code-N3 fixed f36e556 (accessibilityLabel \"Kontynuuj 4+\" on the Pressable)",
+      "code-N4 refused: no change needed per review",
+      "spec-N1 fixed f36e556 (TC-02-08 flow comment names <name>.before files)",
+      "spec-N2 fixed 126f855 (TC-02-09 flow comment)",
+      "spec-N3 fixed f36e556 (DEC-59 notes that only last-category decides",
+      "an unreadable deck file still shows the entry and opens a fresh shuffle, DEC-55)",
+      "spec-N4 fixed ed010fd (check-black-and-white.js takes an optional case name",
+      "test-acceptance.sh runs it on the screen with the continue entry before TC-02-08, into junit/continue-screen-colours.xml)",
+      "spec-N5 refused: informational, setLast on open is what shows the entry on return, the extra render is intended",
+      "spec-N6 refused: status left in-progress as asked"
+    ],
+    "notes": "The B1 commit f36e556 also carries code-N1, code-N3, spec-N3 and the TC-02-08 part of spec-N1; a combined command was blocked by the commit hook, so the planned split did not happen. No Co-Authored-By trailers.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [],
+      "blocked": []
+    },
+    "critical_decisions": []
+  },
+  "raw": "I fixed B1 in three commits on feature/US-02-02 (not pushed). The local acceptance run on head ed010fd passes all 30 Maestro flows, but two pixel-colour checks fail on this emulator. One of them is the new check spec N4 asked for. Main fails the same check on this emulator in the same way.\n\n**B1.** \"Kontynuuj\" and the category name are now two separate Text lines (testIDs `continue` and `continue-category`). Each is sized with `cardType()` for the window width (DEC-53). `numberOfLines` and `adjustsFontSizeToFit` are gone. The TC-02-06/07/08 flows now assert `continue-category` is visible with the category text, below `continue`. I checked the step-02 screenshots of TC-02-06 and TC-02-08: they show \"Kontynuuj\" and then \"4+\" / \"3+\" on its own line, white on black. Because the continue entry now also shows \"3+\" / \"4+\", I changed the cards tests to press the list entry by its testID instead of by text.\n\n**The colour-check failures.** On this run, AC-02-01-4 step 4 (first-launch screen) and my new TC-02-08 step 2 check (screen with the continue entry) both fail on 1/255-off rows at the edges of the category entries' borders. No flagged row is in the continue entry itself.\n- I ran main (c3df55e) on the same emulator from a temporary worktree, since removed. It fails AC-02-01-4 step 4 identically: rows 970, 1326 and 1332.\n- The emulator was rebooted at 13:03. Every local run before that passed this check; the earlier failing run on 23248061 was already on the new boot.\n- CI acceptance.yml passed on 23248061.\n\nSo this looks like this emulator's rendering, not the code. Because CI takes the worst result for an id, the new check is named after TC-02-08: if CI showed the same artifact, TC-02-08 would count as failed.\n\n```\nRESULT: ready\nSTORY: US-02-02\nBRANCH: feature/US-02-02\nCOMMITS: f36e556 fix(categories): name the category on its own continue line [US-02-02]; 126f855 test(categories): name the saved files TC-02-09 keeps [US-02-02]; ed010fd test(acceptance): colour check on the continue entry screen [US-02-02]\nDECISIONS: DEC-59 routine Continue entry: an inverted 'Continue' / '4+' entry between the title and the list, last category saved when opened (amended in this round; no new DEC)\nEVIDENCE:\n  #1 First launch: no continue entry, only the list — TC-02-05 (Maestro, pass); unit continue.test.tsx \"on first launch there is no continue entry\"\n  #2 After use: continue entry for 4+ above the list, set apart, list keeps 3+, 4+, 5+ — TC-02-06 (Maestro, pass: continue-category \"4+\" visible below continue, list order asserted; step-02 screenshot shows \"Kontynuuj\" / \"4+\" white on black); unit \"after 4+ was opened…\" (two lines at 64, draw order, inverted colours)\n  #3 After a restart: continue for 4+, opens the fourth card — TC-02-07 (Maestro, pass); unit \"after a restart, continue opens 4+ at its fourth card\"\n  #4 Finished deck: continue opens that category's end card — TC-02-08 (Maestro, pass); unit \"continue on a finished deck shows that category's end card\"\nTESTS: run=test-runs/2026-10-15_143215 pass=30 fail=0 blocked=0 manual=0 manual_tests=none\nDERIVED_TESTS: none\nPREEXISTING: none (fix round on this story's own branch)\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test ok (36 suites, 228 tests)\nENV_KEYS: none\nMIGRATION: no\nFINDINGS: B1 fixed f36e556; code-N1 fixed f36e556 (drawOrder() walks screen.toJSON() and replaces the hand-walked element tree); code-N2 refused: follow-up, the duplicated root steps in write_app_files vs run_saved_deck_flow/run_end_card_flow belong to the US-03 flows and refactoring them is outside this story; code-N3 fixed f36e556 (accessibilityLabel \"Kontynuuj 4+\" on the Pressable); code-N4 refused: no change needed per review; spec-N1 fixed f36e556 (TC-02-08 flow comment names <name>.before files); spec-N2 fixed 126f855 (TC-02-09 flow comment); spec-N3 fixed f36e556 (DEC-59 notes that only last-category decides; an unreadable deck file still shows the entry and opens a fresh shuffle, DEC-55); spec-N4 fixed ed010fd (check-black-and-white.js takes an optional case name; test-acceptance.sh runs it on the screen with the continue entry before TC-02-08, into junit/continue-screen-colours.xml); spec-N5 refused: informational, setLast on open is what shows the entry on return, the extra render is intended; spec-N6 refused: status left in-progress as asked\nNOTES: Local run: both pixel checks (AC-02-01-4 step 4 and new TC-02-08 step 2) fail on 1/255-off border-edge rows of the category entries, not the continue entry; main fails AC-02-01-4 identically on this emulator (rebooted 13:03, all earlier local runs passed), CI passed it on 23248061.\nNOTES: The new check is a JUnit case named \"TC-02-08 step 2 — …\", so if CI showed the same artifact, TC-02-08 would count as failed there. run.json counts Maestro flows only, so its 30 passes do not include these checks.\nNOTES: The B1 commit f36e556 also carries code-N1, code-N3, spec-N3 and the TC-02-08 part of spec-N1; a combined command was blocked by the commit hook, so the planned split did not happen. No Co-Authored-By trailers.\n```\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}
