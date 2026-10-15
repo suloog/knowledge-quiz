@@ -31,6 +31,15 @@ tags:
     label: the question is in ${LANGUAGE}
 - takeScreenshot: step-01-question-in-language
 # Step 2 — touch the card: the answer is that question's answer in the same language.
+# The card has been shown for 1 s before it is touched: a touch within 0.5 s of the card being
+# drawn is ignored (MOD-03-F14, DEC-40). The question stays on screen, so the wait runs out
+# (optional) after 1 s.
+- extendedWaitUntil:
+    notVisible:
+      id: question
+    timeout: 1000
+    optional: true
+    label: the card shown for 1 s
 - tapOn:
     id: card-.*
 - assertVisible:
