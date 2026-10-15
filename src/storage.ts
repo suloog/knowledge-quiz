@@ -16,6 +16,15 @@ export const load = (key: string): unknown => {
   }
 };
 
+// Writes the value under the key: into a file of its own first, then moved over the saved one, so
+// an app killed mid-write never leaves a part of a value behind — at worst nothing, and the caller
+// starts afresh. A write that fails leaves the value unsaved: it is not remembered, the app goes on.
 export const save = (key: string, value: unknown) => {
-  file(key).write(JSON.stringify(value));
+  try {
+    const written = file(`${key}.new`);
+    written.write(JSON.stringify(value));
+    written.moveSync(file(key), { overwrite: true });
+  } catch {
+    // Not remembered: the next load gives the value saved before, or nothing.
+  }
 };

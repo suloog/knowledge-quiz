@@ -1,0 +1,12 @@
+{
+  "pl": {
+    "deckFinished": "Talia skończona",
+    "again": "Jeszcze raz",
+    "categories": "Kategorie"
+  },
+  "en": {
+    "deckFinished": "The deck is finished",
+    "again": "Again",
+    "categories": "Categories"
+  }
+}

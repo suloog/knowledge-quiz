@@ -1,0 +1,29 @@
+appId: ${APP_ID}
+name: TC-03-14 Categories on the end card returns to the category screen
+# Run by scripts/test-acceptance.sh alone, after it has written the saved 3+ deck with one card
+# left as root (DEC-55, DEC-56). The device is set to Polish.
+tags:
+  - saved-deck
+---
+# Step 1 — bring 3+ to its end card.
+- runFlow: subflows/end-card.yaml
+- assertVisible:
+    id: categories
+    text: ${END_CATEGORIES}
+- takeScreenshot: step-01-end-card
+# Step 2 — touch "categories": the category screen is shown.
+- extendedWaitUntil:
+    notVisible:
+      id: end-card
+    timeout: 1000
+    optional: true
+    label: the end card shown for 1 s
+- tapOn:
+    id: categories
+- assertVisible:
+    id: category-screen
+- assertVisible:
+    id: category-0
+- assertNotVisible:
+    id: end-card
+- takeScreenshot: step-02-category-screen

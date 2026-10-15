@@ -7,10 +7,17 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { decks } from '@/content';
+import { t } from '@/i18n';
 import { deviceLanguage } from '@/language';
-import { type Progress, markSeen, openDeck } from '@/progress';
+import {
+  type Progress,
+  isFinished,
+  markSeen,
+  openDeck,
+  restartDeck,
+} from '@/progress';
 import { colors, largestType, ruleWidth } from '@/theme';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 // A touch this soon after the card or its answer is drawn is ignored, so a child's double touch
@@ -18,7 +25,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export const TOUCH_GUARD_MS = 500;
 
 // Where the category's deck stands, and whether the card on screen has its answer revealed: then it
-// is the last seen card, otherwise the first unseen one.
+// is the last seen card, otherwise the first unseen one — or, once every card is seen, the end card.
 type Card = { progress: Progress; revealed: boolean };
 
 // The card's padding on either side.
@@ -41,8 +48,8 @@ export const cardType = (text: string, width: number) => {
 // The cards of one category, one at a time: a touch anywhere reveals the answer below the
 // question, the next touch shows the next question (MOD-03-F01…F05). Both change the content in
 // place — no transition, no animation (NFR-03). The deck is shuffled once and gone through without
-// repeats, resuming where it was left (MOD-03-F06…F08); after its last card a new shuffle starts
-// until US-03-03 ends it (DEC-55).
+// repeats, resuming where it was left (MOD-03-F06…F08); after its last card the end card offers to
+// start it again or go back to the categories (MOD-03-F09…F11, DEC-56).
 const CardScreen = () => {
   const { category } = useLocalSearchParams<{ category: string }>();
   const deck = decks.find(d => d.category === category);
@@ -65,6 +72,54 @@ const CardScreen = () => {
 
   if (!deck || !card) return null;
   const { progress, revealed } = card;
+
+  // A touch counts only once the screen has been shown for the guard's time (MOD-03-F14).
+  const ready = () => {
+    if (readyAt.current === null || Date.now() < readyAt.current) return false;
+    readyAt.current = null;
+    return true;
+  };
+
+  if (!revealed && isFinished(progress)) {
+    const again = () => {
+      if (ready()) setCard({ progress: restartDeck(deck), revealed: false });
+    };
+    // Back to the category screen below this one, never a second one on top (MOD-03-F11).
+    const categories = () => {
+      if (ready()) router.dismissTo('/');
+    };
+    return (
+      <SafeAreaView testID="end-card" style={styles.screen}>
+        <View style={styles.endArea}>
+          <Text
+            testID="deck-finished"
+            role="heading"
+            style={[
+              styles.question,
+              { fontSize: cardType(t('deckFinished'), width) },
+            ]}>
+            {t('deckFinished')}
+          </Text>
+        </View>
+        <Pressable testID="again" role="button" onPressIn={again}>
+          <Text
+            style={[styles.choice, { fontSize: cardType(t('again'), width) }]}>
+            {t('again')}
+          </Text>
+        </Pressable>
+        <Pressable testID="categories" role="button" onPressIn={categories}>
+          <Text
+            style={[
+              styles.choice,
+              { fontSize: cardType(t('categories'), width) },
+            ]}>
+            {t('categories')}
+          </Text>
+        </Pressable>
+      </SafeAreaView>
+    );
+  }
+
   const position = revealed ? progress.seen - 1 : progress.seen;
   const id = progress.order[position];
   const text = deck.questions.find(question => question.id === id)![
@@ -72,18 +127,12 @@ const CardScreen = () => {
   ];
 
   // A reveal makes the card seen and saves it (MOD-03-F07); the next touch shows the first unseen
-  // card, or a new shuffle once none is left.
+  // card, or the end card once none is left.
   const touch = () => {
-    if (readyAt.current === null || Date.now() < readyAt.current) return;
-    readyAt.current = null;
+    if (!ready()) return;
     if (!revealed)
       setCard({ progress: markSeen(deck.category, progress), revealed: true });
-    else
-      setCard({
-        progress:
-          progress.seen < progress.order.length ? progress : openDeck(deck),
-        revealed: false,
-      });
+    else setCard({ progress, revealed: false });
   };
 
   return (
@@ -156,6 +205,20 @@ const styles = StyleSheet.create({
   },
   answer: {
     flex: 1,
+    color: colors.ink,
+  },
+  // The end card: what it says above, its two choices below, full width like the category entries
+  // (MOD-02-U01, NFR-08).
+  endArea: {
+    flex: 1,
+    padding: PADDING,
+  },
+  choice: {
+    paddingHorizontal: PADDING,
+    paddingVertical: PADDING,
+    borderTopWidth: ruleWidth,
+    borderColor: colors.ink,
+    fontWeight: 'bold',
     color: colors.ink,
   },
 });

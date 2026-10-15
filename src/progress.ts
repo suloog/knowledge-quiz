@@ -49,20 +49,32 @@ export const restore = (
 
 const key = (category: string) => `deck-${category}`;
 
-// The category's deck as it was left: its saved order at the first unseen card. A deck never
-// opened, saved unreadably, or gone through to the end starts with a new shuffle — the last until
-// US-03-03 brings the end card (DEC-55). The result is saved, so the order holds after a restart
-// even before the first answer is revealed.
-export const openDeck = (deck: Deck): Progress => {
-  const ids = deck.questions.map(question => question.id);
-  const restored = restore(load(key(deck.category)), ids);
-  const progress =
-    restored && restored.seen < restored.order.length
-      ? restored
-      : { order: shuffle(ids), seen: 0 };
+// The category's deck shuffled anew, every card unseen, and saved: a deck never opened or saved
+// unreadably, and the end card's "again" (MOD-03-F10, DEC-23).
+export const restartDeck = (deck: Deck): Progress => {
+  const progress = {
+    order: shuffle(deck.questions.map(question => question.id)),
+    seen: 0,
+  };
   save(key(deck.category), progress);
   return progress;
 };
+
+// The category's deck as it was left: its saved order at the first unseen card, or finished — every
+// card seen — when it was gone through to the end, so the end card comes back (MOD-03-F09, DEC-56).
+// A deck never opened or saved unreadably starts with a new shuffle, saved at once, so the order
+// holds after a restart even before the first answer is revealed.
+export const openDeck = (deck: Deck): Progress => {
+  const ids = deck.questions.map(question => question.id);
+  const restored = restore(load(key(deck.category)), ids);
+  if (!restored) return restartDeck(deck);
+  save(key(deck.category), restored);
+  return restored;
+};
+
+// Every card of the deck has been seen: its end card is shown.
+export const isFinished = (progress: Progress) =>
+  progress.seen === progress.order.length;
 
 // The first unseen card has had its answer revealed: it is seen from now on, saved at once.
 export const markSeen = (category: string, progress: Progress): Progress => {
