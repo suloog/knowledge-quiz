@@ -1,0 +1,32 @@
+appId: ${APP_ID}
+name: TC-03-01 A new card shows only its question, with no buttons, choices or score
+# Run by scripts/test-acceptance.sh on a device set to Polish, the test case's test data.
+tags:
+  - device-language
+---
+# Precondition — the app installed, its data cleared: first launch on the category screen.
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+# Step 1 — open the app and choose 3+: one question on the card, and nothing else — no answer, no
+# rule, no button, choice or score; the categories are gone. That the question is the only text
+# and is set in the app's largest type is checked by the unit test (src/app/__tests__/cards.test.tsx).
+- tapOn:
+    id: category-0
+- assertVisible:
+    id: card-0
+- assertVisible:
+    id: question
+    text: .+
+- assertNotVisible:
+    id: answer
+- assertNotVisible:
+    id: rule
+- assertNotVisible:
+    id: category-0
+- assertNotVisible:
+    text: ".*(Error|isn't responding|keeps stopping|has stopped|nie odpowiada|zatrzymuje się|przestała działać).*"
+- takeScreenshot: step-01-question-alone

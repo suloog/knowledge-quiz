@@ -1,0 +1,52 @@
+appId: ${APP_ID}
+name: TC-03-04 A double touch within 0.5 s never skips an answer
+# Run by scripts/test-acceptance.sh on a device set to Polish, the test case's test data.
+tags:
+  - device-language
+---
+# Precondition — the app installed, its data cleared: first launch on the category screen.
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+# Step 1 — choose 3+: a question is shown. App state: the card in the accessibility tree is
+# card-0, the deck's first position.
+- tapOn:
+    id: category-0
+- assertVisible:
+    id: card-0
+- assertVisible:
+    id: question
+    text: .+
+- copyTextFrom:
+    id: question
+- evalScript: ${output.question = maestro.copiedText}
+- takeScreenshot: step-01-question
+# Step 2 — touch the card twice in quick succession (Maestro's double tap: two taps about 0.1 s
+# apart): the answer of the same question is shown, and the deck position has not moved (card-0).
+# The card has been shown for 1 s before it is touched: a touch within 0.5 s of the card being
+# drawn is ignored (MOD-03-F14, DEC-40). The question stays on screen, so the wait runs out
+# (optional) after 1 s.
+- extendedWaitUntil:
+    notVisible:
+      id: question
+    timeout: 1000
+    optional: true
+    label: the card shown for 1 s
+- doubleTapOn:
+    id: card-0
+- assertVisible:
+    id: answer
+    text: .+
+- assertVisible:
+    id: card-0
+- copyTextFrom:
+    id: question
+- assertTrue:
+    condition: ${maestro.copiedText == output.question}
+    label: the question on screen is still the first one
+- assertNotVisible:
+    text: ".*(Error|isn't responding|keeps stopping|has stopped|nie odpowiada|zatrzymuje się|przestała działać).*"
+- takeScreenshot: step-02-same-card-answer

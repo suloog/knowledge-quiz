@@ -1,9 +1,11 @@
-import { StyleSheet, Text } from 'react-native';
+import { Pressable, StyleSheet, Text } from 'react-native';
 import { appContent, categories } from '@/content';
-import { colors, ruleWidth } from '@/theme';
+import { colors, largestType, ruleWidth } from '@/theme';
+import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-// The screen every launch opens on: the age categories the content data holds (MOD-02-F01…F03).
+// The screen every launch opens on: the age categories the content data holds (MOD-02-F01…F03);
+// choosing one opens its cards (MOD-02-F04).
 const CategoriesScreen = () => {
   return (
     <SafeAreaView testID="category-screen" style={styles.screen}>
@@ -11,9 +13,16 @@ const CategoriesScreen = () => {
         {appContent.title}
       </Text>
       {categories.map((category, index) => (
-        <Text key={category} testID={`category-${index}`} style={styles.entry}>
-          {category}
-        </Text>
+        <Pressable
+          key={category}
+          role="button"
+          onPress={() =>
+            router.push({ pathname: '/cards/[category]', params: { category } })
+          }>
+          <Text testID={`category-${index}`} style={styles.entry}>
+            {category}
+          </Text>
+        </Pressable>
       ))}
     </SafeAreaView>
   );
@@ -39,7 +48,7 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
     borderBottomWidth: ruleWidth,
     borderColor: colors.ink,
-    fontSize: 64,
+    fontSize: largestType,
     fontWeight: 'bold',
     color: colors.ink,
   },
