@@ -55,7 +55,7 @@ A module counts as **sliced** once part 1 of its `COVERAGE.md` has no empty rows
 | ----- | ----- | ------ | ---- | ------ | ---------- | -------- |
 | `US-02-01` | Parent can open the app and see the age categories | F01, F02, F03, U01, U03, U05, NFR-02, NFR-03, NFR-04, NFR-07, NFR-08, NFR-09 | must | done | `US-01-02` | — |
 | `US-02-02` | Parent can continue the last-used category straight from the top of the screen | F05, F06, F07, F08, F09, U02 | must | done | `US-02-01`, `US-03-02`, `US-03-03` | — |
-| `US-02-03` | Parent can switch the app between Polish and English | F10, F11, F12, F13, U04 | must | in-progress | `US-02-01`, `US-03-02` | — |
+| `US-02-03` | Parent can switch the app between Polish and English | F10, F11, F12, F13, U04 | must | done | `US-02-01`, `US-03-02` | — |
 
 ## [MOD-03] Question cards
 
