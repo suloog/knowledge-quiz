@@ -127,10 +127,11 @@ const styles = StyleSheet.create({
     borderColor: colors.ink,
   },
   // A whole number of device pixels high, so the row's edge and every rule below it fall on a pixel
-  // boundary — a fractional edge is drawn as a row of grey (NFR-07).
+  // boundary — a fractional edge is drawn as a row of grey (NFR-07). A minimum, not a height: with
+  // the system's text made larger the row grows instead of clipping its label.
   language: {
     flex: 1,
-    height: PixelRatio.roundToNearestPixel(59),
+    minHeight: PixelRatio.roundToNearestPixel(59),
     justifyContent: 'center',
     backgroundColor: colors.paper,
   },
