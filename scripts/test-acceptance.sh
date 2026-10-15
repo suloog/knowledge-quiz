@@ -14,12 +14,15 @@
 #    by Metro;
 # 3. every other flow (TC-00-03, TC-01-01, AC-01-01-4 offline, and any new flow by default) against
 #    that release APK, installed on the device with Metro stopped. The flows tagged
-#    `device-language` (the cards, TC-03-01…TC-03-05, TC-03-07…TC-03-10, TC-03-16, TC-03-17) run after the others, on
+#    `device-language` (the cards, TC-03-01…TC-03-05, TC-03-07…TC-03-10, TC-03-16, TC-03-17, and the continue
+#    entry, TC-02-05…TC-02-07) run after the others, on
 #    the device set to Polish — their test data — and TC-03-05 once more on the device set to
 #    English: until the language switch (US-02-03) the app follows the device's language (DEC-52).
 #    TC-03-11 (tagged `saved-deck`) runs on its own, still in Polish, after its saved deck has been
 #    made unreadable as root (DEC-55); so does each of TC-03-12…TC-03-15 (the end card, also tagged
-#    `saved-deck`), after its saved deck has been written one card from its end (DEC-56). TC-03-18 and
+#    `saved-deck`), after its saved deck has been written one card from its end (DEC-56); so do TC-02-08
+#    (`saved-deck`: the 3+ deck saved finished and used last) and TC-02-09 (`saved-deck`: every saved
+#    file made unreadable), each after its saved data has been written as root (DEC-59). TC-03-18 and
 #    TC-03-19 (tagged `deck-state`) run after the Polish flows, still in Polish, with
 #    scripts/saved-deck-server.js reading the saved 3+ deck from the device as root while they run
 #    (DECK_STATE_URL), for the app state their steps note (DEC-58). The device's
@@ -37,6 +40,9 @@
 #   junit/screen.xml             — TC-02-02 step 2, the category entries' width (step 3)
 #   junit/screen-colours.xml     — AC-02-01-4 step 4, the category screen's pixels (step 3);
 #                                  skipped when the device draws one colour only (nothing rendered)
+#   junit/continue-screen-colours.xml
+#                                — the same check on the screen with the continue entry, before
+#                                  TC-02-08 runs (NFR-07); evidence under maestro/release-continue/TC-02-08/
 #   maestro/report.xml           — Maestro on the debug build (TC-00-01), evidence under maestro/
 #   maestro/report-release.xml   — Maestro on the release build (all other flows), evidence under
 #                                  maestro/release/
@@ -53,6 +59,9 @@
 #   maestro/report-release-TC-03-12.xml … report-release-TC-03-15.xml
 #                                — the end card, one flow each; evidence (the saved deck written,
 #                                  before and after) under maestro/release-end-card/<TC>/
+#   maestro/report-release-TC-02-08.xml, report-release-TC-02-09.xml
+#                                — the continue entry on saved data written as root; evidence (the
+#                                  saved files written and read back) under maestro/release-continue/<TC>/
 # The consoles are kept beside them: release-build.log, stack.log; the APK checks under release/.
 #
 # Needs a running Android device (the emulator CI boots, or one you start first): the release
@@ -86,6 +95,8 @@ while read -r arg; do CATEGORY_ARGS+=(-e "$arg"); done < <(node -e '
   console.log(`CATEGORY_COUNT=${expected.length}`);
 ')
 say() { printf '[acceptance] %s\n' "$*"; }
+# The colour check on the screen with the continue entry (NFR-07), as its JUnit case is named.
+CONTINUE_COLOURS="TC-02-08 step 2 — the category screen with the continue entry is drawn in #000000 and #FFFFFF only, outside the text glyphs (screencap, NFR-07)"
 
 status=0
 
@@ -340,6 +351,116 @@ run_end_card_flow() {
   fi
 }
 
+# write_app_files <dir> <name>…: the files <dir>/<name> written, as root, into the app's private
+# files under the same names (what src/storage.ts keeps there), after the app's data has been
+# cleared; each read back from the device into <dir>/<name>.before. Fails when the device is not
+# rooted. The release build has no app-state bridge (DEC-55).
+write_app_files() {
+  local dir="$1" home="/data/data/$APP_ID" files owner name
+  shift
+  files="$home/files"
+  "$ADB" shell pm clear "$APP_ID" >/dev/null 2>&1
+  owner="$("$ADB" shell stat -c %u "$home" 2>/dev/null | tr -d '\r')"
+  [ "$("$ADB" shell id -u 2>/dev/null | tr -d '\r')" = 0 ] && [ -n "$owner" ] || return 1
+  "$ADB" shell "mkdir -p $files" || return 1
+  for name in "$@"; do
+    "$ADB" push "$dir/$name" /data/local/tmp/kq-file >/dev/null 2>&1 &&
+      "$ADB" shell "cp /data/local/tmp/kq-file '$files/$name' && rm /data/local/tmp/kq-file" || return 1
+  done
+  "$ADB" shell "chown -R $owner:$owner $files && restorecon -R $files" || return 1
+  for name in "$@"; do "$ADB" shell cat "'$files/$name'" >"$dir/$name.before" 2>&1; done
+}
+
+# run_continue_finished_flow <report> <output dir>: TC-02-08 — the saved 3+ deck written with all 50
+# answers revealed, and 3+ as the last category used; then the flow, given what the device holds
+# (SAVED_SEEN of SAVED_TOTAL, SAVED_LAST) and the end card's words (src/strings.json). Needs the
+# device rooted and set to Polish, as run_language_flows leaves it.
+run_continue_finished_flow() {
+  local report="$1" dir="$2" args=()
+  say "TC-02-08: the 3+ deck saved finished and used last, then the app opened on it"
+  mkdir -p "$dir"
+  node -e '
+    const order = require("./src/content/decks/3-plus.json").questions.map(q => q.id);
+    process.stdout.write(JSON.stringify({ order, seen: order.length }));
+  ' >"$dir/deck-3%2B.json"
+  printf '"3+"' >"$dir/last-category.json"
+  if ! write_app_files "$dir" deck-3%2B.json last-category.json; then
+    # No results: the collector counts the flow as not run (blocked), not failed.
+    say "BLOCKED: could not write the saved data as root (adb root needs an emulator image without Google Play)"
+    return
+  fi
+  while read -r arg; do args+=(-e "$arg"); done < <(node -e '
+    const fs = require("fs");
+    const read = f => { try { return JSON.parse(fs.readFileSync(f, "utf8")); } catch { return undefined; } };
+    const deck = read(process.argv[1]) || {};
+    const order = Array.isArray(deck.order) ? deck.order : [];
+    console.log(`SAVED_SEEN=${deck.seen}`);
+    console.log(`SAVED_TOTAL=${order.length}`);
+    console.log(`SAVED_LAST=${read(process.argv[2])}`);
+    console.log(`END_FINISHED=${require("./src/strings.json").pl.deckFinished.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`);
+  ' "$dir/deck-3%2B.json.before" "$dir/last-category.json.before")
+  # NFR-07 on the screen with the continue entry, as AC-02-01-4 step 4 checks the first launch's.
+  say "TC-02-08 step 2: the category screen with the continue entry, its colours on the device"
+  "$ADB" shell monkey -p "$APP_ID" -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1
+  for _ in $(seq 1 60); do
+    "$ADB" shell uiautomator dump /sdcard/kq-ui.xml >/dev/null 2>&1 &&
+      "$ADB" exec-out cat /sdcard/kq-ui.xml >"$dir/continue-hierarchy.txt" 2>/dev/null
+    grep -q 'resource-id="continue-category"' "$dir/continue-hierarchy.txt" 2>/dev/null && break
+    sleep 1
+  done
+  "$ADB" exec-out screencap >"$dir/continue-screen.raw" 2>/dev/null
+  "$ADB" exec-out screencap -p >"$dir/step-02-continue-colours.png" 2>/dev/null
+  if ! grep -q 'resource-id="continue-category"' "$dir/continue-hierarchy.txt" 2>/dev/null; then
+    printf '<?xml version="1.0" encoding="UTF-8"?>\n<testsuites><testsuite name="continue-screen-colours" tests="1" failures="1"><testcase classname="category-screen" name="%s"><failure message="the continue entry never showed (continue-hierarchy.txt)"/></testcase></testsuite></testsuites>\n' \
+      "$CONTINUE_COLOURS" >"$OUT/junit/continue-screen-colours.xml"
+    status=1
+  elif ! node scripts/check-black-and-white.js "$dir/continue-screen.raw" "$dir/continue-hierarchy.txt" \
+    "$density" "$OUT/junit/continue-screen-colours.xml" "$CONTINUE_COLOURS"; then
+    status=1
+  fi
+  rm -f "$dir/continue-screen.raw"
+  "$ADB" shell am force-stop "$APP_ID" >/dev/null 2>&1
+  if ! "$MAESTRO" test \
+    --format JUNIT \
+    --output "$report" \
+    --test-output-dir "$dir" \
+    -e APP_ID="$APP_ID" \
+    ${args[@]+"${args[@]}"} \
+    tests/maestro/TC-02-08-continue-finished-deck.yaml; then
+    status=1
+  fi
+}
+
+# run_unreadable_data_flow <report> <output dir>: TC-02-09 — every file the app saves (the last
+# category used, each category's deck) replaced with content that is not JSON (no double quotes in
+# it: Maestro's -e splits a value at them); then the flow, given what the last category's file holds
+# (SAVED_DATA). Needs the device rooted and set to Polish, as run_language_flows leaves it.
+run_unreadable_data_flow() {
+  local report="$1" dir="$2" names=(last-category.json) category
+  say "TC-02-09: the app's saved data made unreadable, then the app opened on it"
+  mkdir -p "$dir"
+  printf '%s' '{last: 4' >"$dir/last-category.json"
+  while read -r category; do
+    names+=("deck-$category.json")
+    printf '%s' '{order: [' >"$dir/deck-$category.json"
+  done < <(node -e 'for (const f of require("fs").readdirSync("src/content/decks").filter(f => f.endsWith(".json")).sort())
+    console.log(encodeURIComponent(require(`./src/content/decks/${f}`).category))')
+  if ! write_app_files "$dir" "${names[@]}"; then
+    # No results: the collector counts the flow as not run (blocked), not failed.
+    say "BLOCKED: could not replace the saved data as root (adb root needs an emulator image without Google Play)"
+    return
+  fi
+  if ! "$MAESTRO" test \
+    --format JUNIT \
+    --output "$report" \
+    --test-output-dir "$dir" \
+    -e APP_ID="$APP_ID" \
+    -e SAVED_DATA="$(cat "$dir/last-category.json.before")" \
+    tests/maestro/TC-02-09-unreadable-saved-data.yaml; then
+    status=1
+  fi
+}
+
 # ---------------------------------------------------------------- 1. release APK
 STEP4="AC-01-01-5 step 4 — a release APK is built, signed with a key from outside the repository passed through KQ_UPLOAD_*"
 STEP5="AC-01-01-5 step 5 — apksigner verifies the APK's signature, made with that key and not the debug key"
@@ -570,6 +691,8 @@ else
         name="$(basename "$flow" .yaml)"
         run_end_card_flow "$flow" "$OUT/maestro/report-release-${name%%-[a-z]*}.xml" "$OUT/maestro/release-end-card/${name%%-[a-z]*}"
       done
+      run_continue_finished_flow "$OUT/maestro/report-release-TC-02-08.xml" "$OUT/maestro/release-continue/TC-02-08"
+      run_unreadable_data_flow "$OUT/maestro/report-release-TC-02-09.xml" "$OUT/maestro/release-continue/TC-02-09"
       run_language_flows en-US en "$OUT/maestro/report-release-en.xml" "$OUT/maestro/release-en" \
         tests/maestro/TC-03-05-cards-in-chosen-language.yaml
       say "putting the device's language back to $original_locale"

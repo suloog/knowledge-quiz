@@ -1,0 +1,59 @@
+appId: ${APP_ID}
+name: TC-02-06 After a category is used, a continue entry for it stands above the unchanged list
+# Run by scripts/test-acceptance.sh on a device set to Polish, the test case's test data.
+tags:
+  - device-language
+---
+# Precondition — the app installed, its data cleared: first launch, no continue entry.
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+- assertNotVisible:
+    id: continue-entry
+# Step 1 — choose 4+: a 4+ card is shown.
+- tapOn:
+    id: category-1
+- assertVisible:
+    id: card-0
+- assertVisible:
+    id: question
+    text: .+
+- takeScreenshot: step-01-card-of-4-plus
+# Step 2 — go back to the categories: a continue entry naming 4+ stands above the list, set apart
+# from it (inverted: white on black — the screenshot shows it).
+- back
+- assertVisible:
+    id: category-screen
+- assertVisible:
+    id: continue
+    text: Kontynuuj
+- assertVisible:
+    id: continue-category
+    text: 4\+
+    below:
+      id: continue
+- assertVisible:
+    id: category-0
+    below:
+      id: continue-entry
+- takeScreenshot: step-02-continue-entry
+# Step 3 — read the list below it: still 3+, 4+, 5+ in that order.
+- assertVisible:
+    id: category-0
+    text: 3\+
+- assertVisible:
+    id: category-1
+    text: 4\+
+    below:
+      id: category-0
+- assertVisible:
+    id: category-2
+    text: 5\+
+    below:
+      id: category-1
+- assertNotVisible:
+    id: category-3
+- takeScreenshot: step-03-list-unchanged

@@ -1,0 +1,43 @@
+appId: ${APP_ID}
+name: TC-02-08 Continue on a finished deck opens its end card
+# Run by scripts/test-acceptance.sh alone, after it has written, as root, the saved 3+ deck with all
+# 50 answers revealed and 3+ as the last category used, and read both back from the device
+# (SAVED_SEEN of SAVED_TOTAL, SAVED_LAST): the release build has no app-state bridge (DEC-55). The
+# device is set to Polish.
+tags:
+  - saved-deck
+---
+# Step 1 — the saved state shows 3+ finished: every card of its deck seen, 3+ used last. The saved
+# files themselves are kept beside this flow's output (<name>.before: deck-3%2B.json.before, last-category.json.before).
+- assertTrue:
+    condition: ${SAVED_TOTAL == 50 && SAVED_SEEN == SAVED_TOTAL}
+    label: the saved 3+ deck has all 50 answers revealed
+- assertTrue:
+    condition: ${SAVED_LAST == '3+'}
+    label: 3+ is saved as the last category used
+- takeScreenshot: step-01-saved-state
+# Step 2 — open the app: a continue entry for 3+ is shown.
+- launchApp:
+    clearState: false
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+- assertVisible:
+    id: continue
+    text: Kontynuuj
+- assertVisible:
+    id: continue-category
+    text: 3\+
+    below:
+      id: continue
+- takeScreenshot: step-02-continue-entry
+# Step 3 — touch the continue entry: the 3+ end card is shown.
+- tapOn:
+    id: continue-entry
+- assertVisible:
+    id: end-card
+- assertVisible:
+    id: deck-finished
+    text: ${END_FINISHED}
+- takeScreenshot: step-03-end-card

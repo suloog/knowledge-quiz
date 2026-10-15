@@ -1,0 +1,28 @@
+appId: ${APP_ID}
+name: TC-02-05 First launch shows no continue entry
+# Run by scripts/test-acceptance.sh on a device set to Polish, the test case's test data.
+tags:
+  - device-language
+---
+# Precondition — the app installed, its data cleared: first launch.
+# Step 1 — open the app: only the list 3+, 4+, 5+ is shown, with no continue entry above it.
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+- assertNotVisible:
+    id: continue-entry
+- assertVisible:
+    id: category-0
+    text: 3\+
+- assertVisible:
+    id: category-1
+    text: 4\+
+- assertVisible:
+    id: category-2
+    text: 5\+
+- assertNotVisible:
+    id: category-3
+- takeScreenshot: step-01-list-only
