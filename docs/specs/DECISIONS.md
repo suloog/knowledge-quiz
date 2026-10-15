@@ -777,3 +777,15 @@
 - **Scope effect:** within scope
 - **Resolves:** —
 - **Status:** accepted
+
+## [DEC-64] The category screen fits a 640 dp high screen: the list entries give up their spacing first
+
+- **Date:** 2026-10-15
+- **Decided by:** developer (delivery loop)
+- **Source:** implementation (`US-02-03`)
+- **Affects:** `US-02-03`, `US-02-02`, `MOD-02-F02`, `MOD-02-F05`, `MOD-02-U01`, `DEC-59`, `DEC-60`, `TC-02-06`
+- **Decision:** The category screen does not scroll, so everything on it must fit the window. With the language switch (`DEC-60`) under the title and the continue entry (`DEC-59`) shown, the 5+ entry fell below the bottom of the 320 × 640 dp Android 12 emulator the acceptance tests run on (CI run 38781983403, `TC-02-06`). Each category entry now keeps its name's size and gives up only the space above and below it (24 dp each side, shrinking as far as needed); the continue entry drops the outer 12 dp around its two lines, which keep their own 12 dp. On a screen with room to spare nothing changes: the entries are as tall as before. No type size changes.
+- **Why:** The smallest change that keeps every entry reachable and every text as large as it was: the screen's look stays the same wherever it fitted before, and the sizes the earlier decisions set for a child to read and touch are not reduced.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted

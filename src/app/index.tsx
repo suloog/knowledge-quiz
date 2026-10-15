@@ -96,11 +96,19 @@ const CategoriesScreen = () => {
           </Text>
         </Pressable>
       )}
+      {/* Every entry stays on the screen, which does not scroll: on a short screen the entries give
+          up the space above and below their names, never the names' size (DEC-64). */}
       {categories.map((category, index) => (
-        <Pressable key={category} role="button" onPress={() => open(category)}>
-          <Text testID={`category-${index}`} style={styles.entry}>
+        <Pressable
+          key={category}
+          role="button"
+          onPress={() => open(category)}
+          style={styles.entry}>
+          <View style={styles.entrySpace} />
+          <Text testID={`category-${index}`} style={styles.entryText}>
             {category}
           </Text>
+          <View style={styles.entrySpace} />
         </Pressable>
       ))}
     </SafeAreaView>
@@ -151,21 +159,28 @@ const styles = StyleSheet.create({
     color: colors.paper,
   },
   // Full width and large, for a small child to read and touch (MOD-02-U01, NFR-08).
+  // The entry shrinks when the screen is short of room; only the space around its name gives way.
   entry: {
     alignSelf: 'stretch',
-    paddingHorizontal: 24,
-    paddingVertical: 24,
+    flexShrink: 1,
     borderBottomWidth: ruleWidth,
     borderColor: colors.ink,
+  },
+  entrySpace: {
+    height: 24,
+    flexShrink: 1,
+  },
+  entryText: {
+    paddingHorizontal: 24,
     fontSize: largestType,
     fontWeight: 'bold',
     color: colors.ink,
   },
-  // The entry's padding is shared with its two lines, each holding half of it, so every text's bounds
-  // keep more than the 8 dp the screen's colour check allows around the glyphs (NFR-07).
+  // Each line holds its own padding, so every text's bounds keep more than the 8 dp the screen's
+  // colour check allows around the glyphs (NFR-07); the entry adds none, so with the language switch
+  // above it the list below still fits a 640 dp high screen (DEC-64).
   continueEntry: {
     alignSelf: 'stretch',
-    paddingVertical: 12,
     backgroundColor: colors.ink,
   },
   continueText: {
