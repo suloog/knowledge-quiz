@@ -134,5 +134,13 @@
     "title": "Return control: a small 'Categories' line above the card, guarded, back to the screen below; a category opens its cards once",
     "file": "docs/specs/DECISIONS.md",
     "ts": "2026-10-15T09:31:16Z"
+  },
+  {
+    "dec": "DEC-59",
+    "story": "US-02-02",
+    "attempt": 1,
+    "title": "Continue entry: an inverted 'Continue 4+' line between the title and the list, last category saved when opened",
+    "file": "docs/specs/DECISIONS.md",
+    "ts": "2026-10-15T11:01:18Z"
   }
 ]
