@@ -1,0 +1,47 @@
+appId: ${APP_ID}
+name: TC-03-17 The return control on a card returns to the categories
+# Run by scripts/test-acceptance.sh on a device set to Polish, the test case's test data.
+tags:
+  - device-language
+---
+# Precondition — the app installed, its data cleared: first launch on the category screen.
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+# Step 1 — choose 3+: a card is shown with a small return control outside the card.
+- tapOn:
+    id: category-0
+- assertVisible:
+    id: card-0
+- assertVisible:
+    id: question
+    text: .+
+- assertVisible:
+    id: return-control
+    text: .+
+- assertNotVisible:
+    id: return-control
+    childOf:
+      id: card-0
+- takeScreenshot: step-01-card-with-return-control
+# Step 2 — touch the return control: the category screen is shown. The card has been shown for 1 s
+# before it is touched: a touch within 0.5 s of it being drawn is ignored (MOD-03-F14, DEC-40); the
+# wait runs out (optional) after 1 s.
+- extendedWaitUntil:
+    notVisible:
+      id: return-control
+    timeout: 1000
+    optional: true
+    label: the card shown for 1 s
+- tapOn:
+    id: return-control
+- assertVisible:
+    id: category-screen
+- assertVisible:
+    id: category-0
+- assertNotVisible:
+    id: card-screen
+- takeScreenshot: step-02-category-screen

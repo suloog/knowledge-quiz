@@ -1,0 +1,31 @@
+appId: ${APP_ID}
+name: TC-03-16 Android back on a card returns to the categories
+# Run by scripts/test-acceptance.sh on a device set to Polish, the test case's test data.
+tags:
+  - device-language
+---
+# Precondition — the app installed, its data cleared: first launch on the category screen.
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+# Step 1 — choose 3+: a card is shown.
+- tapOn:
+    id: category-0
+- assertVisible:
+    id: card-0
+- assertVisible:
+    id: question
+    text: .+
+- takeScreenshot: step-01-card
+# Step 2 — press the Android back action: the category screen is shown.
+- back
+- assertVisible:
+    id: category-screen
+- assertVisible:
+    id: category-0
+- assertNotVisible:
+    id: card-screen
+- takeScreenshot: step-02-category-screen

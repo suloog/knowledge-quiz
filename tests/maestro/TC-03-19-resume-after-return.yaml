@@ -1,0 +1,91 @@
+appId: ${APP_ID}
+name: TC-03-19 After returning to the categories, the category resumes where it was left
+# Run by scripts/test-acceptance.sh on a device set to Polish, the test case's test data. The app
+# state is the saved 3+ deck, read from the device as root through scripts/saved-deck-server.js
+# (DECK_STATE_URL): the release build has no app-state bridge (DEC-55). What it read is kept as
+# TC-03-19-step-0N.json beside the flow's evidence.
+tags:
+  - deck-state
+---
+# Precondition — the app installed, its data cleared: first launch on the category screen.
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+# Step 1 — choose 3+, reveal two answers, go back with the Android back action: the category
+# screen; the saved deck has two cards seen. Each card, and each answer, has been shown for 1 s
+# before it is touched (MOD-03-F14, DEC-40); the waits run out (optional) after 1 s.
+- tapOn:
+    id: category-0
+- evalScript: ${output.noted = []}
+- assertVisible:
+    id: card-0
+- copyTextFrom:
+    id: question
+- evalScript: ${output.noted.push(maestro.copiedText)}
+- extendedWaitUntil:
+    notVisible:
+      id: question
+    timeout: 1000
+    optional: true
+    label: the first card shown for 1 s
+- tapOn:
+    id: card-0
+- assertVisible:
+    id: answer
+    text: .+
+- extendedWaitUntil:
+    notVisible:
+      id: answer
+    timeout: 1000
+    optional: true
+    label: the first answer shown for 1 s
+- tapOn:
+    id: card-0
+- assertVisible:
+    id: card-1
+- copyTextFrom:
+    id: question
+- evalScript: ${output.noted.push(maestro.copiedText)}
+- extendedWaitUntil:
+    notVisible:
+      id: question
+    timeout: 1000
+    optional: true
+    label: the second card shown for 1 s
+- tapOn:
+    id: card-1
+- assertVisible:
+    id: answer
+    text: .+
+- back
+- assertVisible:
+    id: category-screen
+- evalScript: ${output.before = http.get(DECK_STATE_URL + '/TC-03-19-step-01').body}
+- assertTrue:
+    condition: ${JSON.parse(output.before).seen == 2}
+    label: the saved deck has two cards seen
+- takeScreenshot: step-01-back-on-categories
+# Step 2 — choose 3+ again: the third card (card-2), answer hidden, none of the two seen; the saved
+# deck is as step 1 left it.
+- tapOn:
+    id: category-0
+- assertVisible:
+    id: card-2
+- assertVisible:
+    id: question
+    text: .+
+- assertNotVisible:
+    id: answer
+- copyTextFrom:
+    id: question
+- assertTrue:
+    condition: ${output.noted.indexOf(maestro.copiedText) < 0}
+    label: the question is neither of the two seen
+- evalScript: ${output.after = http.get(DECK_STATE_URL + '/TC-03-19-step-02').body}
+- assertTrue:
+    condition: ${output.after == output.before}
+    label: the saved deck is as it was left
+- takeScreenshot: step-02-third-card
