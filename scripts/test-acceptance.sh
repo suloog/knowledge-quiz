@@ -40,6 +40,9 @@
 #   junit/screen.xml             — TC-02-02 step 2, the category entries' width (step 3)
 #   junit/screen-colours.xml     — AC-02-01-4 step 4, the category screen's pixels (step 3);
 #                                  skipped when the device draws one colour only (nothing rendered)
+#   junit/continue-screen-colours.xml
+#                                — the same check on the screen with the continue entry, before
+#                                  TC-02-08 runs (NFR-07); evidence under maestro/release-continue/TC-02-08/
 #   maestro/report.xml           — Maestro on the debug build (TC-00-01), evidence under maestro/
 #   maestro/report-release.xml   — Maestro on the release build (all other flows), evidence under
 #                                  maestro/release/
@@ -92,6 +95,8 @@ while read -r arg; do CATEGORY_ARGS+=(-e "$arg"); done < <(node -e '
   console.log(`CATEGORY_COUNT=${expected.length}`);
 ')
 say() { printf '[acceptance] %s\n' "$*"; }
+# The colour check on the screen with the continue entry (NFR-07), as its JUnit case is named.
+CONTINUE_COLOURS="TC-02-08 step 2 — the category screen with the continue entry is drawn in #000000 and #FFFFFF only, outside the text glyphs (screencap, NFR-07)"
 
 status=0
 
@@ -394,6 +399,27 @@ run_continue_finished_flow() {
     console.log(`SAVED_LAST=${read(process.argv[2])}`);
     console.log(`END_FINISHED=${require("./src/strings.json").pl.deckFinished.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`);
   ' "$dir/deck-3%2B.json.before" "$dir/last-category.json.before")
+  # NFR-07 on the screen with the continue entry, as AC-02-01-4 step 4 checks the first launch's.
+  say "TC-02-08 step 2: the category screen with the continue entry, its colours on the device"
+  "$ADB" shell monkey -p "$APP_ID" -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1
+  for _ in $(seq 1 60); do
+    "$ADB" shell uiautomator dump /sdcard/kq-ui.xml >/dev/null 2>&1 &&
+      "$ADB" exec-out cat /sdcard/kq-ui.xml >"$dir/continue-hierarchy.txt" 2>/dev/null
+    grep -q 'resource-id="continue-category"' "$dir/continue-hierarchy.txt" 2>/dev/null && break
+    sleep 1
+  done
+  "$ADB" exec-out screencap >"$dir/continue-screen.raw" 2>/dev/null
+  "$ADB" exec-out screencap -p >"$dir/step-02-continue-colours.png" 2>/dev/null
+  if ! grep -q 'resource-id="continue-category"' "$dir/continue-hierarchy.txt" 2>/dev/null; then
+    printf '<?xml version="1.0" encoding="UTF-8"?>\n<testsuites><testsuite name="continue-screen-colours" tests="1" failures="1"><testcase classname="category-screen" name="%s"><failure message="the continue entry never showed (continue-hierarchy.txt)"/></testcase></testsuite></testsuites>\n' \
+      "$CONTINUE_COLOURS" >"$OUT/junit/continue-screen-colours.xml"
+    status=1
+  elif ! node scripts/check-black-and-white.js "$dir/continue-screen.raw" "$dir/continue-hierarchy.txt" \
+    "$density" "$OUT/junit/continue-screen-colours.xml" "$CONTINUE_COLOURS"; then
+    status=1
+  fi
+  rm -f "$dir/continue-screen.raw"
+  "$ADB" shell am force-stop "$APP_ID" >/dev/null 2>&1
   if ! "$MAESTRO" test \
     --format JUNIT \
     --output "$report" \

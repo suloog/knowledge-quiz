@@ -1,8 +1,9 @@
 // AC-02-01-4 step 4 — on the device, the category screen is drawn in #000000 and #FFFFFF only.
 // Reads a raw screenshot (`adb exec-out screencap`, no -p) and a uiautomator dump of the same
-// screen, and writes the result as a JUnit case (scripts/test-acceptance.sh).
+// screen, and writes the result as a JUnit case (scripts/test-acceptance.sh). The same check runs
+// on the screen with the continue entry (TC-02-08 step 2), named by the optional fifth argument.
 //
-//   node scripts/check-black-and-white.js <screen.raw> <dump.xml> <density dpi> <junit.xml>
+//   node scripts/check-black-and-white.js <screen.raw> <dump.xml> <density dpi> <junit.xml> [name]
 //
 // Checked: every pixel inside the app's screen (the bounds of `category-screen`, less the system
 // bars drawn over it). Text glyphs are anti-aliased by the font renderer, so grey is allowed inside
@@ -12,8 +13,9 @@
 // the case is reported skipped, with the reason. A check that read no pixel at all fails.
 const fs = require('fs');
 
-const [rawFile, dumpFile, densityDpi, junitFile] = process.argv.slice(2);
+const [rawFile, dumpFile, densityDpi, junitFile, name] = process.argv.slice(2);
 const NAME =
+  name ||
   'AC-02-01-4 step 4 — the category screen on the device is drawn in #000000 and #FFFFFF only, outside the text glyphs (screencap)';
 const GLYPH_MARGIN_DP = 8;
 
