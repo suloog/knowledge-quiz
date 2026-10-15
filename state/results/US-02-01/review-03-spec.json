@@ -1,0 +1,110 @@
+{
+  "story": "US-02-01",
+  "attempt": 1,
+  "round": 3,
+  "sha": "dda17b2bf5ee36f10041476f6793ac95093339e7",
+  "reviewer": "spec",
+  "ts": "2026-10-15T04:03:19Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-02-01",
+    "impact": "The category screen meets every acceptance criterion and every requirement it claims, and DEC-48 now matches the owner's content-first ruling as a pure insertion before DEC-49. TC-02-01, TC-02-02 and the on-device pixel check cover 3+, 4+ and 5+, and each required test has passed in CI on dda17b2 at least once (TC-02-01 in attempt 1, TC-02-14 and TC-00-03 in attempt 2). The only red CI is a pre-existing intermittent SIGSEGV in the debug build that hits a different flow each attempt, so it is not a defect of this story; merge-check still blocks the merge until CI is green, and the infrastructure fix comes in a separate PR.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "CI run 38654942949 (attempt 1: TC-02-14 and TC-00-03 failed; attempt 2: TC-02-01 failed; logcat shows SIGSEGV on mqt_v_js both times) — the debug build crashes natively at launch on the emulator, the same crash appears in runs at b9a4b6d and c3162be before this PR, and the failing flow moves between attempts, so the CI evidence is unstable but not a fault of this diff → the owner's infra PR runs the Maestro flows on the signed release build; merge-check then needs a green CI run on the head after the PR is updated onto main"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/DECISIONS.md:591 — DEC-48's Date is 2026-10-14 but the ruling it records (line 592) was given on 2026-10-15 → say which date the entry carries"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/unit/AC-02-01-4-black-and-white.test.tsx:21 — the AC-02-01-3/4/5 suite names differ from their spec titles, so run.json lists those ACs as skipped with no evidence although unit.xml passes all nine steps → match the suite names to the spec titles or fix the report tool's mapping"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/index.tsx:7 — NFR-04 (redraw only when content changes) holds because the screen has no state or effects, but no test pins it → add a render-count test or record that it holds by construction"
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/modules/02-age-categories/stories/US-02-01-choose-age-category.md:38 — edge case \"only the 3+ deck\" has no dedicated test and DEC-48 has made it unreachable → add a one-deck case to src/content/__tests__/categories.test.ts or retire the edge case"
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/modules/02-age-categories/stories/US-02-01-choose-age-category.md:40 — \"saved data unreadable\" has no automated evidence until persistence exists (TC-02-09, US-02-02) → record that its evidence comes with US-02-02"
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/maestro/TC-02-14-back-closes-app.yaml:13 — only asserts the category screen is gone after back, not that the launcher is in front or the activity finished → assert the foreground package"
+      },
+      {
+        "id": "N8",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "test-runs/2026-10-15_013104/run.json — requirement coverage lists MOD-02-F01..F03 as no-test although TC-02-01, TC-02-02 and AC-02-01-3 trace to them through US-02-01#1-#6 → fix the report tool's mapping; not this PR"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 6,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 7,
+        "verdict": "external",
+        "note": "launch within 3 s on the Mudita Kompakt is a manual check (TC-02-03)"
+      }
+    ],
+    "stray": []
+  },
+  "raw": "```\nREVIEW: findings\nSTORY: US-02-01\nIMPACT: The category screen meets every acceptance criterion and every requirement it claims, and DEC-48 now matches the owner's content-first ruling as a pure insertion before DEC-49. TC-02-01, TC-02-02 and the on-device pixel check cover 3+, 4+ and 5+, and each required test has passed in CI on dda17b2 at least once (TC-02-01 in attempt 1, TC-02-14 and TC-00-03 in attempt 2). The only red CI is a pre-existing intermittent SIGSEGV in the debug build that hits a different flow each attempt, so it is not a defect of this story; merge-check still blocks the merge until CI is green, and the infrastructure fix comes in a separate PR.\nFINDINGS:\n  N1 CI run 38654942949 (attempt 1: TC-02-14 and TC-00-03 failed; attempt 2: TC-02-01 failed; logcat shows SIGSEGV on mqt_v_js both times) — the debug build crashes natively at launch on the emulator, the same crash appears in runs at b9a4b6d and c3162be before this PR, and the failing flow moves between attempts, so the CI evidence is unstable but not a fault of this diff → the owner's infra PR runs the Maestro flows on the signed release build; merge-check then needs a green CI run on the head after the PR is updated onto main\n  N2 docs/specs/DECISIONS.md:591 — DEC-48's Date is 2026-10-14 but the ruling it records (line 592) was given on 2026-10-15 → say which date the entry carries\n  N3 tests/unit/AC-02-01-4-black-and-white.test.tsx:21 — the AC-02-01-3/4/5 suite names differ from their spec titles, so run.json lists those ACs as skipped with no evidence although unit.xml passes all nine steps → match the suite names to the spec titles or fix the report tool's mapping\n  N4 src/app/index.tsx:7 — NFR-04 (redraw only when content changes) holds because the screen has no state or effects, but no test pins it → add a render-count test or record that it holds by construction\n  N5 docs/specs/modules/02-age-categories/stories/US-02-01-choose-age-category.md:38 — edge case \"only the 3+ deck\" has no dedicated test and DEC-48 has made it unreachable → add a one-deck case to src/content/__tests__/categories.test.ts or retire the edge case\n  N6 docs/specs/modules/02-age-categories/stories/US-02-01-choose-age-category.md:40 — \"saved data unreadable\" has no automated evidence until persistence exists (TC-02-09, US-02-02) → record that its evidence comes with US-02-02\n  N7 tests/maestro/TC-02-14-back-closes-app.yaml:13 — only asserts the category screen is gone after back, not that the launcher is in front or the activity finished → assert the foreground package\n  N8 test-runs/2026-10-15_013104/run.json — requirement coverage lists MOD-02-F01..F03 as no-test although TC-02-01, TC-02-02 and AC-02-01-3 trace to them through US-02-01#1-#6 → fix the report tool's mapping; not this PR\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 met\n  #5 met\n  #6 met\n  #7 external — launch within 3 s on the Mudita Kompakt is a manual check (TC-02-03)\n```\n"
+}
