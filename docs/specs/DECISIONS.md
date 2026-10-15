@@ -769,11 +769,11 @@
 ## [DEC-61] The app title on the category screen in Polish and English
 
 - **Date:** 2026-10-15
-- **Decided by:** product owner (delivery loop, confirmed 2026-10-15)
+- **Decided by:** Maciej (product owner, confirmed 2026-10-15)
 - **Source:** implementation (`US-02-03`)
 - **Affects:** `US-02-03`, `MOD-02-F10`, `TC-02-10`, `TC-02-11`, `TC-02-12`, `TC-00-03`, `src/content/app.json`, `DEC-48`
 - **Decision:** Option a — Title in both languages: "Quiz wiedzy" / "Knowledge Quiz". The content data's title holds both languages ("Quiz wiedzy" in Polish, "Knowledge Quiz" in English) and follows the language switch; `TC-00-03` then reads the title in the app's language. (Asked before: keep "Knowledge Quiz" as the app's name in both languages, like the category labels (`MOD-02-U03`) — not taken.)
-- **Why:** A title in both languages changes the content data's schema, which the constitution leaves to Maciej; keeping the name narrows "every text" in `US-02-03#1`. Either way it is the product owner's call.
-- **Scope effect:** within scope (proposed option)
+- **Why:** `US-02-03#1` asks for every text on the screen in the chosen language, and the title is one of them; giving the content data's title two languages is a schema change the constitution leaves to Maciej, who chose it.
+- **Scope effect:** within scope
 - **Resolves:** —
 - **Status:** accepted
