@@ -85,7 +85,7 @@
   },
   "limits": {
     "five_hour_pause_at": null,
-    "seven_day_pause_at": 80,
+    "seven_day_pause_at": 100,
     "extra_credits": "none",
     "extra_budget": null,
     "extra_baseline": null,

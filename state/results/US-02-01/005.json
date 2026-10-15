@@ -1,0 +1,82 @@
+{
+  "n": 5,
+  "attempt": 1,
+  "ts": "2026-10-15T05:16:39Z",
+  "story": "US-02-01",
+  "mode": "update",
+  "parsed": {
+    "result": "ready",
+    "story": "US-02-01",
+    "branch": "feature/US-02-01",
+    "commits": [
+      "01b7272 feat(categories): category screen in black and white",
+      "1d16443 test(categories): acceptance tests for the category screen",
+      "95805ba test(categories): back on the category screen leaves the app",
+      "952a855 test(categories): run every flow step, none skipped",
+      "44c748b fix(categories): rules in even whole device pixels",
+      "9e3e1d7 test(categories): check the screen's pixels on the device",
+      "697c21c test(categories): labels of every shipped deck, by age",
+      "e800751 chore(categories): wip, waiting for DEC-48",
+      "e4110ac docs(specs): DEC-48 confirmed by the product owner",
+      "94981cf docs(specs): DEC-48 as the owner ruled, no deferral",
+      "0423360 test(categories): expect 3+, 4+, 5+ as MOD-02-F02 names them",
+      "6cb3990 test(categories): pixel check fails when it read no pixel",
+      "6c44be1 test(theme): even whole-pixel rules at real device densities",
+      "0865249 test(categories): check the category screen on the release build",
+      "b6d366a docs(specs): DEC-48 dated by its ruling, story note on labels (head)"
+    ],
+    "decisions": [
+      "DEC-48 critical Category screen: order by age",
+      "US-02-01 merges once the 4+ and 5+ decks are on main, with TC-02-01/02 checking all three"
+    ],
+    "evidence": [
+      "#1 Every launch opens on the category screen — TC-02-01 step 1 (Maestro, release build) pass; RootLayout unit test pass",
+      "#2 Lists categories from content data in order 3+, 4+, 5+ — TC-02-01 step 2 (release build, CATEGORIES from the shipped decks) pass",
+      "#3 Category added to content data appears with no screen change — AC-02-01-3 Jest steps 1-3 pass (junit/unit.xml)",
+      "#4 Pure black/white only; a test fails on another colour — AC-02-01-4 Jest steps 1-3 pass + step 4 device screencap on the release app pass (junit/screen-colours.xml, not skipped)",
+      "#5 Nothing animates; a test fails if an animation is enabled — AC-02-01-5 Jest steps 1-3 pass (junit/unit.xml)",
+      "#6 Each category entry spans the full width — TC-02-02 step 1 (Maestro, release) + step 2 uiautomator bounds vs wm size on the release app pass (junit/screen.xml)",
+      "#7 On the Mudita Kompakt the screen appears within 3 s — MANUAL: TC-02-03 is manual-only"
+    ],
+    "tests": {
+      "run": "/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-15_071308",
+      "pass": 7,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 1,
+      "manual_tests": [
+        "TC-02-03"
+      ]
+    },
+    "derived_tests": [
+      "AC-02-01-3",
+      "AC-02-01-4",
+      "AC-02-01-5"
+    ],
+    "preexisting": "all story work from the earlier rounds, rebased unchanged apart from the conflict resolution",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test ok"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "notes": "Snapshot run on b6d366a, clean tree, changed_during_run false; emulator Medium_Phone API 32, started and stopped by this run.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [
+        "#7 On the Mudita Kompakt the screen appears within 3 s — MANUAL: TC-02-03 is manual-only"
+      ],
+      "blocked": []
+    },
+    "critical_decisions": [
+      "DEC-48 critical Category screen: order by age"
+    ]
+  },
+  "raw": "Rebased feature/US-02-01 onto origin/main (418acd5); not pushed. New head b6d366a, clean tree, gates pass, full acceptance run on b6d366a: 7 pass, 0 fail, 0 blocked, 1 manual, 3 skipped (AC-02-01-3/4/5 — Jest results in junit/unit.xml, 147/147 green; collect_run.py reads only Playwright and Maestro). Conflicts only in the header comment of scripts/test-acceptance.sh (5f64624, 60e89db, 51f3591). 0865249 moves the device checks into the release block (after the release Maestro run and its logcat check, before airplane mode off and uninstall); CATEGORY_ARGS passed to the release Maestro run only, every use `${CATEGORY_ARGS[@]+\"${CATEGORY_ARGS[@]}\"}`. TC-02-01/02/14 carry no debug-build tag and appear in maestro/report-release.xml. b6d366a: DEC-48 Date 2026-10-15; story technical note \"label from the deck's category field, no i18n (`DEC-48`)\"; DEC-49..51 byte-identical to main.\n\n```\nRESULT: ready\nSTORY: US-02-01\nBRANCH: feature/US-02-01\nCOMMITS: 01b7272 feat(categories): category screen in black and white; 1d16443 test(categories): acceptance tests for the category screen; 95805ba test(categories): back on the category screen leaves the app; 952a855 test(categories): run every flow step, none skipped; 44c748b fix(categories): rules in even whole device pixels; 9e3e1d7 test(categories): check the screen's pixels on the device; 697c21c test(categories): labels of every shipped deck, by age; e800751 chore(categories): wip, waiting for DEC-48; e4110ac docs(specs): DEC-48 confirmed by the product owner; 94981cf docs(specs): DEC-48 as the owner ruled, no deferral; 0423360 test(categories): expect 3+, 4+, 5+ as MOD-02-F02 names them; 6cb3990 test(categories): pixel check fails when it read no pixel; 6c44be1 test(theme): even whole-pixel rules at real device densities; 0865249 test(categories): check the category screen on the release build; b6d366a docs(specs): DEC-48 dated by its ruling, story note on labels (head)\nDECISIONS: DEC-48 critical Category screen: order by age; US-02-01 merges once the 4+ and 5+ decks are on main, with TC-02-01/02 checking all three\nEVIDENCE:\n  #1 Every launch opens on the category screen — TC-02-01 step 1 (Maestro, release build) pass; RootLayout unit test pass\n  #2 Lists categories from content data in order 3+, 4+, 5+ — TC-02-01 step 2 (release build, CATEGORIES from the shipped decks) pass\n  #3 Category added to content data appears with no screen change — AC-02-01-3 Jest steps 1-3 pass (junit/unit.xml)\n  #4 Pure black/white only; a test fails on another colour — AC-02-01-4 Jest steps 1-3 pass + step 4 device screencap on the release app pass (junit/screen-colours.xml, not skipped)\n  #5 Nothing animates; a test fails if an animation is enabled — AC-02-01-5 Jest steps 1-3 pass (junit/unit.xml)\n  #6 Each category entry spans the full width — TC-02-02 step 1 (Maestro, release) + step 2 uiautomator bounds vs wm size on the release app pass (junit/screen.xml)\n  #7 On the Mudita Kompakt the screen appears within 3 s — MANUAL: TC-02-03 is manual-only\nTESTS: run=/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-15_071308 pass=7 fail=0 blocked=0 manual=1 manual_tests=TC-02-03\nDERIVED_TESTS: AC-02-01-3; AC-02-01-4; AC-02-01-5\nPREEXISTING: all story work from the earlier rounds, rebased unchanged apart from the conflict resolution\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test ok\nENV_KEYS: none\nMIGRATION: no\nNOTES: conflicts: yes, in the header comment of scripts/test-acceptance.sh only (commits 5f64624, 60e89db, 51f3591); 0865249 moves the device checks into the release block.\nNOTES: run.json also has skipped=3 (AC-02-01-3/4/5): collect_run.py reads no Jest JUnit; those tests pass in junit/unit.xml (147/147), and the earlier run 2026-10-15_013104 was the same.\nNOTES: Snapshot run on b6d366a, clean tree, changed_during_run false; emulator Medium_Phone API 32, started and stopped by this run.\n```\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}
