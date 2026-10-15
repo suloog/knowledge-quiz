@@ -1,0 +1,72 @@
+{
+  "n": 4,
+  "attempt": 1,
+  "ts": "2026-10-15T21:58:37Z",
+  "story": "US-02-03",
+  "mode": "fix",
+  "parsed": {
+    "result": "failed",
+    "story": "US-02-03",
+    "branch": "feature/US-02-03",
+    "commits": [
+      "c37f960 fix(categories): every entry fits a 640 dp screen [US-02-03]",
+      "6d2b843 test(acceptance): report a lost device, name TC-02-13 [US-02-03]",
+      "33390cd test(acceptance): wait for a dropped device between groups [US-02-03]"
+    ],
+    "decisions": [
+      "DEC-64 routine The category screen fits a 640 dp high screen: the list entries give up their spacing first"
+    ],
+    "evidence": [
+      "#1 Polish device: every text in Polish — UNEVIDENCED: the final run on 33390cd was not collected (TC-02-10)",
+      "#2 Other device language: English — UNEVIDENCED: TC-02-11 has not run on 33390cd",
+      "#3 Switch and restart: everything in English — UNEVIDENCED: TC-02-12 passed on 6d2b843 in an uncollected run; nothing yet on 33390cd",
+      "#4 Decks kept: 3+ resumes at card four — UNEVIDENCED: TC-02-13 passed on 6d2b843 in an uncollected run; nothing yet on 33390cd"
+    ],
+    "tests": {
+      "run": "test-runs/2026-10-15_235709",
+      "pass": 0,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 0,
+      "manual_tests": [
+        "none"
+      ]
+    },
+    "derived_tests": [],
+    "preexisting": "c37f960 and 6d2b843 from the earlier session that died, reviewed and kept",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test ok (37 suites, 250 tests)"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "findings": [
+      "B1 fixed c37f960 (TC-02-06 failed because 5+ fell off the 320x640 screen: category entries now give up their vertical spacing, not their type size, DEC-64",
+      "TC-02-12's CI failure was the device loss, not the app",
+      "both passed locally at 320x640 on 6d2b843)",
+      "B2 fixed 6d2b843 + 33390cd (the script names a lost device instead of blaming the image, and waits for the device and roots it again before each later group so TC-02-13 and TC-02-11 still run",
+      "TC-02-10..13 carry their ids and are in CI's groups: pl, deck-state, de)",
+      "B3 fixed — no change needed in the app (TC-03-07 died with DeviceServerDiedException, TC-03-08 with \"Unknown error\" in 32 ms after the loss",
+      "neither touches this story's code and both passed locally on 6d2b843)"
+    ],
+    "notes": "Nothing is pushed: 3 local commits are ahead of origin. The final run, test-runs/2026-10-15_235709 on 33390cd, may finish in the background; collect it with collect_run.py --run-dir <that dir> --environment local --scope US-02-03 --specs docs/specs/modules, or run verify mode on 33390cd.\nCI's emulator dropped off adb mid-suite (app launch took 6 minutes before that); acceptance.yml is not mine to change, so a green CI run still depends on the emulator staying up.",
+    "reason": "I was told to hand back before the run on head 33390cd finished, so there is no collected run.json and no criterion has evidence on this head. The code fixes for B1–B3 are committed; what is missing is a verify run (local or CI) on 33390cd.",
+    "evidence_gaps": {
+      "unevidenced": [
+        "#1 Polish device: every text in Polish — UNEVIDENCED: the final run on 33390cd was not collected (TC-02-10)",
+        "#2 Other device language: English — UNEVIDENCED: TC-02-11 has not run on 33390cd",
+        "#3 Switch and restart: everything in English — UNEVIDENCED: TC-02-12 passed on 6d2b843 in an uncollected run; nothing yet on 33390cd",
+        "#4 Decks kept: 3+ resumes at card four — UNEVIDENCED: TC-02-13 passed on 6d2b843 in an uncollected run; nothing yet on 33390cd"
+      ],
+      "manual": [],
+      "blocked": []
+    },
+    "critical_decisions": []
+  },
+  "raw": "I had to hand back before the final acceptance run finished, so this fix round has no evidence and returns `failed`. The code fixes for B1–B3 are all committed on feature/US-02-03 (not pushed). The run on head 33390cd was still going in the background when I was told to stop, so I have not collected it and have no results from it.\n\nWhat the CI failure actually was (from run 38781983403's JUnit and log):\n- **TC-02-06 is a real layout bug.** On the 320 × 640 dp CI screen the 5+ entry fell below the bottom edge.\n- **TC-03-07, TC-02-12 and TC-03-08 failed because the emulator dropped off adb**, not because of the app. TC-03-07 died with \"Device server died during 'viewHierarchy'\"; TC-02-12 (44 ms) and TC-03-08 (32 ms) failed with \"Unknown error\" after that. Earlier, TC-03-01's app launch took 363 s instead of the usual ~7 s, so the emulator was already struggling. The emulator was still alive at the end of the job (`emu kill` answered OK), so it was a temporary drop, not a crash.\n- **Every later group was reported blocked within about one second**, including TC-02-13 (deck-state) and TC-02-11 (de-DE). That is why they were never executed.\n\nWhat I did with the two commits the earlier session left:\n- **c37f960 (layout fix, DEC-64): kept.** DEC-64 was properly reserved through `og-delivery dec next`: it is in `.git/og-delivery/decs.json` for US-02-03, at 2026-10-15T18:45:21Z, with the same title.\n- **6d2b843 (blocked messages name a lost device, TC-02-13 named in the deck-state group): kept.**\n- **The earlier session's local run on 6d2b843** (test-runs/2026-10-15_204639) ran with the emulator set to 320x640 at density 160, like CI. TC-02-06, TC-02-12, TC-02-13, TC-03-07 and TC-03-08 all passed, along with the other pl and deck-state flows and TC-03-11..14. It was cut off at TC-03-15, so TC-02-08, TC-02-09 and TC-02-11 never ran, and it was never collected (no run.json). It is not on the current head.\n\nWhat I added:\n- **33390cd** adds a `device_back` step to `scripts/test-acceptance.sh`. Before each group of flows after the Polish one, it waits up to 3 minutes for the device to come back, waits for boot to complete and roots it again. The remaining groups then run instead of all being blocked at once.\n  - It re-runs nothing: a flow that failed while the device was gone stays failed.\n  - It does not wait on an image that cannot be rooted.\n  - I checked it by hand on the local emulator: after `adb unroot`, it rooted the device again.\n- The gates passed on 33390cd: format, lint, types and unit tests (37 suites, 250 tests).\n\nWhat is still needed: the CI emulator is fragile, and `device_back` lets the later groups run but does not fix that. Lowering its load would mean changing `.github/workflows/acceptance.yml` (for example its RAM size), which is not mine to change. A green result therefore depends on a CI run on the pushed head where the emulator stays up.\n\nRESULT: failed\nSTORY: US-02-03\nBRANCH: feature/US-02-03\nCOMMITS: c37f960 fix(categories): every entry fits a 640 dp screen [US-02-03]; 6d2b843 test(acceptance): report a lost device, name TC-02-13 [US-02-03]; 33390cd test(acceptance): wait for a dropped device between groups [US-02-03]\nDECISIONS: DEC-64 routine The category screen fits a 640 dp high screen: the list entries give up their spacing first\nEVIDENCE:\n  #1 Polish device: every text in Polish — UNEVIDENCED: the final run on 33390cd was not collected (TC-02-10)\n  #2 Other device language: English — UNEVIDENCED: TC-02-11 has not run on 33390cd\n  #3 Switch and restart: everything in English — UNEVIDENCED: TC-02-12 passed on 6d2b843 in an uncollected run; nothing yet on 33390cd\n  #4 Decks kept: 3+ resumes at card four — UNEVIDENCED: TC-02-13 passed on 6d2b843 in an uncollected run; nothing yet on 33390cd\nTESTS: run=test-runs/2026-10-15_235709 (snapshot on 33390cd, not finished, not collected — no run.json) pass=0 fail=0 blocked=0 manual=0 manual_tests=none\nDERIVED_TESTS: none\nPREEXISTING: c37f960 and 6d2b843 from the earlier session that died, reviewed and kept\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test ok (37 suites, 250 tests)\nENV_KEYS: none\nMIGRATION: no\nFINDINGS: B1 fixed c37f960 (TC-02-06 failed because 5+ fell off the 320x640 screen: category entries now give up their vertical spacing, not their type size, DEC-64; TC-02-12's CI failure was the device loss, not the app; both passed locally at 320x640 on 6d2b843) ; B2 fixed 6d2b843 + 33390cd (the script names a lost device instead of blaming the image, and waits for the device and roots it again before each later group so TC-02-13 and TC-02-11 still run; TC-02-10..13 carry their ids and are in CI's groups: pl, deck-state, de) ; B3 fixed — no change needed in the app (TC-03-07 died with DeviceServerDiedException, TC-03-08 with \"Unknown error\" in 32 ms after the loss; neither touches this story's code and both passed locally on 6d2b843)\nNOTES: Nothing is pushed: 3 local commits are ahead of origin. The final run, test-runs/2026-10-15_235709 on 33390cd, may finish in the background; collect it with collect_run.py --run-dir <that dir> --environment local --scope US-02-03 --specs docs/specs/modules, or run verify mode on 33390cd.\nCI's emulator dropped off adb mid-suite (app launch took 6 minutes before that); acceptance.yml is not mine to change, so a green CI run still depends on the emulator staying up.\nREASON: I was told to hand back before the run on head 33390cd finished, so there is no collected run.json and no criterion has evidence on this head. The code fixes for B1–B3 are committed; what is missing is a verify run (local or CI) on 33390cd.\n",
+  "evidence": [
+    "repo-before.json"
+  ]
+}
