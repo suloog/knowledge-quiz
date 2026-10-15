@@ -1,0 +1,88 @@
+appId: ${APP_ID}
+name: TC-02-07 After a restart, continue resumes the last category at its first unseen card
+# Run by scripts/test-acceptance.sh on a device set to Polish, the test case's test data. The app
+# state is the deck's position, which the card on screen carries in its id (card-N: the N-th card of
+# the saved order, N cards seen).
+tags:
+  - device-language
+---
+# Precondition — the app installed, its data cleared: first launch on the category screen.
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+# Step 1 — open 4+, reveal three answers, note the fourth question. Each card, and each answer, has
+# been shown for 1 s before it is touched (MOD-03-F14, DEC-40); the waits run out (optional) after
+# 1 s. App state: card-3, three cards seen.
+- tapOn:
+    id: category-1
+- evalScript: ${output.card = 0}
+- repeat:
+    times: 3
+    commands:
+      - assertVisible:
+          id: card-${output.card}
+      - extendedWaitUntil:
+          notVisible:
+            id: question
+          timeout: 1000
+          optional: true
+          label: the card shown for 1 s
+      - tapOn:
+          id: card-${output.card}
+      - assertVisible:
+          id: answer
+          text: .+
+      - extendedWaitUntil:
+          notVisible:
+            id: answer
+          timeout: 1000
+          optional: true
+          label: the answer shown for 1 s
+      - tapOn:
+          id: card-${output.card}
+      - evalScript: ${output.card = output.card + 1}
+- assertVisible:
+    id: card-3
+- assertNotVisible:
+    id: answer
+- copyTextFrom:
+    id: question
+- evalScript: ${output.fourth = maestro.copiedText}
+- takeScreenshot: step-01-fourth-question
+# Step 2 — close the app fully (stopped, its data kept) and open it again: the category screen
+# shows a continue entry for 4+.
+- stopApp
+- launchApp:
+    clearState: false
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+- assertVisible:
+    id: continue
+    text: Kontynuuj
+- assertVisible:
+    id: continue-category
+    text: 4\+
+    below:
+      id: continue
+- takeScreenshot: step-02-continue-after-restart
+# Step 3 — touch the continue entry: the noted fourth question, answer hidden. App state: card-3.
+- tapOn:
+    id: continue-entry
+- assertVisible:
+    id: card-3
+- assertVisible:
+    id: question
+    text: .+
+- copyTextFrom:
+    id: question
+- assertTrue:
+    condition: ${maestro.copiedText == output.fourth}
+    label: the noted fourth question is shown
+- assertNotVisible:
+    id: answer
+- takeScreenshot: step-03-fourth-question-again
