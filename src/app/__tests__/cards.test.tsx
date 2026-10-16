@@ -1,9 +1,12 @@
 import {
   I18nManager,
+  Image,
+  PixelRatio,
   type StyleProp,
   StyleSheet,
   type TextStyle,
 } from 'react-native';
+import { illustrations } from '@/content';
 import { act, fireEvent, screen } from '@testing-library/react-native';
 import { router } from 'expo-router';
 import { renderRouter } from 'expo-router/testing-library';
@@ -26,6 +29,7 @@ jest.mock('@/content/decks', () => ({
           id: 'q2',
           pl: { question: 'Pytanie drugie?', answer: 'Odpowiedź druga.' },
           en: { question: 'Second question?', answer: 'Second answer.' },
+          illustration: 'hand.png',
         },
       ],
     },
@@ -520,6 +524,71 @@ describe('Back to the categories from any card (US-03-04)', () => {
 
     expect(screen.getByTestId('category-screen')).toBeOnTheScreen();
     expect(router.canGoBack()).toBe(false);
+  });
+});
+
+describe('Illustrations (US-03-05)', () => {
+  cardSetUp();
+
+  it('a question without an illustration shows no picture and keeps no place for one (#1)', async () => {
+    await openCards();
+
+    expect(screen.getByTestId('card-0')).toBeOnTheScreen();
+    expect(screen.queryByTestId('illustration')).toBeNull();
+    expect(
+      hostNodes(screen.toJSON() as Tree).filter(node => node.type === 'Image'),
+    ).toHaveLength(0);
+  });
+
+  it('an illustration shows with its question as the card appears, and stays after the reveal (#3)', async () => {
+    await openCards();
+    await touch();
+    await touch();
+
+    expect(screen.getByTestId('question')).toHaveTextContent('Pytanie drugie?');
+    expect(screen.queryByTestId('answer')).toBeNull();
+    expect(screen.getByTestId('illustration')).toHaveProp(
+      'source',
+      illustrations['hand.png'],
+    );
+
+    await touch();
+
+    expect(screen.getByTestId('answer')).toHaveTextContent('Odpowiedź druga.');
+    expect(screen.getByTestId('illustration')).toHaveProp(
+      'source',
+      illustrations['hand.png'],
+    );
+  });
+
+  it('the same question shows the same illustration in English (#4)', async () => {
+    deviceLocale('en_US');
+    await openCards();
+    await touch();
+    await touch();
+
+    expect(screen.getByTestId('question')).toHaveTextContent(
+      'Second question?',
+    );
+    expect(screen.getByTestId('illustration')).toHaveProp(
+      'source',
+      illustrations['hand.png'],
+    );
+  });
+
+  it('an illustration is drawn one image pixel to one screen pixel, so it gains no greys (NFR-07)', async () => {
+    jest
+      .spyOn(Image, 'resolveAssetSource')
+      .mockReturnValue({ uri: 'hand.png', width: 180, height: 180, scale: 1 });
+    jest.spyOn(PixelRatio, 'get').mockReturnValue(2.5);
+    await openCards();
+    await touch();
+    await touch();
+
+    expect(screen.getByTestId('illustration')).toHaveStyle({
+      width: 72,
+      height: 72,
+    });
   });
 });
 

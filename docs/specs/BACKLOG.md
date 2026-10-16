@@ -67,4 +67,4 @@ A module counts as **sliced** once part 1 of its `COVERAGE.md` has no empty rows
 | `US-03-02` | Parent can go through a category without repeats and come back where we left off | F06, F07, F08 | must | done | `US-03-01` | — |
 | `US-03-03` | Parent can see when a deck is finished and start it again or go back | F09, F10, F11 | must | done | `US-03-02` | — |
 | `US-03-04` | Parent can go back to the categories from any card | F12, F13 | must | done | `US-03-01` | — |
-| `US-03-05` | Child can see a picture with some questions | MOD-01-F08, MOD-01-F13, U03 | should | ready | `US-03-01`, `US-01-02`, `US-01-03`, `US-01-04` | — |
+| `US-03-05` | Child can see a picture with some questions | MOD-01-F08, MOD-01-F13, U03 | should | done | `US-03-01`, `US-01-02`, `US-01-03`, `US-01-04` | — |

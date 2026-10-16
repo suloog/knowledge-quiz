@@ -19,4 +19,5 @@ export const categories = decks
   .sort((a, b) => youngestAge(a) - youngestAge(b));
 
 export { decks };
+export { illustrations } from './illustrations';
 export type { ContentKind, Deck, Language, Question } from './deck';

@@ -1,0 +1,52 @@
+appId: ${APP_ID}
+name: TC-03-21 An illustration shows with its question from the start and after the reveal
+# Run by scripts/test-acceptance.sh alone, on the device set to Polish, after it has written as root
+# the saved 3+ deck with an illustrated question first and nothing seen — the release build has no
+# app-state bridge to bring a question to the front (DEC-55) — and read it back (QUESTION, in Polish,
+# and its picture's file, ILLUSTRATION). scripts/illustration-server.js (ILLUSTRATION_URL) looks for
+# that picture on the screen, pixel for pixel.
+tags:
+  - illustration
+---
+# Precondition — the app installed, its data cleared but for the saved deck: not cleared again here.
+- launchApp
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+# Step 1 — open 3+ on the illustrated question: its illustration is shown with it, before any touch.
+- tapOn:
+    id: category-0
+- assertVisible:
+    id: question
+    text: ${QUESTION}
+- assertNotVisible:
+    id: answer
+- assertVisible:
+    id: illustration
+- evalScript: ${output.before = JSON.parse(http.get(ILLUSTRATION_URL + '/illustration/' + ILLUSTRATION + '/TC-03-21-step-01').body)}
+- assertTrue:
+    condition: ${output.before.found}
+    label: the question's picture is on the screen, pixel for pixel
+- takeScreenshot: step-01-illustration-with-question
+# Step 2 — touch the card: the answer appears; the illustration is still shown. The card has been
+# shown for 1 s before it is touched: a touch within 0.5 s of the card being drawn is ignored
+# (MOD-03-F14, DEC-40). The question stays on screen, so the wait runs out (optional) after 1 s.
+- extendedWaitUntil:
+    notVisible:
+      id: question
+    timeout: 1000
+    optional: true
+    label: the card shown for 1 s
+- tapOn:
+    id: card-0
+- assertVisible:
+    id: answer
+    text: .+
+- assertVisible:
+    id: illustration
+- evalScript: ${output.after = JSON.parse(http.get(ILLUSTRATION_URL + '/illustration/' + ILLUSTRATION + '/TC-03-21-step-02').body)}
+- assertTrue:
+    condition: ${output.after.found}
+    label: the question's picture is still on the screen, pixel for pixel
+- takeScreenshot: step-02-illustration-after-reveal

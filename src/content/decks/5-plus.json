@@ -96,7 +96,8 @@
       "en": {
         "question": "What time is it when the big hand of a clock points to 12 and the small one to 3?",
         "answer": "Three o'clock."
-      }
+      },
+      "illustration": "clock.png"
     },
     {
       "id": "5p-09",
@@ -396,7 +397,8 @@
       "en": {
         "question": "What can we count from the rings in a cut tree trunk?",
         "answer": "How many years old the tree is."
-      }
+      },
+      "illustration": "tree-rings.png"
     },
     {
       "id": "5p-34",
