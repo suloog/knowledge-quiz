@@ -753,3 +753,27 @@
 - **Scope effect:** within scope
 - **Resolves:** —
 - **Status:** accepted
+
+## [DEC-60] Language switch: two-part Polski | English control under the title, choice kept in app state and saved under language
+
+- **Date:** 2026-10-15
+- **Decided by:** developer (delivery loop)
+- **Source:** implementation (`US-02-03`)
+- **Affects:** `US-02-03`, `MOD-02-F10`, `MOD-02-F11`, `MOD-02-F12`, `MOD-02-F13`, `MOD-02-U04`, `DEC-33`, `DEC-52`, `DEC-57`, `TC-02-10`, `TC-02-11`, `TC-02-12`, `TC-02-13`, `TC-03-05`
+- **Decision:** The switch is a full-width row under the title on the category screen with two halves, "Polski" and "English" — each language named in itself, the same in both app languages, through the string table of `DEC-57`. The active half is drawn inverted, white on black and bold (`MOD-02-U04`), and is announced as the checked one of a radio group labelled "Język" / "Language". Text 20 pt, a touch target about 59 dp high, no animation. The app's language lives in React state at the root layout (`LanguageProvider` in `src/i18n.tsx`). It starts as the language last chosen, saved under `language` in the one persistence module (`src/storage.ts`), or the device's language (`DEC-33`) when nothing was saved or the saved value is not "pl" or "en". Choosing a language saves it at once and redraws the screen once; choosing the active one does nothing (`NFR-04`). Every screen reads the language from there: the cards' questions and answers, and the app's own words. This replaces `DEC-52`'s device-only language. The decks are saved as question ids, so a switch leaves every deck's order and position as they are (`MOD-02-F13`). The acceptance flows run as the test cases are written: `TC-03-05` switches on the category screen instead of setting the device to English, and `TC-02-11` runs on the device set to German. `scripts/test-acceptance.sh` gives the flows the string table and the 3+ deck's questions and answers in both languages.
+- **Why:** The simplest switch that shows the active language without an icon or a menu, and two choices fit one row on the Kompakt. A language named in itself is what a parent who does not read the other language looks for. State at the root re-renders every screen on a switch with no library added; the persistence module already holds what the app remembers.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
+
+## [DEC-61] The app title on the category screen in Polish and English
+
+- **Date:** 2026-10-15
+- **Decided by:** product owner (delivery loop, confirmed 2026-10-15)
+- **Source:** implementation (`US-02-03`)
+- **Affects:** `US-02-03`, `MOD-02-F10`, `TC-02-10`, `TC-02-11`, `TC-02-12`, `TC-00-03`, `src/content/app.json`, `DEC-48`
+- **Decision:** Option a — Title in both languages: "Quiz wiedzy" / "Knowledge Quiz". The content data's title holds both languages ("Quiz wiedzy" in Polish, "Knowledge Quiz" in English) and follows the language switch; `TC-00-03` then reads the title in the app's language. (Asked before: keep "Knowledge Quiz" as the app's name in both languages, like the category labels (`MOD-02-U03`) — not taken.)
+- **Why:** A title in both languages changes the content data's schema, which the constitution leaves to Maciej; keeping the name narrows "every text" in `US-02-03#1`. Either way it is the product owner's call.
+- **Scope effect:** within scope (proposed option)
+- **Resolves:** —
+- **Status:** accepted

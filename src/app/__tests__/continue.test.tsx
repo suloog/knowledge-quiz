@@ -173,6 +173,20 @@ describe('Continue the last-used category (US-02-02)', () => {
     expect(screen.getByTestId('continue-category')).toHaveTextContent('5+');
   });
 
+  it('follows the language switch: "Kontynuuj" becomes "Continue", in its text and its label (US-02-03#3, MOD-02-F10)', async () => {
+    mockSaved.set('last-category', JSON.stringify('3+'));
+    await renderRouter(routes);
+    expect(screen.getByTestId('continue')).toHaveTextContent('Kontynuuj');
+
+    await fireEvent.press(screen.getByTestId('language-en'));
+
+    expect(screen.getByTestId('continue')).toHaveTextContent('Continue');
+    expect(screen.getByTestId('continue-category')).toHaveTextContent('3+');
+    expect(screen.getByTestId('continue-entry').props.accessibilityLabel).toBe(
+      'Continue 3+',
+    );
+  });
+
   it('after a restart, continue opens 4+ at its fourth card when three answers were revealed (#3, MOD-02-F06, F07)', async () => {
     await renderRouter(routes);
     await choose('4+');

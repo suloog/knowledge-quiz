@@ -1,0 +1,30 @@
+appId: ${APP_ID}
+name: TC-02-10 On a Polish device the first launch is in Polish
+# Run by scripts/test-acceptance.sh with the device set to Polish (the `device-language` flows),
+# given the app's own words and title in both languages (STRINGS: src/strings.json, TITLES:
+# src/content/app.json).
+tags:
+  - device-language
+---
+# Precondition — the app installed, its data cleared: first launch.
+- launchApp:
+    clearState: true
+# Step 1 — (the device set to Polish) open the app: every text on the category screen is Polish;
+# the switch shows Polish as active.
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+- assertVisible:
+    id: content-title
+    text: ${JSON.parse(TITLES).pl}
+- assertVisible:
+    id: language-switch
+    text: ${JSON.parse(STRINGS).pl.language}
+- assertVisible:
+    id: language-pl
+    checked: true
+- assertVisible:
+    id: language-en
+    checked: false
+- takeScreenshot: step-01-polish

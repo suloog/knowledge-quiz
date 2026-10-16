@@ -5,6 +5,7 @@ import { Stack } from 'expo-router';
 import { renderRouter } from 'expo-router/testing-library';
 import RootLayout from '../../src/app/_layout';
 import CategoriesScreen from '../../src/app/index';
+import { LanguageProvider } from '../../src/i18n';
 import { stackScreenOptions } from '../../src/theme';
 import { type HostNode, hostNodes } from './support/app-tree';
 import { appSources, readSource } from './support/sources';
@@ -26,9 +27,14 @@ describe('AC-02-01-5 Nothing on the category screen animates and no transition i
 
   it('step 2 — a screen given an animated transition is reported', async () => {
     const Animated = () => (
-      <Stack
-        screenOptions={{ ...stackScreenOptions, animation: 'slide_from_right' }}
-      />
+      <LanguageProvider>
+        <Stack
+          screenOptions={{
+            ...stackScreenOptions,
+            animation: 'slide_from_right',
+          }}
+        />
+      </LanguageProvider>
     );
     await renderRouter({ _layout: Animated, index: CategoriesScreen });
 

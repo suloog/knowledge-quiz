@@ -1,0 +1,66 @@
+appId: ${APP_ID}
+name: TC-02-12 A language switch changes every text and survives a restart
+# Run by scripts/test-acceptance.sh with the device set to Polish (the `device-language` flows),
+# given the app's own words and title in both languages (STRINGS: src/strings.json, TITLES:
+# src/content/app.json) and the 3+ deck's questions in English (EN_QUESTIONS: a JSON list).
+tags:
+  - device-language
+---
+# Precondition — the app installed, its data cleared: first launch, in Polish.
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+- assertVisible:
+    id: language-pl
+    checked: true
+# Step 1 — switch to English: every text on the category screen is English.
+- tapOn:
+    id: language-en
+- assertVisible:
+    id: language-en
+    checked: true
+- assertVisible:
+    id: language-pl
+    checked: false
+- assertVisible:
+    id: content-title
+    text: ${JSON.parse(TITLES).en}
+- assertVisible:
+    id: language-switch
+    text: ${JSON.parse(STRINGS).en.language}
+- takeScreenshot: step-01-switched-to-english
+# Step 2 — close the app fully and open it again: the category screen is in English.
+- stopApp
+- launchApp
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+- assertVisible:
+    id: language-en
+    checked: true
+- assertVisible:
+    id: content-title
+    text: ${JSON.parse(TITLES).en}
+- assertVisible:
+    id: language-switch
+    text: ${JSON.parse(STRINGS).en.language}
+- takeScreenshot: step-02-english-after-restart
+# Step 3 — choose 3+: the question on the card is in English.
+- tapOn:
+    id: category-0
+- assertVisible:
+    id: question
+    text: .+
+- copyTextFrom:
+    id: question
+- assertTrue:
+    condition: ${JSON.parse(EN_QUESTIONS).indexOf(maestro.copiedText) >= 0}
+    label: the question is one of the 3+ deck's English questions
+# The return control's words, as drawn (the control itself is announced by its label).
+- assertVisible:
+    text: ${JSON.parse(STRINGS).en.backToCategories}
+- takeScreenshot: step-03-question-in-english

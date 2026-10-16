@@ -3,6 +3,7 @@
 import { render, screen } from '@testing-library/react-native';
 import CategoriesScreen from '../../src/app/index';
 import { decks } from '../../src/content';
+import { LanguageProvider } from '../../src/i18n';
 import { readSource } from './support/sources';
 
 const shipped: { category: string }[] = jest.requireActual(
@@ -25,7 +26,11 @@ describe('AC-02-01-3 A category added to the content data appears with no change
   });
 
   it('step 2 — the screen lists every shipped category, then "6+"', async () => {
-    await render(<CategoriesScreen />);
+    await render(
+      <LanguageProvider>
+        <CategoriesScreen />
+      </LanguageProvider>,
+    );
     const entries = screen
       .getAllByTestId(/^category-\d+$/)
       .map(entry => entry.props.children);

@@ -1,0 +1,30 @@
+appId: ${APP_ID}
+name: TC-02-11 On a device set to another language the first launch is in English
+# Run by scripts/test-acceptance.sh on its own, with the device set to German (the test case's
+# test data), given the app's own words and title in both languages (STRINGS: src/strings.json,
+# TITLES: src/content/app.json); the script sets the device back to Polish afterwards.
+tags:
+  - other-device-language
+---
+# Precondition — the app installed, its data cleared: first launch.
+- launchApp:
+    clearState: true
+# Step 1 — (the device set to German) open the app: every text on the category screen is English;
+# the switch shows English as active.
+- extendedWaitUntil:
+    visible:
+      id: category-screen
+    timeout: 120000
+- assertVisible:
+    id: content-title
+    text: ${JSON.parse(TITLES).en}
+- assertVisible:
+    id: language-switch
+    text: ${JSON.parse(STRINGS).en.language}
+- assertVisible:
+    id: language-en
+    checked: true
+- assertVisible:
+    id: language-pl
+    checked: false
+- takeScreenshot: step-01-english

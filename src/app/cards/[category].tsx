@@ -10,8 +10,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { decks, illustrations } from '@/content';
-import { t } from '@/i18n';
-import { deviceLanguage } from '@/language';
+import { useLanguage } from '@/i18n';
 import {
   type Progress,
   isFinished,
@@ -74,6 +73,8 @@ const CardScreen = () => {
   const { category } = useLocalSearchParams<{ category: string }>();
   const deck = decks.find(d => d.category === category);
   const { width } = useWindowDimensions();
+  // The app's language, as chosen on the category screen (MOD-02-F10, MOD-03-U05).
+  const { language, t } = useLanguage();
   const [card, setCard] = useState<Card | null>(() =>
     deck ? { progress: openDeck(deck), revealed: false } : null,
   );
@@ -145,7 +146,7 @@ const CardScreen = () => {
   const position = revealed ? progress.seen - 1 : progress.seen;
   const id = progress.order[position];
   const question = deck.questions.find(q => q.id === id)!;
-  const text = question[deviceLanguage()];
+  const text = question[language];
   // Only a question that has one shows an illustration; the others have no place kept for it
   // (MOD-01-F08). The same picture in either language (US-03-05#4).
   const illustration =

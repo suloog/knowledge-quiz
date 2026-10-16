@@ -11,8 +11,9 @@ name: TC-00-03 The first screen shows a value read from the app's bundled conten
 - assertNotVisible:
     text: ".*(Error|isn't responding|keeps stopping|has stopped).*"
 - takeScreenshot: step-01-opened
-# Step 2 — the first screen shows the value kept in src/content/app.json
-# (CONTENT_TITLE is read from that file by scripts/test-acceptance.sh).
+# Step 2 — the first screen shows the value kept in src/content/app.json, in the app's language
+# (CONTENT_TITLE is read from that file by scripts/test-acceptance.sh for the device's language,
+# which a first launch takes; DEC-61).
 - assertVisible:
     id: content-title
     text: ${CONTENT_TITLE}

@@ -5,7 +5,10 @@
     "categories": "Kategorie",
     "backToCategories": "‹ Kategorie",
     "backToCategoriesLabel": "Wróć do kategorii",
-    "continue": "Kontynuuj"
+    "continue": "Kontynuuj",
+    "language": "Język",
+    "pl": "Polski",
+    "en": "English"
   },
   "en": {
     "deckFinished": "The deck is finished",
@@ -13,6 +16,9 @@
     "categories": "Categories",
     "backToCategories": "‹ Categories",
     "backToCategoriesLabel": "Back to categories",
-    "continue": "Continue"
+    "continue": "Continue",
+    "language": "Language",
+    "pl": "Polski",
+    "en": "English"
   }
 }
