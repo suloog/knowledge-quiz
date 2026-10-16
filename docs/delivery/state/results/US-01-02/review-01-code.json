@@ -1,0 +1,110 @@
+{
+  "story": "US-01-02",
+  "attempt": 1,
+  "round": 1,
+  "sha": "06b43b64041fbfeb326b4660a8c7bfc6acbcc1db",
+  "reviewer": "code",
+  "ts": "2026-10-14T16:28:54Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-01-02",
+    "impact": "Later decks (US-01-03/04) inherit the record layout hard-wired in AC-01-02-4 (| 3p- rows, 8 cells) and, through DEC-47, a house style of either/or questions. MOD-03 screens read the deck through src/content and will show the options as part of the question text.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:22 — 3p-02 pl answer is the collective \"Dwoje.\", while a 3-year-old will say \"dwa\", and 3p-03/13 use \"Dwa.\" → consider \"Dwa.\" for a parent who sees the reveal after the child's answer (en \"Two.\" is fine)"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:529 — 3p-44 en offers \"supper\", a word a 3-year-old (and many parents) rarely uses, although the record marks known words as pass → use \"dinner or breakfast\" (pl kolacja is unchanged in meaning)"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:397 — 3p-33 en \"ribbit\" is the US sound of a frog (UK: croak), so a UK parent may hesitate, though the question is still unambiguous → optional rewording, e.g. \"Which animal says ribbit or croak\""
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:285 — 3p-24 (en 94 characters, near the 100 limit), 3p-34 (84), 3p-21 (79) and 3p-14 (77) are long multi-clause sentences to read aloud to a 3-year-old, while the either/or already makes them easy → shorten the clue clause (e.g. \"What is in the sky when it rains and the sun shines: a star or a rainbow?\")"
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/DECISIONS.md:DEC-47 — the title and Decision text scope the rule to 3+, but Affects lists US-01-03/04, so it reads as a precedent for older decks where either/or makes questions trivial to guess → add one sentence that 4+/5+ decide their own question form in their stories, and mention the either/or style in the DEC-26 owner review"
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/unit/AC-01-02-4-age-suitability-record.test.js:33 — nothing checks the DEC-47 rule itself: a later edit could turn an either/or question back into an open near-miss question, or open a fifth question, and the \"One answer: pass\" cell would still be accepted → optional guard: every question outside the four listed open ids contains \" czy \" in pl and \" or \" in en (3p-19 also does)"
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/delivery/tests/AC-01-02-1-50-questions-one-answer.md:5 — the AC-01-02-* specs say layer: mobile but run as Jest unit tests, so test-runs/2026-10-14_182139/run.json lists AC-01-02-1..7 as \"skipped\" (8 skipped) and the PR impact block says \"not run on this head\", even though junit/unit.xml and acceptance.log show them passing → set layer so the report picks up the unit results, or point the PR evidence at junit/unit.xml (the same on every earlier run, so not new in this round)"
+      },
+      {
+        "id": "N8",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/delivery/content-checks/US-01-02-3-plus.md:9 — \"One answer\" says the correct option's place varies so that always picking one side does not win, but the deck is shuffled in the app and the questions are grouped by kind with runs of 4 firsts (3p-08..11) → harmless in the app, only a reading note, no change needed"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 6,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 7,
+        "verdict": "external",
+        "note": "TC-01-02 deferred to US-03-01 by DEC-44/46 (owner-confirmed); AC-01-02-7 (no network code, release bundle 250/250) met"
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Review of PR #4 (US-01-02), fix commits c3162be..06b43b6, with the whole PR as context. No blocking findings. Verdict: approve-with-fixes, with the CI caveat below.\n\n**CI.** `gh pr checks 4` still shows \"Acceptance tests (Android 12 emulator)\" as pending. I could not confirm it green, so the merge should wait for it.\n\n**Local checks.**\n- `yarn jest` on HEAD 06b43b6 passes: 15 suites, 51 tests.\n- Local run 2026-10-14_182139 on 06b43b6 (not dirty) has `acceptance.log` passing AC-01-02-7 step 2 and `bundle-content.txt` reading \"3+: 250 of 250 texts found in the bundle\".\n- The age-suitability record pasted in the PR body is identical to `docs/delivery/content-checks/US-01-02-3-plus.md`.\n\n**Deck check, all 50 questions in pl and en.** I read every question and answer, checked the pl/en option order programmatically against the file, and counted answer positions.\n- **One answer.** Every either/or has one clearly wrong option and no genuinely correct second answer.\n  - The earlier near-miss cases are closed: 3p-48 (scarf vs socks around the neck), 3p-42 (umbrella vs spoon), 3p-43 (ball vs block).\n  - I specifically looked for a second correct answer in 3p-14, 17, 21, 24, 29, 41 and 43 and found none.\n- **Open questions.** The four open ones (3p-02, 07, 13, 36) have no nameable second answer. 3p-07's \"counting the thumb\" closes the four-fingers reading.\n- **Option order.** In every either/or question pl and en have the same options in the same order. 3p-19 is float/sink in both languages with \"sink\" second.\n- **Position claim.** The answer is second in exactly 24 of the 46 either/or questions, as DEC-47 and the PR say. The answer text never contains the options.\n- **Suitability.** Nothing frightening. Lengths are within limits (max question 94 characters, max answer 21).\n- **Record.** Every row matches the deck, enforced by AC-01-02-4: 50 unique rows, 8 cells each, all pass.\n\n**DEC-47 is routine.**\n- It does not change the data format; the answer field still holds only the answer and the options live in the question text.\n- It is not a deviation from a must requirement: MOD-01-F14 demands \"one unambiguous answer\", and this applies it more strictly.\n- It does not touch scope or any other module's contract.\n- It is within the loop's standing authorisation to decide non-critical implementation questions (RUNBOOK). The owner's one-time content review before release (DEC-26) is the place to see the either/or style.\n- One caveat: it is a content-style precedent for 4+ and 5+ (N5 below).\n\n**Criteria.**\n- **#1, #2, #3 (50 questions, one answer each; length limits; four kinds):** met.\n- **#4 (age-suitability record in the PR):** met. The record is in the PR body and AC-01-02-4 now rejects duplicate or surplus rows.\n- **#5 (content checks fail the suite when broken):** met.\n- **#6 (data-only changes):** met.\n- **#7 (content ships inside the app):** met by AC-01-02-7. TC-01-02 is deferred to US-03-01 by DEC-44/46, which is owner-confirmed, so it counts as external.\n\n```\nREVIEW: findings\nSTORY: US-01-02\nIMPACT: This diff changes only the 3+ deck data (src/content/decks/3-plus.json), the content record and the AC-01-02-4 test and spec; no code under src/content changed, and the app UI is untouched.\nIMPACT: Later decks (US-01-03/04) inherit the record layout hard-wired in AC-01-02-4 (| 3p- rows, 8 cells) and, through DEC-47, a house style of either/or questions. MOD-03 screens read the deck through src/content and will show the options as part of the question text.\nFINDINGS:\n  N1 src/content/decks/3-plus.json:22 — 3p-02 pl answer is the collective \"Dwoje.\", while a 3-year-old will say \"dwa\", and 3p-03/13 use \"Dwa.\" → consider \"Dwa.\" for a parent who sees the reveal after the child's answer (en \"Two.\" is fine)\n  N2 src/content/decks/3-plus.json:529 — 3p-44 en offers \"supper\", a word a 3-year-old (and many parents) rarely uses, although the record marks known words as pass → use \"dinner or breakfast\" (pl kolacja is unchanged in meaning)\n  N3 src/content/decks/3-plus.json:397 — 3p-33 en \"ribbit\" is the US sound of a frog (UK: croak), so a UK parent may hesitate, though the question is still unambiguous → optional rewording, e.g. \"Which animal says ribbit or croak\"\n  N4 src/content/decks/3-plus.json:285 — 3p-24 (en 94 characters, near the 100 limit), 3p-34 (84), 3p-21 (79) and 3p-14 (77) are long multi-clause sentences to read aloud to a 3-year-old, while the either/or already makes them easy → shorten the clue clause (e.g. \"What is in the sky when it rains and the sun shines: a star or a rainbow?\")\n  N5 docs/specs/DECISIONS.md:DEC-47 — the title and Decision text scope the rule to 3+, but Affects lists US-01-03/04, so it reads as a precedent for older decks where either/or makes questions trivial to guess → add one sentence that 4+/5+ decide their own question form in their stories, and mention the either/or style in the DEC-26 owner review\n  N6 tests/unit/AC-01-02-4-age-suitability-record.test.js:33 — nothing checks the DEC-47 rule itself: a later edit could turn an either/or question back into an open near-miss question, or open a fifth question, and the \"One answer: pass\" cell would still be accepted → optional guard: every question outside the four listed open ids contains \" czy \" in pl and \" or \" in en (3p-19 also does)\n  N7 docs/delivery/tests/AC-01-02-1-50-questions-one-answer.md:5 — the AC-01-02-* specs say layer: mobile but run as Jest unit tests, so test-runs/2026-10-14_182139/run.json lists AC-01-02-1..7 as \"skipped\" (8 skipped) and the PR impact block says \"not run on this head\", even though junit/unit.xml and acceptance.log show them passing → set layer so the report picks up the unit results, or point the PR evidence at junit/unit.xml (the same on every earlier run, so not new in this round)\n  N8 docs/delivery/content-checks/US-01-02-3-plus.md:9 — \"One answer\" says the correct option's place varies so that always picking one side does not win, but the deck is shuffled in the app and the questions are grouped by kind with runs of 4 firsts (3p-08..11) → harmless in the app, only a reading note, no change needed\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 met\n  #5 met\n  #6 met\n  #7 external — TC-01-02 deferred to US-03-01 by DEC-44/46 (owner-confirmed); AC-01-02-7 (no network code, release bundle 250/250) met\n```\n"
+}

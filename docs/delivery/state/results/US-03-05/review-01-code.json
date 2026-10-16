@@ -1,0 +1,107 @@
+{
+  "story": "US-03-05",
+  "attempt": 1,
+  "round": 1,
+  "sha": "1bf08f020081ade82256129382b781b796ffdc35",
+  "reviewer": "code",
+  "ts": "2026-10-15T23:22:03Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-03-05",
+    "impact": "The card screen `src/app/cards/[category].tsx` renders every question of every category, so its layout is touched for all decks. `src/content/index.ts` now also exports `illustrations`, and the `illustration` field is read from `3-plus.json`, `4-plus.json` and `5-plus.json`. `scripts/test-acceptance.sh` `set_device_locale` and the original-locale detection changed for every language flow, not only the new illustration flows. A mistake there could leave the device in the wrong language for the TC-03-05 and TC-03-16 to TC-03-19 flows and later runs.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/cards/[category].tsx:56 — The `<Image>` has no `fadeDuration`. A release build is fine because a resource image gets 0, but a debug or Metro-served build uses the 300 ms Fresco fade. The picture then fades in, which breaks NFR-03 (nothing animates), and the intermediate frames are greys (NFR-07). → Add `fadeDuration={0}` so the guarantee does not depend on the build type."
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/cards/[category].tsx:196 — The 180 px picture is fixed-size and takes space from the question area, which is 3/5 of the card. On a short screen, such as 5p-08 (a question of about 80 characters) on a small or low-density display, the question text shrinks via `adjustsFontSizeToFit`. The \"largest type\" rule (MOD-03-U01, DEC-53) then no longer holds for illustrated questions, and no test covers a small screen. → Add a small-height card test or flow check that the question stays legible. Cover it in the TC-03-23 manual review too."
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/illustrations/ant.png — The two antennae lines at the top can be counted as legs, so a child counting \"legs\" for 4p-26 may count 8 and not 6. The criterion #5 legibility review is the place to catch it. → Add a line to the TC-03-23 checklist, or redraw the antennae shorter or curved."
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/cards/[category].tsx:55-64 — `PixelRatio.get()` is called twice, and the 180 px size is read through `Image.resolveAssetSource` on every render. This is harmless. → Compute `const ratio = PixelRatio.get()` once."
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/unit/AC-03-05-2-illustrations-black-and-white.test.js:42-65 — Step 1 repeats checks that `problems()` already makes: pixel count equals width times height, and the pixel check. → Keep only the \"both colours present\" assertion plus the single `problems()` assertion."
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/DECISIONS.md (DEC-66) — The decision does not record the changes to `set_device_locale` in `scripts/test-acceptance.sh`. It now also writes `settings put system system_locales`, waits on the md5 of `settings_system.xml`, and changes how `original_locale` is read. This is shared infrastructure for every language flow. → Add a sentence to DEC-66, or append a new decision, since decisions are append-only."
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/illustration-server.js:21 — A script in `scripts/` requires `../tests/unit/support/png`, so the acceptance tooling depends on a test-support file. → Fine to leave. If the helper moves, update both users."
+      },
+      {
+        "id": "N8",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/maestro/TC-03-20…22 — The spec TCs state the precondition \"the app-state bridge is available\" and a cleanup step \"clear app data\". The flows replace the bridge with a root-written deck (documented in DEC-66) and do not clear data at the end. → Update the TC markdown preconditions to match, or accept the deviation that DEC-66 documents."
+      },
+      {
+        "id": "N9",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/unit/support/png.js:1 — The header comment is a single over-long line and is not wrapped like the rest. `zlib.crc32` (used in the test) needs Node 22.2 or newer; CI uses `22`, but no `engines` field says so. → Wrap the comment, and consider noting the Node minimum."
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": "`cards.test.tsx` \"(#1)\" shows no image and no `illustration` testID for a text-only question. TC-03-20 is claimed passing in the PR's local run on 1bf08f0, and the CI acceptance job on that sha was still running. Only 5 of 150 questions carry an illustration (DEC-65)."
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": "AC-03-05-2 step 1 reads every PNG and requires 1-bit greyscale with only #000000 and #FFFFFF pixels. Step 2 proves it fails on grey, red and transparent pixels and on an 8-bit file. Verified passing in my Jest run."
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": "`cards.test.tsx` \"(#3)\" checks the illustration is present on the unrevealed card and after the reveal. TC-03-21 is claimed passing in the PR's local run on 1bf08f0, and the CI acceptance job on that sha was still running."
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": "The `illustration` field sits on the question, shared by both languages; `illustrations-registered.test.js` checks no language block carries it. The unit test \"(#4)\" and TC-03-22 cover English. \"Carries no text\" has no automated check, which is hard to automate. I viewed all five PNGs and none contains text (the clock has ticks only)."
+      },
+      {
+        "n": 5,
+        "verdict": "external",
+        "note": "MANUAL TC-03-23"
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Review of PR #17 (US-03-05), diff `origin/main...1bf08f020081ade82256129382b781b796ffdc35`.\n\nI found no blocking issue. I ran `npx jest` and `npx tsc --noEmit` on that sha: 38 suites and 238 tests pass, and tsc is clean. I viewed all five PNGs. The Maestro flows TC-03-20 to TC-03-22 need an emulator, so I did not run them. They are evidenced only by the PR's local run on 1bf08f0. The CI acceptance job on that sha was still `in_progress` when I checked.\n\nI switched HEAD to the detached sha to run the tests, then switched back to `feature/US-03-05` at 1bf08f0. The tree is clean.\n\nNotes on the code:\n- **Pixel check:** `src/app/cards/[category].tsx` sizes the image as image pixels divided by `PixelRatio.get()`. That is correct for an Android release build, where the require'd asset is a resource. `ReactImageView.kt` gives a resource image a fade duration of 0.\n- **Guard rails:** `/locale/<tag>` in `scripts/illustration-server.js` is validated by the regex `^[a-z]{2}-[A-Z]{2}$`, so the device shell call cannot be injected. The `file` and `name` path parts go through `path.basename`.\n- **Decks and registry:** the `illustration` field, the `illustrations` registry and the registry tests are consistent.\n- **Pixel test:** the AC-03-05-2 test would fail on a grey, coloured or see-through pixel. Its step 2 proves that with synthetic PNGs.\n\nNON-BLOCKING findings, with the failing scenario and the fix for each, are in the block below.\n\n```\nREVIEW: findings\nSTORY: US-03-05\nIMPACT: The card screen `src/app/cards/[category].tsx` renders every question of every category, so its layout is touched for all decks. `src/content/index.ts` now also exports `illustrations`, and the `illustration` field is read from `3-plus.json`, `4-plus.json` and `5-plus.json`. `scripts/test-acceptance.sh` `set_device_locale` and the original-locale detection changed for every language flow, not only the new illustration flows. A mistake there could leave the device in the wrong language for the TC-03-05 and TC-03-16 to TC-03-19 flows and later runs.\nFINDINGS:\n  N1 src/app/cards/[category].tsx:56 — The `<Image>` has no `fadeDuration`. A release build is fine because a resource image gets 0, but a debug or Metro-served build uses the 300 ms Fresco fade. The picture then fades in, which breaks NFR-03 (nothing animates), and the intermediate frames are greys (NFR-07). → Add `fadeDuration={0}` so the guarantee does not depend on the build type.\n  N2 src/app/cards/[category].tsx:196 — The 180 px picture is fixed-size and takes space from the question area, which is 3/5 of the card. On a short screen, such as 5p-08 (a question of about 80 characters) on a small or low-density display, the question text shrinks via `adjustsFontSizeToFit`. The \"largest type\" rule (MOD-03-U01, DEC-53) then no longer holds for illustrated questions, and no test covers a small screen. → Add a small-height card test or flow check that the question stays legible. Cover it in the TC-03-23 manual review too.\n  N3 src/content/illustrations/ant.png — The two antennae lines at the top can be counted as legs, so a child counting \"legs\" for 4p-26 may count 8 and not 6. The criterion #5 legibility review is the place to catch it. → Add a line to the TC-03-23 checklist, or redraw the antennae shorter or curved.\n  N4 src/app/cards/[category].tsx:55-64 — `PixelRatio.get()` is called twice, and the 180 px size is read through `Image.resolveAssetSource` on every render. This is harmless. → Compute `const ratio = PixelRatio.get()` once.\n  N5 tests/unit/AC-03-05-2-illustrations-black-and-white.test.js:42-65 — Step 1 repeats checks that `problems()` already makes: pixel count equals width times height, and the pixel check. → Keep only the \"both colours present\" assertion plus the single `problems()` assertion.\n  N6 docs/specs/DECISIONS.md (DEC-66) — The decision does not record the changes to `set_device_locale` in `scripts/test-acceptance.sh`. It now also writes `settings put system system_locales`, waits on the md5 of `settings_system.xml`, and changes how `original_locale` is read. This is shared infrastructure for every language flow. → Add a sentence to DEC-66, or append a new decision, since decisions are append-only.\n  N7 scripts/illustration-server.js:21 — A script in `scripts/` requires `../tests/unit/support/png`, so the acceptance tooling depends on a test-support file. → Fine to leave. If the helper moves, update both users.\n  N8 tests/maestro/TC-03-20…22 — The spec TCs state the precondition \"the app-state bridge is available\" and a cleanup step \"clear app data\". The flows replace the bridge with a root-written deck (documented in DEC-66) and do not clear data at the end. → Update the TC markdown preconditions to match, or accept the deviation that DEC-66 documents.\n  N9 tests/unit/support/png.js:1 — The header comment is a single over-long line and is not wrapped like the rest. `zlib.crc32` (used in the test) needs Node 22.2 or newer; CI uses `22`, but no `engines` field says so. → Wrap the comment, and consider noting the Node minimum.\nCRITERIA:\n  #1 met — `cards.test.tsx` \"(#1)\" shows no image and no `illustration` testID for a text-only question. TC-03-20 is claimed passing in the PR's local run on 1bf08f0, and the CI acceptance job on that sha was still running. Only 5 of 150 questions carry an illustration (DEC-65).\n  #2 met — AC-03-05-2 step 1 reads every PNG and requires 1-bit greyscale with only #000000 and #FFFFFF pixels. Step 2 proves it fails on grey, red and transparent pixels and on an 8-bit file. Verified passing in my Jest run.\n  #3 met — `cards.test.tsx` \"(#3)\" checks the illustration is present on the unrevealed card and after the reveal. TC-03-21 is claimed passing in the PR's local run on 1bf08f0, and the CI acceptance job on that sha was still running.\n  #4 met — The `illustration` field sits on the question, shared by both languages; `illustrations-registered.test.js` checks no language block carries it. The unit test \"(#4)\" and TC-03-22 cover English. \"Carries no text\" has no automated check, which is hard to automate. I viewed all five PNGs and none contains text (the clock has ticks only).\n  #5 external — MANUAL TC-03-23\n```\n"
+}

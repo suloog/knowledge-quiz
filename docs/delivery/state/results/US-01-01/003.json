@@ -1,0 +1,75 @@
+{
+  "n": 3,
+  "attempt": 1,
+  "ts": "2026-10-14T11:31:13Z",
+  "story": "US-01-01",
+  "mode": "fix",
+  "parsed": {
+    "result": "ready",
+    "story": "US-01-01",
+    "branch": "feature/US-01-01",
+    "commits": [
+      "885e6cb test(app): offline test and APK checks on a signed release build [US-01-01]",
+      "b9a4b6d chore(app): review notes on no-network rule, key files and tests [US-01-01]"
+    ],
+    "decisions": [],
+    "evidence": [
+      "#1 Built on the foundation at latest versions, versions recorded — AC-01-01-1 (Jest, tests/unit/AC-01-01-1-platform-versions.test.js, plus AC-01-01-1 withMinSdk describe) passed",
+      "#2 Installs and starts on an Android 12 emulator and on the Kompakt — MANUAL: TC-01-03 is manual-only (Kompakt); emulator part: TC-01-01 Maestro flow passed in test-runs/2026-10-14_132812",
+      "#3 Installed app asks for no network permission — AC-01-01-3 step 1 (Jest, release manifest) and step 2 (aapt dump permissions on the built release APK: no INTERNET/ACCESS_NETWORK_STATE/ACCESS_WIFI_STATE, junit/release.xml) passed",
+      "#4 Starts and runs with the network off — AC-01-01-4 Maestro flow on the release APK (embedded bundle, not debuggable, Metro stopped, adb reverse removed), plus the precondition and the logcat no-bundler check, passed in test-runs/2026-10-14_132812; TC-01-02 deferred to US-03-01 by DEC-44",
+      "#5 Signed release APK, key outside the repository — AC-01-01-5 steps 1-3 (Jest, signing config) and steps 4-6 (assembleRelease with a throwaway keytool key via KQ_UPLOAD_*, apksigner verify with the throwaway DN, aapt badging sdkVersion 31; junit/release.xml) passed"
+    ],
+    "tests": {
+      "run": "test-runs/2026-10-14_132812",
+      "pass": 4,
+      "fail": 0,
+      "blocked": 3,
+      "manual": 1,
+      "manual_tests": [
+        "TC-01-03"
+      ]
+    },
+    "derived_tests": [
+      "AC-01-01-1",
+      "AC-01-01-3",
+      "AC-01-01-4",
+      "AC-01-01-5"
+    ],
+    "preexisting": "all five criteria implemented in round 1 (f06b45e); this round changes how #4 and #5 are proven, not the app",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test ok (15/15)"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "findings": [
+      "code B1 / spec B1 fixed 885e6cb",
+      "spec B2 fixed 885e6cb (in scripts/test-acceptance.sh, which acceptance.yml already runs and whose junit/release.xml it already uploads",
+      ".github untouched because US-01-01 is not the foundation story)",
+      "spec N2 fixed b9a4b6d",
+      "spec N4 fixed b9a4b6d",
+      "code N1 fixed b9a4b6d (withMinSdk describe carries AC-01-01-1",
+      "theme describe names US-01-01/DEC-44, because no AC covers the theme)",
+      "code N5 fixed b9a4b6d",
+      "code N6 fixed 885e6cb (README: yarn.lock pins, package.json holds ranges)",
+      "spec N7 done in EVIDENCE #4 (TC-01-02 deferred by DEC-44)"
+    ],
+    "notes": "Local runs on an API 32 emulator (CI is API 31). The blocked=3 are AC-01-01-1/3/5: they are Jest and shell-check JUnit tests, which the local collector does not read; CI matches them by id in junit/unit.xml and junit/release.xml. The release build adds roughly a full 4-ABI release build to CI time (the last CI run took 12 min, the timeout is 90).\nRun 2026-10-14_132325 on the same head failed TC-01-01 once: a native SIGSEGV in RN's debug build (MountingCoordinator::pullTransaction) on a clearState relaunch. It is not in story code, passed on re-run and in CI earlier, and no retry was added. TC-02-01 and later flows run on the same debug build, so this may come back as a flake.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [
+        "#2 Installs and starts on an Android 12 emulator and on the Kompakt — MANUAL: TC-01-03 is manual-only (Kompakt); emulator part: TC-01-01 Maestro flow passed in test-runs/2026-10-14_132812"
+      ],
+      "blocked": []
+    },
+    "critical_decisions": []
+  },
+  "raw": "Both blocking findings are fixed on feature/US-01-01, new head b9a4b6d (not pushed). The offline test AC-01-01-4 now runs against a signed release APK with Metro really unreachable. The release APK is built and checked inside the acceptance run.\n\nLocal runs were on an API 32 emulator; there is no API 31 image on this machine. Two full-suite runs were made on b9a4b6d, each in its own snapshotted run directory with a clean tree:\n- **test-runs/2026-10-14_132325 (failed):** TC-01-01 failed on the debug build. Native SIGSEGV in React Native's `MountingCoordinator::pullTransaction` (thread mqt_v_js) during the `clearState` relaunch. It is in RN's dev build, not code this story touches. The same flow passed in my trial run, in the counting run, and in CI on f06b45e.\n- **test-runs/2026-10-14_132812 (the run that counts):** everything passed. 3/3 debug flows, 1/1 release flow, 5/5 release-APK checks, 15/15 Jest.\n\n**Metro is really cut off this time.** The earlier false positive came from `adb reverse`: it carries localhost:8081 over adb, and airplane mode does not stop that. The release phase now:\n- removes `adb reverse` and stops Metro;\n- before the flow, checks that the APK has `assets/index.android.bundle`, the installed package is not `DEBUGGABLE`, nothing answers on localhost:8081 and `adb reverse --list` is empty;\n- after the flow, checks logcat for `Unable to load script|isMetroRunning|DevServerHelper|(10.0.2.2|localhost):8081`.\n\nI ran a negative control by hand: the debug APK, offline, with no Metro. It is flagged `DEBUGGABLE` and logcat matched those patterns 16 times, so the check does catch a debug build.\n\n**B2 without touching `.github/**`:** this story is not the foundation story (US-00-01 is), so the workflow is not mine to change. The workflow already runs `yarn test:acceptance` and uploads `test-results/**/*.xml`. So the release APK build and its checks went into `scripts/test-acceptance.sh`, which writes `junit/release.xml`. The PR stays mergeable without a person.\n\n**What `scripts/test-acceptance.sh` now does, in order:**\n1. Generates a throwaway PKCS12 key with keytool in a temp directory outside the repo and the run directory, with a random password, and deletes it after the build. It never prints the key.\n2. Runs `expo prebuild`, then `assembleRelease` with the `KQ_UPLOAD_*` environment variables.\n3. Checks the APK: `apksigner verify --print-certs` (signed by the throwaway DN, not Android Debug), `aapt dump badging` (`sdkVersion:'31'`), `aapt dump permissions` (no network permissions).\n4. Starts the debug stack and runs the Maestro flows, excluding the tag `release-build`.\n5. Stops the stack, installs the release APK and runs the AC-01-01-4 flow with Metro unreachable, as above.\n6. Runs the unit tests.\n\nThe derived specs AC-01-01-3/4/5 are updated to match: new steps, preconditions, and `depends_on: [AC-01-01-5]`. The README describes the run.\n\nRESULT: ready\nSTORY: US-01-01\nBRANCH: feature/US-01-01\nCOMMITS: 885e6cb test(app): offline test and APK checks on a signed release build [US-01-01]; b9a4b6d chore(app): review notes on no-network rule, key files and tests [US-01-01]\nDECISIONS: none\nEVIDENCE:\n  #1 Built on the foundation at latest versions, versions recorded — AC-01-01-1 (Jest, tests/unit/AC-01-01-1-platform-versions.test.js, plus AC-01-01-1 withMinSdk describe) passed\n  #2 Installs and starts on an Android 12 emulator and on the Kompakt — MANUAL: TC-01-03 is manual-only (Kompakt); emulator part: TC-01-01 Maestro flow passed in test-runs/2026-10-14_132812\n  #3 Installed app asks for no network permission — AC-01-01-3 step 1 (Jest, release manifest) and step 2 (aapt dump permissions on the built release APK: no INTERNET/ACCESS_NETWORK_STATE/ACCESS_WIFI_STATE, junit/release.xml) passed\n  #4 Starts and runs with the network off — AC-01-01-4 Maestro flow on the release APK (embedded bundle, not debuggable, Metro stopped, adb reverse removed), plus the precondition and the logcat no-bundler check, passed in test-runs/2026-10-14_132812; TC-01-02 deferred to US-03-01 by DEC-44\n  #5 Signed release APK, key outside the repository — AC-01-01-5 steps 1-3 (Jest, signing config) and steps 4-6 (assembleRelease with a throwaway keytool key via KQ_UPLOAD_*, apksigner verify with the throwaway DN, aapt badging sdkVersion 31; junit/release.xml) passed\nTESTS: run=test-runs/2026-10-14_132812 pass=4 fail=0 blocked=3 manual=1 manual_tests=TC-01-03\nDERIVED_TESTS: AC-01-01-1; AC-01-01-3; AC-01-01-4; AC-01-01-5\nPREEXISTING: all five criteria implemented in round 1 (f06b45e); this round changes how #4 and #5 are proven, not the app\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test ok (15/15)\nENV_KEYS: none\nMIGRATION: no\nFINDINGS: code B1 / spec B1 fixed 885e6cb; spec B2 fixed 885e6cb (in scripts/test-acceptance.sh, which acceptance.yml already runs and whose junit/release.xml it already uploads; .github untouched because US-01-01 is not the foundation story); spec N2 fixed b9a4b6d; spec N4 fixed b9a4b6d; code N1 fixed b9a4b6d (withMinSdk describe carries AC-01-01-1; theme describe names US-01-01/DEC-44, because no AC covers the theme); code N5 fixed b9a4b6d; code N6 fixed 885e6cb (README: yarn.lock pins, package.json holds ranges); spec N7 done in EVIDENCE #4 (TC-01-02 deferred by DEC-44)\nNOTES: Local runs on an API 32 emulator (CI is API 31). The blocked=3 are AC-01-01-1/3/5: they are Jest and shell-check JUnit tests, which the local collector does not read; CI matches them by id in junit/unit.xml and junit/release.xml. The release build adds roughly a full 4-ABI release build to CI time (the last CI run took 12 min, the timeout is 90).\nRun 2026-10-14_132325 on the same head failed TC-01-01 once: a native SIGSEGV in RN's debug build (MountingCoordinator::pullTransaction) on a clearState relaunch. It is not in story code, passed on re-run and in CI earlier, and no retry was added. TC-02-01 and later flows run on the same debug build, so this may come back as a flake.\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "n": 2,
+  "attempt": 1,
+  "ts": "2026-10-15T23:16:24Z",
+  "story": "US-03-05",
+  "mode": "implement",
+  "parsed": {
+    "result": "ready",
+    "story": "US-03-05",
+    "branch": "feature/US-03-05",
+    "commits": [
+      "f1bfc7f feat(cards): illustrations, work in progress [US-03-05]",
+      "63a4bcc Merge remote-tracking branch 'origin/main' into feature/US-03-05",
+      "0c29b6b test(cards): acceptance flows for question illustrations [US-03-05]",
+      "1bf08f0 test(acceptance): set the device language setting too [US-03-05]"
+    ],
+    "decisions": [
+      "DEC-65 routine Illustrations: five 1-bit silhouettes on five questions, drawn one image pixel to one screen pixel below the question",
+      "DEC-66 routine Illustration acceptance flows: saved 3+ deck written with the needed question first",
+      "device language switched mid-flow without a framework restart"
+    ],
+    "evidence": [
+      "#1 Only helpful questions carry an illustration; no placeholder — TC-03-20 (Maestro, pass, run 2026-10-16_010358); cards.test.tsx \"(#1)\"",
+      "#2 Every illustration pure black and white; a test fails on any other pixel — AC-03-05-2 step 1 and step 2 (Jest, pass in test-runs/2026-10-16_010358/junit/unit.xml; the local collector does not read Jest results, so run.json lists it as blocked)",
+      "#3 Shown as the card appears and still after the reveal — TC-03-21 steps 1–2 (Maestro, pass, picture found pixel for pixel before and after the reveal); cards.test.tsx \"(#3)\"",
+      "#4 Same illustration in both languages; no text in it — TC-03-22 steps 1–2 (Maestro, pass, same hand.png at the same position in pl and en); cards.test.tsx \"(#4)\", illustrations-registered.test.js",
+      "#5 Legible on the Mudita Kompakt — MANUAL: TC-03-23 is manual-only"
+    ],
+    "tests": {
+      "run": "/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-16_010358",
+      "pass": 33,
+      "fail": 0,
+      "blocked": 1,
+      "manual": 1,
+      "manual_tests": [
+        "TC-03-23"
+      ]
+    },
+    "derived_tests": [
+      "AC-03-05-2"
+    ],
+    "preexisting": "criteria 1–5 implemented in f1bfc7f and 0c29b6b by the earlier attempt (illustrations in src/content/illustrations/, Illustration in src/app/cards/[category].tsx, unit tests, TC-03-20…22 flows, scripts/illustration-server.js, scripts/SetLocale.java); this run added only the locale-switch fix in scripts/test-acceptance.sh",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test ok"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "notes": "Not pushed: the hook blocks git push from a subagent, so the orchestrator must push 1bf08f0 (origin still has 0c29b6b) for CI evidence. 1bf08f0 fixes the device-language switch, which broke on every run after the first once TC-03-22 had run.\n  The counting run used a 320x688 screen so the app gets CI's window (the local emulator shows a navigation bar, which hid 5+ from TC-02-06); the emulator was put back to 320x640 afterwards.\n  AC-03-05-2 counts as blocked only because the local collector does not read Jest results; it passed in junit/unit.xml. TC-03-23 is still for the owner, by hand on the Kompakt.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [
+        "#5 Legible on the Mudita Kompakt — MANUAL: TC-03-23 is manual-only"
+      ],
+      "blocked": []
+    },
+    "critical_decisions": []
+  },
+  "raw": "US-03-05 is ready. The full acceptance run on head 1bf08f0 finished and was collected (exit 0), but the branch is not pushed: the delivery hook blocks `git push` from a subagent, so you need to push 1bf08f0. The previous head, 0c29b6b, is the one on origin.\n\n**Taking stock**\n- The branch already had criteria 1–5 done. It was merged with origin/main (8be3641), and main has not moved since, so I did no rebase or merge.\n- Gates are green on this head: format:check, lint, tsc and test (38 suites, 238 tests).\n\n**What blocked the run, and the one fix (commit 1bf08f0)**\n- **Corrupt Android build left by the killed run.** The release build stopped at `mergeExtDexRelease`. I cleared the ignored build outputs (`android/app/build`, `android/build`, `node_modules/*/android/build`) and stopped the Gradle daemons.\n- **Switching the device to Polish broke after one run.** `scripts/SetLocale.java` (used by TC-03-22) leaves the Android setting `system_locales` written. That setting overrides the property `set_device_locale` sets, so on the next run the switch to pl-PL failed. Every Polish-data flow failed with it, including TC-03-13 and TC-03-20…22.\n  - **Fix:** `scripts/test-acceptance.sh` now also writes `system_locales`, waits until that setting is saved to disk, then restarts the framework. It also reads the device's original language from that setting first.\n  - I checked the switch by hand on the emulator: en → pl → en.\n- **TC-02-06 (US-02-02, code untouched here) fails on the local emulator as configured.** Someone had set the screen to 320x640 earlier (it is not in the repo). The local emulator also shows a software navigation bar, which CI's default emulator does not have. That pushes the 5+ entry off the screen.\n  - For the run that counts I set the screen to 320x688, so the app gets the same window as on CI. TC-02-06 passed on CI on this same main code.\n  - Afterwards I put the emulator back to 320x640 at density 160, as I found it.\n  - An earlier try at the emulator's own screen (1080x2400) failed only pixel checks: the screen colour checks (AC-02-01-4 step 4, TC-02-08 step 2) and TC-03-21 step 2. They found pixels just off black and white (#FEFEFE, #FDFDFD, #020202) that this emulator produces at that density, so that screen is not the one the suite runs on.\n\n**AC-03-05-2 counts as blocked in `run.json`, though its test passed.** The local collector reads only Playwright and Maestro results, and AC-03-05-2 is a Jest test. Both of its cases passed in `junit/unit.xml` (238 cases, 0 failures). CI evidence reads that JUnit report, so CI should match it by its id.\n\nRESULT: ready\nSTORY: US-03-05\nBRANCH: feature/US-03-05\nCOMMITS: f1bfc7f feat(cards): illustrations, work in progress [US-03-05]; 63a4bcc Merge remote-tracking branch 'origin/main' into feature/US-03-05; 0c29b6b test(cards): acceptance flows for question illustrations [US-03-05]; 1bf08f0 test(acceptance): set the device language setting too [US-03-05]\nDECISIONS: DEC-65 routine Illustrations: five 1-bit silhouettes on five questions, drawn one image pixel to one screen pixel below the question; DEC-66 routine Illustration acceptance flows: saved 3+ deck written with the needed question first; device language switched mid-flow without a framework restart\nEVIDENCE:\n  #1 Only helpful questions carry an illustration; no placeholder — TC-03-20 (Maestro, pass, run 2026-10-16_010358); cards.test.tsx \"(#1)\"\n  #2 Every illustration pure black and white; a test fails on any other pixel — AC-03-05-2 step 1 and step 2 (Jest, pass in test-runs/2026-10-16_010358/junit/unit.xml; the local collector does not read Jest results, so run.json lists it as blocked)\n  #3 Shown as the card appears and still after the reveal — TC-03-21 steps 1–2 (Maestro, pass, picture found pixel for pixel before and after the reveal); cards.test.tsx \"(#3)\"\n  #4 Same illustration in both languages; no text in it — TC-03-22 steps 1–2 (Maestro, pass, same hand.png at the same position in pl and en); cards.test.tsx \"(#4)\", illustrations-registered.test.js\n  #5 Legible on the Mudita Kompakt — MANUAL: TC-03-23 is manual-only\nTESTS: run=/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-16_010358 pass=33 fail=0 blocked=1 manual=1 manual_tests=TC-03-23\nDERIVED_TESTS: AC-03-05-2\nPREEXISTING: criteria 1–5 implemented in f1bfc7f and 0c29b6b by the earlier attempt (illustrations in src/content/illustrations/, Illustration in src/app/cards/[category].tsx, unit tests, TC-03-20…22 flows, scripts/illustration-server.js, scripts/SetLocale.java); this run added only the locale-switch fix in scripts/test-acceptance.sh\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test ok\nENV_KEYS: none\nMIGRATION: no\nNOTES: Not pushed: the hook blocks git push from a subagent, so the orchestrator must push 1bf08f0 (origin still has 0c29b6b) for CI evidence. 1bf08f0 fixes the device-language switch, which broke on every run after the first once TC-03-22 had run.\n  The counting run used a 320x688 screen so the app gets CI's window (the local emulator shows a navigation bar, which hid 5+ from TC-02-06); the emulator was put back to 320x640 afterwards.\n  AC-03-05-2 counts as blocked only because the local collector does not read Jest results; it passed in junit/unit.xml. TC-03-23 is still for the owner, by hand on the Kompakt.\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "story": "US-02-02",
+  "attempt": 1,
+  "round": 2,
+  "sha": "ed010fd9555acbb22421700a2775ddfa79a55bad",
+  "reviewer": "code",
+  "ts": "2026-10-15T13:02:44Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-02-02",
+    "impact": "src/app/index.tsx is the app's launch screen and the only place a category is opened, so every Maestro flow and Jest test that starts on the category screen is affected. Once a category has been opened, the continue-category Text duplicates the \"3+\"/\"4+\" text, so text-based selectors can match twice. cards.test.tsx and the Maestro flows already select by id, so I found none that break. The new colour check in test-acceptance.sh runs inside the TC-02-08 flow and sets status=1 on failure, so a pixel flake on that screen can fail the whole acceptance run.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:97 — the JUnit case \"TC-02-08 step 2 — colours\" is not a step of TC-02-08.md, and a colour flake could be attributed to TC-02-08 although the flow passes → add the colour check to TC-02-08.md step 2 (and drop its stale app-state-bridge precondition), or name the case AC-02-01-4 step 4 (continue entry) / NFR-07"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/index.tsx:8 — imports cardType from the route file ./cards/[category], pulling the card screen's module graph into the category screen → move cardType and its two constants to a shared module (e.g. theme.ts)"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/DECISIONS.md:721 — DEC-59 edited in place although DECISIONS.md is append-only (acceptable only because unmerged) → do not edit again after merge"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/__tests__/continue.test.tsx:138 — only the 64 sp branch of cardType is asserted for the continue lines; no narrow-width case and no assertion of the new accessibilityLabel → add one narrow-window test and an accessibilityLabel assertion"
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/index.tsx:93 — the two-line continue entry takes about 243 dp, so on a shorter Kompakt screen the list may not fit; not evidenced → add to the manual Kompakt check"
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:414 — \"continue entry never showed\" does not say whether the app failed to start or the uiautomator dump failed → include a hint in the failure message, or keep logcat"
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:398-420 — NFR-07 colour check on the continue screen is unconfirmed on CI. Locally it fails on the existing rule rows (row 1251 #FEFEFE, row 1257 #020202, the 3+ entry's bottom rule), as AC-02-01-4 step 4 does on main; the continue entry's black block produced no off-colour rows. The rule rows sit at different y on this screen, so the earlier CI pass of the first-launch check does not guarantee this one passes. Non-blocking because the failure is environmental and not caused by the diff → wait for the pending acceptance job on this head; if it fails on rows 1251/1257-type rule rows, fix or relax the check (do not rename it away)"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Corrected REVIEW block. CRITERIA is now #1–#4, matching the four Scenario headings. The pending NFR-07 colour check is filed as N7. I changed nothing else.\n\n```\nREVIEW: findings\nSTORY: US-02-02\nIMPACT: src/app/index.tsx is the app's launch screen and the only place a category is opened, so every Maestro flow and Jest test that starts on the category screen is affected. Once a category has been opened, the continue-category Text duplicates the \"3+\"/\"4+\" text, so text-based selectors can match twice. cards.test.tsx and the Maestro flows already select by id, so I found none that break. The new colour check in test-acceptance.sh runs inside the TC-02-08 flow and sets status=1 on failure, so a pixel flake on that screen can fail the whole acceptance run.\nFINDINGS:\n  N1 scripts/test-acceptance.sh:97 — the JUnit case \"TC-02-08 step 2 — colours\" is not a step of TC-02-08.md, and a colour flake could be attributed to TC-02-08 although the flow passes → add the colour check to TC-02-08.md step 2 (and drop its stale app-state-bridge precondition), or name the case AC-02-01-4 step 4 (continue entry) / NFR-07\n  N2 src/app/index.tsx:8 — imports cardType from the route file ./cards/[category], pulling the card screen's module graph into the category screen → move cardType and its two constants to a shared module (e.g. theme.ts)\n  N3 docs/specs/DECISIONS.md:721 — DEC-59 edited in place although DECISIONS.md is append-only (acceptable only because unmerged) → do not edit again after merge\n  N4 src/app/__tests__/continue.test.tsx:138 — only the 64 sp branch of cardType is asserted for the continue lines; no narrow-width case and no assertion of the new accessibilityLabel → add one narrow-window test and an accessibilityLabel assertion\n  N5 src/app/index.tsx:93 — the two-line continue entry takes about 243 dp, so on a shorter Kompakt screen the list may not fit; not evidenced → add to the manual Kompakt check\n  N6 scripts/test-acceptance.sh:414 — \"continue entry never showed\" does not say whether the app failed to start or the uiautomator dump failed → include a hint in the failure message, or keep logcat\n  N7 scripts/test-acceptance.sh:398-420 — NFR-07 colour check on the continue screen is unconfirmed on CI. Locally it fails on the existing rule rows (row 1251 #FEFEFE, row 1257 #020202, the 3+ entry's bottom rule), as AC-02-01-4 step 4 does on main; the continue entry's black block produced no off-colour rows. The rule rows sit at different y on this screen, so the earlier CI pass of the first-launch check does not guarantee this one passes. Non-blocking because the failure is environmental and not caused by the diff → wait for the pending acceptance job on this head; if it fails on rows 1251/1257-type rule rows, fix or relax the check (do not rename it away)\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 met\n```\n"
+}

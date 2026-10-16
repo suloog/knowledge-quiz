@@ -1,0 +1,84 @@
+{
+  "story": "US-01-04",
+  "attempt": 1,
+  "round": 1,
+  "sha": "aaf37b30d928aca1564a9e64eda8a66bf252b8c2",
+  "reviewer": "spec",
+  "ts": "2026-10-14T23:25:20Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-01-04",
+    "impact": "Content-only change: a 50-question 5+ deck (DEC-46 format, no schema or code change beyond one registration line), its age-suitability record copied verbatim into the PR, six derived tests and routine DEC-51. Every criterion passes in CI on aaf37b3 (unit 130/130 incl. all AC-01-04-*, acceptance job green, release bundle holds the 5+ texts); no question offers options, no pl/en mismatch and no missed correct second answer were found, so only non-blocking polish remains.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/5-plus.json:5p-12 — \"Jak nazywamy dzień, który był dwa dni przed dzisiejszym?\" / \"What do we call the day…\" accepts a weekday name (Monday on a Wednesday); the record rules it out because \"the question asks for the word\", which the text does not say → reword as 3p-01 does (\"Jakim słowem nazywamy…\" / \"What word do we use for…\") and update the record row"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/5-plus.json:5p-44 — en \"Which building do we borrow books from and later bring them back?\" is missing a final \"to\" → \"…and later bring them back to?\" (67 chars), in the record too"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/unit/AC-01-04-6-no-3-or-4-plus-repeat.test.ts:40 — step 2 compares en answers only, so a Polish-only repeat of a 3+/4+ answer would pass (none exists today) → run the same comparison on q.pl.answer"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/5-plus.json:5p-40 — en question is exactly 100 characters, the F11 limit; any edit makes the suite fail → informational, keep headroom when editing"
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "PR #9 body (og:impact block) — still says \"Not current\" and \"AC-01-04-1…6 — not run on this head\" although CI run 38652463255 passed them on aaf37b3 → regenerate the impact block"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 6,
+        "verdict": "met",
+        "note": ""
+      }
+    ],
+    "stray": []
+  },
+  "raw": "PR #9 for US-01-04 (5+ deck) at head aaf37b30 is spec-compliant. I found no blocking findings. All six acceptance criteria are met, and all ten Covers requirements are delivered. CI on the head is green for every required test. I removed my worktree afterwards and left the main checkout untouched.\n\n**Test evidence**\n- **CI on aaf37b3** (run 38652463255; I confirmed it ran on that head):\n  - Both checks pass: Gates and Acceptance tests (Android 12 emulator).\n  - The og-test-results artifact shows 130/130 unit tests passing, with 0 failures and 0 skipped.\n  - AC-01-04-1 (4 tests), -2 (4), -3 (5), -4 (5), -5 (16) and -6 (5) all pass.\n  - In release.xml, \"AC-01-02-7 step 2\" passes: the release bundle holds every deck's texts, 5+ included.\n  - The Maestro runs TC-00-01, TC-00-03, TC-01-01 and AC-01-01-4 report SUCCESS.\n- **Local run** `test-runs/2026-10-15_010725`: commit aaf37b3, not dirty. Unit tests pass 130/130, the six AC-01-04 suites show 0 failures, and `bundle-content.txt` reads \"3+, 4+, 5+: 750 of 750 texts found in the bundle\".\n- **My own run** of `jest tests/unit` in the worktree: 20 suites, 117 tests, all pass.\n\n**Per-criterion evidence**\n\n| # | Verdict | Evidence |\n|---|---|---|\n| 1 | met | 50 questions; non-empty pl/en question and answer, each a single string. `tests/unit/AC-01-04-1-50-questions-one-answer.test.ts` via `deck-criteria.ts`; passes in CI. |\n| 2 | met | Every question ≤100 and every answer ≤60 characters in both languages. 5p-40 en is exactly 100. `AC-01-04-2` passes in CI. |\n| 3 | met | 12 educational, 13 popular-science, 13 nature, 12 trivia. `AC-01-04-3` passes in CI. |\n| 4 | met | `docs/delivery/content-checks/US-01-04-5-plus.md` has 50 rows with all four Q29 checks as pass and near misses named. `AC-01-04-4` checks the rows against the deck, that all four checks pass, that near misses are named, and that no question has \"czy\"/\"or\". The PR body copies the record word for word: I diffed the whole record section and it is identical. |\n| 5 | met | `AC-01-04-5`: `checkDecks(decks)` returns []. 13 kinds of breakage on a copy of the 5+ deck each fail, and duplicate id/text/category are reported. |\n| 6 | met | `AC-01-04-6` covers matching text in pl and en ignoring case and punctuation, matching en answers, and the content checks catching a copied 3+ or 4+ question. I also checked the Polish answers by script: none matches a 3+ or 4+ answer. |\n\n**Covers**\n- F02, F03, F11, F12 and F15 are each tested.\n- F04: one answer per question, tested, plus the near-miss record.\n- F05: every question's kind is one of the four, tested.\n- F06 and F14: the record and DEC-51.\n- F07: both texts are present (tested), and I read all 50 pairs for meaning. No real pl/en mismatch.\n- The story claims no global NFR.\n\n**Content review: all 50 questions, both languages**\n- I checked the four Q29 checks, F04/F06/F07/F14 and DEC-47 for each question.\n- No question names options.\n- I found no correct second answer that the record missed.\n- No pl/en meaning mismatch.\n- Nothing frightening or adult. The owl hunting at night (5p-27) and the lava (5p-21) are ordinary nature facts.\n- The facts all check out: Jupiter, Saturn, Mars, the cheetah, the chameleon, the camel's hump storing fat, 11 players, the red top light, the white eagle.\n- The weakest is 5p-12 (N1). The record lists it and rules it out, but on a reason the text does not support.\n\n**Other checks**\n- **Out of scope:** nothing touched. The only code change is the one import line DEC-46 allows (`src/content/decks/index.ts`). `checks.ts` and the schema are unchanged, and no illustrations were added.\n- **Edge case** (\"content failing any check → suite fails\"): implemented and tested by AC-01-04-5 step 2.\n- **Constitution:** \"Content is data\" holds, with no schema change. Gates are green.\n- **DEC-51:** correctly routine. Under the RUNBOOK §Critical decisions it deviates from no must or NFR, changes neither scope nor schema, and adds no contract. It applies DEC-50's accepted repeat rule to both younger decks and says how 5+ is harder, which the story leaves open. It was appended only, and no entry was edited.\n- **Story status:** in-progress in the spec and in BACKLOG.md. That matches US-01-03, which became done at merge.\n\n**Non-blocking findings**\n- **N1 – 5p-12 near miss** (`src/content/decks/5-plus.json`, 5p-12; record row 5p-12): asked on a Wednesday, \"poniedziałek\"/\"Monday\" is a correct answer to \"Jak nazywamy dzień…\"/\"What do we call the day two days before today?\". The record rules it out because \"the question asks for the word\", but the text never says \"word\". It is recorded rather than missed, so by your bar it is not blocking. The fix is to word it like 3p-01: \"Jakim słowem nazywamy dzień, który był dwa dni przed dzisiejszym?\" / \"What word do we use for the day two days before today?\", and update the record row.\n- **N2 – 5p-44 English grammar:** \"Which building do we borrow books from and later bring them back?\" is missing a final \"to\". Fix: \"…and later bring them back to?\" (67 characters).\n- **N3 – AC-01-04-6 step 2 is English-only** (`tests/unit/AC-01-04-6-no-3-or-4-plus-repeat.test.ts:40-48`): it compares en answers only. A Polish-only repeat would pass, though I verified none exists today. Fix: run the same comparison on `q.pl.answer`, or note in DEC-51 that en stands for both.\n- **N4 – 5p-40 en is exactly 100 characters**, so any edit pushes it over F11 and the suite fails. Not a fault; just headroom to keep in mind.\n- **N5 – Stale PR body Impact block:** it still says \"Not current — the code changed after it was tested or reviewed\" and \"AC-01-04-1 … AC-01-04-6 — not run on this head\". CI has since run them on aaf37b3 and they all pass. The loop should regenerate the block.\n\n```\nREVIEW: findings\nSTORY: US-01-04\nIMPACT: Content-only change: a 50-question 5+ deck (DEC-46 format, no schema or code change beyond one registration line), its age-suitability record copied verbatim into the PR, six derived tests and routine DEC-51. Every criterion passes in CI on aaf37b3 (unit 130/130 incl. all AC-01-04-*, acceptance job green, release bundle holds the 5+ texts); no question offers options, no pl/en mismatch and no missed correct second answer were found, so only non-blocking polish remains.\nFINDINGS:\n  N1 src/content/decks/5-plus.json:5p-12 — \"Jak nazywamy dzień, który był dwa dni przed dzisiejszym?\" / \"What do we call the day…\" accepts a weekday name (Monday on a Wednesday); the record rules it out because \"the question asks for the word\", which the text does not say → reword as 3p-01 does (\"Jakim słowem nazywamy…\" / \"What word do we use for…\") and update the record row\n  N2 src/content/decks/5-plus.json:5p-44 — en \"Which building do we borrow books from and later bring them back?\" is missing a final \"to\" → \"…and later bring them back to?\" (67 chars), in the record too\n  N3 tests/unit/AC-01-04-6-no-3-or-4-plus-repeat.test.ts:40 — step 2 compares en answers only, so a Polish-only repeat of a 3+/4+ answer would pass (none exists today) → run the same comparison on q.pl.answer\n  N4 src/content/decks/5-plus.json:5p-40 — en question is exactly 100 characters, the F11 limit; any edit makes the suite fail → informational, keep headroom when editing\n  N5 PR #9 body (og:impact block) — still says \"Not current\" and \"AC-01-04-1…6 — not run on this head\" although CI run 38652463255 passed them on aaf37b3 → regenerate the impact block\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 met\n  #5 met\n  #6 met\n```\n"
+}

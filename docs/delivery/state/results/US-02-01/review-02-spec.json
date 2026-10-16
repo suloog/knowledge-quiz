@@ -1,0 +1,121 @@
+{
+  "story": "US-02-01",
+  "attempt": 1,
+  "round": 2,
+  "sha": "ae16e5d10159a1259193b101513440f7d6beb825",
+  "reviewer": "spec",
+  "ts": "2026-10-14T23:11:36Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-02-01",
+    "impact": "Both round-1 blockers are fixed. The rules are an even whole number of device pixels, and the new device pixel check passes locally and in CI and catches injected grey rows; DEC-48 is critical, owner-confirmed as option a, and appended to the log without edits. But main moved after the head: the owner's 96365ac withdrew the story-by-story deferral DEC-48 records, PR #8 merged the 4+ deck without TC-02-01/02 seeing it, and the PR now conflicts on DECISIONS.md, with device evidence that covers only a 3+ screen.",
+    "findings": [
+      {
+        "id": "B1",
+        "blocking": true,
+        "security": false,
+        "tags": [
+          "spec"
+        ],
+        "text": "docs/specs/DECISIONS.md:597 — DEC-48 point 3 defers 4+/5+ and the full TC-02-01/02 check to US-01-03/04, says PR #8 is unmerged and that the deck PRs cannot merge unless their deck shows; the owner's 96365ac on main (22:58Z) moves the decks first \"so the category and card tests check every deck at once instead of being deferred\", PR #8 merged at 23:02Z without TC-02-01 seeing 4+, and main has no branch protection → take DEC-48 back to the owner, hold US-02-01 until US-01-04 per the new order, and rewrite point 3 (unmerged, so editable here) or supersede it so TC-02-01/02 check 3+, 4+ and 5+ in full"
+      },
+      {
+        "id": "B2",
+        "blocking": true,
+        "security": false,
+        "tags": [
+          "evidence"
+        ],
+        "text": "docs/specs/DECISIONS.md:586 — main now ships src/content/decks/4-plus.json, so merging gives a 3+ and 4+ screen; the local run and CI (ee28aff = ae16e5d+82dd121) tested 3+ only, so TC-02-01 (count 2), TC-02-02 width and the AC-02-01-4 step 4 pixel check on a second rule have never run, and git merge-tree reports a conflict in DECISIONS.md against DEC-49/DEC-50 → update the branch onto main, keep all DEC entries unedited, re-run yarn test:acceptance and CI (the merged unit suite already passes, 25 suites / 103 tests)"
+      },
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/check-black-and-white.js:11 — the comment says CI's GPU-less emulator renders nothing, but since 82dd121 CI uses google_apis and the check really ran (320x640, rows 24–639); also a one-colour frame is reported <skipped> with exit 0 while the AC spec says it \"blocks\" the step → fix the comment and align skipped/blocked"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/check-black-and-white.js:94 — when top >= bottom or the capture is smaller than the dump's bounds, no pixel is read (seen.size 0) and the check passes without checking anything → fail when no pixel was read"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/__tests__/theme.test.ts:8 — only checks Jest's PixelRatio 2 (4 px), not the density where the bug lived (2.625) → test several densities with a mocked PixelRatio.get"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:52 — the expected order is computed with the same youngestAge rule as src/content/index.ts:13, so TC-02-01 cannot catch a wrong ordering rule → use the literal 3+, 4+, 5+ order from MOD-02-F02 for known labels and append others after it"
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "test-runs/2026-10-15_005113/run.json — the og collector reads only Maestro/Playwright results, so AC-02-01-3/4/5 show \"skipped\" though junit/unit.xml and junit/screen-colours.xml show passes, and the PR Impact block says \"not run on this head\" → a plugin limit to raise with the delivery tooling, not this PR"
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/modules/02-age-categories/COVERAGE.md:24 — DEC-48 says it affects US-01-03/04, but neither those stories nor COVERAGE records the deferred part of MOD-02-F02 → goes away if B1 removes the deferral; otherwise record it"
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/check-black-and-white.js:1 — nothing in test-runs/ shows the new check failing on the old 2 dp rules (I confirmed offline that injected #808080 rows beside each rule fail with exit 1) → keep a failing screen-colours.xml as evidence"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "unmet",
+        "note": "evidenced only for a 3+-only screen; main now ships 4+ (PR #8) so the merged screen lists 3+ and 4+ with no device test, and the owner's 96365ac withdrew the deferral DEC-48 relies on (B1, B2)"
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 6,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 7,
+        "verdict": "external",
+        "note": "TC-02-03, manual on the Mudita Kompakt"
+      }
+    ],
+    "stray": []
+  },
+  "raw": "## US-02-01 / PR #6, round 2: spec-compliance review\n\n**Verdict: NOT COMPLIANT.** Both round-1 blockers are fixed. But `main` moved after `ae16e5d` was pushed, and that leaves two new blockers.\n\n### What I ran\n- **Scratch worktrees:** a detached worktree at `ae16e5d` (the head), plus a second one holding `ae16e5d` merged with the current `origin/main`. Both are removed and `git worktree prune` was run. The main checkout was not touched. It is now on `feature/US-01-04`, which the loop did, not me.\n- **Unit tests:** in the head worktree, 19 suites and 65 tests pass. In the merged worktree (3+ and 4+ decks), 25 suites and 103 tests pass.\n- **Local run** `test-runs/2026-10-15_005113`: made on `ae16e5d`, with a clean tree. Everything passes:\n  - Maestro flows TC-00-01, TC-00-03, TC-01-01, TC-02-01, TC-02-02 and TC-02-14 (6 of 6), plus AC-01-01-4 on the release build.\n  - `junit/screen.xml`: TC-02-02 step 2 (entry 0–1080 of 1080).\n  - `junit/screen-colours.xml`: AC-02-01-4 step 4 (1080x2400, rows 63–2273 checked, margin 21 px).\n  - Unit tests 65 of 65, release checks 7 of 7.\n- **CI run 38650745720:** green. It ran on the merge commit `ee28aff`, which is `ae16e5d` plus `82dd121` (main as of 22:52Z), on the `google_apis` API 31 image. The `og-test-results` artifact holds:\n  - `maestro/report.xml`: the same 6 flows, all SUCCESS.\n  - `report-release.xml`: AC-01-01-4 SUCCESS.\n  - `junit/screen.xml`: TC-02-02 step 2 pass (0–320 of 320).\n  - `junit/screen-colours.xml`: AC-02-01-4 step 4 pass. This is a real pass, not a skip: 320x640, rows 24–639, margin 8 px.\n  - `junit/unit.xml`: AC-02-01-3, -4 and -5 at 3 of 3 each, no failures.\n  - `junit/release.xml`: 7 of 7.\n  - TC-02-03 is manual-only and was not run.\n\n### Round-1 blockers\n- **Old B2 (grey rows beside the 2 dp rules): FIXED.**\n  - `src/theme.ts:14-15` gives an even whole number of pixels at every density I computed (0.75 → 2 px, 1.5 → 4, 2.625 → 6, 3.5 → 8, and others).\n  - The device screenshot shows two 6-row solid-black rules (rows 259–264 and 615–620).\n  - I rebuilt the raw capture from the run's PNG and dump and re-ran `scripts/check-black-and-white.js`: it passes. Then I injected a #808080 row at 258, 265, 614 or 621 (next to each rule), and at 64, 244 and 1500. Each one fails with exit 1.\n- **Old B1 (DEC-48 classed routine): FIXED as asked.**\n  - It is now critical and owner-confirmed, it says option a, and it matches DEC-47's form.\n  - Against `main` it is a pure +12-line append.\n  - Blocker B1 below overtakes it.\n\n### New blocking findings\n- **B1: DEC-48's deferral is overtaken on `main`.**\n  - `docs/specs/DECISIONS.md:597` (point 3) says US-02-01 merges with 3+ only, that the 4+ deck is in PR #8 \"not yet merged\", and that the 4+/5+ PRs \"cannot merge unless their deck shows\".\n  - Eight minutes after `ae16e5d` (22:50Z), the owner committed `96365ac` to `main` (22:58Z). It moves US-01-03 and US-01-04 ahead of US-02-01 \"so the category and card tests check every deck at once instead of being deferred story by story\". That withdraws the deferral DEC-48 records.\n  - PR #8 then merged at 23:02Z (`2c38b70`) without TC-02-01/02 ever showing 4+. `main` has no branch protection and no rulesets, so the \"cannot merge\" safeguard is not enforced by GitHub.\n  - **Fix:** take DEC-48 back to the owner. Under the new order US-02-01 waits for US-01-04. Then rewrite point 3 (still unmerged, so it can be edited in the PR) or supersede it: TC-02-01/02 check 3+, 4+ and 5+ in full, no reduction.\n- **B2: the evidence covers a screen that is no longer what would merge.**\n  - `main` now ships `src/content/decks/4-plus.json`, so merging PR #6 gives a screen with 3+ and 4+.\n  - Both the local run and CI tested a 3+-only screen. No device test has run with two entries: TC-02-01 with CATEGORY_COUNT=2, the TC-02-02 width check, and the AC-02-01-4 pixel check on a second rule.\n  - `git merge-tree` also reports a CONFLICT in `docs/specs/DECISIONS.md`: `main` appended DEC-49 and DEC-50 after DEC-47, at the same spot as DEC-48. GitHub showed the PR as mergeable UNKNOWN.\n  - **Fix:** update the branch onto `main`. Resolve the conflict by keeping all entries, with none edited. Re-run `yarn test:acceptance` and CI.\n\n### Non-blocking findings\n- **N1** `scripts/check-black-and-white.js:11-12`: the comment says CI's GPU-less emulator renders nothing. Since `82dd121`, CI uses `google_apis` and the check really runs. Also, the AC spec says a one-colour frame \"blocks\" the step, but the script writes `<skipped>` and exits 0. Update the comment and align the wording.\n- **N2** `scripts/check-black-and-white.js:94-127`: it can pass without checking anything. If `top >= bottom`, or the capture is smaller than the dump's bounds, no pixel is read (`seen.size === 0`) and the result is pass. Fix: fail when nothing was read.\n- **N3** `src/__tests__/theme.test.ts:8-12`: only checks Jest's fixed PixelRatio (2 → 4 px). Fix: test several densities with a mocked `PixelRatio.get`.\n- **N4** `scripts/test-acceptance.sh:49-57`: the expected order is computed with the same rule as `src/content/index.ts:13-19`. TC-02-01 therefore cannot catch a wrong ordering rule. The old literal `[\"3+\",\"4+\",\"5+\"]` was an independent check. Fix: keep that literal order for the known labels and append others after it.\n- **N5** The og plugin's `collect_run.py` reads only Maestro/Playwright results. So `run.json` lists AC-02-01-3, -4 and -5 as \"skipped\" even though `junit/unit.xml` and `junit/screen-colours.xml` show passes. The PR's Impact block likewise says \"not run on this head\". This is a tooling limit, not a PR defect.\n- **N6** DEC-48 says it affects US-01-03 and US-01-04, but neither those stories nor `COVERAGE.md` (MOD-02-F02 → US-02-01 only) records the deferred part. This goes away if B1 removes the deferral.\n- **N7** Nothing in `test-runs/` shows the new check failing on the old code. My injection test above stands in for it. Keeping a failing `screen-colours.xml` would document it.\n- Round-1 N3 and N5–N9 remain open, as stated in the brief.\n\n### Covers, out-of-scope, edge cases\n- **Covers:**\n  - Delivered: F01, F03, U03 (labels as data, per DEC-48 point 2), NFR-03, NFR-07 and NFR-09.\n  - F02: the deferral is in dispute (B1).\n  - Checked by hand on the Kompakt, outside the loop: U01, U05, NFR-02 and NFR-08 (TC-02-03 and TC-02-04 are manual, and the PR body says so).\n  - NFR-04: the screen is static and has no redraw logic. Nothing tests it specifically.\n- **Out-of-scope:** none in `558d8ac..ae16e5d`.\n- **Edge cases:**\n  - Only 3+ → TC-02-01 at the head: met.\n  - Android back → TC-02-14: met.\n  - Saved data missing → TC-02-01 uses `clearState: true`, and no persistence exists yet: met.\n- **Constitution:** no violations in the fix diff.\n\n```\nREVIEW: findings\nSTORY: US-02-01\nIMPACT: Both round-1 blockers are fixed. The rules are an even whole number of device pixels, and the new device pixel check passes locally and in CI and catches injected grey rows; DEC-48 is critical, owner-confirmed as option a, and appended to the log without edits. But main moved after the head: the owner's 96365ac withdrew the story-by-story deferral DEC-48 records, PR #8 merged the 4+ deck without TC-02-01/02 seeing it, and the PR now conflicts on DECISIONS.md, with device evidence that covers only a 3+ screen.\nFINDINGS:\n  B1 [spec] docs/specs/DECISIONS.md:597 — DEC-48 point 3 defers 4+/5+ and the full TC-02-01/02 check to US-01-03/04, says PR #8 is unmerged and that the deck PRs cannot merge unless their deck shows; the owner's 96365ac on main (22:58Z) moves the decks first \"so the category and card tests check every deck at once instead of being deferred\", PR #8 merged at 23:02Z without TC-02-01 seeing 4+, and main has no branch protection → take DEC-48 back to the owner, hold US-02-01 until US-01-04 per the new order, and rewrite point 3 (unmerged, so editable here) or supersede it so TC-02-01/02 check 3+, 4+ and 5+ in full\n  B2 [evidence] docs/specs/DECISIONS.md:586 — main now ships src/content/decks/4-plus.json, so merging gives a 3+ and 4+ screen; the local run and CI (ee28aff = ae16e5d+82dd121) tested 3+ only, so TC-02-01 (count 2), TC-02-02 width and the AC-02-01-4 step 4 pixel check on a second rule have never run, and git merge-tree reports a conflict in DECISIONS.md against DEC-49/DEC-50 → update the branch onto main, keep all DEC entries unedited, re-run yarn test:acceptance and CI (the merged unit suite already passes, 25 suites / 103 tests)\n  N1 scripts/check-black-and-white.js:11 — the comment says CI's GPU-less emulator renders nothing, but since 82dd121 CI uses google_apis and the check really ran (320x640, rows 24–639); also a one-colour frame is reported <skipped> with exit 0 while the AC spec says it \"blocks\" the step → fix the comment and align skipped/blocked\n  N2 scripts/check-black-and-white.js:94 — when top >= bottom or the capture is smaller than the dump's bounds, no pixel is read (seen.size 0) and the check passes without checking anything → fail when no pixel was read\n  N3 src/__tests__/theme.test.ts:8 — only checks Jest's PixelRatio 2 (4 px), not the density where the bug lived (2.625) → test several densities with a mocked PixelRatio.get\n  N4 scripts/test-acceptance.sh:52 — the expected order is computed with the same youngestAge rule as src/content/index.ts:13, so TC-02-01 cannot catch a wrong ordering rule → use the literal 3+, 4+, 5+ order from MOD-02-F02 for known labels and append others after it\n  N5 test-runs/2026-10-15_005113/run.json — the og collector reads only Maestro/Playwright results, so AC-02-01-3/4/5 show \"skipped\" though junit/unit.xml and junit/screen-colours.xml show passes, and the PR Impact block says \"not run on this head\" → a plugin limit to raise with the delivery tooling, not this PR\n  N6 docs/specs/modules/02-age-categories/COVERAGE.md:24 — DEC-48 says it affects US-01-03/04, but neither those stories nor COVERAGE records the deferred part of MOD-02-F02 → goes away if B1 removes the deferral; otherwise record it\n  N7 scripts/check-black-and-white.js:1 — nothing in test-runs/ shows the new check failing on the old 2 dp rules (I confirmed offline that injected #808080 rows beside each rule fail with exit 1) → keep a failing screen-colours.xml as evidence\nCRITERIA:\n  #1 met\n  #2 unmet — evidenced only for a 3+-only screen; main now ships 4+ (PR #8) so the merged screen lists 3+ and 4+ with no device test, and the owner's 96365ac withdrew the deferral DEC-48 relies on (B1, B2)\n  #3 met\n  #4 met\n  #5 met\n  #6 met\n  #7 external — TC-02-03, manual on the Mudita Kompakt\n```\n"
+}

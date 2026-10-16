@@ -1,0 +1,93 @@
+{
+  "story": "US-01-01",
+  "attempt": 1,
+  "round": 2,
+  "sha": "b9a4b6da20d0293f229dfeff30cbb6318dcfc79f",
+  "reviewer": "spec",
+  "ts": "2026-10-14T11:53:13Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-01-01",
+    "impact": "scripts/test-acceptance.sh is the only thing CI runs (.github/workflows/acceptance.yml) and carries every story's acceptance tests: it now runs expo prebuild and a release build before stack.sh, and the stack's android/ dir from that prebuild is reused by `expo run:android`. Flows tagged `release-build` are excluded from the debug run, so any later flow that needs the release APK must carry the tag. Local runs now need a running emulator and installed dependencies before the script starts (N1, N2).",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:207 — with no emulator running beforehand, stack.sh boots it and kills it on stop, so the AC-01-01-4 precondition always fails locally (\"no device is attached\"); README Tests does not say to pre-start one → document it and fail fast at script start if no device is attached"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:112 — fresh clone: step 1 calls node_modules/.bin/expo before stack.sh installs dependencies, so AC-01-01-5 step 4 and everything depending on it fail on the first run → run stack.sh's dependency check before step 1"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:162 — Maestro missing: step 3 skipped and release.xml has no AC-01-01-4 rows (exit 1, but the report hides it) → record the AC-01-01-4 precondition as failed in that branch"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/maestro/AC-01-01-4-opens-offline.yaml:12 — step-01-network-off screenshot is taken before the status bar updates (local one shows Wi-Fi on); nothing asserts airplane mode was on before launch → wait before the screenshot, or have the script check logcat order isAirplaneModeOn()=true before \"Loading JS Bundle\""
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:259 — the no-bundler grep runs over the whole device log, so another process mentioning localhost:8081 fails it falsely → filter by the app's PID"
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "PR #3 body — evidence table and How to test cite the f06b45e run 120331 and say apksigner/aapt are checked by hand → refresh with CI run 38557153663 and test-runs/2026-10-14_132812"
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:108 — throwaway key password on keytool's command line (visible in the process list; negligible) → -storepass:env/-keypass:env"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "external",
+        "note": "MANUAL TC-01-03 (Kompakt); emulator half met by TC-01-01 in CI run 38557153663 on API 31"
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": ""
+      }
+    ],
+    "stray": []
+  },
+  "raw": "## Spec-compliance review, round 2: PR #3 / US-01-01 at b9a4b6d\n\n**Verdict: COMPLIANT.** Both round-1 blockers are fixed and CI on b9a4b6d proves it. I found nothing blocking. There are seven non-blocking findings (N1–N7).\n\n**CI evidence.** Run 38557153663, head b9a4b6d, conclusion success. The `og-test-results` artifact holds four reports, all with 0 failures:\n- `junit/release.xml`: 6/6 pass\n  - AC-01-01-5 steps 4, 5 and 6\n  - AC-01-01-3 step 2\n  - AC-01-01-4 precondition\n  - AC-01-01-4 logcat no-bundler check\n- `maestro/report-release.xml`: 1/1 pass — AC-01-01-4 flow, tagged `release-build`\n- `maestro/report.xml`: 3/3 pass — TC-00-01, TC-00-03, TC-01-01\n- `junit/unit.xml`: 15/15 pass — includes AC-01-01-1 (×4), AC-01-01-3 (×2) and AC-01-01-5 (×5)\n\nThe `acceptance-evidence` artifact backs these up:\n- **Signature:** `release/apksigner.txt` gives `certificate DN: CN=knowledge-quiz throwaway acceptance key`.\n- **Minimum SDK:** `badging.txt` gives `sdkVersion:'31'`.\n- **Permissions:** `permissions.txt` lists no INTERNET, ACCESS_NETWORK_STATE or ACCESS_WIFI_STATE.\n- **Release build installed:** `installed-package.txt` has no `DEBUGGABLE` flag.\n- **Offline start:** in the logcat, `isAirplaneModeOn()=true` (11:49:47.4) comes before `Loading JS Bundle` (11:49:48.9) and `Running \"main\"`.\n- **No password leak:** neither `release-build.log` nor `stack.log` contains one.\n\n**Local run** `test-runs/2026-10-14_132812` (API 32, commit b9a4b6d, clean tree): the same 6 + 1 + 3 + 15 all pass. The offline screenshot shows the first screen (\"Knowledge Quiz\") with the network off.\n\n### Round-1 blockers\n- **B1 (AC-01-01-4 reached Metro): FIXED.** Step 3 of `/Users/sulo/workspace/knowledge-quiz/scripts/test-acceptance.sh` (lines 213-269) now does the following:\n  - installs the signed release APK;\n  - checks that the bundle is embedded, the app is not debuggable, nothing answers on :8081 and `adb reverse` is empty — any failed check fails the test;\n  - runs the flow, then the logcat no-bundler check.\n\n  Airplane mode not cutting `adb reverse` is handled by `--remove-all` plus the empty-list check. The emulator's `10.0.2.2` path to the host is covered too, because Metro is shown not to answer.\n- **B2 (no signed release APK on record): FIXED.** Lines 94-157:\n  - a throwaway keytool key goes in a temporary directory outside the repo, passed only through the `KQ_UPLOAD_*` variables, and the directory is deleted after the build;\n  - `apksigner` checks the certificate DN and that it is not the debug key;\n  - `aapt` checks sdkVersion and permissions;\n  - results go to `junit/release.xml`, which `og-test-results` picks up (`test-results/**/*.xml`).\n\n  `.github/**` is untouched in f06b45e..b9a4b6d.\n- **N2, N4, N7 from round 1: fixed.**\n  - Constitution No-network line: fixed, and DEC-44 lists `constitution.md` under Affects.\n  - `.gitignore` now ignores `*.jks` and `*.p12`.\n  - TC-01-02 deferral: DEC-44 point 4.\n\n### Criteria, Covers, edge case, scope\n| Item | Verdict | Evidence |\n| --- | --- | --- |\n| #1 Foundation at latest versions, versions recorded | MET | `tests/unit/AC-01-01-1-platform-versions.test.js`, `plugins/__tests__/withMinSdk.test.js`; CI `unit.xml` pass |\n| #2 Installs and starts on Android 12 emulator and Kompakt | Emulator: MET (TC-01-01 in CI on API 31). Kompakt: EXTERNAL (MANUAL TC-01-03) | CI `report.xml` |\n| #3 No network permission | MET | Unit test on the release manifest, plus `aapt` on the built APK (CI `release.xml`, `release/permissions.txt`) |\n| #4 Starts and runs with network off | MET | CI `report-release.xml`, plus the precondition and logcat cases in `release.xml` |\n| #5 Signed release APK, key outside repo | MET | `withReleaseSigning.test.js`, plus CI `release.xml` steps 4 and 5 |\n| MOD-01-F01 | MET | #1 and #2 |\n| NFR-05 | MET (release build, per DEC-44) | #3 |\n| NFR-06 | MET | Signing config, throwaway-key build, `.gitignore`. Signing with the real key stays manual by DEC-09 |\n| NFR-10 | MET | minSdk 31, `aapt` `sdkVersion:'31'` |\n| NFR-12 | MET as far as the app goes today | AC-01-01-4; TC-01-02 deferred to US-03-01 by DEC-44 |\n| NFR-13 | MET | Signed release APK installed directly with `adb install` in CI |\n| Edge case: device older than Android 12 is not offered the app | MET | minSdk 31 checked on the built APK (AC-01-01-5 step 6) |\n| Out of scope | No violations | No feature screens, no store publishing |\n| Constitution | No violations | Rule change sanctioned by DEC-44; no network libraries added |\n\n### Non-blocking findings\n- **N1** `/Users/sulo/workspace/knowledge-quiz/scripts/test-acceptance.sh:207,218-219`: a local run with no emulator already running always fails AC-01-01-4. `stack.sh` boots the emulator and its cleanup kills it (`stack.sh` cleanup, `EMULATOR_PID`), so by step 3 `adb get-state` fails with \"no device is attached\". This is new with this fix. The README *Tests* section still implies the stack's own emulator is enough, while only the error message says to start one first. CI is not affected. Fix: say in README *Tests* that an emulator must already be running, and fail fast at the start of the script if none is attached (or have the script boot one itself).\n- **N2** `scripts/test-acceptance.sh:112`: on a fresh clone, step 1 calls `node_modules/.bin/expo` before `stack.sh` has installed the dependencies. AC-01-01-5 step 4 then fails, and so do step 5, step 6, AC-01-01-3 step 2 and the AC-01-01-4 precondition. This contradicts the script's own header (line 10) about fresh clones. Fix: run `stack.sh`'s dependency check (`yarn install --frozen-lockfile` when `node_modules` is missing or stale) before step 1.\n- **N3** `scripts/test-acceptance.sh:160-164`: when Maestro is not installed, step 3 is skipped and `release.xml` has no AC-01-01-4 rows at all. The exit status is 1, so this is not a false pass, but the report hides which test did not run. Fix: in that branch, `record \"$PRE\" fail \"Maestro is not installed\"`.\n- **N4** `tests/maestro/AC-01-01-4-opens-offline.yaml:12-13`: `step-01-network-off` is captured before the status bar updates. The local screenshot still shows the Wi-Fi and cellular icons on, which is misleading evidence. Nothing in the test asserts that airplane mode was on before launch; only the logcat shows it. Fix: wait for the status bar to settle before the screenshot, or have the script check that `isAirplaneModeOn()=true` comes before `Loading JS Bundle` in the saved logcat (or `settings get global airplane_mode_on` = 1).\n- **N5** `scripts/test-acceptance.sh:259`: the no-bundler grep runs over the whole device log, not just the app's process, so another process mentioning `localhost:8081` would cause a false failure. Fix: filter by the app's PID or `--pid`, or by the tags `ReactNative|unknown:`.\n- **N6** PR #3 body is out of date:\n  - the evidence table and *How to test* cite run `test-runs/2026-10-14_120331` on f06b45e;\n  - they still say `apksigner`/`aapt` are checked by hand;\n  - they do not mention that AC-01-01-4 now runs on the release build.\n\n  Fix: refresh it with CI run 38557153663 and `test-runs/2026-10-14_132812`.\n- **N7** `scripts/test-acceptance.sh:106-108`: the throwaway key's password is passed on the keytool command line, so it shows in the process list while keytool runs. The impact is negligible (throwaway key, valid 2 days, deleted). Fix: `-storepass:env`/`-keypass:env`.\n\n```\nREVIEW: findings\nSTORY: US-01-01\nIMPACT: scripts/test-acceptance.sh is the only thing CI runs (.github/workflows/acceptance.yml) and carries every story's acceptance tests: it now runs expo prebuild and a release build before stack.sh, and the stack's android/ dir from that prebuild is reused by `expo run:android`. Flows tagged `release-build` are excluded from the debug run, so any later flow that needs the release APK must carry the tag. Local runs now need a running emulator and installed dependencies before the script starts (N1, N2).\nFINDINGS:\n  N1 scripts/test-acceptance.sh:207 — with no emulator running beforehand, stack.sh boots it and kills it on stop, so the AC-01-01-4 precondition always fails locally (\"no device is attached\"); README Tests does not say to pre-start one → document it and fail fast at script start if no device is attached\n  N2 scripts/test-acceptance.sh:112 — fresh clone: step 1 calls node_modules/.bin/expo before stack.sh installs dependencies, so AC-01-01-5 step 4 and everything depending on it fail on the first run → run stack.sh's dependency check before step 1\n  N3 scripts/test-acceptance.sh:162 — Maestro missing: step 3 skipped and release.xml has no AC-01-01-4 rows (exit 1, but the report hides it) → record the AC-01-01-4 precondition as failed in that branch\n  N4 tests/maestro/AC-01-01-4-opens-offline.yaml:12 — step-01-network-off screenshot is taken before the status bar updates (local one shows Wi-Fi on); nothing asserts airplane mode was on before launch → wait before the screenshot, or have the script check logcat order isAirplaneModeOn()=true before \"Loading JS Bundle\"\n  N5 scripts/test-acceptance.sh:259 — the no-bundler grep runs over the whole device log, so another process mentioning localhost:8081 fails it falsely → filter by the app's PID\n  N6 PR #3 body — evidence table and How to test cite the f06b45e run 120331 and say apksigner/aapt are checked by hand → refresh with CI run 38557153663 and test-runs/2026-10-14_132812\n  N7 scripts/test-acceptance.sh:108 — throwaway key password on keytool's command line (visible in the process list; negligible) → -storepass:env/-keypass:env\nCRITERIA:\n  #1 met\n  #2 external — MANUAL TC-01-03 (Kompakt); emulator half met by TC-01-01 in CI run 38557153663 on API 31\n  #3 met\n  #4 met\n  #5 met\n```\n"
+}

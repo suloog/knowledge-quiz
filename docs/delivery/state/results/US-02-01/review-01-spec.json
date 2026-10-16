@@ -1,0 +1,131 @@
+{
+  "story": "US-02-01",
+  "attempt": 1,
+  "round": 1,
+  "sha": "558d8ac3893cc73fa3e52c619add858986995051",
+  "reviewer": "spec",
+  "ts": "2026-10-14T19:20:03Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-02-01",
+    "impact": "src/theme.ts (navigationTheme, stackScreenOptions) and src/app/_layout.tsx now set the theme and transitions for every future screen (US-03-01 cards, US-02-02/03), and src/content now exports `categories`, which later screens and the continue entry will read; a break there changes colours or transitions app-wide. scripts/test-acceptance.sh now passes CATEGORIES/CATEGORY_COUNT to every Maestro flow and runs a width check that can fail the whole CI job; the existing flows TC-00-01, TC-00-03, TC-01-01 and AC-01-01-4 still pass in CI on 558d8ac.",
+    "findings": [
+      {
+        "id": "B1",
+        "blocking": true,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/DECISIONS.md:597 — DEC-48 is marked \"Decided by: developer\", \"Scope effect: within scope\", yet its point 3 makes TC-02-01 step 2 (\"Three entries in the order 3+, 4+, 5+\") and TC-02-02 step 2 (\"each of the three entries\") check only the shipped decks (3+ alone) and leaves the must MOD-02-F02, claimed in Covers, delivered for 3+ only; the run reports TC-02-01 as passing under the title \"listing 3+, 4+ and 5+\" while the app shows one entry, and the product owner never sees the deferral → reclassify DEC-48 point 3 as scope-affecting (MOD-02-F02's 4+/5+ display and the full TC-02-01/02 check deferred to US-01-03/US-01-04), put it to the product owner like DEC-44/46/47, and state in the PR evidence for #2/#6 that the 4+/5+ part is pending those stories (or add the re-run to their criteria)"
+      },
+      {
+        "id": "B2",
+        "blocking": true,
+        "security": false,
+        "tags": [],
+        "text": "src/app/index.tsx:30 — borderBottomWidth: 2 (also :40) is 5.25 px at density 2.625, so in the implementer's own screenshot every rule has a full-width #808080 row on each side (rows 260 and 265, 615 and 620; rows 261-264 and 616-619 are #000000); NFR-07 (\"no greys\") and criterion #4 fail on that emulator, and on the Kompakt too if its density makes 2 dp a fractional pixel count; AC-02-01-4 checks style values only and cannot see this (CI at density 1 hides it) → use a pixel-aligned width (PixelRatio.roundToNearestPixel(2), or whole device pixels via PixelRatio.get()) for every border in the theme, and add a device-level check that samples the TC-02-01 screenshot (or a dumpsys/screencap) for non-#000/#FFF rows outside text glyphs"
+      },
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/maestro/TC-02-01-opens-on-categories.yaml:2 — the flow keeps the name \"listing 3+, 4+ and 5+ in that order\" while asserting one entry today; the report and the CI artifact read as full proof of the TC's pass criterion → note the deferral in the flow or PR evidence (part of B1's fix)"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:51 — expected labels are [\"3+\",\"4+\",\"5+\"].filter(shipped), so a deck with any other label (e.g. a future \"6+\", which MOD-02-F03 says should simply appear) makes TC-02-01 fail at `assertNotVisible category-${CATEGORY_COUNT}` although the screen is right → derive the expected list from all shipped decks sorted by age (the same rule as src/content/index.ts) instead of a fixed allow-list"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/check-full-width.js:1 — TC-02-02 step 2's real check lives in junit/screen.xml, separate from the Maestro flow named TC-02-02, which passes on its own (step 2 there only asserts the entries are visible); a width regression shows TC-02-02 SUCCESS in maestro/report.xml beside a failing screen.xml → name the JUnit case with the TC id and step so the loop folds it into TC-02-02's verdict, or have the flow read the result"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/index.ts:12 — Number.parseInt on a label that does not start with a digit gives NaN, so the sort comparator returns NaN and the order becomes undefined → put labels without a leading age last explicitly, or let the content checks require a leading age"
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "PR #6 body (Acceptance evidence) — the story covers NFR-03, NFR-07, NFR-08, MOD-02-U01 and U05, whose on-device evidence is manual on the Kompakt (TC-02-04; finger size per DEC-17), but the PR lists only TC-02-03 as MANUAL → add TC-02-04 and the Kompakt size/look check to the \"Not verified by the loop\" list"
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/modules/02-age-categories/stories/US-02-01-choose-age-category.md (Edge cases) — \"saved data unreadable → screen still opens\" has no test; it cannot have one yet because there is no persistence module → say so in the PR and leave it to TC-02-09 when US-02-02 adds storage"
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/index.tsx:10 — the content title \"Knowledge Quiz\" (src/content/app.json) is a single-language user-facing string, kept on the category screen deliberately by DEC-48 point 2 and shown in English on a Polish device; this goes against the constitution's \"i18n everywhere\" and the story's \"labels via i18n\" note → give the title pl/en or route it through i18n, at the latest in US-02-03"
+      },
+      {
+        "id": "N8",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": ".github/workflows/acceptance.yml:139 — every screenshot in CI's acceptance-evidence artifact is a solid #000000 frame (320x640 aosp_atd with swiftshader), for TC-02-01/02/14 and the older flows alike, so CI's screenshot evidence is empty and the pass rests on Maestro assertions and the uiautomator dump alone; the cause is the CI environment, not this diff → fix the emulator GPU mode (e.g. -gpu swiftshader_indirect with a non-ATD image, or host GPU) so screenshots are real"
+      },
+      {
+        "id": "N9",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/delivery/tests/AC-02-01-4-black-and-white.md:16 — the derived ACs' titles differ from their Jest describe names (e.g. \", and any other colour fails the test\" is missing; AC-02-01-3 and -5 also differ), and the local run.json records AC-02-01-3/4/5 as \"skipped\" although Jest passed them (the og collector reads only Maestro/Playwright reports) → align the describe names with the spec titles so the run report can match them"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "unmet",
+        "note": "the implementer's screenshot (density 2.625) shows full-width #808080 rows at the edge of every 2 dp border; AC-02-01-4 checks style values only (B2)"
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 6,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 7,
+        "verdict": "external",
+        "note": "MANUAL TC-02-03"
+      }
+    ],
+    "stray": []
+  },
+  "raw": "## Spec-compliance review: PR #6 / US-02-01, round 1\n\n**Verdict: NOT COMPLIANT.** Two items block. The first is that DEC-48 is classified as \"within scope, developer routine\" when it should not be. The second is that the rules between entries draw grey pixels, which NFR-07 forbids.\n\n### What I ran and checked\n- **Diff range:** `origin/main...558d8ac`. The head is clean and equals 558d8ac.\n- **Local Jest:** 18 suites and 63 tests, all passing.\n- **Local run `test-runs/2026-10-14_205706`:** run on 558d8ac with a clean tree, on API 32 at 1080x2400 and density 2.625.\n- **CI run 38620037412 on 558d8ac:** both jobs passed. Artifact `og-test-results` has no `<failure` in any xml.\n\n**Test cases that name US-02-01 in `covers`:** TC-02-01 (#1, #2), TC-02-02 (#6) and TC-02-03 (#7, manual-only). The story's Covers NFRs are also tested by TC-02-04 (NFR-03 and NFR-07, manual-only) and TC-02-14 (NFR-09, auto).\n\n**What CI holds for them:**\n\n| Test | CI result |\n|---|---|\n| TC-02-01 (maestro/report.xml) | SUCCESS |\n| TC-02-02 (maestro/report.xml) | SUCCESS |\n| TC-02-02 step 2 (junit/screen.xml) | pass; category-0 bounds [0,77][320,213] on a 320 px screen |\n| TC-02-14 | SUCCESS |\n| AC-02-01-3, -4, -5 (junit/unit.xml) | all 9 steps pass |\n| TC-02-03 and TC-02-04 | manual-only, so not in CI |\n\n### Criterion table\n\n| # | Verdict | Evidence |\n|---|---|---|\n| 1 | met | `src/app/_layout.tsx`, `src/app/__tests__/_layout.test.tsx`; TC-02-01 step 1 passes in CI and locally. |\n| 2 | met as written | Order logic: `src/content/index.ts:12-15`. Unit test `src/app/__tests__/index.test.tsx` registers 5+, 3+, 4+ and expects 3+, 4+, 5+ with no 4th entry. TC-02-01 step 2 passes, but only for 3+ (see B1). |\n| 3 | met | AC-02-01-3, 3/3 in CI. |\n| 4 | unmet | AC-02-01-4 passes, but the screen itself draws grey (B2). |\n| 5 | met | AC-02-01-5, 3/3 in CI. Transitions `none`; no animating APIs in `src/`. |\n| 6 | met | TC-02-02 plus `junit/screen.xml`: 0–1080 of 1080 locally, 0–320 of 320 in CI. |\n| 7 | external | MANUAL, TC-02-03. |\n\n### Covers check\n- **F01, F03:** delivered.\n- **F02:** delivered for 3+ only (B1).\n- **U03:** delivered; labels come from the deck data.\n- **U01, U05, NFR-08:** only judgeable on the Kompakt. The PR names no manual check for them (N5).\n- **NFR-02:** MANUAL via TC-02-03.\n- **NFR-03:** met by the unit tests; the on-device check is TC-02-04.\n- **NFR-07:** see B2.\n- **NFR-04:** vacuous on a screen with no state; no evidence given.\n- **NFR-09:** TC-02-14 passes.\n\n### Edge cases\n- **Only 3+ exists → screen shows only 3+:** tested. TC-02-01 asserts category-0 is \"3+\" and category-1 is absent.\n- **Android back closes the app:** tested by TC-02-14.\n- **Saved data missing or unreadable → screen still opens:** \"missing\" is exercised by the `clearState` launches. \"Unreadable\" is untestable because no persistence exists yet (N6).\n\n### Out-of-scope check\nNo violations. There is no continue entry, no language switch, and entries are not touchable (choosing is US-03-01). The script and test-infra changes trace to TC-02-01 and TC-02-02.\n\n### DEC-48 classification (asked)\nPoint 3 is not routine:\n- **It changes what reviewed test cases expect without changing them.** TC-02-01 step 2 expects \"Three entries in the order 3+, 4+, 5+\", with pass criterion \"the category list 3+, 4+, 5+\". TC-02-02 step 2 expects \"each of the three entries\". Both are now checked against whatever decks ship, which today is one.\n- **It leaves a `must` delivered only in part.** MOD-02-F02 (\"lists 3+, 4+ and 5+\"), which the story claims in Covers, is met for 3+ only.\n- **The report misleads.** It records TC-02-01 as passing under the title \"listing 3+, 4+ and 5+\" while the app shows only 3+.\n\nThe story's own edge case and criterion #2 wording do allow a 3+-only screen. So the code is right, and only the classification and the deferral are wrong. DEC-44, DEC-46 and DEC-47 were all confirmed by the product owner; DEC-48 should be too.\n\n### Key files\n- `/Users/sulo/workspace/knowledge-quiz/src/app/index.tsx`\n- `/Users/sulo/workspace/knowledge-quiz/src/content/index.ts`\n- `/Users/sulo/workspace/knowledge-quiz/src/theme.ts`\n- `/Users/sulo/workspace/knowledge-quiz/scripts/test-acceptance.sh`\n- `/Users/sulo/workspace/knowledge-quiz/scripts/check-full-width.js`\n- `/Users/sulo/workspace/knowledge-quiz/docs/specs/DECISIONS.md`\n- `/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-14_205706/maestro/2026-10-14_205842/TC-02-01 Launch opens on the category screen listing 3+, 4+ and 5+ in that order/takeScreenshot/step-02-categories-in-order.png`\n\n```\nREVIEW: findings\nSTORY: US-02-01\nIMPACT: src/theme.ts (navigationTheme, stackScreenOptions) and src/app/_layout.tsx now set the theme and transitions for every future screen (US-03-01 cards, US-02-02/03), and src/content now exports `categories`, which later screens and the continue entry will read; a break there changes colours or transitions app-wide. scripts/test-acceptance.sh now passes CATEGORIES/CATEGORY_COUNT to every Maestro flow and runs a width check that can fail the whole CI job; the existing flows TC-00-01, TC-00-03, TC-01-01 and AC-01-01-4 still pass in CI on 558d8ac.\nFINDINGS:\n  B1 docs/specs/DECISIONS.md:597 — DEC-48 is marked \"Decided by: developer\", \"Scope effect: within scope\", yet its point 3 makes TC-02-01 step 2 (\"Three entries in the order 3+, 4+, 5+\") and TC-02-02 step 2 (\"each of the three entries\") check only the shipped decks (3+ alone) and leaves the must MOD-02-F02, claimed in Covers, delivered for 3+ only; the run reports TC-02-01 as passing under the title \"listing 3+, 4+ and 5+\" while the app shows one entry, and the product owner never sees the deferral → reclassify DEC-48 point 3 as scope-affecting (MOD-02-F02's 4+/5+ display and the full TC-02-01/02 check deferred to US-01-03/US-01-04), put it to the product owner like DEC-44/46/47, and state in the PR evidence for #2/#6 that the 4+/5+ part is pending those stories (or add the re-run to their criteria)\n  B2 src/app/index.tsx:30 — borderBottomWidth: 2 (also :40) is 5.25 px at density 2.625, so in the implementer's own screenshot every rule has a full-width #808080 row on each side (rows 260 and 265, 615 and 620; rows 261-264 and 616-619 are #000000); NFR-07 (\"no greys\") and criterion #4 fail on that emulator, and on the Kompakt too if its density makes 2 dp a fractional pixel count; AC-02-01-4 checks style values only and cannot see this (CI at density 1 hides it) → use a pixel-aligned width (PixelRatio.roundToNearestPixel(2), or whole device pixels via PixelRatio.get()) for every border in the theme, and add a device-level check that samples the TC-02-01 screenshot (or a dumpsys/screencap) for non-#000/#FFF rows outside text glyphs\n  N1 tests/maestro/TC-02-01-opens-on-categories.yaml:2 — the flow keeps the name \"listing 3+, 4+ and 5+ in that order\" while asserting one entry today; the report and the CI artifact read as full proof of the TC's pass criterion → note the deferral in the flow or PR evidence (part of B1's fix)\n  N2 scripts/test-acceptance.sh:51 — expected labels are [\"3+\",\"4+\",\"5+\"].filter(shipped), so a deck with any other label (e.g. a future \"6+\", which MOD-02-F03 says should simply appear) makes TC-02-01 fail at `assertNotVisible category-${CATEGORY_COUNT}` although the screen is right → derive the expected list from all shipped decks sorted by age (the same rule as src/content/index.ts) instead of a fixed allow-list\n  N3 scripts/check-full-width.js:1 — TC-02-02 step 2's real check lives in junit/screen.xml, separate from the Maestro flow named TC-02-02, which passes on its own (step 2 there only asserts the entries are visible); a width regression shows TC-02-02 SUCCESS in maestro/report.xml beside a failing screen.xml → name the JUnit case with the TC id and step so the loop folds it into TC-02-02's verdict, or have the flow read the result\n  N4 src/content/index.ts:12 — Number.parseInt on a label that does not start with a digit gives NaN, so the sort comparator returns NaN and the order becomes undefined → put labels without a leading age last explicitly, or let the content checks require a leading age\n  N5 PR #6 body (Acceptance evidence) — the story covers NFR-03, NFR-07, NFR-08, MOD-02-U01 and U05, whose on-device evidence is manual on the Kompakt (TC-02-04; finger size per DEC-17), but the PR lists only TC-02-03 as MANUAL → add TC-02-04 and the Kompakt size/look check to the \"Not verified by the loop\" list\n  N6 docs/specs/modules/02-age-categories/stories/US-02-01-choose-age-category.md (Edge cases) — \"saved data unreadable → screen still opens\" has no test; it cannot have one yet because there is no persistence module → say so in the PR and leave it to TC-02-09 when US-02-02 adds storage\n  N7 src/app/index.tsx:10 — the content title \"Knowledge Quiz\" (src/content/app.json) is a single-language user-facing string, kept on the category screen deliberately by DEC-48 point 2 and shown in English on a Polish device; this goes against the constitution's \"i18n everywhere\" and the story's \"labels via i18n\" note → give the title pl/en or route it through i18n, at the latest in US-02-03\n  N8 .github/workflows/acceptance.yml:139 — every screenshot in CI's acceptance-evidence artifact is a solid #000000 frame (320x640 aosp_atd with swiftshader), for TC-02-01/02/14 and the older flows alike, so CI's screenshot evidence is empty and the pass rests on Maestro assertions and the uiautomator dump alone; the cause is the CI environment, not this diff → fix the emulator GPU mode (e.g. -gpu swiftshader_indirect with a non-ATD image, or host GPU) so screenshots are real\n  N9 docs/delivery/tests/AC-02-01-4-black-and-white.md:16 — the derived ACs' titles differ from their Jest describe names (e.g. \", and any other colour fails the test\" is missing; AC-02-01-3 and -5 also differ), and the local run.json records AC-02-01-3/4/5 as \"skipped\" although Jest passed them (the og collector reads only Maestro/Playwright reports) → align the describe names with the spec titles so the run report can match them\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 unmet — the implementer's screenshot (density 2.625) shows full-width #808080 rows at the edge of every 2 dp border; AC-02-01-4 checks style values only (B2)\n  #5 met\n  #6 met\n  #7 external — MANUAL TC-02-03\n```\n"
+}

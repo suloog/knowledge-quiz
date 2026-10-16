@@ -1,0 +1,82 @@
+{
+  "n": 1,
+  "attempt": 1,
+  "ts": "2026-10-14T09:46:25Z",
+  "story": "US-01-01",
+  "mode": "implement",
+  "parsed": {
+    "result": "needs_decision",
+    "story": "US-01-01",
+    "branch": "feature/US-01-01",
+    "commits": [
+      "4462e0c chore(app): wip, waiting for DEC-44 [US-01-01]"
+    ],
+    "decisions": [
+      "DEC-44 critical Network permission, release signing, component library and the offline test for US-01-01"
+    ],
+    "question": "DEC-44",
+    "tests": {
+      "run": "none",
+      "pass": 0,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 0,
+      "manual_tests": [
+        "TC-01-03"
+      ]
+    },
+    "derived_tests": [],
+    "preexisting": "#1 partly: the Expo SDK 57 / RN 0.86 upgrade was done by US-00-01 (DEC-42); this branch adds the recorded versions in README.md. The app id is already set (DEC-43).",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test ok"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "notes": "The DEC-44 entry is not yet in docs/specs/DECISIONS.md; the resumed run appends it with the owner's answer. The local emulator image is API 32 (no API 31 image here); CI runs API 31. TC-01-03 (Kompakt) is manual-only.",
+    "ask": {
+      "summary": "How should US-01-01 handle the network permission, release signing, the component library and the offline test? I propose the four points below as they stand.",
+      "context": "Done on feature/US-01-01 (WIP 4462e0c): minSdk 31, the TC-01-01 Maestro flow, and the platform versions in README.md. The rest needs your call.\n\nThe debug build that yarn stack and CI test loads its JavaScript from Metro over a local socket, and Android refuses that without INTERNET. TC-01-02 steps 2 and 3 expect the category screen and a card. Those arrive with US-02-01 and US-03-01, so that test case cannot pass in this story.",
+      "points": [
+        "Network: INTERNET is removed from the release build only, through a release manifest written by a config plugin; the debug build keeps it for Metro. Criterion 3 is proven by a unit test on that manifest and by aapt on a built release APK.",
+        "Signing: the release build reads the keystore path, alias and passwords from Gradle properties KQ_UPLOAD_* in ~/.gradle/gradle.properties or the environment. Without them it fails instead of signing with the debug key.",
+        "Component library: none. React Native core components with the app's own black and white theme tokens, written into constitution.md Stack (DEC-07 allows none).",
+        "Offline test: criterion 4 is proven now by a derived test AC-01-01-4 (airplane mode on, the app opens its first screen). The TC-01-02 flow is written once the category screen and cards exist (US-03-01)."
+      ],
+      "options": [
+        {
+          "id": "a",
+          "label": "Take all four points as proposed",
+          "detail": "yarn stack and CI stay on the debug build. The shipped APK has no network permission, checked by a unit test and on the release APK. TC-01-02 runs from US-03-01; until then criterion 4 rests on the derived test."
+        },
+        {
+          "id": "b",
+          "label": "As a, but no INTERNET in any build and e2e on the release build",
+          "detail": "The tested app is exactly the shipped one. But yarn stack and the acceptance script switch to a release build with the bundle embedded: no Metro or live reload, longer CI builds, and the foundation's start command changes."
+        },
+        {
+          "id": "c",
+          "label": "As a, but leave the component library to US-02-01",
+          "detail": "The first real screen chooses it with its design in view. constitution.md Stack stays open until then, and this story makes no UI choice."
+        }
+      ],
+      "recommended": "a",
+      "why": "It meets NFR-05 for the APK that reaches the Kompakt without changing the foundation's start command or CI. It adds no dependency and leaves every reviewed test case untouched."
+    },
+    "ask_problems": [],
+    "question_text": "How should US-01-01 handle the network permission, release signing, the component library and the offline test? I propose the four points below as they stand.\n\nDone on feature/US-01-01 (WIP 4462e0c): minSdk 31, the TC-01-01 Maestro flow, and the platform versions in README.md. The rest needs your call.\n\nThe debug build that yarn stack and CI test loads its JavaScript from Metro over a local socket, and Android refuses that without INTERNET. TC-01-02 steps 2 and 3 expect the category screen and a card. Those arrive with US-02-01 and US-03-01, so that test case cannot pass in this story.\n\n- Network: INTERNET is removed from the release build only, through a release manifest written by a config plugin; the debug build keeps it for Metro. Criterion 3 is proven by a unit test on that manifest and by aapt on a built release APK.\n- Signing: the release build reads the keystore path, alias and passwords from Gradle properties KQ_UPLOAD_* in ~/.gradle/gradle.properties or the environment. Without them it fails instead of signing with the debug key.\n- Component library: none. React Native core components with the app's own black and white theme tokens, written into constitution.md Stack (DEC-07 allows none).\n- Offline test: criterion 4 is proven now by a derived test AC-01-01-4 (airplane mode on, the app opens its first screen). The TC-01-02 flow is written once the category screen and cards exist (US-03-01).\n\na) Take all four points as proposed — yarn stack and CI stay on the debug build. The shipped APK has no network permission, checked by a unit test and on the release APK. TC-01-02 runs from US-03-01; until then criterion 4 rests on the derived test. (recommended)\nb) As a, but no INTERNET in any build and e2e on the release build — The tested app is exactly the shipped one. But yarn stack and the acceptance script switch to a release build with the bundle embedded: no Metro or live reload, longer CI builds, and the foundation's start command changes.\nc) As a, but leave the component library to US-02-01 — The first real screen chooses it with its design in view. constitution.md Stack stays open until then, and this story makes no UI choice.\n\nWhy a: It meets NFR-05 for the APK that reaches the Kompakt without changing the foundation's start command or CI. It adds no dependency and leaves every reviewed test case untouched.",
+    "evidence": [],
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [],
+      "blocked": []
+    },
+    "critical_decisions": [
+      "DEC-44 critical Network permission, release signing, component library and the offline test for US-01-01"
+    ]
+  },
+  "raw": "US-01-01 is parked on one critical decision, DEC-44. It covers four things that need the owner's call: how the network permission is removed, release signing, the component library, and the offline test. The work that needed no decision is done and committed as WIP on feature/US-01-01 (4462e0c, not pushed).\n\nDone in the WIP commit:\n- **Minimum Android version:** minSdk is now 31, set by the config plugin /Users/sulo/workspace/knowledge-quiz/plugins/withMinSdk.js and registered in app.json. Expo prebuild confirmed it lands in android/gradle.properties, and a unit test covers it.\n- **TC-01-01:** the Maestro flow /Users/sulo/workspace/knowledge-quiz/tests/maestro/TC-01-01-opens-on-emulator.yaml is written. It has not been run on the emulator yet.\n- **Versions recorded:** a \"Platform versions\" section in /Users/sulo/workspace/knowledge-quiz/README.md.\n- **Status:** the story and its BACKLOG row are set to in-progress.\n- **Gates:** format:check, lint, tsc and test all pass.\n\nWhy it is parked:\n- The debug build that `yarn stack` and CI test loads its JavaScript from Metro over a socket, which needs the INTERNET permission.\n- TC-01-02 steps 2–3 need the category screen and a card. Those arrive with US-02-01 and US-03-01, so that test case cannot pass in this story.\n- Signing touches secrets, and DEC-07 makes the component library the tech lead's call.\n\nThe DEC-44 number is reserved (`dec next`). Its entry is not yet in DECISIONS.md: the log is append-only, so the resumed run writes it with the owner's answer.\n\nRESULT: needs_decision\nSTORY: US-01-01\nBRANCH: feature/US-01-01\nCOMMITS: 4462e0c chore(app): wip, waiting for DEC-44 [US-01-01]\nDECISIONS: DEC-44 critical Network permission, release signing, component library and the offline test for US-01-01\nQUESTION: DEC-44\nASK_SUMMARY: How should US-01-01 handle the network permission, release signing, the component library and the offline test? I propose the four points below as they stand.\nASK_CONTEXT: Done on feature/US-01-01 (WIP 4462e0c): minSdk 31, the TC-01-01 Maestro flow, and the platform versions in README.md. The rest needs your call.\n\nThe debug build that yarn stack and CI test loads its JavaScript from Metro over a local socket, and Android refuses that without INTERNET. TC-01-02 steps 2 and 3 expect the category screen and a card. Those arrive with US-02-01 and US-03-01, so that test case cannot pass in this story.\nASK_POINT: Network: INTERNET is removed from the release build only, through a release manifest written by a config plugin; the debug build keeps it for Metro. Criterion 3 is proven by a unit test on that manifest and by aapt on a built release APK.\nASK_POINT: Signing: the release build reads the keystore path, alias and passwords from Gradle properties KQ_UPLOAD_* in ~/.gradle/gradle.properties or the environment. Without them it fails instead of signing with the debug key.\nASK_POINT: Component library: none. React Native core components with the app's own black and white theme tokens, written into constitution.md Stack (DEC-07 allows none).\nASK_POINT: Offline test: criterion 4 is proven now by a derived test AC-01-01-4 (airplane mode on, the app opens its first screen). The TC-01-02 flow is written once the category screen and cards exist (US-03-01).\nASK_OPTION a: Take all four points as proposed | yarn stack and CI stay on the debug build. The shipped APK has no network permission, checked by a unit test and on the release APK. TC-01-02 runs from US-03-01; until then criterion 4 rests on the derived test.\nASK_OPTION b: As a, but no INTERNET in any build and e2e on the release build | The tested app is exactly the shipped one. But yarn stack and the acceptance script switch to a release build with the bundle embedded: no Metro or live reload, longer CI builds, and the foundation's start command changes.\nASK_OPTION c: As a, but leave the component library to US-02-01 | The first real screen chooses it with its design in view. constitution.md Stack stays open until then, and this story makes no UI choice.\nASK_RECOMMEND: a\nASK_WHY: It meets NFR-05 for the APK that reaches the Kompakt without changing the foundation's start command or CI. It adds no dependency and leaves every reviewed test case untouched.\nTESTS: run=none (waiting for DEC-44; unit suite only: 5 passed) pass=0 fail=0 blocked=0 manual=0 manual_tests=TC-01-03\nDERIVED_TESTS: none\nPREEXISTING: #1 partly: the Expo SDK 57 / RN 0.86 upgrade was done by US-00-01 (DEC-42); this branch adds the recorded versions in README.md. The app id is already set (DEC-43).\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test ok\nENV_KEYS: none\nMIGRATION: no\nNOTES: The DEC-44 entry is not yet in docs/specs/DECISIONS.md; the resumed run appends it with the owner's answer. The local emulator image is API 32 (no API 31 image here); CI runs API 31. TC-01-03 (Kompakt) is manual-only.\n",
+  "evidence": []
+}

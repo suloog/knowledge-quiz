@@ -1,0 +1,93 @@
+{
+  "story": "US-01-01",
+  "attempt": 1,
+  "round": 1,
+  "sha": "f06b45e49094ca8b984bfd26aa481514cc4fdaec",
+  "reviewer": "code",
+  "ts": "2026-10-14T11:13:54Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-01-01",
+    "impact": "The plugins `withMinSdk`, `withReleaseNoNetwork` and `withReleaseSigning` run only at `expo prebuild`. They change `android/gradle.properties`, `app/build.gradle` and add a release-only manifest, so they affect every future release build and any CI or developer that builds a release APK. The release build now fails without the four `KQ_UPLOAD_*` properties, so nothing can ship without Maciej's key. `src/theme.ts` and `src/app/index.tsx` feed every later screen. The AC-01-01-4 flow and the acceptance script and workflow are shared with every later story's CI, and the red check blocks the merge of this PR.",
+    "findings": [
+      {
+        "id": "B1",
+        "blocking": true,
+        "security": false,
+        "tags": [],
+        "text": "tests/maestro/AC-01-01-4-opens-offline.yaml:1 (with scripts/test-acceptance.sh, .github/workflows/acceptance.yml, docs/specs/DECISIONS.md DEC-44 point 4) — Airplane mode makes the debug app unable to reach Metro at 10.0.2.2:8081. The first screen never renders, the flow fails, CI is red, and criterion 4 is not evidenced. Scenario: `setAirplaneMode: enabled`, then `launchApp clearState`, then wait for `content-title` shows the \"Unable to load script\" red box after 120 s. → Run this flow against a release build that bundles its JavaScript (and has INTERNET removed, which is the true proof). In CI, generate a throwaway keystore with `keytool`, export `KQ_UPLOAD_*` as environment variables, run `./gradlew assembleRelease`, install the APK, and run the flow against it. Keep the other flows on the debug stack. The test case and DEC-44 wording need adjusting to \"release build\", which the owner should be told about."
+      },
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "plugins/__tests__/withMinSdk.test.js:4 and src/__tests__/theme.test.ts:4 — The describe names carry no AC or TC id, so CI cannot match their results to a criterion. withMinSdk is the only automated check for the NFR-10 edge case (an older device is not offered the app). → Prefix the describe with an id, for example AC-01-01-2 or NFR-10, or fold the minSdk assertion into an id-named test. Also, the second `it` in withReleaseNoNetwork.test.js and the last two in withReleaseSigning.test.js carry the id only through the describe."
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": ".github/workflows/acceptance.yml and docs/delivery/tests/AC-01-01-3-no-network-permission.md — Criterion 3 is proven only by a string/XML unit test of the generated manifest. The merged result has never been checked in CI. Once B1 builds a release APK, add `aapt dump permissions` and assert there is no INTERNET, ACCESS_NETWORK_STATE or ACCESS_WIFI_STATE. I verified locally that the merged manifest is clean."
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "plugins/withReleaseNoNetwork.js:9 — The release APK still declares SYSTEM_ALERT_WINDOW, VIBRATE and READ/WRITE_EXTERNAL_STORAGE, which come from the Expo template. None is a network permission, and an offline, no-permission E-ink app does not need them. → Optionally remove them in the same release manifest."
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "plugins/__tests__/withReleaseSigning.test.js:44-60 — The signing assertions are regexes and substring checks on Gradle text. They do not run Gradle. I confirmed the behaviour with a manual dry-run, but a change to the Expo template that keeps the same strings could still break signing. This is acceptable given DEC-44 and the manual APK check."
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "plugins/__tests__/withReleaseNoNetwork.test.js:24-37 — `fs.rmSync` runs after `expect`, so a failing assertion leaks the temp directory. → Use try/finally."
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "README.md (Platform versions) — It says \"package.json and yarn.lock pin them\", but `expo` is `^57.0.0` in package.json. Only yarn.lock pins it exactly. → Reword."
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": "The README records the versions, and the AC-01-01-1 Jest test compares them with the installed packages and passes in CI. Whether they are the latest is out of the test's scope per DEC-06 and DEC-42."
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": "TC-01-01 passes on the CI Android 12 emulator, and minSdk 31 is confirmed in the built APK. The Kompakt part is external — MANUAL TC-01-03."
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": "The Jest test on the release manifest passes, and I confirmed the merged release manifest has no network permissions. An `aapt` check in CI is N2."
+      },
+      {
+        "n": 4,
+        "verdict": "unmet",
+        "note": "AC-01-01-4 fails in CI, because the debug build cannot load its JavaScript offline (B1). The criterion could be evidenced with a release build in CI, so this counts as evidence the implementer could have produced."
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": "The release signing config reads only the `KQ_UPLOAD_*` properties or environment, fails with a message naming the missing keys (verified by a dry-run), and never uses the debug key. The AC-01-01-5 test passes. Building a real signed APK is external — MANUAL, needs Maciej's key (DEC-09)."
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Round 1 review of PR #3 (US-01-01, head f06b45e): needs-work. One blocking finding: CI is red because the offline flow AC-01-01-4 cannot pass against the debug build.\n\n**CI result.** Run 38547165315, \"Acceptance tests (Android 12 emulator)\", ended in failure. TC-00-01, TC-00-03 and TC-01-01 passed on the emulator. The 15 Jest tests passed in CI and locally. Only `AC-01-01-4 The app starts and runs with the device's network switched off` failed, with `Assertion is false: id: content-title is visible` after 2m 2s.\n\n**Root cause of the CI failure.**\n- The failure screenshot shows the React Native red box \"Unable to load script … make sure you're running Metro\".\n- Logcat shows `Failed to connect to /10.0.2.2:8081`, \"The packager does not seem to be running\", and `ReactHost.handleHostException(\"Unable to load script\")`.\n- `scripts/stack.sh` runs `expo run:android`, which installs a debug build with no bundled JS. That build loads its JavaScript over the network from Metro at 10.0.2.2:8081, the emulator's alias for the host.\n- With airplane mode on, that route is down. `adb reverse` would not help, because React Native on an emulator uses 10.0.2.2.\n- The flow therefore measures Metro connectivity, not whether the app runs offline.\n- No fix inside the flow file can make it pass against a debug build.\n- The other flows pass only because the network is on.\n\n**Local checks I ran.**\n- A merged release manifest from the existing local `android/` build has no INTERNET, ACCESS_NETWORK_STATE or ACCESS_WIFI_STATE. The debug APK has `sdkVersion:'31'` and still declares INTERNET, as DEC-44 intends.\n- `./gradlew :app:assembleRelease --dry-run` without the properties fails with the message naming all four `KQ_UPLOAD_*` keys. With dummy values it succeeds, and `assembleDebug` is unaffected.\n- `android.minSdkVersion` in `gradle.properties` is read by Expo's settings plugin, so `withMinSdk` takes effect.\n\n**Reading of DEC-44.** DEC-44 point 4 says criterion 4 is proven by AC-01-01-4 with \"airplane mode on, the app opens its first screen\". That proof is achievable, but only against a release build. The owner confirmed DEC-44 on the assumption that the flow works on the current debug build, so this finding may need the owner's attention. The fix below still satisfies the wording of criterion 4.\n\n**Test-run requirement.** Every new test is run by `yarn test:acceptance`: Jest picks up `plugins/__tests__/`, `tests/unit/` and `src/`, and Maestro picks up `tests/maestro/`. The ids AC-01-01-1, -3, -5 and the Maestro names carry their ids. The exceptions are in N1.\n\nREVIEW: findings\nSTORY: US-01-01\nIMPACT: The plugins `withMinSdk`, `withReleaseNoNetwork` and `withReleaseSigning` run only at `expo prebuild`. They change `android/gradle.properties`, `app/build.gradle` and add a release-only manifest, so they affect every future release build and any CI or developer that builds a release APK. The release build now fails without the four `KQ_UPLOAD_*` properties, so nothing can ship without Maciej's key. `src/theme.ts` and `src/app/index.tsx` feed every later screen. The AC-01-01-4 flow and the acceptance script and workflow are shared with every later story's CI, and the red check blocks the merge of this PR.\nFINDINGS:\n  B1 tests/maestro/AC-01-01-4-opens-offline.yaml:1 (with scripts/test-acceptance.sh, .github/workflows/acceptance.yml, docs/specs/DECISIONS.md DEC-44 point 4) — Airplane mode makes the debug app unable to reach Metro at 10.0.2.2:8081. The first screen never renders, the flow fails, CI is red, and criterion 4 is not evidenced. Scenario: `setAirplaneMode: enabled`, then `launchApp clearState`, then wait for `content-title` shows the \"Unable to load script\" red box after 120 s. → Run this flow against a release build that bundles its JavaScript (and has INTERNET removed, which is the true proof). In CI, generate a throwaway keystore with `keytool`, export `KQ_UPLOAD_*` as environment variables, run `./gradlew assembleRelease`, install the APK, and run the flow against it. Keep the other flows on the debug stack. The test case and DEC-44 wording need adjusting to \"release build\", which the owner should be told about.\n  N1 plugins/__tests__/withMinSdk.test.js:4 and src/__tests__/theme.test.ts:4 — The describe names carry no AC or TC id, so CI cannot match their results to a criterion. withMinSdk is the only automated check for the NFR-10 edge case (an older device is not offered the app). → Prefix the describe with an id, for example AC-01-01-2 or NFR-10, or fold the minSdk assertion into an id-named test. Also, the second `it` in withReleaseNoNetwork.test.js and the last two in withReleaseSigning.test.js carry the id only through the describe.\n  N2 .github/workflows/acceptance.yml and docs/delivery/tests/AC-01-01-3-no-network-permission.md — Criterion 3 is proven only by a string/XML unit test of the generated manifest. The merged result has never been checked in CI. Once B1 builds a release APK, add `aapt dump permissions` and assert there is no INTERNET, ACCESS_NETWORK_STATE or ACCESS_WIFI_STATE. I verified locally that the merged manifest is clean.\n  N3 plugins/withReleaseNoNetwork.js:9 — The release APK still declares SYSTEM_ALERT_WINDOW, VIBRATE and READ/WRITE_EXTERNAL_STORAGE, which come from the Expo template. None is a network permission, and an offline, no-permission E-ink app does not need them. → Optionally remove them in the same release manifest.\n  N4 plugins/__tests__/withReleaseSigning.test.js:44-60 — The signing assertions are regexes and substring checks on Gradle text. They do not run Gradle. I confirmed the behaviour with a manual dry-run, but a change to the Expo template that keeps the same strings could still break signing. This is acceptable given DEC-44 and the manual APK check.\n  N5 plugins/__tests__/withReleaseNoNetwork.test.js:24-37 — `fs.rmSync` runs after `expect`, so a failing assertion leaks the temp directory. → Use try/finally.\n  N6 README.md (Platform versions) — It says \"package.json and yarn.lock pin them\", but `expo` is `^57.0.0` in package.json. Only yarn.lock pins it exactly. → Reword.\nCRITERIA:\n  #1 met — The README records the versions, and the AC-01-01-1 Jest test compares them with the installed packages and passes in CI. Whether they are the latest is out of the test's scope per DEC-06 and DEC-42.\n  #2 met — TC-01-01 passes on the CI Android 12 emulator, and minSdk 31 is confirmed in the built APK. The Kompakt part is external — MANUAL TC-01-03.\n  #3 met — The Jest test on the release manifest passes, and I confirmed the merged release manifest has no network permissions. An `aapt` check in CI is N2.\n  #4 unmet — AC-01-01-4 fails in CI, because the debug build cannot load its JavaScript offline (B1). The criterion could be evidenced with a release build in CI, so this counts as evidence the implementer could have produced.\n  #5 met — The release signing config reads only the `KQ_UPLOAD_*` properties or environment, fails with a message naming the missing keys (verified by a dry-run), and never uses the debug key. The AC-01-01-5 test passes. Building a real signed APK is external — MANUAL, needs Maciej's key (DEC-09).\n"
+}

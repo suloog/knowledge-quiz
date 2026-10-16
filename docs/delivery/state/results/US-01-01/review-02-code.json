@@ -1,0 +1,109 @@
+{
+  "story": "US-01-01",
+  "attempt": 1,
+  "round": 2,
+  "sha": "b9a4b6da20d0293f229dfeff30cbb6318dcfc79f",
+  "reviewer": "code",
+  "ts": "2026-10-14T11:52:38Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-01-01",
+    "impact": "`scripts/test-acceptance.sh` is what CI and the delivery loop run for every story from here on. It now also builds a release APK first (about 12 minutes extra in CI) and installs and uninstalls the app on the device between the two stacks. The `release-build` tag in `tests/maestro/` is a new convention that later offline flows (for example TC-01-02) must follow. `plugins/withReleaseSigning.js` and its `KQ_UPLOAD_*` resolution are shared by every release build, including Maciej's real one.",
+    "findings": [
+      {
+        "id": "B1",
+        "blocking": true,
+        "security": true,
+        "tags": [
+          "security"
+        ],
+        "text": "plugins/withReleaseSigning.js (kqUpload) / scripts/test-acceptance.sh:~118 — with the real upload key in ~/.gradle/gradle.properties (as the README prescribes), Gradle properties beat the env vars, so the acceptance run signs with the real key and step 5 fails falsely (\"not signed with the key passed in\") → make the plugin prefer env over properties (or pass -P) and add a precedence unit test"
+      },
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:~100-115 — step 1 needs node_modules/.bin/expo before stack.sh installs dependencies, so a fresh clone fails every release check → install dependencies first (same condition as stack.sh)"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:~186 — with no emulator running, stack.sh boots and then kills it, so the AC-01-01-4 precondition fails \"no device attached\"; README says stack boots one → document that an emulator must be running, or keep it alive"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/maestro/TC-01-01-opens-on-emulator.yaml — native SIGSEGV (libreactnative, pc 0, after `Running \"main\"`) in the debug build on relaunch with clearState (local run 132325, fails the run; no retry) → investigate or retry once"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:~205 / tests/maestro/AC-01-01-4-opens-offline.yaml — the logcat bundler grep cannot fail on a release build and was never shown to fail on a debug one; airplane mode is never asserted, only screenshotted → add a negative control or an airplane_mode_on check"
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:~101 — throwaway password in keytool argv (visible in ps) → use -storepass:env / -keypass:env"
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:~42 — BUILD_TOOLS picks the newest directory, possibly a preview without the needed tools → pick the newest that contains apksigner and aapt"
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/delivery/tests/AC-01-01-3-no-network-permission.md:25, AC-01-01-4-opens-offline.md:20 — the \"Depends on\" table row says \"—\" while the frontmatter says [AC-01-01-5] → align them"
+      },
+      {
+        "id": "N8",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "PR #3 description — \"Acceptance evidence\" and the impact block cite the f06b45e run and debug-build offline → refresh with CI run 38557153663 and local run 132812"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "external",
+        "note": "MANUAL TC-01-03 (Kompakt); the emulator part is met (TC-01-01 passes in CI run 38557153663 and in local run 132812)"
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": "Jest on the release manifest, plus aapt on the built, signed release APK (junit/release.xml, CI and local)"
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": "the release APK with its embedded bundle, Metro stopped, adb reverse removed, pre-checks passed, flow passed in airplane mode, logcat clean (N4 is evidence-strength only)"
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": "Jest on the signing config, plus a release APK built from a throwaway KQ_UPLOAD_* key and apksigner-verified, with the key kept out of the repo (the real key with Maciej, DEC-09; B1 is the one defect in how the key is injected)"
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Round 2 review of PR #3 (US-01-01), fix commits f06b45e..b9a4b6d, with the whole PR as context. B1 and B2 are fixed in substance. I found one blocking issue, in how the throwaway key is injected. The rest is non-blocking.\n\nCI evidence: run 38557153663 on b9a4b6d finished `success` in about 19 minutes. The log shows all six release-apk checks passing, TC-00-01, TC-00-03 and TC-01-01 passing on the debug build, AC-01-01-4 passing on the release APK, and the unit tests passing. Both artifacts uploaded, including `og-test-results`. I downloaded that artifact: it holds `junit/release.xml`, `junit/unit.xml`, `maestro/report.xml` and `maestro/report-release.xml`, and release.xml carries the AC-01-01-3/-4/-5 ids. `.github/**` is untouched and needs no change.\n- **Time budget:** the release build took about 11.5 minutes, the debug stack about 3.5 minutes, and the whole acceptance step 18 minutes. The job limit is 90, so there is plenty of room.\n- **Local run 2026-10-14_132812:** it passes as described. The apksigner DN is the throwaway key's, `sdkVersion:'31'`, the permissions list has no network permission, and `adb reverse --list` was empty before the flow.\n- **Key handling:** I found no password or key path in `release-build.log`, `acceptance.log`, `stack.log` or the CI log. The key lives in a `mktemp -d` directory outside the repo and the run directory, is deleted right after the build, and is also removed by the EXIT trap. `*.p12` and `*.jks` are now in `.gitignore`.\n\nFindings:\n- **B1 (blocking)**, `scripts/test-acceptance.sh:~118` with `plugins/withReleaseSigning.js` (the `kqUpload` closure): the throwaway key is passed only as environment variables, but the plugin resolves `findProperty(name) ?: System.getenv(name)`. Gradle properties win over environment variables. The README and DEC-44 tell Maciej to keep the real upload key in `~/.gradle/gradle.properties`. After he does, a local `yarn test:acceptance` (the loop runs on his account and machine) builds with his real key and ignores the throwaway one. Step 5 then fails with the misleading \"not signed with the key passed in\", and the real upload key is used in a test run, contradicting \"never the upload key\". It is latent on this machine because `~/.gradle/gradle.properties` does not exist. Fix: make the plugin prefer the environment (`System.getenv(name) ?: findProperty(name)`) and add a unit test for that precedence. Alternatively pass the four values to gradlew as `-P` arguments, which win over `gradle.properties` but put the password in argv. Either way, keep the DN check.\n\nNon-blocking:\n- **N1** `scripts/test-acceptance.sh` step 1 (the `expo prebuild` call) and the header comment: step 1 runs before `stack.sh` installs dependencies. On a fresh clone without `node_modules`, `node_modules/.bin/expo` is missing, so AC-01-01-5 step 4, steps 5-6, AC-01-01-3 and the AC-01-01-4 precondition all fail. Before this change the script worked from a fresh clone, because `stack.sh` installed dependencies first. Fix: run `yarn install --frozen-lockfile` at the top when `node_modules` is missing or `yarn.lock` is newer, using the same condition as `stack.sh`.\n- **N2** `scripts/test-acceptance.sh` step 3, and the comment saying `stack.sh` boots an emulator: with no emulator running, `stack.sh` boots one and its cleanup kills it on `stop_stack`. Step 3 then finds no device, and the AC-01-01-4 precondition fails. The README and the script's own step-2 comment still present \"no device attached, the start command boots it\" as supported. Fix: state in the README Tests section that an emulator must already be running, or keep the emulator alive across the stack stop.\n- **N3** Debug-build flake: in local run `2026-10-14_132325` TC-01-01 failed. The device log shows `Fatal signal 11 (SIGSEGV)` in `mqt_v_js` (`libreactnative.so`, `pc 0`) right after `Running \"main\"`, with the app relaunched by `launchApp: clearState`. Run 132812 and the CI run passed on the same head. The flows are unchanged by this fix, but nothing retries, so one native crash turns the PR check red. Fix: find out whether the crash is tied to the clearState relaunch, or retry the flow once.\n- **N4** `scripts/test-acceptance.sh` (the `$POST` check) and `tests/maestro/AC-01-01-4-opens-offline.yaml`: the logcat grep looks for debug-build bundler strings, but a release build never logs them, so the check cannot fail and was never shown to fail on a debug build. It is cheap and harmless. The flow also never asserts that airplane mode really took effect; the only evidence is the screenshot. If you want stronger evidence, record `adb shell settings get global airplane_mode_on` or `dumpsys connectivity` while the network is off.\n- **N5** `scripts/test-acceptance.sh:~101`: the throwaway password is on the keytool command line and visible in `ps` for about a second. The key is worthless and valid for 2 days, but `keytool -storepass:env` removes the exposure.\n- **N6** `scripts/test-acceptance.sh`: `BUILD_TOOLS` takes the newest directory, which may be a preview build-tools version. Pinning is not needed, but a missing `apksigner` or `aapt` currently shows up only as a failed check with an empty log.\n- **N7** `docs/delivery/tests/AC-01-01-3-no-network-permission.md` and `AC-01-01-4-opens-offline.md`: the frontmatter now says `depends_on: [AC-01-01-5]`, but the table row still says `**Depends on** | —`.\n- **N8** PR description: the \"Acceptance evidence\" section and the `og:impact` block still cite run `test-runs/2026-10-14_120331` on f06b45e and say AC-01-01-4 ran under airplane mode on the debug build. Update them to CI run 38557153663 and local run 132812, and to the release-APK evidence.\n\nThe rest of the diff is fine. The test renames, the `try/finally` cleanup in `plugins/__tests__/withReleaseNoNetwork.test.js` and the `.gitignore` additions are in scope. The tests would fail if the change were reverted: with the release-APK block removed, the AC-01-01-3/-5 ids vanish from `junit/release.xml`, and with it the AC-01-01-4 evidence. Without the `release-build` tag and `--exclude-tags`, AC-01-01-4 would run against the debug build and fail.\n\nREVIEW: findings\nSTORY: US-01-01\nIMPACT: `scripts/test-acceptance.sh` is what CI and the delivery loop run for every story from here on. It now also builds a release APK first (about 12 minutes extra in CI) and installs and uninstalls the app on the device between the two stacks. The `release-build` tag in `tests/maestro/` is a new convention that later offline flows (for example TC-01-02) must follow. `plugins/withReleaseSigning.js` and its `KQ_UPLOAD_*` resolution are shared by every release build, including Maciej's real one.\nFINDINGS:\n  B1 [security] plugins/withReleaseSigning.js (kqUpload) / scripts/test-acceptance.sh:~118 — with the real upload key in ~/.gradle/gradle.properties (as the README prescribes), Gradle properties beat the env vars, so the acceptance run signs with the real key and step 5 fails falsely (\"not signed with the key passed in\") → make the plugin prefer env over properties (or pass -P) and add a precedence unit test\n  N1 scripts/test-acceptance.sh:~100-115 — step 1 needs node_modules/.bin/expo before stack.sh installs dependencies, so a fresh clone fails every release check → install dependencies first (same condition as stack.sh)\n  N2 scripts/test-acceptance.sh:~186 — with no emulator running, stack.sh boots and then kills it, so the AC-01-01-4 precondition fails \"no device attached\"; README says stack boots one → document that an emulator must be running, or keep it alive\n  N3 tests/maestro/TC-01-01-opens-on-emulator.yaml — native SIGSEGV (libreactnative, pc 0, after `Running \"main\"`) in the debug build on relaunch with clearState (local run 132325, fails the run; no retry) → investigate or retry once\n  N4 scripts/test-acceptance.sh:~205 / tests/maestro/AC-01-01-4-opens-offline.yaml — the logcat bundler grep cannot fail on a release build and was never shown to fail on a debug one; airplane mode is never asserted, only screenshotted → add a negative control or an airplane_mode_on check\n  N5 scripts/test-acceptance.sh:~101 — throwaway password in keytool argv (visible in ps) → use -storepass:env / -keypass:env\n  N6 scripts/test-acceptance.sh:~42 — BUILD_TOOLS picks the newest directory, possibly a preview without the needed tools → pick the newest that contains apksigner and aapt\n  N7 docs/delivery/tests/AC-01-01-3-no-network-permission.md:25, AC-01-01-4-opens-offline.md:20 — the \"Depends on\" table row says \"—\" while the frontmatter says [AC-01-01-5] → align them\n  N8 PR #3 description — \"Acceptance evidence\" and the impact block cite the f06b45e run and debug-build offline → refresh with CI run 38557153663 and local run 132812\nCRITERIA:\n  #1 met\n  #2 external — MANUAL TC-01-03 (Kompakt); the emulator part is met (TC-01-01 passes in CI run 38557153663 and in local run 132812)\n  #3 met — Jest on the release manifest, plus aapt on the built, signed release APK (junit/release.xml, CI and local)\n  #4 met — the release APK with its embedded bundle, Metro stopped, adb reverse removed, pre-checks passed, flow passed in airplane mode, logcat clean (N4 is evidence-strength only)\n  #5 met — Jest on the signing config, plus a release APK built from a throwaway KQ_UPLOAD_* key and apksigner-verified, with the key kept out of the repo (the real key with Maciej, DEC-09; B1 is the one defect in how the key is injected)\n"
+}

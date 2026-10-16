@@ -1,0 +1,133 @@
+{
+  "story": "US-01-03",
+  "attempt": 1,
+  "round": 1,
+  "sha": "11fc8197964d00a190119a089b3cb15768fadf1f",
+  "reviewer": "spec",
+  "ts": "2026-10-14T23:01:10Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-01-03",
+    "impact": "All six acceptance criteria are met with CI evidence on head 11fc819 (91/91 Jest including AC-01-03-1…6, AC-01-02-7 bundle check with 4+ texts, Maestro green), the 50-question record is in the PR verbatim, and a manual pass over all 50 questions in both languages found no missed second answer, no options in the text and no real pl/en mismatch. Findings are non-blocking record/wording nits, two test-strength gaps, a stale PR impact block, and a merge-order dependency with US-02-01 under DEC-48.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/delivery/content-checks/US-01-03-4-plus.md:9 — \"gawra\" listed as an example known word but no question uses it since 4p-29 was reworded; stale in the record and PR body → drop \"gawra\" from the example list"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/delivery/content-checks/US-01-03-4-plus.md:46 — 4p-29 rules out borsuk as \"does not sleep all winter\", but Polish preschool material lists the badger among winter sleepers; question stays unambiguous via \"duże brązowe\" → change the reason to \"grey and medium-sized, not big and brown\""
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/4-plus.json:258 — 4p-22 EN \"the round glass on a handle\" carries \"round\" that PL \"szkiełko z rączką\" lacks (minor F07 difference) → add \"okrągłe\" to PL or drop \"round\" from EN"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/4-plus.json:378 — 4p-32 PL answer singular \"Korzeń.\" vs EN plural \"The roots.\" → make number agree in both languages"
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/unit/AC-01-03-6-no-3-plus-repeat.test.ts:18 — same-answer check compares EN answers only with the article stripped, so plural/preposition variants (\"Candles\" vs \"A candle\", \"Onto a toothbrush\" vs \"A toothbrush\") or PL-only matches slip through → also compare PL answers and normalise prepositions/plurals"
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/unit/age-suitability-record.js:10 — options detector knows only \"czy\"/\"or\"; a question using \"albo\"/\"lub\" or \"either\" would pass step 5 → add albo|lub (and either) to the patterns"
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/unit/deck-criteria.ts:1 — diff rewrites US-01-02 tests AC-01-02-1…5 onto shared helpers although the story says \"add only data\" and puts the content checks out of scope; behaviour unchanged (names and counts identical, CI green) and not recorded as a decision → accept, or note it as reuse under the technical note"
+      },
+      {
+        "id": "N8",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/4-plus.json:114 — 4p-10 \"Którą częścią buzi czujemy smak\" copies the 3+ template of 3p-08…10, against DEC-49's \"beyond the 3+ body parts\"; 4p-05 and 4p-24 are also at 3+ level (MOD-01-F06) → swap 4p-10 for a DEC-49 topic or flag it for the owner's review"
+      },
+      {
+        "id": "N9",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "PR #8 body (og:impact block) — says AC-01-03-1…6 \"not run on this head\" and evidence \"not current\", though CI on 11fc819 passes all six → regenerate the impact block"
+      },
+      {
+        "id": "N10",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/4-plus.json — 4p-14 Para/Steam: the visible white cloud is condensed droplets, not vapour; colloquially correct in both languages, so a loose \"verifiable\" point → leave or note it in the record"
+      },
+      {
+        "id": "N11",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/DECISIONS.md:589 — US-02-01 adds DEC-48 at the same line, so the second PR to merge conflicts and DEC-48 may land after DEC-49/50 → keep the entries in numeric order when rebasing"
+      },
+      {
+        "id": "N12",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/modules/01-question-content/stories/US-01-03-deck-4-plus.md:1 — owner-confirmed DEC-48 (on feature/US-02-01) moves the 4+ part of MOD-02-F02 and the full TC-02-01/02 check to US-01-03; if US-02-01 merges first, #8 could merge without TC-02-01/02 having shown 4+ → after US-02-01 merges, rebase #8 and require TC-02-01/02 green with 4+ in CI before merge"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 6,
+        "verdict": "met",
+        "note": ""
+      }
+    ],
+    "stray": []
+  },
+  "raw": "## Spec-compliance review: PR #8, US-01-03 (4+ deck), round 1\n\nI reviewed head 11fc8197964d00a190119a089b3cb15768fadf1f in a detached worktree, with node_modules symlinked from the main checkout. Afterwards I removed the symlink and the worktree. I did not change the main checkout or its branch. The other worktree, `wt-us0201-spec`, belongs to another agent and I left it alone.\n\n### Evidence\n- **CI on the head (run 38650221344, artifact `og-test-results`):** both jobs passed. Gates took 51s; acceptance on the Android 12 emulator took 8m2s.\n  - `junit/unit.xml`: 91 tests, 0 failures. The AC-01-03 tests:\n\n    | Test | Passed |\n    | --- | --- |\n    | AC-01-03-1 | 4/4 |\n    | AC-01-03-2 | 4/4 |\n    | AC-01-03-3 | 5/5 |\n    | AC-01-03-4 | 5/5 |\n    | AC-01-03-5 | 16/16 |\n    | AC-01-03-6 | 4/4 |\n\n  - The refactored AC-01-02-1…5 tests still pass with the same case counts (4, 4, 5, 5, 16). AC-01-02-6 and AC-01-02-7 also pass.\n  - `junit/release.xml`: AC-01-02-7 step 2 passes. It checks that the release bundle holds every deck's texts.\n  - Maestro: TC-00-01, TC-00-03, TC-01-01 and the release-build AC-01-01-4 all pass.\n- **Local run `test-runs/2026-10-15_004510`:** commit 11fc819, clean tree.\n  - The Jest output has 91 tests with 0 failures.\n  - `release/bundle-content.txt` reads \"3+, 4+: 500 of 500 texts found in the bundle\".\n  - `run.json` shows AC-01-03-1…6 as `skipped`. That is expected: `collect_run.py` doesn't read Jest output, the same as in the US-01-02 runs. CI JUnit is the evidence that counts.\n- **My own runs:** jest (91 tests passed), `tsc` (clean), prettier (clean) and `expo lint` (clean). Running eslint directly on `tests/` reports `__dirname` no-undef errors. The project's lint covers only `src`, so this predates the PR and blocks nothing.\n\n### Acceptance criteria\n\n| # | Criterion | Verdict | Evidence |\n| --- | --- | --- | --- |\n| 1 | 50 questions, one answer each, pl and en | met | `src/content/decks/4-plus.json`; AC-01-03-1 passes in CI |\n| 2 | Questions ≤100 and answers ≤60 characters | met | Longest pl/en question is 83, longest answer 19; AC-01-03-2 passes in CI |\n| 3 | Each kind ≥5 times | met | 12 educational, 12 popular-science, 14 nature, 12 trivia; AC-01-03-3 passes in CI |\n| 4 | Age-suitability record in the PR | met | Record file has 50 rows, all four checks `pass`, near misses named; the PR body carries all 50 rows unchanged (diff-checked); AC-01-03-4 passes in CI |\n| 5 | All content checks pass; breaking one fails the suite | met | AC-01-03-5 passes in CI, with 13 broken copies of the 4+ deck plus cross-deck duplicates |\n| 6 | No 4+ question repeats a 3+ question | met | AC-01-03-6 passes in CI; I also compared all 100 3+/4+ pairs by hand |\n\n### Covers check\n- **F02, F03, F04, F05, F07, F11, F12, F15:** delivered and tested, as in the table above.\n- **F06 and F14:** delivered through the record and my manual review. See N8 on difficulty.\n- **Content review:** I checked all 50 questions in both languages against the four Q29 checks, MOD-01-F04/F06/F07/F14 and the DEC-47 rule.\n  - No second answer that is genuinely correct and missing from the record.\n  - No question names options: I checked for czy, albo, lub, or and either.\n  - No real mismatch between Polish and English. Small differences are listed in N3 and N4.\n  - Nothing frightening, violent or adult. The mildest content is a toothache, a fever, a storm and a T. rex mention.\n- **Story's edge case** (content failing a check fails the suite): covered by AC-01-03-5 and the CI gates.\n- **NFRs:** the story claims none.\n\n### Decisions\n- **DEC-49 and DEC-50 are correctly routine.**\n  - DEC-49 is a content judgement inside F06, and the owner reviews all content before release (DEC-26).\n  - DEC-50 reads a story criterion strictly: a repeat is the same text or the same answer. It relaxes no `must` and is easy to reverse.\n- **Numbering:** DEC-48 is reserved by US-02-01 in `og-delivery/state` `decs.json`, so the gap is correct (see N11).\n- **The PR body carries the record:** yes, all 50 rows, identical to the file.\n\n### Out of scope and constitution\n- No schema change, no screen code, and nothing from the stack or principles is broken.\n- The only step beyond \"add only data\" is the test refactor (N7). It changes no behaviour.\n\n### Findings, all NON-BLOCKING\n- **N1** — `docs/delivery/content-checks/US-01-03-4-plus.md:9`, also in the PR body. \"gawra\" is given as an example of a known word, but no question uses it any more: 4p-29 was reworded to drop it. Fix: drop \"gawra\" from the example list.\n- **N2** — `US-01-03-4-plus.md:46` (4p-29). The badger near miss is ruled out as \"does not sleep all winter\". Polish preschool material lists the borsuk among animals that sleep through winter. The question is still unambiguous thanks to \"duże brązowe\" / \"big brown\". Fix: give the reason as \"grey and medium-sized, not big and brown\".\n- **N3** — `src/content/decks/4-plus.json:258` (4p-22). The English says \"the round glass on a handle\"; the Polish \"szkiełko z rączką\" has no \"okrągłe\". So the English carries a detail the Polish lacks, a small F07 difference. Fix: add \"okrągłe\" to the Polish, or drop \"round\" from the English.\n- **N4** — `4-plus.json:378` (4p-32). The Polish answer is singular (\"Korzeń.\") and the English is plural (\"The roots.\"). Fix: make them agree.\n- **N5** — `tests/unit/AC-01-03-6-no-3-plus-repeat.test.ts:18`. The same-answer check compares only English answers, with a leading article removed.\n  - Answers that differ by plural (\"Candles\" vs \"A candle\"), a preposition (\"Onto a toothbrush\" vs \"A toothbrush\") or appear only in Polish would slip through.\n  - No such case exists today.\n  - Fix: compare Polish answers too, and normalise leading prepositions and plurals.\n- **N6** — `tests/unit/age-suitability-record.js:10`. The options detector only looks for \"czy\" and \"or\", so a Polish \"albo\"/\"lub\" or an English \"either\" would pass. The logic moved over from US-01-02 unchanged. Fix: add `albo|lub` to the Polish pattern.\n- **N7** — `tests/unit/AC-01-02-1…5`, `deck-criteria.ts`, `age-suitability-record.js`. Five US-01-02 test files were rewritten onto shared helpers.\n  - The story says \"add only data\" and puts the content checks out of scope.\n  - The refactor keeps behaviour (same test names and counts, green in CI), the technical note says \"reuse the tests\", and the PR lists it.\n  - It is not recorded as a decision. Accept it, or note it.\n- **N8** — 4p-10, 4p-05 and 4p-24 (MOD-01-F06, DEC-49). A few questions sit at 3+ level.\n  - 4p-10 (\"Którą częścią buzi czujemy smak\") copies the 3+ template of 3p-08…10 (\"Którą częścią ciała widzimy/słyszymy/czujemy zapachy\"). DEC-49 says 4+ goes beyond the 3+ body parts.\n  - 4p-05 (\"thank you\") and 4p-24 (\"an apple falls down\") are also very easy.\n  - None is a repeat under DEC-50. Fix: consider swapping 4p-10 for a topic from DEC-49's list, or leave it to the owner's review.\n- **N9** — PR #8 body, Impact block. It says \"AC-01-03-1…6 — not run on this head\" and \"Evidence incomplete or not current\". CI on 11fc819 now passes all six. Fix: regenerate the block.\n- **N10** — 4p-14 (Para/Steam). Strictly, the visible white cloud is condensed droplets; water vapour is invisible. Everyday usage in both languages calls it steam, so this is a loose point on \"verifiable\", not a wrong answer. Fix: leave as is, or note it in the record.\n- **N11** — `docs/specs/DECISIONS.md:589`. US-02-01 adds DEC-48 at the same line, so whichever PR merges second gets a conflict, and the entries may end up out of order. Fix: on rebase, put DEC-48 before DEC-49.\n- **N12** — merge order with US-02-01 (owner-confirmed DEC-48, on `origin/feature/US-02-01`, not yet on main).\n  - DEC-48 moves the 4+ part of MOD-02-F02 and the full TC-02-01/02 check to US-01-03.\n  - If US-02-01 merges first, #8 must be rebased and pass CI's TC-02-01/02 with 4+ on the category screen before it merges.\n  - The US-01-03 story spec doesn't record this obligation yet. The PR body notes it, but calls DEC-48 owner-confirmed while the version on this base doesn't exist.\n\n```\nREVIEW: findings\nSTORY: US-01-03\nIMPACT: All six acceptance criteria are met with CI evidence on head 11fc819 (91/91 Jest including AC-01-03-1…6, AC-01-02-7 bundle check with 4+ texts, Maestro green), the 50-question record is in the PR verbatim, and a manual pass over all 50 questions in both languages found no missed second answer, no options in the text and no real pl/en mismatch. Findings are non-blocking record/wording nits, two test-strength gaps, a stale PR impact block, and a merge-order dependency with US-02-01 under DEC-48.\nFINDINGS:\n  N1 docs/delivery/content-checks/US-01-03-4-plus.md:9 — \"gawra\" listed as an example known word but no question uses it since 4p-29 was reworded; stale in the record and PR body → drop \"gawra\" from the example list\n  N2 docs/delivery/content-checks/US-01-03-4-plus.md:46 — 4p-29 rules out borsuk as \"does not sleep all winter\", but Polish preschool material lists the badger among winter sleepers; question stays unambiguous via \"duże brązowe\" → change the reason to \"grey and medium-sized, not big and brown\"\n  N3 src/content/decks/4-plus.json:258 — 4p-22 EN \"the round glass on a handle\" carries \"round\" that PL \"szkiełko z rączką\" lacks (minor F07 difference) → add \"okrągłe\" to PL or drop \"round\" from EN\n  N4 src/content/decks/4-plus.json:378 — 4p-32 PL answer singular \"Korzeń.\" vs EN plural \"The roots.\" → make number agree in both languages\n  N5 tests/unit/AC-01-03-6-no-3-plus-repeat.test.ts:18 — same-answer check compares EN answers only with the article stripped, so plural/preposition variants (\"Candles\" vs \"A candle\", \"Onto a toothbrush\" vs \"A toothbrush\") or PL-only matches slip through → also compare PL answers and normalise prepositions/plurals\n  N6 tests/unit/age-suitability-record.js:10 — options detector knows only \"czy\"/\"or\"; a question using \"albo\"/\"lub\" or \"either\" would pass step 5 → add albo|lub (and either) to the patterns\n  N7 tests/unit/deck-criteria.ts:1 — diff rewrites US-01-02 tests AC-01-02-1…5 onto shared helpers although the story says \"add only data\" and puts the content checks out of scope; behaviour unchanged (names and counts identical, CI green) and not recorded as a decision → accept, or note it as reuse under the technical note\n  N8 src/content/decks/4-plus.json:114 — 4p-10 \"Którą częścią buzi czujemy smak\" copies the 3+ template of 3p-08…10, against DEC-49's \"beyond the 3+ body parts\"; 4p-05 and 4p-24 are also at 3+ level (MOD-01-F06) → swap 4p-10 for a DEC-49 topic or flag it for the owner's review\n  N9 PR #8 body (og:impact block) — says AC-01-03-1…6 \"not run on this head\" and evidence \"not current\", though CI on 11fc819 passes all six → regenerate the impact block\n  N10 src/content/decks/4-plus.json — 4p-14 Para/Steam: the visible white cloud is condensed droplets, not vapour; colloquially correct in both languages, so a loose \"verifiable\" point → leave or note it in the record\n  N11 docs/specs/DECISIONS.md:589 — US-02-01 adds DEC-48 at the same line, so the second PR to merge conflicts and DEC-48 may land after DEC-49/50 → keep the entries in numeric order when rebasing\n  N12 docs/specs/modules/01-question-content/stories/US-01-03-deck-4-plus.md:1 — owner-confirmed DEC-48 (on feature/US-02-01) moves the 4+ part of MOD-02-F02 and the full TC-02-01/02 check to US-01-03; if US-02-01 merges first, #8 could merge without TC-02-01/02 having shown 4+ → after US-02-01 merges, rebase #8 and require TC-02-01/02 green with 4+ in CI before merge\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 met\n  #5 met\n  #6 met\n```\n"
+}

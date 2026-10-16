@@ -1,0 +1,74 @@
+{
+  "story": "US-02-03",
+  "attempt": 1,
+  "round": 2,
+  "sha": "043a4c11de8e63701ab765f62e15315af4415508",
+  "reviewer": "code",
+  "ts": "2026-10-15T18:03:48Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-02-03",
+    "impact": "`src/app/index.tsx` is the one place a category is opened, so it feeds both the continue entry and the card screen. `strings.json` and `StringKey` are shared by the card screen and end card, and the Maestro flows read `STRINGS`. After the `languageNames` split, a stale `t('pl')` or `t('en')` call would no longer type-check. `tsc` and all 250 Jest tests pass, so nothing else breaks.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "test-runs/2026-10-15_193724/junit/screen-colours.xml:1 — AC-02-01-4 step 4 and TC-02-08 step 2 fail locally on rows 419 (Polski half at the switch's bottom rule), 781 and 2124. The failing rows moved between layouts, and row 419 is in this story's own switch. CI decides → run both checks on a software-GPU emulator with the CI's options (`-gpu swiftshader_indirect`) to show whether it is a GPU artefact"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/index.tsx:134 — the `minHeight` fix for larger system text has no test, so nothing fails if it is reverted to `height` → add a style assertion (minHeight set, height undefined) or state it is unverified"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/DECISIONS.md:733 — DEC-60 still says \"about 59 dp high\", which is now a minimum → update in place (the entry is new in this PR)"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/index.tsx:8 — the category screen imports `cardType` from the card screen module → move it to `src/theme.ts` (optional; came in with US-02-02)"
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/modules/02-age-categories/stories/US-02-03-switch-language.md:6 — story status is still in-progress → set it to review or done per the loop's convention"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Round 2 review of PR #16 (US-02-03), head 043a4c1. I found no blocking issues. The merge is sound and every round-1 fix is real. Jest (37 suites, 250 tests), tsc, lint and prettier are clean. The local acceptance run test-runs/2026-10-15_193724 is on exactly 043a4c1 with a clean tree, and all its Maestro reports show 0 failures. The only failures are the NFR-07 pixel checks.\n\nREVIEW: findings\nSTORY: US-02-03\nIMPACT: `src/app/index.tsx` is the one place a category is opened, so it feeds both the continue entry and the card screen. `strings.json` and `StringKey` are shared by the card screen and end card, and the Maestro flows read `STRINGS`. After the `languageNames` split, a stale `t('pl')` or `t('en')` call would no longer type-check. `tsc` and all 250 Jest tests pass, so nothing else breaks.\nFINDINGS:\n  N1 test-runs/2026-10-15_193724/junit/screen-colours.xml:1 — AC-02-01-4 step 4 and TC-02-08 step 2 fail locally on rows 419 (Polski half at the switch's bottom rule), 781 and 2124. The failing rows moved between layouts, and row 419 is in this story's own switch. CI decides → run both checks on a software-GPU emulator with the CI's options (`-gpu swiftshader_indirect`) to show whether it is a GPU artefact\n  N2 src/app/index.tsx:134 — the `minHeight` fix for larger system text has no test, so nothing fails if it is reverted to `height` → add a style assertion (minHeight set, height undefined) or state it is unverified\n  N3 docs/specs/DECISIONS.md:733 — DEC-60 still says \"about 59 dp high\", which is now a minimum → update in place (the entry is new in this PR)\n  N4 src/app/index.tsx:8 — the category screen imports `cardType` from the card screen module → move it to `src/theme.ts` (optional; came in with US-02-02)\n  N5 docs/specs/modules/02-age-categories/stories/US-02-03-switch-language.md:6 — story status is still in-progress → set it to review or done per the loop's convention\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 met\n"
+}

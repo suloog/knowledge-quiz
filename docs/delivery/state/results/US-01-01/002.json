@@ -1,0 +1,70 @@
+{
+  "n": 2,
+  "attempt": 1,
+  "ts": "2026-10-14T10:05:36Z",
+  "story": "US-01-01",
+  "mode": "implement",
+  "parsed": {
+    "result": "ready",
+    "story": "US-01-01",
+    "branch": "feature/US-01-01",
+    "commits": [
+      "4462e0c chore(app): wip, waiting for DEC-44 [US-01-01]",
+      "6b56f32 docs(specs): record DEC-44, no component library [US-01-01]",
+      "7147b94 build(android): network-free release signed with upload key [US-01-01]",
+      "f710011 feat(app): black-and-white theme tokens [US-01-01]",
+      "f06b45e test(app): offline start and recorded versions [US-01-01]"
+    ],
+    "decisions": [
+      "DEC-44 critical Network permission, release signing, component library and the offline test for US-01-01"
+    ],
+    "evidence": [
+      "#1 Built on the foundation at its latest versions, versions recorded — AC-01-01-1 (Jest, tests/unit/AC-01-01-1-platform-versions.test.js) passed: README Platform versions match the installed Expo 57.0.28, Expo Router 57.0.26, RN 0.86.3, React 19.2.3, TS 6.0.3, minSdk 31, target and compile SDK 36",
+      "#2 Installs and starts on an Android 12 emulator and on the Kompakt — MANUAL: TC-01-03 is manual-only (Kompakt); emulator part: TC-01-01 Maestro flow passed in test-runs/2026-10-14_120331",
+      "#3 Installed app asks for no network permission — AC-01-01-3 (Jest, plugins/__tests__/withReleaseNoNetwork.test.js) passed; aapt dump permissions on a built release APK showed no INTERNET, ACCESS_NETWORK_STATE or ACCESS_WIFI_STATE",
+      "#4 Starts and runs with the network off — AC-01-01-4 Maestro flow (airplane mode on, app opens its first screen from a cleared state) passed in test-runs/2026-10-14_120331; TC-01-02 deferred to US-03-01 by DEC-44",
+      "#5 Signed release APK, key outside the repository — AC-01-01-5 (Jest, plugins/__tests__/withReleaseSigning.test.js, run against Expo's own app/build.gradle template) passed; release build without KQ_UPLOAD_* fails and names them; with a throwaway key the APK is signed with that key (apksigner verify ok)"
+    ],
+    "tests": {
+      "run": "test-runs/2026-10-14_120331",
+      "pass": 4,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 1,
+      "manual_tests": [
+        "TC-01-03"
+      ]
+    },
+    "derived_tests": [
+      "AC-01-01-1",
+      "AC-01-01-3",
+      "AC-01-01-4",
+      "AC-01-01-5"
+    ],
+    "preexisting": "#1 partly: Expo SDK 57 / RN 0.86 upgrade done by US-00-01 (DEC-42), app id from DEC-43; WIP 4462e0c already had minSdk 31 (plugins/withMinSdk.js), the TC-01-01 flow and the README versions table",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test ok"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "notes": "TC-01-02 also covers US-01-01#4, but by DEC-44 it waits for US-03-01, so CI has no test with its id and merge-check may report it unexecuted. The owner accepted that #4 rests on AC-01-01-4 until then.\nRelease signing reads the Gradle properties KQ_UPLOAD_STORE_FILE, KQ_UPLOAD_STORE_PASSWORD, KQ_UPLOAD_KEY_ALIAS and KQ_UPLOAD_KEY_PASSWORD, set in ~/.gradle/gradle.properties or the environment (see the README section Release APK). The debug build keeps INTERNET for Metro.\nThe local emulator is API 32 (no API 31 image here); CI runs API 31. The constitution's line \"No network: INTERNET removed from the manifest\" now holds for the release build only, per DEC-44.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [
+        "#2 Installs and starts on an Android 12 emulator and on the Kompakt — MANUAL: TC-01-03 is manual-only (Kompakt); emulator part: TC-01-01 Maestro flow passed in test-runs/2026-10-14_120331"
+      ],
+      "blocked": []
+    },
+    "critical_decisions": [
+      "DEC-44 critical Network permission, release signing, component library and the offline test for US-01-01"
+    ]
+  },
+  "raw": "US-01-01 is done and ready on feature/US-01-01, head f06b45e, not pushed. Every DEC-44 point from option a is in place. Some evidence still comes from outside the loop: criterion #2 depends on the manual-only TC-01-03 (Kompakt), and TC-01-02 is not run yet (see NOTES). So a person decides the merge.\n\nThe run that counts is test-runs/2026-10-14_120331 at f06b45e: clean tree, snapshot taken, nothing changed during the run.\n- **Maestro:** TC-00-01, TC-00-03, TC-01-01 and AC-01-01-4 passed. The local emulator image is API 32 because there is no API 31 image on this machine. CI uses API 31.\n- **Jest:** 15 of 15 passed, written to junit/unit.xml, with no failures. The tests carry the ids AC-01-01-1, AC-01-01-3 and AC-01-01-5.\n- **run.json counts:** the local collector reads Playwright and Maestro output only, not Jest, so run.json lists those three Jest-backed derived tests as skipped. CI matches them by their JUnit names. TC-01-02 is also skipped, by DEC-44.\n\n**Release build checked by hand:**\n- With empty `KQ_UPLOAD_*` values, `assembleRelease` fails and names the four missing properties.\n- With a throwaway key made in the scratchpad (deleted afterwards), the APK builds and is signed by \"CN=Throwaway test key\", not the debug key. `apksigner` verifies it (v2).\n- `aapt` shows no INTERNET, ACCESS_NETWORK_STATE or ACCESS_WIFI_STATE permission, `sdkVersion` 31 and `targetSdkVersion` 36.\n\n**Spec-compliance reviewer:** COMPLIANT. It flagged two drifts as non-blocking, and I left both unchanged:\n- The TC-01-01 flow has no uninstall cleanup step; the acceptance script uninstalls the app before the run instead.\n- Nothing in the flow or script checks that the emulator is API 31.\n\nI left out the Co-Authored-By trailer from the commit messages, because the repository's commit hook rejects it (implementation.md §5, protocol §12).\n\nRESULT: ready\nSTORY: US-01-01\nBRANCH: feature/US-01-01\nCOMMITS: 4462e0c chore(app): wip, waiting for DEC-44 [US-01-01]; 6b56f32 docs(specs): record DEC-44, no component library [US-01-01]; 7147b94 build(android): network-free release signed with upload key [US-01-01]; f710011 feat(app): black-and-white theme tokens [US-01-01]; f06b45e test(app): offline start and recorded versions [US-01-01]\nDECISIONS: DEC-44 critical Network permission, release signing, component library and the offline test for US-01-01\nEVIDENCE:\n  #1 Built on the foundation at its latest versions, versions recorded — AC-01-01-1 (Jest, tests/unit/AC-01-01-1-platform-versions.test.js) passed: README Platform versions match the installed Expo 57.0.28, Expo Router 57.0.26, RN 0.86.3, React 19.2.3, TS 6.0.3, minSdk 31, target and compile SDK 36\n  #2 Installs and starts on an Android 12 emulator and on the Kompakt — MANUAL: TC-01-03 is manual-only (Kompakt); emulator part: TC-01-01 Maestro flow passed in test-runs/2026-10-14_120331\n  #3 Installed app asks for no network permission — AC-01-01-3 (Jest, plugins/__tests__/withReleaseNoNetwork.test.js) passed; aapt dump permissions on a built release APK showed no INTERNET, ACCESS_NETWORK_STATE or ACCESS_WIFI_STATE\n  #4 Starts and runs with the network off — AC-01-01-4 Maestro flow (airplane mode on, app opens its first screen from a cleared state) passed in test-runs/2026-10-14_120331; TC-01-02 deferred to US-03-01 by DEC-44\n  #5 Signed release APK, key outside the repository — AC-01-01-5 (Jest, plugins/__tests__/withReleaseSigning.test.js, run against Expo's own app/build.gradle template) passed; release build without KQ_UPLOAD_* fails and names them; with a throwaway key the APK is signed with that key (apksigner verify ok)\nTESTS: run=test-runs/2026-10-14_120331 pass=4 fail=0 blocked=0 manual=1 manual_tests=TC-01-03\nDERIVED_TESTS: AC-01-01-1; AC-01-01-3; AC-01-01-4; AC-01-01-5\nPREEXISTING: #1 partly: Expo SDK 57 / RN 0.86 upgrade done by US-00-01 (DEC-42), app id from DEC-43; WIP 4462e0c already had minSdk 31 (plugins/withMinSdk.js), the TC-01-01 flow and the README versions table\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test ok\nENV_KEYS: none\nMIGRATION: no\nNOTES: TC-01-02 also covers US-01-01#4, but by DEC-44 it waits for US-03-01, so CI has no test with its id and merge-check may report it unexecuted. The owner accepted that #4 rests on AC-01-01-4 until then.\nRelease signing reads the Gradle properties KQ_UPLOAD_STORE_FILE, KQ_UPLOAD_STORE_PASSWORD, KQ_UPLOAD_KEY_ALIAS and KQ_UPLOAD_KEY_PASSWORD, set in ~/.gradle/gradle.properties or the environment (see the README section Release APK). The debug build keeps INTERNET for Metro.\nThe local emulator is API 32 (no API 31 image here); CI runs API 31. The constitution's line \"No network: INTERNET removed from the manifest\" now holds for the release build only, per DEC-44.\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}

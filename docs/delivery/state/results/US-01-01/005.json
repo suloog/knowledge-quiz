@@ -1,0 +1,76 @@
+{
+  "n": 5,
+  "attempt": 1,
+  "ts": "2026-10-14T12:08:39Z",
+  "story": "US-01-01",
+  "mode": "fix",
+  "parsed": {
+    "result": "ready",
+    "story": "US-01-01",
+    "branch": "feature/US-01-01",
+    "commits": [
+      "73f4b10 test(app): acceptance run preflight and no passwords in argv [US-01-01]",
+      "3a98e2b docs(app): align Depends on rows in AC-01-01-3/-4 [US-01-01]",
+      "595358a chore(app): wip, waiting for DEC-45 [US-01-01]",
+      "e83aaef docs(specs): record DEC-45, environment wins over gradle.properties [US-01-01]"
+    ],
+    "decisions": [
+      "DEC-45 critical Upload key variables in the environment win over Gradle properties of the same name"
+    ],
+    "evidence": [
+      "#1 Platform versions recorded — AC-01-01-1 Jest (junit/unit.xml, 15/15 pass, 0 failures) in test-runs/2026-10-14_140555",
+      "#2 App opens on the emulator — TC-01-01 Maestro pass (maestro/report.xml)",
+      "#3 No network permission — AC-01-01-3 step 1 Jest pass, step 2 aapt on the release APK pass (junit/release.xml)",
+      "#4 Opens offline — AC-01-01-4 pass (precondition, Maestro release flow maestro/report-release.xml, logcat check)",
+      "#5 Signed release APK — AC-01-01-5 steps 1-3 Jest (env-first precedence, DEC-45, in step 2), steps 4-6 pass, signed with the throwaway key not the debug key (junit/release.xml)"
+    ],
+    "tests": {
+      "run": "test-runs/2026-10-14_140555",
+      "pass": 4,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 1,
+      "manual_tests": [
+        "TC-01-03"
+      ]
+    },
+    "derived_tests": [
+      "AC-01-01-1",
+      "AC-01-01-3",
+      "AC-01-01-4",
+      "AC-01-01-5"
+    ],
+    "preexisting": "everything from rounds 0-2 up to b9a4b6d, B1 fix and non-blocking fixes up to 595358a",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test ok (15/15)"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "findings": [
+      "B1 fixed 595358a (plugin reads System.getenv(name) ?: findProperty(name), unit test asserts that order",
+      "decision recorded as DEC-45 in e83aaef)",
+      "N1 fixed 73f4b10",
+      "N2 fixed 73f4b10",
+      "N3 fixed 73f4b10",
+      "N5 fixed 73f4b10",
+      "N7 fixed 3a98e2b"
+    ],
+    "notes": "Local run on an Android API 32 emulator (Medium_Phone); CI runs API 31. Final head e83aaef, clean tree, snapshot taken before the run.\nLocally, AC-01-01-1/-3/-5 show as skipped in run.json because the local collector does not read JUnit; their JUnit reports have 0 failures, and in CI evidence mode they are read from the og-test-results artifact.\nTC-01-02 is skipped (its flow is written in US-03-01, DEC-44); TC-01-03 is manual-only.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [],
+      "blocked": []
+    },
+    "critical_decisions": [
+      "DEC-45 critical Upload key variables in the environment win over Gradle properties of the same name"
+    ]
+  },
+  "raw": "I added the DEC-45 entry and committed it on feature/US-01-01 as e83aaef. The gates pass, and the story's whole acceptance suite passed on that final head, run locally on an Android API 32 emulator. Nothing is pushed: the local branch is 4 commits ahead of origin (b9a4b6d).\n\n- **DEC-45 entry:** appended to /Users/sulo/workspace/knowledge-quiz/docs/specs/DECISIONS.md in the template format, with Decided by \"product owner (delivery loop, confirmed 2026-10-14)\" and Decision \"Option a — Environment wins over gradle.properties (implemented)\". The commit hook ran the gates.\n- **README:** /Users/sulo/workspace/knowledge-quiz/README.md already said \"an environment variable wins over the Gradle property (DEC-45)\" since 595358a. I left it unchanged.\n- **Run that counts:** test-runs/2026-10-14_140555. The snapshot was taken on e83aaef with a clean tree and nothing changed during the run. The script exited 0, every JUnit and Maestro report has 0 failures, and the unit tests are 15/15. AC-01-01-1, -3 and -5 show as skipped in run.json only because the local collector does not read JUnit. TC-01-02 is skipped because its flow is written in US-03-01 (DEC-44).\n- **Cleanup:** no keystore files are left in the run directory. I booted the emulator for the run and stopped it afterwards. I did not read ~/.gradle/gradle.properties.\n\n```\nRESULT: ready\nSTORY: US-01-01\nBRANCH: feature/US-01-01\nCOMMITS: 73f4b10 test(app): acceptance run preflight and no passwords in argv [US-01-01]; 3a98e2b docs(app): align Depends on rows in AC-01-01-3/-4 [US-01-01]; 595358a chore(app): wip, waiting for DEC-45 [US-01-01]; e83aaef docs(specs): record DEC-45, environment wins over gradle.properties [US-01-01]\nDECISIONS: DEC-45 critical Upload key variables in the environment win over Gradle properties of the same name\nEVIDENCE:\n  #1 Platform versions recorded — AC-01-01-1 Jest (junit/unit.xml, 15/15 pass, 0 failures) in test-runs/2026-10-14_140555\n  #2 App opens on the emulator — TC-01-01 Maestro pass (maestro/report.xml)\n  #3 No network permission — AC-01-01-3 step 1 Jest pass, step 2 aapt on the release APK pass (junit/release.xml)\n  #4 Opens offline — AC-01-01-4 pass (precondition, Maestro release flow maestro/report-release.xml, logcat check)\n  #5 Signed release APK — AC-01-01-5 steps 1-3 Jest (env-first precedence, DEC-45, in step 2), steps 4-6 pass, signed with the throwaway key not the debug key (junit/release.xml)\nTESTS: run=test-runs/2026-10-14_140555 pass=4 fail=0 blocked=0 manual=1 manual_tests=TC-01-03\nDERIVED_TESTS: AC-01-01-1; AC-01-01-3; AC-01-01-4; AC-01-01-5\nPREEXISTING: everything from rounds 0-2 up to b9a4b6d, B1 fix and non-blocking fixes up to 595358a\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test ok (15/15)\nENV_KEYS: none\nMIGRATION: no\nFINDINGS: B1 fixed 595358a (plugin reads System.getenv(name) ?: findProperty(name), unit test asserts that order; decision recorded as DEC-45 in e83aaef); N1 fixed 73f4b10; N2 fixed 73f4b10; N3 fixed 73f4b10; N5 fixed 73f4b10; N7 fixed 3a98e2b\nNOTES: Local run on an Android API 32 emulator (Medium_Phone); CI runs API 31. Final head e83aaef, clean tree, snapshot taken before the run.\nLocally, AC-01-01-1/-3/-5 show as skipped in run.json because the local collector does not read JUnit; their JUnit reports have 0 failures, and in CI evidence mode they are read from the og-test-results artifact.\nTC-01-02 is skipped (its flow is written in US-03-01, DEC-44); TC-01-03 is manual-only.\n```\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}

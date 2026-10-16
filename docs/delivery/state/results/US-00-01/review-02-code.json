@@ -1,0 +1,95 @@
+{
+  "story": "US-00-01",
+  "attempt": 1,
+  "round": 2,
+  "sha": "0cbc66b5c88fd71825a5dfd49a599d31e957475b",
+  "reviewer": "code",
+  "ts": "2026-10-14T08:13:23Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-00-01",
+    "impact": "scripts/stack.sh and scripts/test-acceptance.sh are used by the README and by CI (.github/workflows/acceptance.yml, unchanged this round). The reorder means the unit-test JUnit report is now produced after the stack is stopped, and it is still produced when the stack fails. eslint.config.mjs now enforces the full Expo/React/hooks/TS rule set through the yarn lint gate and the husky pre-commit, so later stories' code is held to rules that never ran before.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/stack.sh:92 — EMULATOR_LOG (mktemp) is never removed, so each successful cold boot leaves a kq-emulator.* file in $TMPDIR → delete it in cleanup, or keep it only on failure"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:35 — the Maestro-not-installed exit 1 now comes before Jest, so there is no unit.xml in that case (not a CI case) → run Jest first, or check for Maestro after the unit tests"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:53 — readiness is Metro on :8081 plus pidof app, so a leftover Metro/app from an earlier run passes it and Maestro tests the stale app → fail if :8081 is already in use, or wait for a marker line from stack.sh"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/stack.sh:111 — adb shell getprop has no -s serial, so a second device appearing makes the boot loop run to the timeout (edge case, was there before) → pass -s \"$(running_device)\""
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "package.json:43 — @typescript-eslint/eslint-plugin and parser are no longer imported by the eslint config (eslint-config-expo depends on them) → drop them or keep them as deliberate pins"
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/__tests__/content.test.ts:4 — typeof === 'string' is already guaranteed by TS, so only the trim() assertion carries weight → drop the typeof line (optional)"
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "PR body / README.md:27 — the PR Changes text still gives the old order (Jest, then stack, then Maestro) → update the PR body"
+      },
+      {
+        "id": "N8",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/maestro/TC-00-01-stack-starts.yaml — the flow only asserts content-title is visible and relies on stack.log for the start step → acceptable, noted only"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "external",
+        "note": "MANUAL TC-00-02 (PR CI run in progress)"
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": "TC-00-04 is manual-only (step 3, the refused commit, is external)"
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Round 2 review of US-00-01, PR #1, fix commits 993eed5..0cbc66b. All three round-1 blockers are fixed. I found no blocking issues, only minor ones.\n\n**Round-1 fixes**\n- **code B1 (eslint.config.mjs) is fixed.**\n  - `eslint-config-expo/flat.js` exists in 57.0.2 and is spread first, then the prettier config.\n  - `eslint --print-config src/app/index.tsx` now shows 442 rules. The plugins include import, expo, @typescript-eslint, react-hooks and prettier.\n  - I fed a deliberately bad `.tsx` through `eslint --stdin` (path `src/bad.tsx`) and it raised `react-hooks/rules-of-hooks`, `import/no-unresolved`, `no-var` and `no-unused-vars`.\n  - `yarn lint` (`--max-warnings 0`), `format:check`, `tsc` and `test` are all green on 0cbc66b. `eslint .` also flags `expo-env.d.ts`, but that file is gitignored and outside the gate's scope.\n- **spec B1 (scripts/stack.sh) is fixed.**\n  - I ran a copy of the script against a fake SDK whose emulator prints to stdout and exits 1. It printed `ERROR: the emulator fake exited while booting — the end of its console:` followed by the tail, then exited 1 immediately. The old `adb wait-for-device` would have hung here.\n  - With an emulator that stays alive but never shows up in adb, the script kept polling and its cleanup killed the emulator on termination. `EMULATOR_PID=\"\"` before the dead-emulator exit avoids a pointless `emu kill`.\n  - I did not wait out the 300 s timeout path.\n- **spec B2 (fresh-clone evidence) is evidenced.**\n  - Run `test-runs/2026-10-14_100634` was taken in a fresh clone at `scratchpad/fresh`, on commit 0cbc66b with a clean tree.\n  - `stack.log` shows `[stack] installing dependencies`, then \"Creating native directory\", then the Gradle build, install and open.\n  - Maestro passed both TC-00-01 and TC-00-03, and the Jest JUnit report shows 3 of 3 passing.\n  - That run had an emulator already running (`using the running device emulator-5554`), which matches the TC-00-01 precondition.\n- **Reorder of scripts/test-acceptance.sh** is correct.\n  - A stack that fails to start now sets `status=1` and still runs Jest, so a JUnit file exists for the `if-no-files-found: error` upload.\n  - `stop_stack` runs before Jest, and Jest passed after `android/` had been generated.\n\n**Impact**\n- `yarn stack` and `yarn test:acceptance` are used by the README and by `.github/workflows/acceptance.yml`, which this round did not change.\n- The `yarn lint` gate now runs the full Expo rule set. That is the intended fix, but later stories' code will be held to rules that never ran before: hooks rules, `import/no-unresolved`, and the React Compiler rules such as `set-state-in-effect`.\n- `.husky/pre-commit` runs `format:check`, `lint` and `tsc`, so the same applies to commits.\n- The CI run on head 0cbc66b was still IN_PROGRESS when I looked. It is the only evidence for API 31 and `-no-window` on Linux, and for yarn forwarding SIGTERM there.\n\n**Findings (all non-blocking)**\n- N1: scripts/stack.sh:92 — `EMULATOR_LOG` is created with `mktemp` and never deleted, so every cold boot that succeeds leaves a `kq-emulator.*` file in `$TMPDIR`. Delete it in `cleanup` when `EMULATOR_PID` is set, or keep it only on failure.\n- N2: scripts/test-acceptance.sh:35 — the \"Maestro not installed\" `exit 1` now fires before any Jest run, where it used to come after. A machine without Maestro gets no `unit.xml` at all (this is not the CI case, since CI installs Maestro). Check for Maestro after Jest, or run Jest first when Maestro is missing.\n- N3: scripts/test-acceptance.sh:53-60 — the readiness check is `:8081 packager-status:running` plus `pidof` of the app. A Metro or app left over from an earlier run satisfies it before the new stack has built anything, and Maestro then tests the stale app. TC-00-01's flow does not launch the app, so it cannot tell the difference. Fail early if port 8081 is already in use, or have `stack.sh` print a marker line and wait for it.\n- N4: scripts/stack.sh:111 — `adb shell getprop` has no `-s <serial>`. If a second device attaches during the boot, adb prints \"more than one device\" and the loop runs to the 300 s timeout. This is an edge case and was there before this round.\n- N5: package.json:43-44 — `@typescript-eslint/eslint-plugin` and `@typescript-eslint/parser` are no longer imported by `eslint.config.mjs`. `eslint-config-expo` brings its own at `^8.59`, so these two devDependencies are now pins only. Drop them or keep them deliberately.\n- N6: src/content/__tests__/content.test.ts:4-5 — `typeof ... 'string'` is already guaranteed by TS, so only the `trim()` assertion carries weight. The real \"screen reads the data\" test is `src/app/__tests__/index.test.tsx`. This is a small point and is fine as it stands.\n- N7: README.md:27 and the PR body — the PR \"Changes\" text still says \"Jest with JUnit output, the stack, then the Maestro flows\". That is the old order, and the PR body should be updated after the reorder.\n- N8: tests/maestro/TC-00-01-stack-starts.yaml — the flow only checks that `content-title` is visible and says step 1 is covered by `yarn stack`. That is acceptable, because the console evidence is in `stack.log` and the run dir.\n\n**Acceptance criteria**\n- #1 (one documented command starts the stack from a fresh clone): met. The README names `yarn stack`, and the fresh-clone run is evidenced (run `2026-10-14_100634`, API 32 locally). The cold-boot path was not evidenced end to end; I exercised the failure paths myself with stubs.\n- #2 (workflow runs the tests and uploads `og-test-results`): external — MANUAL TC-00-02, plus the PR's CI run (in progress).\n- #3 (one path through every layer, test name carries its id): met. Maestro TC-00-03 passed, and the JUnit report carries the TC id.\n- #4 (gates in place and green on a clean checkout): met locally. All four gates passed for me on 0cbc66b. TC-00-04 is manual-only, so the third step, a commit refused from a Claude Code session, is external evidence.\n\n```\nREVIEW: findings\nSTORY: US-00-01\nIMPACT: scripts/stack.sh and scripts/test-acceptance.sh are used by the README and by CI (.github/workflows/acceptance.yml, unchanged this round). The reorder means the unit-test JUnit report is now produced after the stack is stopped, and it is still produced when the stack fails. eslint.config.mjs now enforces the full Expo/React/hooks/TS rule set through the yarn lint gate and the husky pre-commit, so later stories' code is held to rules that never ran before.\nFINDINGS:\n  N1 scripts/stack.sh:92 — EMULATOR_LOG (mktemp) is never removed, so each successful cold boot leaves a kq-emulator.* file in $TMPDIR → delete it in cleanup, or keep it only on failure\n  N2 scripts/test-acceptance.sh:35 — the Maestro-not-installed exit 1 now comes before Jest, so there is no unit.xml in that case (not a CI case) → run Jest first, or check for Maestro after the unit tests\n  N3 scripts/test-acceptance.sh:53 — readiness is Metro on :8081 plus pidof app, so a leftover Metro/app from an earlier run passes it and Maestro tests the stale app → fail if :8081 is already in use, or wait for a marker line from stack.sh\n  N4 scripts/stack.sh:111 — adb shell getprop has no -s serial, so a second device appearing makes the boot loop run to the timeout (edge case, was there before) → pass -s \"$(running_device)\"\n  N5 package.json:43 — @typescript-eslint/eslint-plugin and parser are no longer imported by the eslint config (eslint-config-expo depends on them) → drop them or keep them as deliberate pins\n  N6 src/content/__tests__/content.test.ts:4 — typeof === 'string' is already guaranteed by TS, so only the trim() assertion carries weight → drop the typeof line (optional)\n  N7 PR body / README.md:27 — the PR Changes text still gives the old order (Jest, then stack, then Maestro) → update the PR body\n  N8 tests/maestro/TC-00-01-stack-starts.yaml — the flow only asserts content-title is visible and relies on stack.log for the start step → acceptable, noted only\nCRITERIA:\n  #1 met\n  #2 external — MANUAL TC-00-02 (PR CI run in progress)\n  #3 met\n  #4 met — TC-00-04 is manual-only (step 3, the refused commit, is external)\n```\n"
+}

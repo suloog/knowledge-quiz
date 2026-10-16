@@ -1,0 +1,48 @@
+{
+  "story": "US-03-03",
+  "attempt": 1,
+  "round": 1,
+  "sha": "763f75b56f0a70705f8b37e40df4eb1aad754ca9",
+  "reviewer": "code",
+  "ts": "2026-10-15T09:06:15Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-03-03",
+    "impact": "End card, \"again\", \"categories\", finished-deck reopen, strings table and the failure-safe save all work per the story; unit gates are green, device acceptance was still pending at review time, and only two non-blocking nits remain.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/storage.ts:19 — the comment and DEC-56 imply the temp file + moveSync(overwrite) replaces atomically, but expo-file-system on Android (CopyMoveStrategy.LocalFile.prepareAsDestination) deletes the destination first and then renames, so a kill or failed move in between leaves no saved file (progress lost, a stale complete \"<key>.new\" ignored); no worse than the old partial-write case, only a smaller window → soften the comment to \"smaller window, not atomic\", or have load() fall back to \"<key>.new\" when the main file is missing"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/__tests__/cards.test.tsx:370 — only \"again\" has a test that a touch within 0.5 s of the end card is ignored; the \"categories\" choice shares the same ready() check but is unguarded by any test → add the same early-touch case for \"categories\" (expect end-card still shown, router not navigated)"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Round 1 review of PR #13 (US-03-03, head 763f75b): no blocking, two non-blocking. Gates pass; Acceptance was pending. Attribution clean. End-card logic, guard, \"categories\" (router.dismissTo('/')), \"again\", strings, failed-save handling and the acceptance script (bash 3.2, set -u, tags) checked. expo-file-system 57.0.7 Android move deletes the destination before renaming — not atomic (N1).\n\n```\nREVIEW: findings\nSTORY: US-03-03\nIMPACT: End card, \"again\", \"categories\", finished-deck reopen, strings table and the failure-safe save all work per the story; unit gates are green, device acceptance was still pending at review time, and only two non-blocking nits remain.\nFINDINGS:\n  N1 src/storage.ts:19 — the comment and DEC-56 imply the temp file + moveSync(overwrite) replaces atomically, but expo-file-system on Android (CopyMoveStrategy.LocalFile.prepareAsDestination) deletes the destination first and then renames, so a kill or failed move in between leaves no saved file (progress lost, a stale complete \"<key>.new\" ignored); no worse than the old partial-write case, only a smaller window → soften the comment to \"smaller window, not atomic\", or have load() fall back to \"<key>.new\" when the main file is missing\n  N2 src/app/__tests__/cards.test.tsx:370 — only \"again\" has a test that a touch within 0.5 s of the end card is ignored; the \"categories\" choice shares the same ready() check but is unguarded by any test → add the same early-touch case for \"categories\" (expect end-card still shown, router not navigated)\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n```\n"
+}

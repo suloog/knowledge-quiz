@@ -1,0 +1,81 @@
+{
+  "n": 4,
+  "attempt": 1,
+  "ts": "2026-10-14T14:07:24Z",
+  "story": "US-01-02",
+  "mode": "fix",
+  "parsed": {
+    "result": "ready",
+    "story": "US-01-02",
+    "branch": "feature/US-01-02",
+    "commits": [
+      "30ac91a fix(content): one answer only for every 3+ question, after a full adversarial pass [US-01-02]",
+      "cf94779 fix(content): compare question texts trimmed, ignoring case and missing ones [US-01-02]",
+      "c3162be test(content): require exactly the record's columns for each 3+ row [US-01-02]"
+    ],
+    "decisions": [],
+    "evidence": [
+      "#1 3+ holds exactly 50 questions, one answer each, pl and en — AC-01-02-1 (tests/unit/AC-01-02-1-50-questions-one-answer.test.ts), 4/4 pass in junit/unit.xml",
+      "#2 question ≤100, answer ≤60 chars per language — AC-01-02-2 (tests/unit/AC-01-02-2-length-limits.test.ts), 4/4 pass",
+      "#3 each of the four kinds ≥5 times — AC-01-02-3 (tests/unit/AC-01-02-3-four-kinds.test.ts), 5/5 pass",
+      "#4 age-suitability check of every 3+ question recorded — docs/delivery/content-checks/US-01-02-3-plus.md (all 50 rows re-checked, 21 reworded); AC-01-02-4 (tests/unit/AC-01-02-4-age-suitability-record.test.js), 3/3 pass, now requires exactly the record's columns",
+      "#5 all content checks pass, breaking any fails the suite — AC-01-02-5 (tests/unit/AC-01-02-5-content-checks.test.ts), 16/16 pass, step 3 asserts each duplicate message exactly",
+      "#6 a question or category is a data-only change — AC-01-02-6 (tests/unit/AC-01-02-6-content-is-data.test.js), 3/3 pass",
+      "#7 all content ships inside the app — AC-01-02-7 step 2 (release APK bundle holds every deck's pl and en text) pass in junit/release.xml; tests/unit/AC-01-02-7-content-ships-inside.test.js 1/1 pass"
+    ],
+    "tests": {
+      "run": "/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-14_160342",
+      "pass": 4,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 0,
+      "manual_tests": [
+        "none"
+      ]
+    },
+    "derived_tests": [
+      "AC-01-02-1",
+      "AC-01-02-2",
+      "AC-01-02-3",
+      "AC-01-02-4",
+      "AC-01-02-5",
+      "AC-01-02-6",
+      "AC-01-02-7"
+    ],
+    "preexisting": "all seven criteria were implemented in earlier rounds (51d99c8); this round changed content wording, the duplicate-text check and two tests",
+    "gates": [
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn format:check ok",
+      "yarn jest 51/51 ok (also run by the commit hook)"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "findings": [
+      "code B1 / spec B1 (3p-21) fixed 30ac91a",
+      "spec B2 (3p-05) fixed 30ac91a",
+      "criterion #4 fixed 30ac91a",
+      "spec N3 / code N4 (3p-44) fixed 30ac91a",
+      "spec N4 / code N1 (3p-25 degree) fixed 30ac91a",
+      "spec N5 (3p-16, 3p-39) fixed 30ac91a",
+      "code N3 (3p-41) fixed 30ac91a",
+      "spec N1 (category test) fixed cf94779",
+      "spec N2 / code N6 (undefined, trim and lower-case) fixed cf94779",
+      "code N5 (pl duplicate and two-deck case) fixed cf94779",
+      "spec N10 (exact cells) fixed c3162be",
+      "spec N7, N8, N9 not done, left as the brief asked"
+    ],
+    "notes": "Reworded in the full pass (all in 30ac91a, record follows): 3p-01, 03, 05, 07, 14, 16, 18, 21, 25, 28, 29, 30, 33, 35, 39, 41, 44, 45, 46, 47, 49 (reasons in the commit message). The other 29 had no second answer I could find.\nLocal runs on the API 32 emulator (Medium_Phone), which I started and stopped. The first run, 2026-10-14_155908, failed TC-01-01 with a native SIGSEGV in React Native's Fabric renderer (MountingCoordinator::pullTransaction) at debug-build launch, no code change involved. The rerun 2026-10-14_160342 is all green.\nThe collector reads only Maestro, so run.json shows 4 pass / 8 skipped (the AC-01-02 tests). Those pass in that run's junit/unit.xml (51/51) and junit/release.xml; with tests.evidence: ci, CI's JUnit on the pushed head is what counts. Not pushed.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [],
+      "blocked": []
+    },
+    "critical_decisions": []
+  },
+  "raw": "I fixed both BLOCKING findings, went through all 50 questions in both languages looking for a second correct answer, and reworded 21 of them. The whole suite is green on the new head c3162be, but only on the second run: the first run hit a native crash on app launch.\n\n**Crash on the first run (2026-10-14_155908, still on disk):** TC-01-01 failed. The debug build crashed natively (SIGSEGV in React Native's Fabric renderer, `MountingCoordinator::pullTransaction`) right after Maestro's clearState launch, before any screen was drawn. The commits change only question strings and checks, so I don't think they caused it; it never showed up in round 2. I re-ran into a new directory, changed nothing, and everything passed. That second run is the one `TESTS` names.\n\n**Emulator:** I started the API 32 emulator (Medium_Phone AVD) myself and stopped it after the runs.\n\n**Rows reworded in the full pass (pl and en kept saying the same thing):**\n- 3p-01 lemon: yellow or blue (lemons can be green)\n- 3p-03 bicycle: two or six wheels (training wheels)\n- 3p-05 toothbrush or spoon (toothpaste, B2)\n- 3p-07 fingers, \"counting the thumb\" (en \"four fingers and a thumb\")\n- 3p-14 sun, \"and keeps us warm\" (the moon is visible by day)\n- 3p-16 \"drops of water\" from clouds (snow, hail)\n- 3p-18 air or water (pl \"Czym oddychamy\" invites nose or lungs)\n- 3p-21 your shadow or a rainbow (feet, dog, B1)\n- 3p-25 pl \"bardzo gorącą\", matching en \"very hot\"\n- 3p-28 fish: in water or in a tree (sea, river, aquarium)\n- 3p-29 en \"sweet thing\", matching pl\n- 3p-30 giraffe or cat (swan, ostrich, dinosaur)\n- 3p-33 frog or cow (toad)\n- 3p-35 elephant or dog (tapir, mammoth)\n- 3p-39 socks or gloves (tights)\n- 3p-41 fridge or oven (freezer)\n- 3p-44 breakfast or supper (cereal, toast)\n- 3p-45 the time or the weather (numbers)\n- 3p-46 key or crayon (my hand)\n- 3p-47 tracks or water (en \"run on\" invites electricity)\n- 3p-49 spoon or comb (mouth)\n\nThe other 29 I kept: I could not find a second correct answer for them. The record rows were updated to match the deck exactly. The question count, length limits, at least 5 per kind and no repeated text all still pass.\n\n```\nRESULT: ready\nSTORY: US-01-02\nBRANCH: feature/US-01-02\nCOMMITS: 30ac91a fix(content): one answer only for every 3+ question, after a full adversarial pass [US-01-02]; cf94779 fix(content): compare question texts trimmed, ignoring case and missing ones [US-01-02]; c3162be test(content): require exactly the record's columns for each 3+ row [US-01-02]\nDECISIONS: none\nEVIDENCE:\n  #1 3+ holds exactly 50 questions, one answer each, pl and en — AC-01-02-1 (tests/unit/AC-01-02-1-50-questions-one-answer.test.ts), 4/4 pass in junit/unit.xml\n  #2 question ≤100, answer ≤60 chars per language — AC-01-02-2 (tests/unit/AC-01-02-2-length-limits.test.ts), 4/4 pass\n  #3 each of the four kinds ≥5 times — AC-01-02-3 (tests/unit/AC-01-02-3-four-kinds.test.ts), 5/5 pass\n  #4 age-suitability check of every 3+ question recorded — docs/delivery/content-checks/US-01-02-3-plus.md (all 50 rows re-checked, 21 reworded); AC-01-02-4 (tests/unit/AC-01-02-4-age-suitability-record.test.js), 3/3 pass, now requires exactly the record's columns\n  #5 all content checks pass, breaking any fails the suite — AC-01-02-5 (tests/unit/AC-01-02-5-content-checks.test.ts), 16/16 pass, step 3 asserts each duplicate message exactly\n  #6 a question or category is a data-only change — AC-01-02-6 (tests/unit/AC-01-02-6-content-is-data.test.js), 3/3 pass\n  #7 all content ships inside the app — AC-01-02-7 step 2 (release APK bundle holds every deck's pl and en text) pass in junit/release.xml; tests/unit/AC-01-02-7-content-ships-inside.test.js 1/1 pass\nTESTS: run=/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-14_160342 pass=4 fail=0 blocked=0 manual=0 manual_tests=none\nDERIVED_TESTS: AC-01-02-1; AC-01-02-2; AC-01-02-3; AC-01-02-4; AC-01-02-5; AC-01-02-6; AC-01-02-7\nPREEXISTING: all seven criteria were implemented in earlier rounds (51d99c8); this round changed content wording, the duplicate-text check and two tests\nGATES: yarn lint ok; yarn tsc ok; yarn format:check ok; yarn jest 51/51 ok (also run by the commit hook)\nENV_KEYS: none\nMIGRATION: no\nFINDINGS: code B1 / spec B1 (3p-21) fixed 30ac91a; spec B2 (3p-05) fixed 30ac91a; criterion #4 fixed 30ac91a; spec N3 / code N4 (3p-44) fixed 30ac91a; spec N4 / code N1 (3p-25 degree) fixed 30ac91a; spec N5 (3p-16, 3p-39) fixed 30ac91a; code N3 (3p-41) fixed 30ac91a; spec N1 (category test) fixed cf94779; spec N2 / code N6 (undefined, trim and lower-case) fixed cf94779; code N5 (pl duplicate and two-deck case) fixed cf94779; spec N10 (exact cells) fixed c3162be; spec N7, N8, N9 not done, left as the brief asked\nNOTES: Reworded in the full pass (all in 30ac91a, record follows): 3p-01, 03, 05, 07, 14, 16, 18, 21, 25, 28, 29, 30, 33, 35, 39, 41, 44, 45, 46, 47, 49 (reasons in the commit message). The other 29 had no second answer I could find.\nLocal runs on the API 32 emulator (Medium_Phone), which I started and stopped. The first run, 2026-10-14_155908, failed TC-01-01 with a native SIGSEGV in React Native's Fabric renderer (MountingCoordinator::pullTransaction) at debug-build launch, no code change involved. The rerun 2026-10-14_160342 is all green.\nThe collector reads only Maestro, so run.json shows 4 pass / 8 skipped (the AC-01-02 tests). Those pass in that run's junit/unit.xml (51/51) and junit/release.xml; with tests.evidence: ci, CI's JUnit on the pushed head is what counts. Not pushed.\n```\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}

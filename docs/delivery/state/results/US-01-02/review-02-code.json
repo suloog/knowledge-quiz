@@ -1,0 +1,138 @@
+{
+  "story": "US-01-02",
+  "attempt": 1,
+  "round": 2,
+  "sha": "dbfde5b3c6003c6fd924ab8df6941a83e2832e26",
+  "reviewer": "code",
+  "ts": "2026-10-14T17:08:53Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-01-02",
+    "impact": "`src/content` (deck JSON, `checkDecks`) is the shared gate for the 4+/5+ decks of US-01-03 and US-01-04, and the MOD-03 screens will read these questions; the record test is hard-wired to `| 3p-` rows with 9 cells, so later deck records must follow that layout. A later deck with a question text already in 3+ fails the suite, which is intended. No app UI changed.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/delivery/content-checks/US-01-02-3-plus.md:3p-18 — a parent could also answer \"planets\", \"the Milky Way\" or \"fireworks\" to \"lots of tiny dots in the night sky\", and the cell does not rule them out → add them with a reason, or add a detail such as \"that twinkle\""
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/delivery/content-checks/US-01-02-3-plus.md:3p-32 — a child may answer \"dom/domek\" for what birds build to lay eggs in, and the cell does not say it counts as the same answer as the nest → add \"domek / a house (the nest by another word)\""
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/delivery/content-checks/US-01-02-3-plus.md:3p-16 — \"ulewa\" and \"burza\" are plausible child answers to \"drops of water that fall from the clouds in summer\" and are not in the cell → add them, as the same answer or as ruled out"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/delivery/content-checks/US-01-02-3-plus.md:3p-11 — pink (strawberry milk) is a plausible second colour for milk and is not in the cell (only brown is) → add it, or make the question \"plain milk\""
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/delivery/content-checks/US-01-02-3-plus.md:3p-08,3p-09,3p-10 — \"the head\" is listed as ruled out, but the stated reason only makes it less specific, not wrong → say plainly that it is accepted as the same answer in a looser form; same for the unlisted \"na palec\" at 3p-05"
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:3p-03 — pl asks \"łap\" (paws) and en asks \"legs\", slightly different words for the same count of four → align the wording in both languages"
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/unit/AC-01-02-4-age-suitability-record.test.js:25 — the options guard misses Polish \"albo\", \"lub\", \"bądź\", English \"either\", and bare lists, so an either/or question written without \"czy\" or \"or\" passes → add \"albo|lub|bądź\" to the pl pattern and \"either\" to the en pattern, or document that the guard is partial"
+      },
+      {
+        "id": "N8",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/unit/AC-01-02-4-age-suitability-record.test.js:63 — step 4 accepts any non-empty near-miss cell, including \"x\" → require a minimum length, or accept that the substance is the owner's review (DEC-26)"
+      },
+      {
+        "id": "N9",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/unit/AC-01-02-4-age-suitability-record.test.js:45 — with a missing row, steps 2 and 3 throw a `TypeError` on `rows.get(q.id)` instead of a clean failure → guard with `rows.get(q.id) ?? []`"
+      },
+      {
+        "id": "N10",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/delivery/content-checks/US-01-02-3-plus.md:3p-03,3p-05,3p-15,3p-17,3p-21,3p-25,3p-26,3p-28,3p-39,3p-48,3p-50 — near-miss cells hold edit history (\"round-4\", \"the old question, swapped\", \"the scarf question this slot used to hold\", \"now in the question\", \"a calf says the same moo\") instead of near misses for the current question → remove those fragments in the file and in the PR body copy"
+      },
+      {
+        "id": "N11",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "PR #4 body — the generated impact text still says the record test uses \"exactly 8 cells\" while the test and AC-01-02-4 use 9 → check it is regenerated on the next head"
+      },
+      {
+        "id": "N12",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "test-runs/2026-10-14_190107/run.json — AC-01-02-1 to -7 are recorded as skipped although `junit/unit.xml` and `acceptance.log` show them passing → check why the run report does not map jest cases to the AC steps"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 6,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 7,
+        "verdict": "met",
+        "note": "AC-01-02-7 passes (no network code in `src/content`; release bundle 250/250 texts); TC-01-02 is deferred to US-03-01 by DEC-44/46 (external, not a finding)"
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Review of PR #4, round 2 (fix commits 06b43b6..dbfde5b, whole PR as context).\n\nVerdict: approve. I found no blocking issues. All 53 unit tests pass locally and in the local acceptance run. CI `Acceptance tests (Android 12 emulator)` is still pending on dbfde5b.\n\n**What I checked**\n- I read all 50 questions and answers in both languages for a genuine second correct answer. None is blocking. Candidates for non-blocking review are N1 to N5 below.\n- Polish and English mean the same thing in all 50 pairs; the only wording difference is 3p-03 (N6).\n- Record vs deck: the test's step 2 compares every row to the deck exactly, and the 50 rows pasted in the PR body are byte-identical to `docs/delivery/content-checks/US-01-02-3-plus.md`.\n- Kinds are 13/12/13/12, matching the PR body.\n- Step-5 guard, tried on sample strings:\n  - No false positives: `czyj` is clean, because `\\p{L}` boundaries are used. \"colour\", \"for\" and \"door\" are clean, because `\\bor\\b` needs a whole word.\n  - It catches \"czy\" at the start of a yes/no question and \"or\" in any form, including \"a-or-b\". Both are acceptable under DEC-47.\n  - It misses Polish \"albo\", \"lub\" and \"bądź\", and English \"either\" without \"or\", and bare lists such as \"Dog, cat, fish?\" (N7).\n- Local run `test-runs/2026-10-14_190107` is on the clean commit dbfde5b with 0 failures. `release/bundle-content.txt` shows 250 of 250 texts in the Hermes bundle. `junit/unit.xml` has the AC-01-02-1 to -7 steps passing.\n\n**Non-blocking notes**\n- N1: 3p-18 has other correct answers a parent could give: \"planets\", \"the Milky Way\" (Droga Mleczna), \"fireworks\". The cell lists only the moon, aeroplanes and fireflies.\n- N2: 3p-32 (\"What do birds build to lay their eggs in?\") could get \"dom\" or \"domek\" from a child. That is the nest by another word, so it is arguably a synonym, but the cell does not say so.\n- N3: 3p-16 (rain): the cell does not rule out \"ulewa\" or \"burza\". A child could say these, but they are not \"drops of water\", so a reading parent would likely accept them.\n- N4: 3p-11 (colour of milk): the cell rules out brown (cocoa) but not pink (strawberry milk), which a 3-year-old could name.\n- N5: 3p-08, 3p-09 and 3p-10 list \"the head\" as a near miss, but the stated reason (\"the eyes are the part of it we see with\") does not rule it out; it is only less specific. Same for 3p-05 \"na palec\" (onto a finger), which is unlisted.\n- N6: 3p-03 asks \"łap\" (paws) in Polish and \"legs\" in English. Both answer four. The same word for both would be cleaner.\n- Related wording points: 3p-37 \"Świnka\" can read as guinea pig, but \"z wiejskiego podwórka\" disambiguates. 3p-32 pl \"żeby złożyć w nim jajka\" is slightly awkward Polish. 3p-41 en \"cold cupboard\" is odd English for a fridge.\n\n**Guard and test**\n- N7: the step-5 guard is a heuristic and misses options named without \"czy\" or \"or\" (see above). It is acceptable as written; `docs/delivery/tests/AC-01-02-4-age-suitability-record.md` step 5 and DEC-47 say it only forbids \"czy\" and \"or\".\n- N8: step 4 only checks that the near-miss cell is non-empty and not \"—\", \"-\", \"none\" or \"n/a\". A cell containing \"x\" passes. The substance is the owner's review under DEC-26.\n- N9: in the record test, if a row is missing, steps 2 and 3 throw a `TypeError` instead of a clean failure, because `rows.get(q.id)` is undefined. Step 1 already reports the missing id. Cosmetic.\n\n**Record content**\n- N10: Many near-miss cells hold edit history rather than a near miss for the current question:\n  - Round labels: 3p-15 \"round-4 near miss\", 3p-17 \"round-4 note\", 3p-21 \"round-2 near misses\".\n  - Swapped-question notes: 3p-03 \"bicycle wheels (the old question, swapped)\", 3p-25 \"steam (the old question, swapped)\", 3p-28 \"a fish ... (the old question, swapped)\", 3p-39 \"rajstopy / tights (the socks question ...)\", 3p-48 \"komin / a neck warmer (the scarf question ...)\", 3p-50 \"marchewka / a carrot (the snowman question ...)\".\n  - 3p-05 \"toothpaste (now in the question)\".\n  - 3p-26 \"a calf (says the same moo)\" is not a rule-out, since the question asks for a sound.\n  - Fix: delete these fragments from `docs/delivery/content-checks/US-01-02-3-plus.md` and from the copy in the PR body. Every row still keeps at least one real near miss.\n\n**PR body and run report**\n- N11: the PR body's generated impact text says the record test is \"hard-wired to `| 3p-` rows with exactly 8 cells after the id\". The test and AC-01-02-4 now use 9. The body says it is \"not current\", so the loop will regenerate it. Worth checking that it does.\n- N12: `test-runs/2026-10-14_190107/run.json` lists AC-01-02-1 to -7 as `skipped` (totals pass 4 / skipped 8), although `junit/unit.xml` and `acceptance.log` show them passing (53 tests). Only AC-01-01-4 and the TC-00/01 tests are counted as pass. The PR's \"AC-01-02-N pass\" claims rest on `acceptance.log` and `unit.xml`, not on the run report. This is probably the run-report builder not mapping jest `junit/unit.xml` cases to AC steps (not confirmed). Worth checking so the report does not undercount.\n\nREVIEW: findings\nSTORY: US-01-02\nIMPACT: `src/content` (deck JSON, `checkDecks`) is the shared gate for the 4+/5+ decks of US-01-03 and US-01-04, and the MOD-03 screens will read these questions; the record test is hard-wired to `| 3p-` rows with 9 cells, so later deck records must follow that layout. A later deck with a question text already in 3+ fails the suite, which is intended. No app UI changed.\nFINDINGS:\n  N1 docs/delivery/content-checks/US-01-02-3-plus.md:3p-18 — a parent could also answer \"planets\", \"the Milky Way\" or \"fireworks\" to \"lots of tiny dots in the night sky\", and the cell does not rule them out → add them with a reason, or add a detail such as \"that twinkle\"\n  N2 docs/delivery/content-checks/US-01-02-3-plus.md:3p-32 — a child may answer \"dom/domek\" for what birds build to lay eggs in, and the cell does not say it counts as the same answer as the nest → add \"domek / a house (the nest by another word)\"\n  N3 docs/delivery/content-checks/US-01-02-3-plus.md:3p-16 — \"ulewa\" and \"burza\" are plausible child answers to \"drops of water that fall from the clouds in summer\" and are not in the cell → add them, as the same answer or as ruled out\n  N4 docs/delivery/content-checks/US-01-02-3-plus.md:3p-11 — pink (strawberry milk) is a plausible second colour for milk and is not in the cell (only brown is) → add it, or make the question \"plain milk\"\n  N5 docs/delivery/content-checks/US-01-02-3-plus.md:3p-08,3p-09,3p-10 — \"the head\" is listed as ruled out, but the stated reason only makes it less specific, not wrong → say plainly that it is accepted as the same answer in a looser form; same for the unlisted \"na palec\" at 3p-05\n  N6 src/content/decks/3-plus.json:3p-03 — pl asks \"łap\" (paws) and en asks \"legs\", slightly different words for the same count of four → align the wording in both languages\n  N7 tests/unit/AC-01-02-4-age-suitability-record.test.js:25 — the options guard misses Polish \"albo\", \"lub\", \"bądź\", English \"either\", and bare lists, so an either/or question written without \"czy\" or \"or\" passes → add \"albo|lub|bądź\" to the pl pattern and \"either\" to the en pattern, or document that the guard is partial\n  N8 tests/unit/AC-01-02-4-age-suitability-record.test.js:63 — step 4 accepts any non-empty near-miss cell, including \"x\" → require a minimum length, or accept that the substance is the owner's review (DEC-26)\n  N9 tests/unit/AC-01-02-4-age-suitability-record.test.js:45 — with a missing row, steps 2 and 3 throw a `TypeError` on `rows.get(q.id)` instead of a clean failure → guard with `rows.get(q.id) ?? []`\n  N10 docs/delivery/content-checks/US-01-02-3-plus.md:3p-03,3p-05,3p-15,3p-17,3p-21,3p-25,3p-26,3p-28,3p-39,3p-48,3p-50 — near-miss cells hold edit history (\"round-4\", \"the old question, swapped\", \"the scarf question this slot used to hold\", \"now in the question\", \"a calf says the same moo\") instead of near misses for the current question → remove those fragments in the file and in the PR body copy\n  N11 PR #4 body — the generated impact text still says the record test uses \"exactly 8 cells\" while the test and AC-01-02-4 use 9 → check it is regenerated on the next head\n  N12 test-runs/2026-10-14_190107/run.json — AC-01-02-1 to -7 are recorded as skipped although `junit/unit.xml` and `acceptance.log` show them passing → check why the run report does not map jest cases to the AC steps\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 met\n  #5 met\n  #6 met\n  #7 met — AC-01-02-7 passes (no network code in `src/content`; release bundle 250/250 texts); TC-01-02 is deferred to US-03-01 by DEC-44/46 (external, not a finding)\n"
+}

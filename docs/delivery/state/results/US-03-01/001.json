@@ -1,0 +1,67 @@
+{
+  "n": 1,
+  "attempt": 1,
+  "ts": "2026-10-15T07:14:32Z",
+  "story": "US-03-01",
+  "mode": "implement",
+  "parsed": {
+    "result": "ready",
+    "story": "US-03-01",
+    "branch": "feature/US-03-01",
+    "commits": [
+      "f4769a7 docs(cards): start US-03-01, record DEC-52 and DEC-53 [US-03-01]",
+      "8205461 feat(cards): reveal the answer and move to the next card [US-03-01]",
+      "2ef72eb test(cards): Maestro flows TC-03-01 to TC-03-05 [US-03-01]",
+      "86f7c4b test(cards): touch a card once it has been shown 1 s [US-03-01]"
+    ],
+    "decisions": [
+      "DEC-52 critical Cards follow the device language until the in-app switch (US-02-03)",
+      "DEC-53 routine Card layout: largest type shrunk to fit, answer area reserved, deck in data order until US-03-02"
+    ],
+    "evidence": [
+      "#1 Card appears: question alone, largest type, no buttons/choices/score — TC-03-01 (Maestro, release build, device pl-PL: card-0 shows the question, no answer, rule or categories) + src/app/__tests__/cards.test.tsx \"a new card shows its question alone, in the largest type of the app (#1)\" (one Text on the card screen, font size equal to the app's largest, no button)",
+      "#2 Reveal: answer below a horizontal line, question stays — TC-03-02 (rule below the question, answer below the rule, question text unchanged) + unit test \"#2\"",
+      "#3 Next: the next question appears alone — TC-03-03 (after a 1 s wait: card-1, a different question, no answer or rule) + unit test \"#3\"",
+      "#4 Double touch within 0.5 s reveals only the answer — TC-03-04 (doubleTapOn: answer shown, still card-0, same question) + unit tests \"#4\" and \"touch before 0.5 s is ignored (MOD-03-F14)\"",
+      "#5 Cards in the chosen language — TC-03-05 run twice, emulator set to pl-PL then en-US per DEC-52 (question and answer match the 3+ deck in that language) + unit tests \"#5\" (pl_PL, en_US) + src/__tests__/language.test.ts",
+      "#6 Answer within 1 s on the Mudita Kompakt, no animation — MANUAL: TC-03-06 is manual-only"
+    ],
+    "tests": {
+      "run": "/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-15_091002",
+      "pass": 12,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 1,
+      "manual_tests": [
+        "TC-03-06"
+      ]
+    },
+    "derived_tests": [],
+    "preexisting": "none — the category entries were plain Text with no touch handling, and there was no card screen or language handling",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test (166 unit tests, coverage threshold) ok",
+      "commit hook ok"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "notes": "TC-03-05 runs on a changed device language: scripts/test-acceptance.sh runs the device-language-tagged flows on the device set to pl-PL, then TC-03-05 again on en-US. It sets the language through adb root, setting persist.sys.locale and restarting the Android framework (zygote), then puts it back. This needs an emulator image without Google Play (CI's google_apis API 31 qualifies); without root the flows are reported blocked, not failed.\nThe card flows wait 1 s (an optional extendedWaitUntil) before the first touch on a new card, because touches within 0.5 s of a card being drawn are ignored (MOD-03-F14, DEC-40); without the wait TC-03-04 failed once.\nUntil US-03-02 and US-03-03 the deck is in data order and wraps to the first card after the last (DEC-53). The card text is sized by the longest word (cardType), so long words are not split mid-way.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [
+        "#6 Answer within 1 s on the Mudita Kompakt, no animation — MANUAL: TC-03-06 is manual-only"
+      ],
+      "blocked": []
+    },
+    "critical_decisions": [
+      "DEC-52 critical Cards follow the device language until the in-app switch (US-02-03)"
+    ]
+  },
+  "raw": "US-03-01 done on feature/US-03-01, 4 commits, not pushed. Full acceptance suite passed on 86f7c4b (clean tree): 12 pass, 0 fail, 0 blocked, TC-03-06 manual-only. No AI attribution. Long word split at the largest type (\"dz / isiejszym?\") fixed by cardType() sizing by the longest word (DEC-53). TC-03-04 failed once because Maestro double-tapped within 0.5 s of the card being drawn (correctly ignored, MOD-03-F14); flows now wait 1 s before the first touch on a new card.\n\n```\nRESULT: ready\nSTORY: US-03-01\nBRANCH: feature/US-03-01\nCOMMITS: f4769a7 docs(cards): start US-03-01, record DEC-52 and DEC-53 [US-03-01]; 8205461 feat(cards): reveal the answer and move to the next card [US-03-01]; 2ef72eb test(cards): Maestro flows TC-03-01 to TC-03-05 [US-03-01]; 86f7c4b test(cards): touch a card once it has been shown 1 s [US-03-01]\nDECISIONS: DEC-52 critical Cards follow the device language until the in-app switch (US-02-03); DEC-53 routine Card layout: largest type shrunk to fit, answer area reserved, deck in data order until US-03-02\nEVIDENCE:\n  #1 Card appears: question alone, largest type, no buttons/choices/score — TC-03-01 (Maestro, release build, device pl-PL: card-0 shows the question, no answer, rule or categories) + src/app/__tests__/cards.test.tsx \"a new card shows its question alone, in the largest type of the app (#1)\" (one Text on the card screen, font size equal to the app's largest, no button)\n  #2 Reveal: answer below a horizontal line, question stays — TC-03-02 (rule below the question, answer below the rule, question text unchanged) + unit test \"#2\"\n  #3 Next: the next question appears alone — TC-03-03 (after a 1 s wait: card-1, a different question, no answer or rule) + unit test \"#3\"\n  #4 Double touch within 0.5 s reveals only the answer — TC-03-04 (doubleTapOn: answer shown, still card-0, same question) + unit tests \"#4\" and \"touch before 0.5 s is ignored (MOD-03-F14)\"\n  #5 Cards in the chosen language — TC-03-05 run twice, emulator set to pl-PL then en-US per DEC-52 (question and answer match the 3+ deck in that language) + unit tests \"#5\" (pl_PL, en_US) + src/__tests__/language.test.ts\n  #6 Answer within 1 s on the Mudita Kompakt, no animation — MANUAL: TC-03-06 is manual-only\nTESTS: run=/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-15_091002 pass=12 fail=0 blocked=0 manual=1 manual_tests=TC-03-06\nDERIVED_TESTS: none\nPREEXISTING: none — the category entries were plain Text with no touch handling, and there was no card screen or language handling\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test (166 unit tests, coverage threshold) ok; commit hook ok\nENV_KEYS: none\nMIGRATION: no\nNOTES: TC-03-05 runs on a changed device language: scripts/test-acceptance.sh runs the device-language-tagged flows on the device set to pl-PL, then TC-03-05 again on en-US. It sets the language through adb root, setting persist.sys.locale and restarting the Android framework (zygote), then puts it back. This needs an emulator image without Google Play (CI's google_apis API 31 qualifies); without root the flows are reported blocked, not failed.\nThe card flows wait 1 s (an optional extendedWaitUntil) before the first touch on a new card, because touches within 0.5 s of a card being drawn are ignored (MOD-03-F14, DEC-40); without the wait TC-03-04 failed once.\nUntil US-03-02 and US-03-03 the deck is in data order and wraps to the first card after the last (DEC-53). The card text is sized by the longest word (cardType), so long words are not split mid-way.\n```\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}

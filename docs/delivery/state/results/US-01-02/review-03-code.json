@@ -1,0 +1,117 @@
+{
+  "story": "US-01-02",
+  "attempt": 1,
+  "round": 3,
+  "sha": "c3162bec9c32dac10204f770568983fad94d5542",
+  "reviewer": "code",
+  "ts": "2026-10-14T14:10:51Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-01-02",
+    "impact": "The changes are `checkDecks` in `src/content/checks.ts`, 21 reworded questions in `src/content/decks/3-plus.json`, the content record and the AC-01-02-4/-5 tests. Later decks (US-01-03 and US-01-04) and the MOD-03 screens that read `src/content` inherit the stricter duplicate check and the deck data. A later deck reusing a question text, even with different case or spacing, now fails the suite, which is intended. Nothing in the app UI changed.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json (3p-01,03,05,12,18,20,21,28,30,33,35,39,41,44,45,46,47,49) — in 18 of the 20 either/or questions the correct option is named first, and only 3p-19 and 3p-23 put it second, so a child or a screen showing the text as written can score by always picking the first option → put the correct option second in about half of them, in pl and en together"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:3p-04 — \"Jaki kształt ma koło samochodu?\" / \"Okrągły.\" gives away its answer because \"koło\" already means circle or wheel, a child will say \"kółko\" or \"circle\", and \"koło samochodu\" can be read as the preposition \"near the car\" → ask \"Jaki kształt ma piłka?\" or leave it for the owner review"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:3p-43 — \"round toy that bounces on the floor\" could also get \"balon\" (balloon) from a 3-year-old, since a balloon does bounce lightly (unlikely but possible) → add \"and you kick it\" (kopiemy) or leave it for the owner review"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:3p-42,3p-48,3p-40,3p-50 — open questions that allow near-miss answers: 3p-42 \"kapelusz\" or \"kaptur\", 3p-48 \"komin\" or \"golf\", 3p-40 \"ogień\" (fire), 3p-50 \"marchewka\" (carrot); a parent judging would accept them → not blocking; if wanted make them either/or, e.g. \"Co zdmuchujemy na torcie: świeczki czy klocki?\""
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:3p-08 — \"Czym widzisz?\" / \"Oczami.\" a child who wears glasses will answer \"okularami\" (glasses) → make it either/or (\"oczami czy uszami?\") or leave it"
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:3p-19,3p-22,3p-25,3p-44 — words a 3-year-old may not know: \"tonie / sinks\" and \"metalowy\", \"pogodny day\", \"supper\", and in 3p-25 \"bardzo gorąca woda\" (steam versus bubbles) → \"dinner\" reads more natural than \"supper\" in en although \"kolacja\" maps to supper; otherwise acceptable since the age check uses a parent reading aloud"
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:3p-02 — Polish answer \"Dwoje.\" is correct for \"dwoje oczu\" but sounds odd and a child says \"dwa\" → use \"Dwa.\" as in 3p-13 or leave it"
+      },
+      {
+        "id": "N8",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:3p-33 — \"ribbit\" is the American onomatopoeia while the deck spells \"colour\" British → use \"croak\" or settle the English variant, fine for the owner review"
+      },
+      {
+        "id": "N9",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/checks.ts:93 — the duplicate-text message prints the lower-cased, trimmed text, not the text as written in the deck, so it is harder to grep → report the original text and compare the normalised one (the test would need updating)"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": "exactly 50 questions, one answer string in pl and en; AC-01-02-1 test and checks pass"
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": "length limits are enforced by checkDeck and the AC-01-02-2 test, which passes locally"
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": "AC-01-02-3 test passes, and the deck has 13/12/13/12 by kind"
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": "the record has 50 rows and every row matches the deck in pl and en; the AC-01-02-4 test requires exactly the record's 8 columns and all four checks pass; it cannot verify that the checks were really made, the owner reviews all content before release (DEC-26)"
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": "the content checks cover count, one answer, length, kinds, unique id, unique text and unique category with failing-case tests that assert exact messages; the test suite passes locally; CI emulator run was still pending, re-check it"
+      },
+      {
+        "n": 6,
+        "verdict": "met",
+        "note": "content is JSON data with a loader, and the AC-01-02-6 test passes"
+      },
+      {
+        "n": 7,
+        "verdict": "met",
+        "note": "locally the release APK bundle holds all decks in pl and en and has no network permissions (AC-01-02-7 step 2, test-runs/2026-10-14_160342); CI emulator run was still pending, re-check it"
+      }
+    ],
+    "stray": []
+  },
+  "raw": "```\nREVIEW: findings\nSTORY: US-01-02\nIMPACT: The changes are `checkDecks` in `src/content/checks.ts`, 21 reworded questions in `src/content/decks/3-plus.json`, the content record and the AC-01-02-4/-5 tests. Later decks (US-01-03 and US-01-04) and the MOD-03 screens that read `src/content` inherit the stricter duplicate check and the deck data. A later deck reusing a question text, even with different case or spacing, now fails the suite, which is intended. Nothing in the app UI changed.\nFINDINGS:\n  N1 src/content/decks/3-plus.json (3p-01,03,05,12,18,20,21,28,30,33,35,39,41,44,45,46,47,49) — in 18 of the 20 either/or questions the correct option is named first, and only 3p-19 and 3p-23 put it second, so a child or a screen showing the text as written can score by always picking the first option → put the correct option second in about half of them, in pl and en together\n  N2 src/content/decks/3-plus.json:3p-04 — \"Jaki kształt ma koło samochodu?\" / \"Okrągły.\" gives away its answer because \"koło\" already means circle or wheel, a child will say \"kółko\" or \"circle\", and \"koło samochodu\" can be read as the preposition \"near the car\" → ask \"Jaki kształt ma piłka?\" or leave it for the owner review\n  N3 src/content/decks/3-plus.json:3p-43 — \"round toy that bounces on the floor\" could also get \"balon\" (balloon) from a 3-year-old, since a balloon does bounce lightly (unlikely but possible) → add \"and you kick it\" (kopiemy) or leave it for the owner review\n  N4 src/content/decks/3-plus.json:3p-42,3p-48,3p-40,3p-50 — open questions that allow near-miss answers: 3p-42 \"kapelusz\" or \"kaptur\", 3p-48 \"komin\" or \"golf\", 3p-40 \"ogień\" (fire), 3p-50 \"marchewka\" (carrot); a parent judging would accept them → not blocking; if wanted make them either/or, e.g. \"Co zdmuchujemy na torcie: świeczki czy klocki?\"\n  N5 src/content/decks/3-plus.json:3p-08 — \"Czym widzisz?\" / \"Oczami.\" a child who wears glasses will answer \"okularami\" (glasses) → make it either/or (\"oczami czy uszami?\") or leave it\n  N6 src/content/decks/3-plus.json:3p-19,3p-22,3p-25,3p-44 — words a 3-year-old may not know: \"tonie / sinks\" and \"metalowy\", \"pogodny day\", \"supper\", and in 3p-25 \"bardzo gorąca woda\" (steam versus bubbles) → \"dinner\" reads more natural than \"supper\" in en although \"kolacja\" maps to supper; otherwise acceptable since the age check uses a parent reading aloud\n  N7 src/content/decks/3-plus.json:3p-02 — Polish answer \"Dwoje.\" is correct for \"dwoje oczu\" but sounds odd and a child says \"dwa\" → use \"Dwa.\" as in 3p-13 or leave it\n  N8 src/content/decks/3-plus.json:3p-33 — \"ribbit\" is the American onomatopoeia while the deck spells \"colour\" British → use \"croak\" or settle the English variant, fine for the owner review\n  N9 src/content/checks.ts:93 — the duplicate-text message prints the lower-cased, trimmed text, not the text as written in the deck, so it is harder to grep → report the original text and compare the normalised one (the test would need updating)\nCRITERIA:\n  #1 met — exactly 50 questions, one answer string in pl and en; AC-01-02-1 test and checks pass\n  #2 met — length limits are enforced by checkDeck and the AC-01-02-2 test, which passes locally\n  #3 met — AC-01-02-3 test passes, and the deck has 13/12/13/12 by kind\n  #4 met — the record has 50 rows and every row matches the deck in pl and en; the AC-01-02-4 test requires exactly the record's 8 columns and all four checks pass; it cannot verify that the checks were really made, the owner reviews all content before release (DEC-26)\n  #5 met — the content checks cover count, one answer, length, kinds, unique id, unique text and unique category with failing-case tests that assert exact messages; the test suite passes locally; CI emulator run was still pending, re-check it\n  #6 met — content is JSON data with a loader, and the AC-01-02-6 test passes\n  #7 met — locally the release APK bundle holds all decks in pl and en and has no network permissions (AC-01-02-7 step 2, test-runs/2026-10-14_160342); CI emulator run was still pending, re-check it\n```\n"
+}

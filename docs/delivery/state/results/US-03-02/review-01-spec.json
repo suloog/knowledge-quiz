@@ -1,0 +1,53 @@
+{
+  "story": "US-03-02",
+  "attempt": 1,
+  "round": 1,
+  "sha": "971b12b84210f4e89a6f95eda1cebc907fe42621",
+  "reviewer": "spec",
+  "ts": "2026-10-15T08:37:37Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-03-02",
+    "impact": "All four criteria, both edge cases and F06–F08 are delivered and green on CI head 971b12b (TC-03-07..11 all SUCCESS); two non-blocking test-traceability notes.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:223 — TC-03-11 captures saved-deck-after.txt but never asserts it, so a wrong file path would still pass the flow (card-0 shows either way); this run's evidence does show the fresh 50-id deck with seen 0 → fail the step unless the after-file parses as JSON with seen 0 and a full order"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/modules/03-question-cards/tests/TC-03-11-unreadable-saved-deck.md:30 — precondition still requires an \"app-state bridge\" the release build lacks; the root overwrite is only recorded in DEC-55 → update the precondition and step 1 to the root overwrite of files/deck-3%2B.json"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      }
+    ],
+    "stray": []
+  },
+  "raw": "PR #12 (US-03-02, head 971b12b) meets the spec. All four criteria, both edge cases and F06-F08 delivered and tested. CI run 38704568914 green; og-test-results: 0 JUnit failures, TC-03-07 (293 s), 08, 09, 10 SUCCESS in report-release-pl.xml, TC-03-11 SUCCESS in report-release-saved-deck.xml. The three story test files run in a worktree: 46 pass. TC-03-11 evidence (saved-deck-before/after.txt) shows the app read the corrupt file and replaced it with a fresh 50-id deck, seen 0. DEC-54 correctly critical, DEC-55 correctly routine, append-only holds. Dependency allowed: matches yarn.lock, INTERNET stripped in release (AC-01-01-3 step 2 and AC-01-01-4 pass), src/storage.ts the single persistence module.\n\n```\nREVIEW: findings\nSTORY: US-03-02\nIMPACT: All four criteria, both edge cases and F06–F08 are delivered and green on CI head 971b12b (TC-03-07..11 all SUCCESS); two non-blocking test-traceability notes.\nFINDINGS:\n  N1 scripts/test-acceptance.sh:223 — TC-03-11 captures saved-deck-after.txt but never asserts it, so a wrong file path would still pass the flow (card-0 shows either way); this run's evidence does show the fresh 50-id deck with seen 0 → fail the step unless the after-file parses as JSON with seen 0 and a full order\n  N2 docs/specs/modules/03-question-cards/tests/TC-03-11-unreadable-saved-deck.md:30 — precondition still requires an \"app-state bridge\" the release build lacks; the root overwrite is only recorded in DEC-55 → update the precondition and step 1 to the root overwrite of files/deck-3%2B.json\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 met\n```\n"
+}

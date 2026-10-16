@@ -1,0 +1,96 @@
+{
+  "story": "US-02-01",
+  "attempt": 1,
+  "round": 3,
+  "sha": "dda17b2bf5ee36f10041476f6793ac95093339e7",
+  "reviewer": "code",
+  "ts": "2026-10-14T23:37:26Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-02-01",
+    "impact": "Both round-2 blockers are fixed. DEC-48 now carries the owner's no-deferral ruling and sits before DEC-49..51, which are byte-identical to main. Local run 2026-10-15_013104 on dda17b2 evidences all three entries (3+, 4+, 5+) full width and black-and-white, jest passes 147 of 147 and the Gates check is green. The Acceptance tests check on dda17b2 was still pending when I looked.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/modules/02-age-categories/stories/US-02-01-choose-age-category.md:46 — Technical note still says \"labels via i18n\", which contradicts DEC-48 point 2 (the label is shown as it is, no i18n) → reword the note to \"label from the deck's category field, no i18n (DEC-48)\""
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/DECISIONS.md:591 — DEC-48 Date is 2026-10-14 but the ruling it records is from 2026-10-15 → set the date to the ruling's date"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:34 — under `set -uo pipefail` on bash 3.2 an empty CATEGORY_ARGS (the node snippet failed) aborts with \"unbound variable\" at \"${CATEGORY_ARGS[@]}\" instead of failing cleanly → use ${CATEGORY_ARGS[@]+\"${CATEGORY_ARGS[@]}\"}"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:44 — the inline node duplicates the app's age sort and reads deck files from the directory, not decks/index.ts, so an unregistered deck JSON would be expected on screen but absent → share the helper or read the registry"
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/index.tsx:13 — key={category} collides if two decks share a label; no content check forbids it → low risk, key by index or add a uniqueness content check if it matters"
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/check-full-width.js:5 — uiautomator clips bounds to the display, so an over-wide entry would still read 0..width; the script documents this → note only, no change needed"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 6,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 7,
+        "verdict": "external",
+        "note": "launch within 3 s on the Mudita Kompakt is a manual check on the device"
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Round 3 review of PR #6 (US-02-01, category screen) at dda17b2: both round-2 blockers are fixed and I found no blocking issue. The Acceptance tests (Android 12 emulator) check on dda17b2 was still pending when I looked; the Gates check passed. I made my own detached worktree and removed it afterwards. I did not touch the main checkout.\n\nRound 2 blockers\n- **B1 (DEC-48 deferral): fixed.**\n  - DEC-48 (docs/specs/DECISIONS.md:589) now carries the owner's ruling: no deferral. US-02-01 merges once the 4+ and 5+ decks are on main, and TC-02-01 and TC-02-02 check 3+, 4+, 5+ in full.\n  - It records both the first option a and the content-first supersession, and its scope effect is \"none\".\n  - main now holds src/content/decks/3-plus, 4-plus and 5-plus .json, so the precondition is met.\n- **B2 (evidence and rebase): fixed.**\n  - The branch merge-base is origin/main 29a3120.\n  - DEC-48 sits at line 589, right before DEC-49 (601), DEC-50 (613) and DEC-51 (625).\n  - The DECISIONS.md diff against main is a 12-line pure insertion with 0 deleted lines, so DEC-49..51 are byte-identical.\n  - I re-ran the full jest suite on the worktree: 31 suites, 147 tests, all pass.\n  - Run test-runs/2026-10-15_013104 is on commit dda17b2, clean, on the 3-entry screen:\n    - The uiautomator dump shows category-0 \"3+\", category-1 \"4+\" and category-2 \"5+\", each bounds [0..1080] on a 1080-wide screen.\n    - junit/screen.xml (full width) passes.\n    - junit/screen-colours.xml (pixel check) passes with failures=\"0\" skipped=\"0\".\n    - The Maestro report shows 6 of 6 flows green, including TC-02-01, TC-02-02 and TC-02-14.\n    - The screenshot shows the title and three bold full-width entries with black rules, and white paper otherwise.\n- **Other round-2 fixes: verified.**\n  - The expected order is literal (\"3+\",\"4+\",\"5+\" in test-acceptance.sh and index.test.tsx).\n  - check-black-and-white.js:104 fails when no pixel was read.\n  - theme.test.ts mocks densities 1, 2, 2.625, 2.75, 3 and 3.5.\n\nFindings (all NON-BLOCKING)\n- N1: The story's technical note still says \"labels via i18n\", which contradicts DEC-48 point 2 (the label is shown as it is). The note should say \"label from the deck's `category` field, no i18n (DEC-48)\".\n- N2: DEC-48 has `Date: 2026-10-14`, but its text says the owner's ruling came on 2026-10-15. The date should match the ruling.\n- N3: scripts/test-acceptance.sh:34 uses `set -uo pipefail`. If the inline `node -e` that builds the expected categories fails, CATEGORY_ARGS stays empty and bash 3.2 (macOS) aborts with \"unbound variable\" at `\"${CATEGORY_ARGS[@]}\"`. check-full-width.js would otherwise fail cleanly on an empty count, so the fix is `${CATEGORY_ARGS[@]+\"${CATEGORY_ARGS[@]}\"}`.\n- N4: The inline node in test-acceptance.sh repeats the app's age sort. It reads the deck files in src/content/decks directly, not decks/index.ts. A JSON deck file not registered in index.ts would be expected on screen while the app omits it. The comment says the content checks reject that case, so this is low risk. Importing the same helper would remove the duplicate.\n- N5: src/app/index.tsx uses `key={category}`. Two decks with the same label would collide on the key. No content check forbids this today, and the case is speculative.\n- N6: check-full-width.js accepts an entry that is wider than the screen, because uiautomator clips bounds. The script documents this itself, so it is only a note.\n\nCriteria\n1. Every launch opens on the category screen: met (TC-02-01 on the emulator, plus the `_layout` test).\n2. Lists the categories in the order 3+, 4+, 5+: met (jest with the decks registered out of order, and TC-02-01 on the emulator with all three).\n3. A category added to the content data appears with no change to the screen: met (AC-02-01-3 with a \"6+\" deck).\n4. Every element is pure black or white, and a test fails otherwise: met (AC-02-01-4 steps 1-3 in jest, step 4 on the device).\n5. Nothing animates and no transition is animated: met (AC-02-01-5).\n6. Each entry spans the full width: met (TC-02-02, three entries at 0..1080).\n7. Screen appears within 3 s on the Mudita Kompakt, checked by hand: external (manual, on the device).\n\nEdge cases\n- Back on this screen closes the app: met (TC-02-14).\n- Saved data missing: met trivially, since the screen reads no saved data.\n- \"Only 3+ exists\" is superseded by DEC-48, since all decks are now on main.\n\n```\nREVIEW: findings\nSTORY: US-02-01\nIMPACT: Both round-2 blockers are fixed. DEC-48 now carries the owner's no-deferral ruling and sits before DEC-49..51, which are byte-identical to main. Local run 2026-10-15_013104 on dda17b2 evidences all three entries (3+, 4+, 5+) full width and black-and-white, jest passes 147 of 147 and the Gates check is green. The Acceptance tests check on dda17b2 was still pending when I looked.\nFINDINGS:\n  N1 docs/specs/modules/02-age-categories/stories/US-02-01-choose-age-category.md:46 — Technical note still says \"labels via i18n\", which contradicts DEC-48 point 2 (the label is shown as it is, no i18n) → reword the note to \"label from the deck's category field, no i18n (DEC-48)\"\n  N2 docs/specs/DECISIONS.md:591 — DEC-48 Date is 2026-10-14 but the ruling it records is from 2026-10-15 → set the date to the ruling's date\n  N3 scripts/test-acceptance.sh:34 — under `set -uo pipefail` on bash 3.2 an empty CATEGORY_ARGS (the node snippet failed) aborts with \"unbound variable\" at \"${CATEGORY_ARGS[@]}\" instead of failing cleanly → use ${CATEGORY_ARGS[@]+\"${CATEGORY_ARGS[@]}\"}\n  N4 scripts/test-acceptance.sh:44 — the inline node duplicates the app's age sort and reads deck files from the directory, not decks/index.ts, so an unregistered deck JSON would be expected on screen but absent → share the helper or read the registry\n  N5 src/app/index.tsx:13 — key={category} collides if two decks share a label; no content check forbids it → low risk, key by index or add a uniqueness content check if it matters\n  N6 scripts/check-full-width.js:5 — uiautomator clips bounds to the display, so an over-wide entry would still read 0..width; the script documents this → note only, no change needed\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 met\n  #5 met\n  #6 met\n  #7 external — launch within 3 s on the Mudita Kompakt is a manual check on the device\n```\n"
+}

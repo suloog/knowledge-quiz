@@ -1,0 +1,2220 @@
+{
+  "schema": "og-run/1",
+  "run": {
+    "id": "2026-10-14_135850",
+    "started": "2026-10-14T14:00:39+02:00",
+    "finished": "2026-10-14T14:00:39+02:00",
+    "duration_ms": 9530,
+    "environment": "local",
+    "scope": "US-01-01",
+    "targets": {
+      "build": "checkout"
+    },
+    "repo": {
+      "branch": "feature/US-01-01",
+      "commit": "595358aaf02bb2d62fe07d092767559c27b948d5",
+      "dirty": false,
+      "snapshot": true,
+      "changed_during_run": false,
+      "build": {
+        "environment": "local",
+        "source": "checkout",
+        "commit": "595358aaf02bb2d62fe07d092767559c27b948d5"
+      }
+    },
+    "project": {
+      "name": "Knowledge Quiz",
+      "client": "Order Group (internal)",
+      "language": "en"
+    },
+    "tools": {
+      "node": "v24.18.0"
+    }
+  },
+  "totals": {
+    "pass": 4,
+    "fail": 0,
+    "blocked": 0,
+    "manual": 1,
+    "skipped": 4
+  },
+  "tests": [
+    {
+      "id": "AC-01-01-1",
+      "title": "The platform versions the app is built on are recorded",
+      "module": "MOD-01",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-01-01#1",
+        "MOD-01-F01"
+      ],
+      "roles": [],
+      "spec": "docs/delivery/tests/AC-01-01-1-platform-versions-recorded.md",
+      "status": "skipped",
+      "duration_ms": 0,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Compare the recorded Expo, Expo Router, React Native, React and TypeScript versions with the installed ones",
+          "expected": "Each recorded version is the installed one",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 2,
+          "action": "Compare the recorded Android versions with the app's build settings",
+          "expected": "The oldest supported Android is 12 (API 31), and the target and compile SDK are the ones the build uses",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        }
+      ],
+      "logs": [],
+      "error": null
+    },
+    {
+      "id": "AC-01-01-3",
+      "title": "The installed app asks for no network permission",
+      "module": "MOD-01",
+      "layer": "mobile",
+      "type": "nfr",
+      "automation": "auto",
+      "covers": [
+        "US-01-01#3",
+        "NFR-05"
+      ],
+      "roles": [],
+      "spec": "docs/delivery/tests/AC-01-01-3-no-network-permission.md",
+      "status": "skipped",
+      "duration_ms": 0,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Generate the release build's manifest from the app's configuration",
+          "expected": "It removes the Internet, network state and Wi-Fi state permissions",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 2,
+          "action": "Read the permissions of the release APK built by `AC-01-01-5` with `aapt dump permissions`",
+          "expected": "No `INTERNET`, `ACCESS_NETWORK_STATE` or `ACCESS_WIFI_STATE`",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        }
+      ],
+      "logs": [],
+      "error": null
+    },
+    {
+      "id": "AC-01-01-4",
+      "title": "The app starts and runs with the device's network switched off",
+      "module": "MOD-01",
+      "layer": "mobile",
+      "type": "edge",
+      "automation": "auto",
+      "covers": [
+        "US-01-01#4",
+        "NFR-12"
+      ],
+      "roles": [],
+      "spec": "docs/delivery/tests/AC-01-01-4-opens-offline.md",
+      "status": "pass",
+      "duration_ms": 2522,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Switch the emulator's network off (airplane mode)",
+          "expected": "The network is off",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release/2026-10-14_140031/AC-01-01-4 The app starts and runs with the device's network switched off/takeScreenshot/step-01-network-off.png",
+              "label": "step-01-network-off"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Open the app with its data cleared",
+          "expected": "The app starts and shows its first screen without an error dialog",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/release/2026-10-14_140031/AC-01-01-4 The app starts and runs with the device's network switched off/takeScreenshot/step-02-first-screen-offline.png",
+              "label": "step-02-first-screen-offline"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "console",
+          "path": "maestro/release/2026-10-14_140031/AC-01-01-4 The app starts and runs with the device's network switched off/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/release/2026-10-14_140031/AC-01-01-4 The app starts and runs with the device's network switched off/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "AC-01-01-5",
+      "title": "The release APK is signed with a key kept outside the repository",
+      "module": "MOD-01",
+      "layer": "mobile",
+      "type": "nfr",
+      "automation": "auto",
+      "covers": [
+        "US-01-01#5",
+        "NFR-06",
+        "NFR-13"
+      ],
+      "roles": [],
+      "spec": "docs/delivery/tests/AC-01-01-5-signed-release-apk.md",
+      "status": "skipped",
+      "duration_ms": 0,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Generate the app's build configuration and read the release build type",
+          "expected": "It is signed with the release signing configuration, not the debug key",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 2,
+          "action": "Read the release signing configuration",
+          "expected": "The keystore, alias and passwords come from the `KQ_UPLOAD_*` environment variables or Gradle properties, an environment variable winning over the property of the same name (`DEC-45`), nothing from the repository",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 3,
+          "action": "Read what a release build does when those properties are missing",
+          "expected": "It fails and names the missing properties",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 4,
+          "action": "Build the release APK with a throwaway key passed only through the `KQ_UPLOAD_*` environment variables",
+          "expected": "The build succeeds and writes `app-release.apk`",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 5,
+          "action": "Verify the APK's signature with `apksigner verify --print-certs`",
+          "expected": "It verifies, and its certificate is the throwaway key's, not the debug key's",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 6,
+          "action": "Read the APK's minimum SDK with `aapt dump badging`",
+          "expected": "`sdkVersion:'31'` — Android 12 and newer only (`NFR-10`)",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        }
+      ],
+      "logs": [],
+      "error": null
+    },
+    {
+      "id": "TC-00-01",
+      "title": "The documented start command builds the app and starts it on the Android emulator",
+      "module": "MOD-00",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-00-01#1"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/00-foundation/tests/TC-00-01-stack-starts.md",
+      "status": "pass",
+      "duration_ms": 1459,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Start the app with the command the README names, and with nothing else",
+          "expected": "the command builds the app, installs it on the emulator and reports it started; nothing was done by hand",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/2026-10-14_140017/TC-00-01 The documented start command builds the app and starts it on the Android emulator/takeScreenshot/step-01-started-by-yarn-stack.png",
+              "label": "step-01-started-by-yarn-stack"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Look at the emulator",
+          "expected": "the app is open on its first screen, with no error dialog",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/2026-10-14_140017/TC-00-01 The documented start command builds the app and starts it on the Android emulator/takeScreenshot/step-02-first-screen.png",
+              "label": "step-02-first-screen"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "console",
+          "path": "maestro/2026-10-14_140017/TC-00-01 The documented start command builds the app and starts it on the Android emulator/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/2026-10-14_140017/TC-00-01 The documented start command builds the app and starts it on the Android emulator/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-00-03",
+      "title": "The first screen shows a value read from the app's bundled content data",
+      "module": "MOD-00",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-00-01#3"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/00-foundation/tests/TC-00-03-path-through-every-layer.md",
+      "status": "pass",
+      "duration_ms": 2874,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Open the app on the emulator",
+          "expected": "it opens without an error",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/2026-10-14_140017/TC-00-03 The first screen shows a value read from the app's bundled content data/takeScreenshot/step-01-opened.png",
+              "label": "step-01-opened"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Look at what the first screen shows",
+          "expected": "the value kept in the content data is shown — read from the data at run time, not written into the screen",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/2026-10-14_140017/TC-00-03 The first screen shows a value read from the app's bundled content data/takeScreenshot/step-02-content-value.png",
+              "label": "step-02-content-value"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "console",
+          "path": "maestro/2026-10-14_140017/TC-00-03 The first screen shows a value read from the app's bundled content data/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/2026-10-14_140017/TC-00-03 The first screen shows a value read from the app's bundled content data/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-01-01",
+      "title": "The app installs and opens on an Android 12 emulator",
+      "module": "MOD-01",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "auto",
+      "covers": [
+        "US-01-01#2",
+        "NFR-10"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/01-question-content/tests/TC-01-01-opens-on-emulator.md",
+      "status": "pass",
+      "duration_ms": 2675,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Install the app on a clean Android 12 (API 31) emulator",
+          "expected": "Installation completes without error",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/2026-10-14_140017/TC-01-01 The app installs and opens on an Android 12 emulator/takeScreenshot/step-01-installed.png",
+              "label": "step-01-installed"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "action": "Open the app",
+          "expected": "The app opens and shows its first screen without an error dialog",
+          "status": "pass",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": [
+            {
+              "kind": "screenshot",
+              "path": "maestro/2026-10-14_140017/TC-01-01 The app installs and opens on an Android 12 emulator/takeScreenshot/step-02-first-screen.png",
+              "label": "step-02-first-screen"
+            }
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "kind": "console",
+          "path": "maestro/2026-10-14_140017/TC-01-01 The app installs and opens on an Android 12 emulator/logs/device-logcat.txt",
+          "label": "device-logcat"
+        },
+        {
+          "kind": "console",
+          "path": "maestro/2026-10-14_140017/TC-01-01 The app installs and opens on an Android 12 emulator/logs/maestro.log",
+          "label": "maestro"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "TC-01-02",
+      "title": "The app opens and plays a card with the network switched off",
+      "module": "MOD-01",
+      "layer": "mobile",
+      "type": "edge",
+      "automation": "auto",
+      "covers": [
+        "US-01-01#4",
+        "US-01-02#7",
+        "NFR-12"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/01-question-content/tests/TC-01-02-works-offline.md",
+      "status": "skipped",
+      "duration_ms": 0,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Switch the emulator's network off (airplane mode)",
+          "expected": "The network is off",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 2,
+          "action": "Open the app",
+          "expected": "The category screen appears",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 3,
+          "action": "Choose 3+ and touch the card",
+          "expected": "A question appears, then its answer",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        }
+      ],
+      "logs": [],
+      "error": null
+    },
+    {
+      "id": "TC-01-03",
+      "title": "The app installs and opens on the Mudita Kompakt",
+      "module": "MOD-01",
+      "layer": "mobile",
+      "type": "happy-path",
+      "automation": "manual-only",
+      "covers": [
+        "US-01-01#2",
+        "NFR-11"
+      ],
+      "roles": [],
+      "spec": "docs/specs/modules/01-question-content/tests/TC-01-03-opens-on-kompakt.md",
+      "status": "manual",
+      "duration_ms": 0,
+      "description": "",
+      "analysis": "",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Install the release APK on the Kompakt",
+          "expected": "Installation completes",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        },
+        {
+          "n": 2,
+          "action": "Open the app",
+          "expected": "The category screen appears, legible and black and white",
+          "status": "skipped",
+          "duration_ms": 0,
+          "observed": "",
+          "evidence": []
+        }
+      ],
+      "logs": [],
+      "error": null
+    }
+  ],
+  "coverage": [
+    {
+      "criterion": "MOD-02-F01",
+      "text": "`US-02-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-F02",
+      "text": "`US-02-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-F03",
+      "text": "`US-02-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-F04",
+      "text": "`US-03-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-F05",
+      "text": "`US-02-02`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-F06",
+      "text": "`US-02-02`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-F07",
+      "text": "`US-02-02`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-F08",
+      "text": "`US-02-02`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-F09",
+      "text": "`US-02-02`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-F10",
+      "text": "`US-02-03`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-F11",
+      "text": "`US-02-03`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-F12",
+      "text": "`US-02-03`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-F13",
+      "text": "`US-02-03`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-U01",
+      "text": "`US-02-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-U02",
+      "text": "`US-02-02`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-U03",
+      "text": "`US-02-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-U04",
+      "text": "`US-02-03`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-02-U05",
+      "text": "`US-02-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "US-02-01#1",
+      "text": "Every launch opens on the category screen.",
+      "tests": [
+        "TC-02-01"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-02-01#2",
+      "text": "The screen lists the categories found in the content data…",
+      "tests": [
+        "TC-02-01"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-02-01#3",
+      "text": "A category added to the content data appears on the scree…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — a fixture category appears without screen change"
+    },
+    {
+      "criterion": "US-02-01#4",
+      "text": "Every element on screen is pure black or pure white; a te…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — colour check (#000/#FFF only); on device `TC-02-04`"
+    },
+    {
+      "criterion": "US-02-01#5",
+      "text": "Nothing animates and no transition is animated; a test fa…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — animation check; on device `TC-02-04`"
+    },
+    {
+      "criterion": "US-02-01#6",
+      "text": "Each category entry spans the full width of the screen.",
+      "tests": [
+        "TC-02-02"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-02-01#7",
+      "text": "On the Mudita Kompakt the screen appears within 3 s of la…",
+      "tests": [
+        "TC-02-03"
+      ],
+      "automation": "manual-only",
+      "status": "manual",
+      "note": "Kompakt only — out of the executor's reach"
+    },
+    {
+      "criterion": "US-02-02#1",
+      "text": "First launch",
+      "tests": [
+        "TC-02-05"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-02-02#2",
+      "text": "After use",
+      "tests": [
+        "TC-02-06"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-02-02#3",
+      "text": "After a restart",
+      "tests": [
+        "TC-02-07"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-02-02#4",
+      "text": "Finished deck",
+      "tests": [
+        "TC-02-08"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-02-03#1",
+      "text": "Polish device",
+      "tests": [
+        "TC-02-10"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-02-03#2",
+      "text": "Other device language",
+      "tests": [
+        "TC-02-11"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-02-03#3",
+      "text": "Switch and restart",
+      "tests": [
+        "TC-02-12"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-02-03#4",
+      "text": "Decks kept",
+      "tests": [
+        "TC-02-13"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "NFR-02",
+      "text": "`TC-02-03`",
+      "tests": [],
+      "automation": "manual-only",
+      "status": "manual",
+      "note": ""
+    },
+    {
+      "criterion": "NFR-03",
+      "text": "`TC-02-04`",
+      "tests": [],
+      "automation": "manual-only",
+      "status": "manual",
+      "note": ""
+    },
+    {
+      "criterion": "NFR-07",
+      "text": "`TC-02-04`",
+      "tests": [],
+      "automation": "manual-only",
+      "status": "manual",
+      "note": ""
+    },
+    {
+      "criterion": "NFR-08",
+      "text": "`TC-02-02`",
+      "tests": [],
+      "automation": "partly manual",
+      "status": "manual",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F01",
+      "text": "`US-01-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F02",
+      "text": "`US-01-02`, `US-01-03`, `US-01-04`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F03",
+      "text": "`US-01-02`, `US-01-03`, `US-01-04`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F04",
+      "text": "`US-01-02`, `US-01-03`, `US-01-04`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F05",
+      "text": "`US-01-02`, `US-01-03`, `US-01-04`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F06",
+      "text": "`US-01-02`, `US-01-03`, `US-01-04`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F07",
+      "text": "`US-01-02`, `US-01-03`, `US-01-04`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F08",
+      "text": "`US-03-05`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F09",
+      "text": "`US-01-02`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F10",
+      "text": "`US-01-02`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F11",
+      "text": "`US-01-02`, `US-01-03`, `US-01-04`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F12",
+      "text": "`US-01-02`, `US-01-03`, `US-01-04`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F13",
+      "text": "`US-03-05`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F14",
+      "text": "`US-01-02`, `US-01-03`, `US-01-04`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-01-F15",
+      "text": "`US-01-02`, `US-01-03`, `US-01-04`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "US-01-01#1",
+      "text": "The app is built on the company's mobile app foundation a…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "PR review — platform versions recorded in the upgrade PR"
+    },
+    {
+      "criterion": "US-01-01#2",
+      "text": "The app installs and starts on an Android 12 emulator and…",
+      "tests": [
+        "TC-01-01",
+        "TC-01-03"
+      ],
+      "automation": "auto",
+      "status": "manual",
+      "note": "—"
+    },
+    {
+      "criterion": "US-01-01#3",
+      "text": "The installed app asks for no network permission.",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — manifest check (no network permission)"
+    },
+    {
+      "criterion": "US-01-01#4",
+      "text": "The app starts and runs with the device's network switche…",
+      "tests": [
+        "TC-01-02"
+      ],
+      "automation": "auto",
+      "status": "skipped",
+      "note": "—"
+    },
+    {
+      "criterion": "US-01-01#5",
+      "text": "A signed release APK can be built; the signing key is kep…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "release build — signed APK built by Maciej; key outside the repo (`DEC-09`)"
+    },
+    {
+      "criterion": "US-01-02#1",
+      "text": "The 3+ category holds exactly 50 questions, each with exa…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — content checks (count, one answer per language)"
+    },
+    {
+      "criterion": "US-01-02#2",
+      "text": "Every question is at most 100 characters and every answer…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — content checks (length limits)"
+    },
+    {
+      "criterion": "US-01-02#3",
+      "text": "Each of the four kinds of content (educational, popular-s…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — content checks (kinds, at least 5 each)"
+    },
+    {
+      "criterion": "US-01-02#4",
+      "text": "The pull request records the age-suitability check of eve…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "PR review — age-suitability check recorded in the PR (Q29)"
+    },
+    {
+      "criterion": "US-01-02#5",
+      "text": "All automatic content checks pass; breaking any one of th…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — a broken check fails the suite"
+    },
+    {
+      "criterion": "US-01-02#6",
+      "text": "Adding a question or a new age category requires a change…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — a fixture question/category added as data only"
+    },
+    {
+      "criterion": "US-01-02#7",
+      "text": "All content ships inside the app; nothing is downloaded.",
+      "tests": [
+        "TC-01-02"
+      ],
+      "automation": "auto",
+      "status": "skipped",
+      "note": "—"
+    },
+    {
+      "criterion": "US-01-03#1",
+      "text": "The 4+ category holds exactly 50 questions, each with exa…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — content checks (count, one answer per language)"
+    },
+    {
+      "criterion": "US-01-03#2",
+      "text": "Every question is at most 100 characters and every answer…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — content checks (length limits)"
+    },
+    {
+      "criterion": "US-01-03#3",
+      "text": "Each of the four kinds of content (educational, popular-s…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — content checks (kinds, at least 5 each)"
+    },
+    {
+      "criterion": "US-01-03#4",
+      "text": "The pull request records the age-suitability check of eve…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "PR review — age-suitability check recorded in the PR (Q29)"
+    },
+    {
+      "criterion": "US-01-03#5",
+      "text": "All automatic content checks pass; breaking any one of th…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — a broken check fails the suite"
+    },
+    {
+      "criterion": "US-01-03#6",
+      "text": "None of the 4+ questions repeats a 3+ question.",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — no question repeated across decks"
+    },
+    {
+      "criterion": "US-01-04#1",
+      "text": "The 5+ category holds exactly 50 questions, each with exa…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — content checks (count, one answer per language)"
+    },
+    {
+      "criterion": "US-01-04#2",
+      "text": "Every question is at most 100 characters and every answer…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — content checks (length limits)"
+    },
+    {
+      "criterion": "US-01-04#3",
+      "text": "Each of the four kinds of content (educational, popular-s…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — content checks (kinds, at least 5 each)"
+    },
+    {
+      "criterion": "US-01-04#4",
+      "text": "The pull request records the age-suitability check of eve…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "PR review — age-suitability check recorded in the PR (Q29)"
+    },
+    {
+      "criterion": "US-01-04#5",
+      "text": "All automatic content checks pass; breaking any one of th…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — a broken check fails the suite"
+    },
+    {
+      "criterion": "US-01-04#6",
+      "text": "None of the 5+ questions repeats a 3+ or 4+ question.",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — no question repeated across decks"
+    },
+    {
+      "criterion": "NFR-10",
+      "text": "`TC-01-01`",
+      "tests": [],
+      "automation": "—",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "NFR-11",
+      "text": "`TC-01-03`",
+      "tests": [],
+      "automation": "manual-only",
+      "status": "manual",
+      "note": ""
+    },
+    {
+      "criterion": "NFR-12",
+      "text": "`TC-01-02`",
+      "tests": [],
+      "automation": "—",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "NFR-05",
+      "text": "—",
+      "tests": [],
+      "automation": "no executor test",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F01",
+      "text": "`US-03-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F02",
+      "text": "`US-03-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F03",
+      "text": "`US-03-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F04",
+      "text": "`US-03-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F05",
+      "text": "`US-03-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F06",
+      "text": "`US-03-02`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F07",
+      "text": "`US-03-02`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F08",
+      "text": "`US-03-02`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F09",
+      "text": "`US-03-03`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F10",
+      "text": "`US-03-03`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F11",
+      "text": "`US-03-03`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F12",
+      "text": "`US-03-04`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F13",
+      "text": "`US-03-04`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-F14",
+      "text": "`US-03-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-U01",
+      "text": "`US-03-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-U02",
+      "text": "`US-03-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-U03",
+      "text": "`US-03-05`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-U04",
+      "text": "`US-03-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "MOD-03-U05",
+      "text": "`US-03-01`",
+      "tests": [],
+      "automation": "",
+      "status": "not-covered",
+      "note": ""
+    },
+    {
+      "criterion": "US-03-01#1",
+      "text": "Card appears",
+      "tests": [
+        "TC-03-01"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-01#2",
+      "text": "Reveal",
+      "tests": [
+        "TC-03-02"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-01#3",
+      "text": "Next",
+      "tests": [
+        "TC-03-03"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-01#4",
+      "text": "Double touch",
+      "tests": [
+        "TC-03-04"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-01#5",
+      "text": "Cards are shown in the language chosen on the category sc…",
+      "tests": [
+        "TC-03-05"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-01#6",
+      "text": "On the Mudita Kompakt the answer appears within 1 s of a…",
+      "tests": [
+        "TC-03-06"
+      ],
+      "automation": "manual-only",
+      "status": "manual",
+      "note": "Kompakt only — out of the executor's reach"
+    },
+    {
+      "criterion": "US-03-02#1",
+      "text": "No repeats",
+      "tests": [
+        "TC-03-07"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-02#2",
+      "text": "Closed before the reveal",
+      "tests": [
+        "TC-03-08"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-02#3",
+      "text": "Closed after the reveal",
+      "tests": [
+        "TC-03-09"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-02#4",
+      "text": "Separate decks",
+      "tests": [
+        "TC-03-10"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-03#1",
+      "text": "End card",
+      "tests": [
+        "TC-03-12"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-03#2",
+      "text": "Again",
+      "tests": [
+        "TC-03-13"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-03#3",
+      "text": "Categories",
+      "tests": [
+        "TC-03-14"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-04#1",
+      "text": "From any card, the Android back action shows the category…",
+      "tests": [
+        "TC-03-16"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-04#2",
+      "text": "Every card shows a small control, outside the card's touc…",
+      "tests": [
+        "TC-03-17"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-04#3",
+      "text": "Touching the control never reveals an answer or moves to…",
+      "tests": [
+        "TC-03-18"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-04#4",
+      "text": "After returning, opening the same category resumes where…",
+      "tests": [
+        "TC-03-19"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-05#1",
+      "text": "Only questions where a picture helps carry an illustratio…",
+      "tests": [
+        "TC-03-20"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-05#2",
+      "text": "Every illustration is pure black and white; a test fails…",
+      "tests": [],
+      "automation": "unit / review",
+      "status": "not-covered",
+      "note": "unit test suite — illustration pixel check (pure black and white)"
+    },
+    {
+      "criterion": "US-03-05#3",
+      "text": "An illustration is shown with its question as soon as the…",
+      "tests": [
+        "TC-03-21"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-05#4",
+      "text": "The same question shows the same illustration in both lan…",
+      "tests": [
+        "TC-03-22"
+      ],
+      "automation": "auto",
+      "status": "not-covered",
+      "note": "—"
+    },
+    {
+      "criterion": "US-03-05#5",
+      "text": "On the Mudita Kompakt every illustration is legible (chec…",
+      "tests": [
+        "TC-03-23"
+      ],
+      "automation": "manual-only",
+      "status": "manual",
+      "note": "Kompakt only — out of the executor's reach"
+    },
+    {
+      "criterion": "NFR-01",
+      "text": "`TC-03-06`",
+      "tests": [],
+      "automation": "manual-only",
+      "status": "manual",
+      "note": ""
+    },
+    {
+      "criterion": "NFR-03",
+      "text": "`TC-03-06`",
+      "tests": [],
+      "automation": "manual-only",
+      "status": "manual",
+      "note": ""
+    },
+    {
+      "criterion": "NFR-04",
+      "text": "`TC-03-06`",
+      "tests": [],
+      "automation": "manual-only",
+      "status": "manual",
+      "note": ""
+    }
+  ],
+  "not_covered": [
+    {
+      "criterion": "MOD-02-F01",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-F02",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-F03",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-F04",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-F05",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-F06",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-F07",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-F08",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-F09",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-F10",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-F11",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-F12",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-F13",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-U01",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-U02",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-U03",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-U04",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-02-U05",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-02-01#1",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-02-01#2",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-02-01#3",
+      "kind": "no-test",
+      "reason": "unit test suite — a fixture category appears without screen change"
+    },
+    {
+      "criterion": "US-02-01#4",
+      "kind": "no-test",
+      "reason": "unit test suite — colour check (#000/#FFF only); on device `TC-02-04`"
+    },
+    {
+      "criterion": "US-02-01#5",
+      "kind": "no-test",
+      "reason": "unit test suite — animation check; on device `TC-02-04`"
+    },
+    {
+      "criterion": "US-02-01#6",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-02-01#7",
+      "kind": "manual-only",
+      "reason": "Kompakt only — out of the executor's reach"
+    },
+    {
+      "criterion": "US-02-02#1",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-02-02#2",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-02-02#3",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-02-02#4",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-02-03#1",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-02-03#2",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-02-03#3",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-02-03#4",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "NFR-02",
+      "kind": "manual-only",
+      "reason": ""
+    },
+    {
+      "criterion": "NFR-03",
+      "kind": "manual-only",
+      "reason": ""
+    },
+    {
+      "criterion": "NFR-07",
+      "kind": "manual-only",
+      "reason": ""
+    },
+    {
+      "criterion": "NFR-08",
+      "kind": "manual-only",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F01",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F02",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F03",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F04",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F05",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F06",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F07",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F08",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F09",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F10",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F11",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F12",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F13",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F14",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-01-F15",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-01-01#1",
+      "kind": "no-test",
+      "reason": "PR review — platform versions recorded in the upgrade PR"
+    },
+    {
+      "criterion": "US-01-01#2",
+      "kind": "manual-only",
+      "reason": ""
+    },
+    {
+      "criterion": "US-01-01#3",
+      "kind": "no-test",
+      "reason": "unit test suite — manifest check (no network permission)"
+    },
+    {
+      "criterion": "US-01-01#5",
+      "kind": "no-test",
+      "reason": "release build — signed APK built by Maciej; key outside the repo (`DEC-09`)"
+    },
+    {
+      "criterion": "US-01-02#1",
+      "kind": "no-test",
+      "reason": "unit test suite — content checks (count, one answer per language)"
+    },
+    {
+      "criterion": "US-01-02#2",
+      "kind": "no-test",
+      "reason": "unit test suite — content checks (length limits)"
+    },
+    {
+      "criterion": "US-01-02#3",
+      "kind": "no-test",
+      "reason": "unit test suite — content checks (kinds, at least 5 each)"
+    },
+    {
+      "criterion": "US-01-02#4",
+      "kind": "no-test",
+      "reason": "PR review — age-suitability check recorded in the PR (Q29)"
+    },
+    {
+      "criterion": "US-01-02#5",
+      "kind": "no-test",
+      "reason": "unit test suite — a broken check fails the suite"
+    },
+    {
+      "criterion": "US-01-02#6",
+      "kind": "no-test",
+      "reason": "unit test suite — a fixture question/category added as data only"
+    },
+    {
+      "criterion": "US-01-03#1",
+      "kind": "no-test",
+      "reason": "unit test suite — content checks (count, one answer per language)"
+    },
+    {
+      "criterion": "US-01-03#2",
+      "kind": "no-test",
+      "reason": "unit test suite — content checks (length limits)"
+    },
+    {
+      "criterion": "US-01-03#3",
+      "kind": "no-test",
+      "reason": "unit test suite — content checks (kinds, at least 5 each)"
+    },
+    {
+      "criterion": "US-01-03#4",
+      "kind": "no-test",
+      "reason": "PR review — age-suitability check recorded in the PR (Q29)"
+    },
+    {
+      "criterion": "US-01-03#5",
+      "kind": "no-test",
+      "reason": "unit test suite — a broken check fails the suite"
+    },
+    {
+      "criterion": "US-01-03#6",
+      "kind": "no-test",
+      "reason": "unit test suite — no question repeated across decks"
+    },
+    {
+      "criterion": "US-01-04#1",
+      "kind": "no-test",
+      "reason": "unit test suite — content checks (count, one answer per language)"
+    },
+    {
+      "criterion": "US-01-04#2",
+      "kind": "no-test",
+      "reason": "unit test suite — content checks (length limits)"
+    },
+    {
+      "criterion": "US-01-04#3",
+      "kind": "no-test",
+      "reason": "unit test suite — content checks (kinds, at least 5 each)"
+    },
+    {
+      "criterion": "US-01-04#4",
+      "kind": "no-test",
+      "reason": "PR review — age-suitability check recorded in the PR (Q29)"
+    },
+    {
+      "criterion": "US-01-04#5",
+      "kind": "no-test",
+      "reason": "unit test suite — a broken check fails the suite"
+    },
+    {
+      "criterion": "US-01-04#6",
+      "kind": "no-test",
+      "reason": "unit test suite — no question repeated across decks"
+    },
+    {
+      "criterion": "NFR-10",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "NFR-11",
+      "kind": "manual-only",
+      "reason": ""
+    },
+    {
+      "criterion": "NFR-12",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "NFR-05",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F01",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F02",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F03",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F04",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F05",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F06",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F07",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F08",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F09",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F10",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F11",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F12",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F13",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-F14",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-U01",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-U02",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-U03",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-U04",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "MOD-03-U05",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-03-01#1",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-03-01#2",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-03-01#3",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-03-01#4",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-03-01#5",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-03-01#6",
+      "kind": "manual-only",
+      "reason": "Kompakt only — out of the executor's reach"
+    },
+    {
+      "criterion": "US-03-02#1",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-03-02#2",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-03-02#3",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-03-02#4",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-03-03#1",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-03-03#2",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-03-03#3",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-03-04#1",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-03-04#2",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-03-04#3",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-03-04#4",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-03-05#1",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-03-05#2",
+      "kind": "no-test",
+      "reason": "unit test suite — illustration pixel check (pure black and white)"
+    },
+    {
+      "criterion": "US-03-05#3",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-03-05#4",
+      "kind": "no-test",
+      "reason": ""
+    },
+    {
+      "criterion": "US-03-05#5",
+      "kind": "manual-only",
+      "reason": "Kompakt only — out of the executor's reach"
+    },
+    {
+      "criterion": "NFR-01",
+      "kind": "manual-only",
+      "reason": ""
+    },
+    {
+      "criterion": "NFR-03",
+      "kind": "manual-only",
+      "reason": ""
+    },
+    {
+      "criterion": "NFR-04",
+      "kind": "manual-only",
+      "reason": ""
+    }
+  ],
+  "notes": []
+}

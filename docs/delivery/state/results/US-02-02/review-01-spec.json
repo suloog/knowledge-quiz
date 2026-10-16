@@ -1,0 +1,88 @@
+{
+  "story": "US-02-02",
+  "attempt": 1,
+  "round": 1,
+  "sha": "23248061a08e585066cc557b1f126172907b220d",
+  "reviewer": "spec",
+  "ts": "2026-10-15T12:24:56Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-02-02",
+    "impact": "src/app/index.tsx open() is shared by every list entry, so each category opened from the list now also writes last-category through src/storage.ts (a failed write is swallowed: no entry, no crash); the screen also re-renders with a new continue label as the card screen is pushed. src/strings.json gains a key (StringKey type widens; US-02-03's switch will need it in both languages). scripts/test-acceptance.sh adds two root-written flows that `pm clear` the app between the Polish flows and the English TC-03-05 run.",
+    "findings": [
+      {
+        "id": "B1",
+        "blocking": true,
+        "security": false,
+        "tags": [],
+        "text": "src/app/index.tsx:42 — the label does not fit on one line at 64sp bold, and Android drops \"4+\" instead of shrinking the type (numberOfLines={1} + adjustsFontSizeToFit). The TC-02-06/07/08 screenshots of this head's run (test-runs/2026-10-15_140122) show only \"Kontynuuj\", so the entry never names its category and the 3+ and 4+ entries look identical (MOD-02-U02, criterion #2 unmet). Maestro `text: .*4\\+` (TC-02-06 yaml:32, TC-02-07 yaml:66, TC-02-08 yaml:28) and the unit toHaveTextContent (continue.test.tsx:117,159) check the node's text, not what is drawn, so they pass. → work out the font size from the window width as cardType() does for cards (DEC-53) and drop numberOfLines/adjustsFontSizeToFit, or set \"Kontynuuj\" and the category on two lines. Render the category name in its own Text with its own testID and assert that id visible in the flows, then re-check the screenshots."
+      },
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/maestro/TC-02-08-continue-finished-deck.yaml:11 — the comment says the evidence is kept as \"saved-*-before.json\", but write_app_files (scripts/test-acceptance.sh) writes \"<name>.before\" (e.g. deck-3%2B.json.before) → correct the comment."
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/maestro/TC-02-09-unreadable-saved-data.yaml:11 — same mismatch: says \"saved-*-before.txt\", the files are \"<name>.before\" → correct the comment."
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/lastCategory.ts:10 — the edge case says \"saved data unreadable → no continue entry\", but only last-category is checked: a readable last-category with an unreadable deck-4+ file still shows \"Kontynuuj 4+\" and opens a fresh shuffle. This is a defensible reading (the deck falls back cleanly) but no decision records it → note it in DEC-59, or confirm the intent."
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "test-runs/2026-10-15_140122/junit/screen-colours.xml — the NFR-07 / constitution pixel check runs only on the first-launch screen without the continue entry. Nothing shows that the new inverted block's edges are free of grey rows (theme.ts documents exactly this risk for rules) → run the colour check on the screen with the continue entry too."
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/index.tsx:22 — setLast(category) before router.push re-renders the category screen under the card screen when a different category is chosen. It is batched with the push, so it is probably invisible, but it is an extra redraw to keep in mind for NFR-04 on the Kompakt."
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/modules/02-age-categories/stories/US-02-02-continue-last-category.md:6 — status is set to \"in-progress\" while the PR is up for review → set it to \"review\" (and the BACKLOG.md row with it) per the definition of done."
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "unmet",
+        "note": "the entry is inverted, above the list, and the list order is unchanged, but the drawn label is only \"Kontynuuj\" with no \"4+\" (TC-02-06 step-02 screenshot), so it is not visibly a continue entry for 4+ (B1)"
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      }
+    ],
+    "stray": []
+  },
+  "raw": "US-02-02 (PR #15) is not compliant: one blocking finding. On the emulator the continue entry reads only \"Kontynuuj\" and never names the category it leads to. (Full narrative: local run test-runs/2026-10-15_140122 on head 23248061; TC-02-06/07/08 step-02 screenshots show \"Kontynuuj\" only; MOD-02-F05..F09 met, MOD-02-U02 unmet; no out-of-scope violations; constitution respected.)\n\nREVIEW: findings\nSTORY: US-02-02\nIMPACT: src/app/index.tsx open() is shared by every list entry, so each category opened from the list now also writes last-category through src/storage.ts (a failed write is swallowed: no entry, no crash); the screen also re-renders with a new continue label as the card screen is pushed. src/strings.json gains a key (StringKey type widens; US-02-03's switch will need it in both languages). scripts/test-acceptance.sh adds two root-written flows that `pm clear` the app between the Polish flows and the English TC-03-05 run.\nFINDINGS:\n  B1 src/app/index.tsx:42 — the label does not fit on one line at 64sp bold, and Android drops \"4+\" instead of shrinking the type (numberOfLines={1} + adjustsFontSizeToFit). The TC-02-06/07/08 screenshots of this head's run (test-runs/2026-10-15_140122) show only \"Kontynuuj\", so the entry never names its category and the 3+ and 4+ entries look identical (MOD-02-U02, criterion #2 unmet). Maestro `text: .*4\\+` (TC-02-06 yaml:32, TC-02-07 yaml:66, TC-02-08 yaml:28) and the unit toHaveTextContent (continue.test.tsx:117,159) check the node's text, not what is drawn, so they pass. → work out the font size from the window width as cardType() does for cards (DEC-53) and drop numberOfLines/adjustsFontSizeToFit, or set \"Kontynuuj\" and the category on two lines. Render the category name in its own Text with its own testID and assert that id visible in the flows, then re-check the screenshots.\n  N1 tests/maestro/TC-02-08-continue-finished-deck.yaml:11 — the comment says the evidence is kept as \"saved-*-before.json\", but write_app_files (scripts/test-acceptance.sh) writes \"<name>.before\" (e.g. deck-3%2B.json.before) → correct the comment.\n  N2 tests/maestro/TC-02-09-unreadable-saved-data.yaml:11 — same mismatch: says \"saved-*-before.txt\", the files are \"<name>.before\" → correct the comment.\n  N3 src/lastCategory.ts:10 — the edge case says \"saved data unreadable → no continue entry\", but only last-category is checked: a readable last-category with an unreadable deck-4+ file still shows \"Kontynuuj 4+\" and opens a fresh shuffle. This is a defensible reading (the deck falls back cleanly) but no decision records it → note it in DEC-59, or confirm the intent.\n  N4 test-runs/2026-10-15_140122/junit/screen-colours.xml — the NFR-07 / constitution pixel check runs only on the first-launch screen without the continue entry. Nothing shows that the new inverted block's edges are free of grey rows (theme.ts documents exactly this risk for rules) → run the colour check on the screen with the continue entry too.\n  N5 src/app/index.tsx:22 — setLast(category) before router.push re-renders the category screen under the card screen when a different category is chosen. It is batched with the push, so it is probably invisible, but it is an extra redraw to keep in mind for NFR-04 on the Kompakt.\n  N6 docs/specs/modules/02-age-categories/stories/US-02-02-continue-last-category.md:6 — status is set to \"in-progress\" while the PR is up for review → set it to \"review\" (and the BACKLOG.md row with it) per the definition of done.\nCRITERIA:\n  #1 met\n  #2 unmet — the entry is inverted, above the list, and the list order is unchanged, but the drawn label is only \"Kontynuuj\" with no \"4+\" (TC-02-06 step-02 screenshot), so it is not visibly a continue entry for 4+ (B1)\n  #3 met\n  #4 met\n"
+}

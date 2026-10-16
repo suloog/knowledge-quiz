@@ -1,0 +1,81 @@
+{
+  "n": 4,
+  "attempt": 1,
+  "ts": "2026-10-14T23:34:38Z",
+  "story": "US-02-01",
+  "mode": "fix",
+  "parsed": {
+    "result": "ready",
+    "story": "US-02-01",
+    "branch": "feature/US-02-01",
+    "commits": [
+      "172b60e docs(specs): DEC-48 as the owner ruled, no deferral [US-02-01]",
+      "51f3591 test(categories): expect 3+, 4+, 5+ as MOD-02-F02 names them [US-02-01]",
+      "e143729 test(categories): pixel check fails when it read no pixel [US-02-01]",
+      "dda17b2 test(theme): even whole-pixel rules at real device densities [US-02-01]",
+      "rebased onto origin/main 29a3120: 7da2d50 5f64624 032e99c c10ebe4 85cccce 60e89db cb031b8 249e097 d35aa62"
+    ],
+    "decisions": [
+      "DEC-48 critical Category screen: order by age",
+      "US-02-01 merges once the 4+ and 5+ decks are on main, with TC-02-01/02 checking all three"
+    ],
+    "evidence": [
+      "#1 Every launch opens on the category screen — TC-02-01 step 1 (Maestro, pass); TC-02-14 pass",
+      "#2 Lists 3+, 4+, 5+ in that order from the content data — TC-02-01 step 2: category-0..2 = 3+, 4+, 5+ and no category-3 (Maestro, pass)",
+      "#3 A category added to the data appears with no screen change — AC-02-01-3 steps 1-3 (jest, junit/unit.xml, pass)",
+      "#4 Pure black and white only, a test fails otherwise — AC-02-01-4 steps 1-3 (jest, pass) + step 4 screencap of the 3-entry screen, 1080x2400 rows 63–2273 (junit/screen-colours.xml, pass, not skipped)",
+      "#5 Nothing animates, a test fails otherwise — AC-02-01-5 steps 1-3 (jest, junit/unit.xml, pass)",
+      "#6 Each entry spans the full width — TC-02-02 step 1 (Maestro, pass) + step 2: category-0, -1, -2 each 0–1080 of 0–1080 (junit/screen.xml, pass)",
+      "#7 Screen within 3 s on the Mudita Kompakt — MANUAL: TC-02-03 is manual-only"
+    ],
+    "tests": {
+      "run": "test-runs/2026-10-15_013104",
+      "pass": 7,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 1,
+      "manual_tests": [
+        "TC-02-03"
+      ]
+    },
+    "derived_tests": [
+      "AC-02-01-3",
+      "AC-02-01-4",
+      "AC-02-01-5"
+    ],
+    "preexisting": "4+ and 5+ decks (US-01-03, US-01-04) and DEC-49..51 already on main; the screen and its tests are this branch's own work from earlier rounds",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test ok"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "findings": [
+      "spec B1 fixed 172b60e",
+      "spec B2 fixed rebase onto origin/main 29a3120 (DECISIONS.md conflicts resolved: DEC-48 before DEC-49, DEC-49..51 byte-identical to main",
+      "gates and whole suite re-run on dda17b2)",
+      "spec N4 fixed 51f3591",
+      "spec N2 fixed e143729",
+      "spec N1 fixed e143729 + 51f3591 (both \"no GPU\" comments)",
+      "spec N3 / code N1 fixed dda17b2"
+    ],
+    "notes": "The branch was rebased, so it needs a force-push with lease; nothing was pushed. The local run used the Medium_Phone emulator (API 32), started and stopped by me; the run snapshot is dda17b2, clean tree, changed_during_run false.\nrun.json counts only Maestro flows: AC-02-01-3/4/5 show as skipped there but pass in junit/unit.xml. CI's JUnit report on the pushed head is the evidence for them.\nDEC-48 scope effect is written \"none — within scope, nothing deferred\", because the template has no \"none\" value.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [
+        "#7 Screen within 3 s on the Mudita Kompakt — MANUAL: TC-02-03 is manual-only"
+      ],
+      "blocked": []
+    },
+    "critical_decisions": [
+      "DEC-48 critical Category screen: order by age"
+    ]
+  },
+  "raw": "Both blocking findings are fixed and the four cheap non-blocking items are done. The rebase rewrote the branch history, so feature/US-02-01 needs a force-push with lease (nothing was pushed). The whole acceptance suite then ran once on the clean head dda17b2 and everything passed. The category screen now shows three entries: 3+, 4+ and 5+.\n\n- **B2 (rebase):** feature/US-02-01 is rebased onto origin/main (29a3120). DECISIONS.md conflicted three times, and each time DEC-48 went in before DEC-49. A diff against origin/main confirms DEC-49, DEC-50 and DEC-51 are byte-identical to main.\n- **B1 (DEC-48):** rewritten in place with its number kept, in a new commit:\n  - **Ruling:** no reduction. US-02-01 merges only after the 4+ and 5+ decks are on main, and TC-02-01/02 check 3+, 4+ and 5+ in full.\n  - **Decided by:** the line you gave, verbatim.\n  - **Owner's words:** both quotes are in the entry.\n  - **Status:** accepted.\n  - **Scope effect:** written as \"none — within scope, nothing deferred\". The DECISIONS template only allows within scope, extension or reduction.\n- **Non-blocking items taken:**\n  - **N4:** the expected order is now literally \"3+\", \"4+\", \"5+\" (MOD-02-F02). Any other shipped label comes after, ordered by its leading age. The DEC-48 deferral wording is gone from both flows and the script.\n  - **N2:** the pixel check fails when it read no pixel.\n  - **N1:** the \"GPU-less CI\" wording is gone from scripts/check-black-and-white.js and scripts/test-acceptance.sh.\n  - **N3:** the theme test mocks PixelRatio.get at 1, 2, 2.625, 2.75, 3 and 3.5 and asserts the rules are an even number of whole pixels, at least 2.\n- **Local run:** on the Medium_Phone emulator (API 32), which I started and stopped myself. The pixel check read 1080x2400 and was not skipped. The entry-width check found all three entries spanning 0–1080 of 0–1080.\n- **TESTS counts:** these come from the collector, which reads only the Maestro output. The three AC-02-01 derived tests are unit tests that report through JUnit, so the collector lists them as skipped. In this run's junit/unit.xml they pass: 0 failures in that file, and none in screen.xml or screen-colours.xml. With evidence set to ci, the CI JUnit report on the pushed head is what counts for them.\n\nPaths: /Users/sulo/workspace/knowledge-quiz/docs/specs/DECISIONS.md, /Users/sulo/workspace/knowledge-quiz/scripts/test-acceptance.sh, /Users/sulo/workspace/knowledge-quiz/scripts/check-black-and-white.js, /Users/sulo/workspace/knowledge-quiz/src/__tests__/theme.test.ts, /Users/sulo/workspace/knowledge-quiz/tests/maestro/TC-02-01-opens-on-categories.yaml, /Users/sulo/workspace/knowledge-quiz/tests/maestro/TC-02-02-full-width-entries.yaml, run directory /Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-15_013104\n\n```\nRESULT: ready\nSTORY: US-02-01\nBRANCH: feature/US-02-01\nCOMMITS: 172b60e docs(specs): DEC-48 as the owner ruled, no deferral [US-02-01]; 51f3591 test(categories): expect 3+, 4+, 5+ as MOD-02-F02 names them [US-02-01]; e143729 test(categories): pixel check fails when it read no pixel [US-02-01]; dda17b2 test(theme): even whole-pixel rules at real device densities [US-02-01]; rebased onto origin/main 29a3120: 7da2d50 5f64624 032e99c c10ebe4 85cccce 60e89db cb031b8 249e097 d35aa62\nDECISIONS: DEC-48 critical Category screen: order by age; US-02-01 merges once the 4+ and 5+ decks are on main, with TC-02-01/02 checking all three\nEVIDENCE:\n  #1 Every launch opens on the category screen — TC-02-01 step 1 (Maestro, pass); TC-02-14 pass\n  #2 Lists 3+, 4+, 5+ in that order from the content data — TC-02-01 step 2: category-0..2 = 3+, 4+, 5+ and no category-3 (Maestro, pass)\n  #3 A category added to the data appears with no screen change — AC-02-01-3 steps 1-3 (jest, junit/unit.xml, pass)\n  #4 Pure black and white only, a test fails otherwise — AC-02-01-4 steps 1-3 (jest, pass) + step 4 screencap of the 3-entry screen, 1080x2400 rows 63–2273 (junit/screen-colours.xml, pass, not skipped)\n  #5 Nothing animates, a test fails otherwise — AC-02-01-5 steps 1-3 (jest, junit/unit.xml, pass)\n  #6 Each entry spans the full width — TC-02-02 step 1 (Maestro, pass) + step 2: category-0, -1, -2 each 0–1080 of 0–1080 (junit/screen.xml, pass)\n  #7 Screen within 3 s on the Mudita Kompakt — MANUAL: TC-02-03 is manual-only\nTESTS: run=test-runs/2026-10-15_013104 pass=7 fail=0 blocked=0 manual=1 manual_tests=TC-02-03\nDERIVED_TESTS: AC-02-01-3; AC-02-01-4; AC-02-01-5\nPREEXISTING: 4+ and 5+ decks (US-01-03, US-01-04) and DEC-49..51 already on main; the screen and its tests are this branch's own work from earlier rounds\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test ok\nENV_KEYS: none\nMIGRATION: no\nFINDINGS: spec B1 fixed 172b60e; spec B2 fixed rebase onto origin/main 29a3120 (DECISIONS.md conflicts resolved: DEC-48 before DEC-49, DEC-49..51 byte-identical to main; gates and whole suite re-run on dda17b2); spec N4 fixed 51f3591; spec N2 fixed e143729; spec N1 fixed e143729 + 51f3591 (both \"no GPU\" comments); spec N3 / code N1 fixed dda17b2\nNOTES: The branch was rebased, so it needs a force-push with lease; nothing was pushed. The local run used the Medium_Phone emulator (API 32), started and stopped by me; the run snapshot is dda17b2, clean tree, changed_during_run false.\nrun.json counts only Maestro flows: AC-02-01-3/4/5 show as skipped there but pass in junit/unit.xml. CI's JUnit report on the pushed head is the evidence for them.\nDEC-48 scope effect is written \"none — within scope, nothing deferred\", because the template has no \"none\" value.\n```\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "n": 1,
+  "attempt": 1,
+  "ts": "2026-10-14T07:51:33Z",
+  "story": "US-00-01",
+  "mode": "implement",
+  "parsed": {
+    "result": "ready",
+    "story": "US-00-01",
+    "branch": "feature/US-00-01",
+    "commits": [
+      "bdb583e build(app): start from the boilerplate on Expo SDK 57 [US-00-01]",
+      "30850f6 feat(stack): one command starts the app on the emulator [US-00-01]",
+      "993eed5 test(acceptance): maestro flows, test command and CI workflow [US-00-01]"
+    ],
+    "decisions": [
+      "DEC-42 routine Foundation keeps the boilerplate's tooling, leaves out its demo and network code",
+      "DEC-43 routine Android application id pl.ordergroup.knowledgequiz"
+    ],
+    "evidence": [
+      "#1 One documented command starts the whole stack — TC-00-01 pass (Maestro flow \"TC-00-01 …\", steps 1-2 with screenshots; yarn stack console in test-runs/2026-10-14_095018/stack.log); README names `yarn stack`",
+      "#2 GitHub Actions workflow runs acceptance tests, uploads og-test-results — MANUAL: TC-00-02 is manual-only (workflow in .github/workflows/acceptance.yml; the run and artifact on the PR are seen on GitHub)",
+      "#3 One path through every layer has a passing test named with its TC id — TC-00-03 pass (Maestro flow \"TC-00-03 …\": content-title shows the value read from src/content/app.json; unit test src/app/__tests__/index.test.tsx proves the screen renders the data value)",
+      "#4 Commit and push gates in place and green on a clean checkout — MANUAL: TC-00-04 is manual-only (detect-stack lists yarn format:check, lint, tsc, test; all four exit 0 on a fresh clone of the branch)"
+    ],
+    "tests": {
+      "run": "/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-14_095018",
+      "pass": 2,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 2,
+      "manual_tests": [
+        "TC-00-02",
+        "TC-00-04"
+      ]
+    },
+    "derived_tests": [],
+    "preexisting": "none",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test ok"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "notes": "Local runs used an API 32 (Android 12L) AVD because there is no API 31 image on this machine; CI boots API 31 and has not run yet. This PR adds .github/** and needs the owner's merge; after it, switch the run to tests.evidence ci. The app id and og-test-targets app_id were set here (DEC-43), not in US-01-01; the INTERNET permission, minSdk, signing and the component library remain US-01-01's.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [
+        "#2 GitHub Actions workflow runs acceptance tests, uploads og-test-results — MANUAL: TC-00-02 is manual-only (workflow in .github/workflows/acceptance.yml; the run and artifact on the PR are seen on GitHub)",
+        "#4 Commit and push gates in place and green on a clean checkout — MANUAL: TC-00-04 is manual-only (detect-stack lists yarn format:check, lint, tsc, test; all four exit 0 on a fresh clone of the branch)"
+      ],
+      "blocked": []
+    },
+    "critical_decisions": []
+  },
+  "raw": "US-00-01 is built and committed on feature/US-00-01 in /Users/sulo/workspace/knowledge-quiz (3 commits, not pushed). The final acceptance run passed on the exact head 993eed5 with a clean tree: TC-00-01 and TC-00-03 pass. TC-00-02 and TC-00-04 are manual-only by their specs, so the merge is the owner's call. The PR also adds .github/workflows/acceptance.yml, which needs the owner's own merge anyway.\n\nWhat was built:\n- **App:** started from ordergroup/boilerplate-react-native-expo and upgraded to Expo SDK 57, React Native 0.86.3, React 19.2.3 and TypeScript 6. The boilerplate's demo, network and UI-library code was left out (DEC-42). The first screen shows `title`, read at run time from /Users/sulo/workspace/knowledge-quiz/src/content/app.json.\n- **Start command (`yarn stack`, /Users/sulo/workspace/knowledge-quiz/scripts/stack.sh):** checks node, yarn, a JDK and the Android SDK, and lists anything missing. It installs dependencies if needed, then uses the running emulator or boots an Android 12 AVD (or the one in `KQ_AVD`). It then runs `expo run:android`. Ctrl-C or SIGTERM stops Metro and the Gradle daemon, plus the emulator if the script booted it. I checked that nothing was left running afterwards.\n- **Test command (`yarn test:acceptance`, /Users/sulo/workspace/knowledge-quiz/scripts/test-acceptance.sh):** runs Jest with JUnit output to `$OG_RUN_DIR/junit/unit.xml`, starts the stack with `yarn stack` and waits for Metro and the app. It then runs the flows in /Users/sulo/workspace/knowledge-quiz/tests/maestro with JUnit output to `maestro/report.xml`, and exits non-zero on any failure. I checked that a failing flow makes Maestro exit 1 with failures in the report.\n- **CI (/Users/sulo/workspace/knowledge-quiz/.github/workflows/acceptance.yml):** runs on `pull_request`, boots an API 31 emulator and calls only `yarn test:acceptance`. It uploads `test-results/**/*.xml` as `og-test-results` with `if: always()` and `if-no-files-found: error`, plus a separate evidence artifact.\n- **Gates:** detect-stack lists `yarn format:check`, `yarn lint`, `yarn tsc`, `yarn test` (Jest with an 80% line threshold). All four pass on a fresh clone.\n\nThings to know:\n- **Local emulator is API 32, not 31.** This machine has no API 31 image and no cmdline-tools, so local runs used the API 32 (Android 12L) AVD `Medium_Phone`; CI uses API 31.\n- **CI has never run.** The workflow only runs once the PR is pushed.\n- **Fixes along the way:** RNTL 14's `render` is async. Maestro's `--flatten-debug-output` wrote no evidence when running several flows, so it is not used. `flowsOrder` has to name flows by their `name:`.\n- **Commit trailer left out:** the commits have no Co-Authored-By line, because implementation.md §5 forbids it and the commit hook rejects it.\n- **Overlap with US-01-01:** I set the Android application id (DEC-43) and filled `mobile.app_id` in /Users/sulo/workspace/knowledge-quiz/.claude/og-test-targets.json; its comment had said US-01-01 would. The INTERNET permission, minSdk, signing and the component library are left to US-01-01.\n\n```\nRESULT: ready\nSTORY: US-00-01\nBRANCH: feature/US-00-01\nCOMMITS: bdb583e build(app): start from the boilerplate on Expo SDK 57 [US-00-01]; 30850f6 feat(stack): one command starts the app on the emulator [US-00-01]; 993eed5 test(acceptance): maestro flows, test command and CI workflow [US-00-01]\nDECISIONS: DEC-42 routine Foundation keeps the boilerplate's tooling, leaves out its demo and network code; DEC-43 routine Android application id pl.ordergroup.knowledgequiz\nEVIDENCE:\n  #1 One documented command starts the whole stack — TC-00-01 pass (Maestro flow \"TC-00-01 …\", steps 1-2 with screenshots; yarn stack console in test-runs/2026-10-14_095018/stack.log); README names `yarn stack`\n  #2 GitHub Actions workflow runs acceptance tests, uploads og-test-results — MANUAL: TC-00-02 is manual-only (workflow in .github/workflows/acceptance.yml; the run and artifact on the PR are seen on GitHub)\n  #3 One path through every layer has a passing test named with its TC id — TC-00-03 pass (Maestro flow \"TC-00-03 …\": content-title shows the value read from src/content/app.json; unit test src/app/__tests__/index.test.tsx proves the screen renders the data value)\n  #4 Commit and push gates in place and green on a clean checkout — MANUAL: TC-00-04 is manual-only (detect-stack lists yarn format:check, lint, tsc, test; all four exit 0 on a fresh clone of the branch)\nTESTS: run=/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-14_095018 pass=2 fail=0 blocked=0 manual=2 manual_tests=TC-00-02,TC-00-04\nDERIVED_TESTS: none\nPREEXISTING: none\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test ok\nENV_KEYS: none\nMIGRATION: no\nNOTES: Local runs used an API 32 (Android 12L) AVD because there is no API 31 image on this machine; CI boots API 31 and has not run yet. This PR adds .github/** and needs the owner's merge; after it, switch the run to tests.evidence ci. The app id and og-test-targets app_id were set here (DEC-43), not in US-01-01; the INTERNET permission, minSdk, signing and the component library remain US-01-01's.\n```\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "n": 2,
+  "attempt": 1,
+  "ts": "2026-10-15T17:21:14Z",
+  "story": "US-02-03",
+  "mode": "implement",
+  "parsed": {
+    "result": "ready",
+    "story": "US-02-03",
+    "branch": "feature/US-02-03",
+    "commits": [
+      "473757d chore(categories): wip, waiting for DEC-61 [US-02-03]",
+      "fa55e6c docs(specs): DEC-61 confirmed by the product owner [US-02-03]",
+      "a58279b feat(categories): app title in Polish and English [US-02-03]",
+      "0c968ff fix(categories): language switch on whole device pixels [US-02-03]",
+      "334163a test(categories): TC-02-12 reads the drawn return words [US-02-03]"
+    ],
+    "decisions": [
+      "DEC-60 routine Language switch: two-part Polski | English control under the title, choice kept in app state and saved under language",
+      "DEC-61 critical The app title on the category screen in Polish and English"
+    ],
+    "evidence": [
+      "#1 Polish device, first launch: every text Polish, Polish active — TC-02-10 (tests/maestro/TC-02-10-polish-device.yaml, title + switch + checked state); unit index.test.tsx \"on a Polish device, first launch: Polish is active (#1, MOD-02-U04)\"",
+      "#2 Other device language: every text English — TC-02-11 (tests/maestro/TC-02-11-other-language-device.yaml, device set to de-DE); unit index.test.tsx \"on a device set to de_DE/en_US … English is active (#2)\"",
+      "#3 Switch to English and restart: every text, questions included, English — TC-02-12 (tests/maestro/TC-02-12-switch-survives-restart.yaml); unit index.test.tsx \"switching to English … saves the choice (#3)\", cards.test.tsx \"(#3)\"",
+      "#4 Three 3+ cards revealed, switch: deck resumes at the fourth card in the new language — TC-02-13 (tests/maestro/TC-02-13-switch-keeps-decks.yaml, saved deck read as root); unit cards.test.tsx \"a switch keeps the deck … (#4)\""
+    ],
+    "tests": {
+      "run": "test-runs/2026-10-15_185912",
+      "pass": 27,
+      "fail": 1,
+      "blocked": 0,
+      "manual": 7,
+      "manual_tests": [
+        "see"
+      ]
+    },
+    "derived_tests": [],
+    "preexisting": "The WIP commit 473757d already had the switch (src/i18n.tsx, src/language.ts, src/app/index.tsx), the cards following the language, flows TC-02-10 to TC-02-13 and the reworked TC-03-05, its unit tests, DEC-60, and story/BACKLOG in-progress. Not yet done there: the title in both languages (DEC-61).",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test ok (241 passed)"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "notes": "The final local acceptance run on head 334163a (test-runs/2026-10-15_192018) was cut off by the hand-back, so CI's og-test-results on the pushed head is the evidence. The title change from one string to two is a content-schema change the constitution leaves to Maciej (tech lead); DEC-61 records it as the product owner's call, so if that is not Maciej he should approve the PR. AC-02-01-4 step 4 failed in run 185912 (grey rows from a fractional switch-row height) and is fixed in 0c968ff; TC-02-12 step 3 failed on a flow defect (accessibility label vs drawn text), fixed in 334163a; no TC spec was edited.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [],
+      "blocked": []
+    },
+    "critical_decisions": [
+      "DEC-61 critical The app title on the category screen in Polish and English"
+    ]
+  },
+  "raw": "US-02-03 is done on feature/US-02-03 and gates are green, but I could not finish the local acceptance run on the final head (334163a). I was made to hand back while it was still running, and handing back stops it. The only collected run, test-runs/2026-10-15_185912, was made on an earlier commit (a58279b) and had 1 failure. Both causes found in it are fixed. Because this run takes its evidence from CI (acceptance.yml, artifact og-test-results), the CI report on the pushed head 334163a is what proves this story.\n\nWhat I did this round:\n- **DEC-61 option a.** `src/content/app.json` now holds the title in both languages: Polish \"Quiz wiedzy\" and English \"Knowledge Quiz\". `AppContent.title` is typed per language in `src/content/index.ts`. `src/app/index.tsx` shows the title in the app's language, so it follows the switch.\n- **Tests for the title.**\n  - Unit tests in `src/content/__tests__/content.test.ts` and `src/app/__tests__/index.test.tsx` check that the title follows the language: on first launch on a Polish device, on another device language, and after a switch.\n  - The Maestro flows TC-02-10, TC-02-11 and TC-02-12 now also check the title, using a new `TITLES` value passed by `scripts/test-acceptance.sh`.\n  - For TC-00-03, the script now passes the title in the device's first-launch language as `CONTENT_TITLE` (new `device_locale` and `content_title` helpers). I changed only the executable flow; the TC-00-03 spec is untouched.\n- **Fix: grey rows on the category screen (AC-02-01-4 step 4).** The pixel check failed with grey rows at y 419 and 781. The language switch row had a fractional pixel height, which pushed its edge and every rule below it off the pixel grid. Its halves are now a whole number of device pixels high (`PixelRatio.roundToNearestPixel(59)`, centred).\n- **Fix: TC-02-12 step 3 flow.** The flow looked for the words \"‹ Categories\" on the `return-control` element, but Maestro sees that element's accessibility label (\"Back to categories\"). The app was right, so the flow now checks the drawn \"‹ Categories\" text. No TC spec was edited.\n\nA spec-compliance review I ran on the branch said all four criteria and MOD-02-F10–F13 and U04 are met, nothing is out of scope, and it found no constitution violation.\n\nOne thing for you to check: changing the title from one string to two is a change to the content data's schema, which the constitution leaves to Maciej (tech lead). DEC-61 records the approval as \"product owner\"; if that is not Maciej, he should approve the PR.\n\nTwo smaller things:\n- Story and BACKLOG status are still `in-progress`, set by the WIP commit.\n- These commits have no Co-Authored-By line. I left it out because your brief and the owner's memory note say to; the session reminder asked for one.\n\nRESULT: ready\nSTORY: US-02-03\nBRANCH: feature/US-02-03\nCOMMITS: 473757d chore(categories): wip, waiting for DEC-61 [US-02-03]; fa55e6c docs(specs): DEC-61 confirmed by the product owner [US-02-03]; a58279b feat(categories): app title in Polish and English [US-02-03]; 0c968ff fix(categories): language switch on whole device pixels [US-02-03]; 334163a test(categories): TC-02-12 reads the drawn return words [US-02-03]\nDECISIONS: DEC-60 routine Language switch: two-part Polski | English control under the title, choice kept in app state and saved under language; DEC-61 critical The app title on the category screen in Polish and English\nEVIDENCE:\n  #1 Polish device, first launch: every text Polish, Polish active — TC-02-10 (tests/maestro/TC-02-10-polish-device.yaml, title + switch + checked state); unit index.test.tsx \"on a Polish device, first launch: Polish is active (#1, MOD-02-U04)\"\n  #2 Other device language: every text English — TC-02-11 (tests/maestro/TC-02-11-other-language-device.yaml, device set to de-DE); unit index.test.tsx \"on a device set to de_DE/en_US … English is active (#2)\"\n  #3 Switch to English and restart: every text, questions included, English — TC-02-12 (tests/maestro/TC-02-12-switch-survives-restart.yaml); unit index.test.tsx \"switching to English … saves the choice (#3)\", cards.test.tsx \"(#3)\"\n  #4 Three 3+ cards revealed, switch: deck resumes at the fourth card in the new language — TC-02-13 (tests/maestro/TC-02-13-switch-keeps-decks.yaml, saved deck read as root); unit cards.test.tsx \"a switch keeps the deck … (#4)\"\nTESTS: run=test-runs/2026-10-15_185912 pass=27 fail=1 blocked=0 manual=7 manual_tests=see run.json (earlier head a58279b; the failure is fixed in 0c968ff/334163a; the run on 334163a, test-runs/2026-10-15_192018, was not finished or collected; the evidence for the head is CI)\nDERIVED_TESTS: none\nPREEXISTING: The WIP commit 473757d already had the switch (src/i18n.tsx, src/language.ts, src/app/index.tsx), the cards following the language, flows TC-02-10 to TC-02-13 and the reworked TC-03-05, its unit tests, DEC-60, and story/BACKLOG in-progress. Not yet done there: the title in both languages (DEC-61).\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test ok (241 passed)\nENV_KEYS: none\nMIGRATION: no\nNOTES: The final local acceptance run on head 334163a (test-runs/2026-10-15_192018) was cut off by the hand-back, so CI's og-test-results on the pushed head is the evidence. The title change from one string to two is a content-schema change the constitution leaves to Maciej (tech lead); DEC-61 records it as the product owner's call, so if that is not Maciej he should approve the PR. AC-02-01-4 step 4 failed in run 185912 (grey rows from a fractional switch-row height) and is fixed in 0c968ff; TC-02-12 step 3 failed on a flow defect (accessibility label vs drawn text), fixed in 334163a; no TC spec was edited.\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}

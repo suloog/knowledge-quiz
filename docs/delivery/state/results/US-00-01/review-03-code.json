@@ -1,0 +1,81 @@
+{
+  "story": "US-00-01",
+  "attempt": 1,
+  "round": 3,
+  "sha": "64a54b89d67f98df874950bba59de3c3705f428c",
+  "reviewer": "code",
+  "ts": "2026-10-14T08:44:03Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-00-01",
+    "impact": "`scripts/test-acceptance.sh` is the single acceptance command that `.github/workflows/acceptance.yml` and every later story's tests go through. `scripts/stack.sh` is the README's `yarn stack` and is now also started directly by that script. A later change to the `stack` script in `package.json` would not reach CI unless `test-acceptance.sh` is changed too. The emulator log cleanup touches only `stack.sh`'s own exit path.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/stack.sh:102 — The comment `# kept: the error names it` is false. The `emulator_failed` message never contains the log path; only the earlier `booting the emulator … (its console: <path>)` line does. A reader of the failure output alone cannot find the kept file, though the tail is printed → either put `$EMULATOR_LOG` in the `emulator_failed` message before clearing it, or reword the comment."
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:46-61 — CI (and any other reader of the code) now starts the stack with `bash scripts/stack.sh`, not the `yarn stack` the README documents. Criterion 1 / the workflow note (\"workflow starts the stack with the command of criterion 1\") is met only by equivalence. If the `package.json` `stack` script changes, the README and CI diverge silently → derive the command from `package.json` (e.g. `node -p \"require('./package.json').scripts.stack\"`, run through `bash -c`) or add a short comment in `package.json` that `test-acceptance.sh` runs this file directly."
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": ".github/workflows/acceptance.yml:56 and tests/maestro/TC-00-01-stack-starts.yaml:2 — Both comments still say the tests start the app \"with `yarn stack`\", though the script now runs `bash scripts/stack.sh` directly. This is stale after this round → say \"the README's start command (`scripts/stack.sh`)\". Changing the workflow file needs owner review anyway, since the PR already touches `.github/**`."
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:26-30 — The SDK lookup is now duplicated (the comment says \"the same SDK lookup as scripts/stack.sh\"). The two copies can drift → leave as is, or source one small shared snippet. Do not fix unless it is cheap."
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:47-50 — The new `adb uninstall` removes the app, and its data, from a developer's attached device without telling them, and is not in the README. With two devices attached, `adb get-state` fails and the uninstall is silently skipped. When `stack.sh` boots an emulator itself, the AVD can still hold an old install, but the pidof readiness check covers that → add a line to the README's `test:acceptance` row (\"uninstalls the app first\"), or accept it."
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/stack.sh:71 — The log is removed on every exit where `EMULATOR_LOG` is still set: Ctrl-C, a Gradle build failure, a clean stop. Only the emulator-failure paths keep it. The commit title says \"clean stop\". This is harmless, because the build console goes to the terminal, but the emulator log is lost on a build or install failure → accept, or reword the commit/comment."
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": "a fresh-clone run installs dependencies, builds, installs and opens the app (local run test-runs/2026-10-14_103400, API 32; CI run on 64a54b8, API 31, started by the same script); the README names `yarn stack`; cleanup is verified on both OSes."
+      },
+      {
+        "n": 2,
+        "verdict": "external",
+        "note": "MANUAL TC-00-02. The evidence is present: run 38536240209 on head 64a54b8 is green, with artifacts `og-test-results` and `acceptance-evidence`, the workflow runs on pull_request, calls one repo command, and uses `if: always()` with `if-no-files-found: error`."
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": "the Maestro flow \"TC-00-03 The first screen shows a value read from the app's bundled content data\" passed locally and in CI. It asserts `content-title` with text from `src/content/app.json`, and the screenshot shows \"Knowledge Quiz\"."
+      },
+      {
+        "n": 4,
+        "verdict": "external",
+        "note": "MANUAL TC-00-04. As a sanity check, format:check, lint, tsc and jest all pass at HEAD, and this diff touched none of them."
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Round 3 review of US-00-01, PR #1, fix commits 0cbc66b..64a54b8. Round 2's blocker B1 is fixed on Linux and macOS, and I found no blocking issues.\n\n**B1 verification (`bash scripts/stack.sh &` instead of `yarn -s stack &`)**\n- Code path: STACK_PID is now bash's own PID. `stack.sh` waits on `yarn expo run:android &` with `wait`, which a trapped TERM interrupts. The `trap 'exit 143' TERM` then runs `cleanup` through the EXIT trap. `stop_stack`'s `wait` therefore really waits for the cleanup.\n- CI run 38536240209 (headSha 64a54b8, `ubuntu-latest`, API 31) finished `success`. All steps are green, including both artifact uploads.\n- The job log shows `[acceptance] starting the stack with: bash scripts/stack.sh`, then both flows passed (TC-00-01 and TC-00-03, 2/2), then `[acceptance] stopping the stack`, then the unit tests.\n- The downloaded `acceptance-evidence` artifact's `stack.log` ends with `[stack] stopping the bundler` and `[stack] stopping the Gradle daemon`. That is the cleanup that never ran under dash.\n- Artifacts `og-test-results` and `acceptance-evidence` both exist on that run.\n- Local run test-runs/2026-10-14_103400 (fresh clone, API 32) passed: 2/2 flows, 3 unit tests, exit 0. Its `stack.log` shows the bundler, Gradle and emulator all stopped.\n- I also ran `format:check`, `lint`, `tsc`, `test` and `bash -n` on both scripts at HEAD. All pass.\n\n**What the fix broke**\n- Nothing found.\n- The Maestro-missing path sets `status=1` and skips the stack, so Jest still runs. This is correct.\n- The new uninstall step is guarded by `adb get-state`, so it is a no-op when no device is attached.\n- Early exits behave. If `stack.sh` dies on a missing tool, STACK_PID is dead and `stop_stack` does nothing. The double call from `stop_stack` plus the EXIT trap is harmless.\n\n**Verdict: approve.** Only the non-blocking items below remain.\n\nREVIEW: findings\nSTORY: US-00-01\nIMPACT: `scripts/test-acceptance.sh` is the single acceptance command that `.github/workflows/acceptance.yml` and every later story's tests go through. `scripts/stack.sh` is the README's `yarn stack` and is now also started directly by that script. A later change to the `stack` script in `package.json` would not reach CI unless `test-acceptance.sh` is changed too. The emulator log cleanup touches only `stack.sh`'s own exit path.\nFINDINGS:\n  N1 scripts/stack.sh:102 — The comment `# kept: the error names it` is false. The `emulator_failed` message never contains the log path; only the earlier `booting the emulator … (its console: <path>)` line does. A reader of the failure output alone cannot find the kept file, though the tail is printed → either put `$EMULATOR_LOG` in the `emulator_failed` message before clearing it, or reword the comment.\n  N2 scripts/test-acceptance.sh:46-61 — CI (and any other reader of the code) now starts the stack with `bash scripts/stack.sh`, not the `yarn stack` the README documents. Criterion 1 / the workflow note (\"workflow starts the stack with the command of criterion 1\") is met only by equivalence. If the `package.json` `stack` script changes, the README and CI diverge silently → derive the command from `package.json` (e.g. `node -p \"require('./package.json').scripts.stack\"`, run through `bash -c`) or add a short comment in `package.json` that `test-acceptance.sh` runs this file directly.\n  N3 .github/workflows/acceptance.yml:56 and tests/maestro/TC-00-01-stack-starts.yaml:2 — Both comments still say the tests start the app \"with `yarn stack`\", though the script now runs `bash scripts/stack.sh` directly. This is stale after this round → say \"the README's start command (`scripts/stack.sh`)\". Changing the workflow file needs owner review anyway, since the PR already touches `.github/**`.\n  N4 scripts/test-acceptance.sh:26-30 — The SDK lookup is now duplicated (the comment says \"the same SDK lookup as scripts/stack.sh\"). The two copies can drift → leave as is, or source one small shared snippet. Do not fix unless it is cheap.\n  N5 scripts/test-acceptance.sh:47-50 — The new `adb uninstall` removes the app, and its data, from a developer's attached device without telling them, and is not in the README. With two devices attached, `adb get-state` fails and the uninstall is silently skipped. When `stack.sh` boots an emulator itself, the AVD can still hold an old install, but the pidof readiness check covers that → add a line to the README's `test:acceptance` row (\"uninstalls the app first\"), or accept it.\n  N6 scripts/stack.sh:71 — The log is removed on every exit where `EMULATOR_LOG` is still set: Ctrl-C, a Gradle build failure, a clean stop. Only the emulator-failure paths keep it. The commit title says \"clean stop\". This is harmless, because the build console goes to the terminal, but the emulator log is lost on a build or install failure → accept, or reword the commit/comment.\nCRITERIA:\n  #1 met — a fresh-clone run installs dependencies, builds, installs and opens the app (local run test-runs/2026-10-14_103400, API 32; CI run on 64a54b8, API 31, started by the same script); the README names `yarn stack`; cleanup is verified on both OSes.\n  #2 external — MANUAL TC-00-02. The evidence is present: run 38536240209 on head 64a54b8 is green, with artifacts `og-test-results` and `acceptance-evidence`, the workflow runs on pull_request, calls one repo command, and uses `if: always()` with `if-no-files-found: error`.\n  #3 met — the Maestro flow \"TC-00-03 The first screen shows a value read from the app's bundled content data\" passed locally and in CI. It asserts `content-title` with text from `src/content/app.json`, and the screenshot shows \"Knowledge Quiz\".\n  #4 external — MANUAL TC-00-04. As a sanity check, format:check, lint, tsc and jest all pass at HEAD, and this diff touched none of them.\n"
+}

@@ -1,0 +1,64 @@
+{
+  "n": 1,
+  "attempt": 1,
+  "ts": "2026-10-15T22:13:54Z",
+  "story": "US-03-05",
+  "mode": "implement",
+  "parsed": {
+    "result": "failed",
+    "story": "US-03-05",
+    "branch": "feature/US-03-05",
+    "commits": [
+      "f1bfc7f feat(cards): illustrations, work in progress [US-03-05]",
+      "63a4bcc Merge remote-tracking branch 'origin/main' into feature/US-03-05",
+      "0c29b6b test(cards): acceptance flows for question illustrations [US-03-05]"
+    ],
+    "decisions": [
+      "DEC-65 routine Illustrations: five 1-bit silhouettes on five questions, drawn one image pixel to one screen pixel below the question",
+      "DEC-66 routine Illustration acceptance flows: saved 3+ deck written with the needed question first",
+      "device language switched mid-flow without a framework restart"
+    ],
+    "evidence": [
+      "#1 Only helpful questions carry an illustration; no placeholder — cards.test.tsx \"a question without an illustration shows no picture and keeps no place for one (#1)\"; TC-03-20 flow (passed in a development run, not collected)",
+      "#2 Pure black and white; a test fails on any other pixel — tests/unit/AC-03-05-2-illustrations-black-and-white.test.js step 1 and step 2 (Jest, passing)",
+      "#3 Shown as the card appears and after the reveal — cards.test.tsx \"(#3)\"; TC-03-21 flow (passed in a development run, not collected)",
+      "#4 Same illustration in both languages; no text in it — cards.test.tsx \"(#4)\", illustrations-registered.test.js; TC-03-22 flow (passed in a development run, not collected); all five PNGs inspected, none holds text",
+      "#5 Legible on the Mudita Kompakt — MANUAL: TC-03-23 is manual-only",
+      "UNEVIDENCED: the collected full-suite run on head 0c29b6b did not finish before handback"
+    ],
+    "tests": {
+      "run": "/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-16_001258",
+      "manual_tests": [
+        "TC-03-23"
+      ]
+    },
+    "derived_tests": [
+      "AC-03-05-2"
+    ],
+    "preexisting": "criteria 1–4 implemented and unit-tested in WIP commit f1bfc7f: five illustrations in src/content/illustrations/, the illustration field in the deck JSON, the Illustration component in src/app/cards/[category].tsx, tests/unit/AC-03-05-2-*.test.js, tests/unit/illustrations-registered.test.js, tests/unit/support/png.js; story and BACKLOG already in-progress",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test ok"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "notes": "Branch merged with origin/main (US-02-02) before the new work; no conflicts.\n  TC-03-22 switches the device language mid-flow (scripts/SetLocale.java, run with app_process); its precondition saved deck is written as root (DEC-66).\n  Run verify on 0c29b6b, or let CI produce the evidence; TC-03-23 is still for the owner on the Kompakt.",
+    "reason": "The full acceptance suite on the final head 0c29b6b was started (snapshot taken) but had not finished or been collected when the run had to hand back, so there are no run.json counts for that commit. The code, the flows and the gates are done.",
+    "evidence_gaps": {
+      "unevidenced": [
+        "UNEVIDENCED: the collected full-suite run on head 0c29b6b did not finish before handback"
+      ],
+      "manual": [
+        "#5 Legible on the Mudita Kompakt — MANUAL: TC-03-23 is manual-only"
+      ],
+      "blocked": []
+    },
+    "critical_decisions": []
+  },
+  "raw": "I could not finish US-03-05. The code is committed on the branch, but the full acceptance run on the final commit was still building the release APK when I had to hand back. So I have no collected `run.json` for that commit and I return `failed` for that reason alone.\n\nThat run is in `/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-16_001258`, snapshotted on 0c29b6b. My handback probably killed it, since it was a background task of this session, so assume it needs re-running. Two ways forward:\n- **Re-run on the same head:** run `verify` mode on 0c29b6b.\n- **Or skip local and use CI:** this run takes its evidence from CI (`acceptance.yml`), so pushing the branch lets CI produce it.\n\nNothing needs fixing in the code. Before handing back:\n- **Gates:** all four passed: `yarn format:check`, `yarn lint`, `yarn tsc`, `yarn test` (38 suites, 238 tests).\n- **New flows:** TC-03-20, TC-03-21 and TC-03-22 passed on the emulator, running through the new `run_illustration_flows` in `scripts/test-acceptance.sh`. That was a development run outside the run directory, not collected, so it is not evidence.\n- **Spec compliance:** the spec-compliance reviewer found the story compliant, with nothing unmet.\n\nWhat was already done before this run: the earlier WIP commit f1bfc7f had criteria 1–4 done and unit-tested:\n- **Pictures and content:** five 1-bit 180×180 illustrations (hand, spider, ant, clock, tree rings) in `src/content/illustrations/`, each named by an `illustration` field on one question in the deck files.\n- **Card:** the card screen draws the picture below the question at one image pixel per screen pixel, before and after the answer is shown.\n- **Unit tests:** Jest tests for criteria 1, 3 and 4, the pixel test for criterion 2, and a check that every picture file is listed and used.\n\nWhat this run added:\n- **Branch caught up:** I merged origin/main into the branch (63a4bcc), because main gained US-02-02 after the WIP. There were no conflicts.\n- **Flows:** three Maestro flows. A new host-side helper, `scripts/illustration-server.js`, looks for the shipped picture on the screen pixel for pixel.\n- **Language switch for TC-03-22:** step 2 switches the device to English in the middle of the flow with a small new helper, `scripts/SetLocale.java`. The existing switch restarts Android's framework, which cuts Maestro's connection mid-flow.\n- **Test case for criterion 2:** a derived test case for criterion 2, which had no TC of its own.\n- **Decisions:** DEC-65 and DEC-66, both routine.\n\n```\nRESULT: failed\nSTORY: US-03-05\nBRANCH: feature/US-03-05\nCOMMITS: f1bfc7f feat(cards): illustrations, work in progress [US-03-05]; 63a4bcc Merge remote-tracking branch 'origin/main' into feature/US-03-05; 0c29b6b test(cards): acceptance flows for question illustrations [US-03-05]\nDECISIONS: DEC-65 routine Illustrations: five 1-bit silhouettes on five questions, drawn one image pixel to one screen pixel below the question; DEC-66 routine Illustration acceptance flows: saved 3+ deck written with the needed question first; device language switched mid-flow without a framework restart\nEVIDENCE:\n  #1 Only helpful questions carry an illustration; no placeholder — cards.test.tsx \"a question without an illustration shows no picture and keeps no place for one (#1)\"; TC-03-20 flow (passed in a development run, not collected)\n  #2 Pure black and white; a test fails on any other pixel — tests/unit/AC-03-05-2-illustrations-black-and-white.test.js step 1 and step 2 (Jest, passing)\n  #3 Shown as the card appears and after the reveal — cards.test.tsx \"(#3)\"; TC-03-21 flow (passed in a development run, not collected)\n  #4 Same illustration in both languages; no text in it — cards.test.tsx \"(#4)\", illustrations-registered.test.js; TC-03-22 flow (passed in a development run, not collected); all five PNGs inspected, none holds text\n  #5 Legible on the Mudita Kompakt — MANUAL: TC-03-23 is manual-only\n  UNEVIDENCED: the collected full-suite run on head 0c29b6b did not finish before handback\nTESTS: run=/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-16_001258 (not finished, not collected) manual_tests=TC-03-23\nDERIVED_TESTS: AC-03-05-2\nPREEXISTING: criteria 1–4 implemented and unit-tested in WIP commit f1bfc7f: five illustrations in src/content/illustrations/, the illustration field in the deck JSON, the Illustration component in src/app/cards/[category].tsx, tests/unit/AC-03-05-2-*.test.js, tests/unit/illustrations-registered.test.js, tests/unit/support/png.js; story and BACKLOG already in-progress\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test ok\nENV_KEYS: none\nMIGRATION: no\nNOTES: Branch merged with origin/main (US-02-02) before the new work; no conflicts.\n  TC-03-22 switches the device language mid-flow (scripts/SetLocale.java, run with app_process); its precondition saved deck is written as root (DEC-66).\n  Run verify on 0c29b6b, or let CI produce the evidence; TC-03-23 is still for the owner on the Kompakt.\nREASON: The full acceptance suite on the final head 0c29b6b was started (snapshot taken) but had not finished or been collected when the run had to hand back, so there are no run.json counts for that commit. The code, the flows and the gates are done.\n```\n",
+  "evidence": [
+    "repo-before.json"
+  ]
+}

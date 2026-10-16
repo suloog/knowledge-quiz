@@ -1,0 +1,107 @@
+{
+  "story": "US-03-05",
+  "attempt": 1,
+  "round": 1,
+  "sha": "1bf08f020081ade82256129382b781b796ffdc35",
+  "reviewer": "spec",
+  "ts": "2026-10-15T23:22:03Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-03-05",
+    "impact": "The card screen (src/app/cards/[category].tsx) is shared by every card flow (TC-03-01…TC-03-19, continue/end card): illustrated cards now shrink the question's type to fit the picture (MOD-03-U01), and text-only cards are unchanged.\n  scripts/test-acceptance.sh set_device_locale now also writes the system_locales setting and reads the original language from it, which affects every language-switched flow (TC-03-05 in English) and putting the device's language back after the run; the main release run now excludes the `illustration` tag.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/cards/[category].tsx:56 — Image has no fadeDuration={0}; the release build skips the fade only because Android sets 0 for resource sources (ReactImageView.kt:436-440), while the debug build (image over HTTP from Metro) fades in for 300 ms, an animation NFR-03 forbids → set fadeDuration={0}"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/cards/[category].tsx:196 — the picture sits inside questionArea, so adjustsFontSizeToFit shrinks illustrated questions to roughly two-thirds of the text-only type (TC-03-21 screenshot); a MOD-03-U01 trade-off DEC-65 does not record, most at risk on 5p-08 on the Kompakt → have TC-03-23 also judge the question type on 5p-08, or record it in a DEC"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "test-runs/2026-10-16_010358/maestro/release-illustrations — on-device pixel proof only at pixel ratio 1 (320x688, 180 px shown at 180 px), where width/PixelRatio.get() changes nothing; only the mocked unit test covers the Kompakt's ratio → run TC-03-21 once under `wm density 240`"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:236 — the automated flows only put hand.png (3p-07) on a device; the other four pictures are checked as files and by the registration test, on the device only by hand (TC-03-23)"
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/DECISIONS.md:741 — DEC-65, decided by the developer, sets aside the story's technical note and SRC-03-33 \"AI-generated\"; the shipped pictures look like geometric drawings → bring to the owner's attention"
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/illustrations/index.ts:6 — adding a picture needs a TypeScript registry edit (Metro needs a static require); MOD-01-F10 still holds, but this sits near the constitution's \"content is data\" rule → note for the tech lead"
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/__tests__/cards.test.tsx:533 — test \"(#1)\" asserts no Image but not that the padded wrapper View is absent; an empty-wrapper placeholder would pass it and the TC-03-20 pixel check → give the wrapper a testID and assert it is null"
+      },
+      {
+        "id": "N8",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "PR #17 body (og:impact) — says the spec's tests were \"not run on this head\" though the local run is on 1bf08f0; CI acceptance on 1bf08f0 was still in progress at review time → refresh after CI finishes"
+      },
+      {
+        "id": "N9",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/modules/03-question-cards/stories/US-03-05-question-illustrations.md:6 — spec and BACKLOG status left at in-progress, whereas the previous story's PR (US-02-02, 8be3641) shipped `done` → set the final status before merge (constitution DoD)"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 5,
+        "verdict": "external",
+        "note": "MANUAL TC-03-23"
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Spec-compliance review of PR #17, story US-03-05, round 1, at sha 1bf08f0 (diff `origin/main...1bf08f020081ade82256129382b781b796ffdc35`). Nothing blocks: criteria #1 to #4 are met with evidence and #5 is external. There are nine non-blocking findings (N1–N9 below).\n\n**What I checked myself (read-only)**\n- **Unit tests:** I ran `cards.test.tsx`, `AC-03-05-2-illustrations-black-and-white.test.js` and `illustrations-registered.test.js` at this sha: 3 suites, 44 tests, all pass. `tsc --noEmit` is clean. The worktree was clean.\n- **The five PNGs:** `file` reports each as 180x180, 1-bit greyscale, non-interlaced. I looked at all five: none has text, and each matches its question (hand = 5 fingers, spider = 8 legs, ant = 6 legs, clock = 3:00, tree rings).\n- **Local run** `test-runs/2026-10-16_010358`, on commit 1bf08f0 and not dirty: TC-03-20, TC-03-21 and TC-03-22 are each SUCCESS in their JUnit reports; TC-03-21 and TC-03-22 find `hand.png` pixel for pixel at (70,221) 180x180 before the reveal, after it, in Polish and in English; AC-03-05-2 passes in `junit/unit.xml`.\n- **CI on 1bf08f0:** the Gates job succeeded; the \"Acceptance tests (Android 12 emulator)\" job was still in progress when I looked.\n\nTraceability: #1–#4 MET, #5 EXTERNAL (TC-03-23 manual-only); MOD-01-F08, MOD-01-F13, MOD-03-U03 delivered; out-of-scope fences respected; constitution: no violation.\n\n```\nREVIEW: findings\nSTORY: US-03-05\nIMPACT: The card screen (src/app/cards/[category].tsx) is shared by every card flow (TC-03-01…TC-03-19, continue/end card): illustrated cards now shrink the question's type to fit the picture (MOD-03-U01), and text-only cards are unchanged.\n  scripts/test-acceptance.sh set_device_locale now also writes the system_locales setting and reads the original language from it, which affects every language-switched flow (TC-03-05 in English) and putting the device's language back after the run; the main release run now excludes the `illustration` tag.\nFINDINGS:\n  N1 src/app/cards/[category].tsx:56 — Image has no fadeDuration={0}; the release build skips the fade only because Android sets 0 for resource sources (ReactImageView.kt:436-440), while the debug build (image over HTTP from Metro) fades in for 300 ms, an animation NFR-03 forbids → set fadeDuration={0}\n  N2 src/app/cards/[category].tsx:196 — the picture sits inside questionArea, so adjustsFontSizeToFit shrinks illustrated questions to roughly two-thirds of the text-only type (TC-03-21 screenshot); a MOD-03-U01 trade-off DEC-65 does not record, most at risk on 5p-08 on the Kompakt → have TC-03-23 also judge the question type on 5p-08, or record it in a DEC\n  N3 test-runs/2026-10-16_010358/maestro/release-illustrations — on-device pixel proof only at pixel ratio 1 (320x688, 180 px shown at 180 px), where width/PixelRatio.get() changes nothing; only the mocked unit test covers the Kompakt's ratio → run TC-03-21 once under `wm density 240`\n  N4 scripts/test-acceptance.sh:236 — the automated flows only put hand.png (3p-07) on a device; the other four pictures are checked as files and by the registration test, on the device only by hand (TC-03-23)\n  N5 docs/specs/DECISIONS.md:741 — DEC-65, decided by the developer, sets aside the story's technical note and SRC-03-33 \"AI-generated\"; the shipped pictures look like geometric drawings → bring to the owner's attention\n  N6 src/content/illustrations/index.ts:6 — adding a picture needs a TypeScript registry edit (Metro needs a static require); MOD-01-F10 still holds, but this sits near the constitution's \"content is data\" rule → note for the tech lead\n  N7 src/app/__tests__/cards.test.tsx:533 — test \"(#1)\" asserts no Image but not that the padded wrapper View is absent; an empty-wrapper placeholder would pass it and the TC-03-20 pixel check → give the wrapper a testID and assert it is null\n  N8 PR #17 body (og:impact) — says the spec's tests were \"not run on this head\" though the local run is on 1bf08f0; CI acceptance on 1bf08f0 was still in progress at review time → refresh after CI finishes\n  N9 docs/specs/modules/03-question-cards/stories/US-03-05-question-illustrations.md:6 — spec and BACKLOG status left at in-progress, whereas the previous story's PR (US-02-02, 8be3641) shipped `done` → set the final status before merge (constitution DoD)\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 met\n  #5 external — MANUAL TC-03-23\n```\n"
+}

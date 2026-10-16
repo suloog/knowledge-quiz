@@ -1,0 +1,117 @@
+{
+  "story": "US-02-01",
+  "attempt": 1,
+  "round": 1,
+  "sha": "558d8ac3893cc73fa3e52c619add858986995051",
+  "reviewer": "code",
+  "ts": "2026-10-14T19:04:26Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-02-01",
+    "impact": "`src/theme.ts`, the root `_layout.tsx` and the new `categories` export from `src/content` are the base for every later screen (US-03-01, US-02-02, US-02-03). `scripts/test-acceptance.sh` now adds the CATEGORIES and CATEGORY_COUNT env vars to every Maestro run and a device step that runs on all acceptance runs, so a failure there turns the whole acceptance job red. The existing TC-00/01 flows still find `content-title`, which the screen keeps.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:257 — the hierarchy file `$OUT/maestro/TC-02-02-hierarchy.txt` is not removed before the polling loop, and the file is only rewritten when a dump succeeds; on a rerun with the same OG_RUN_DIR a failed or too-early dump leaves the previous run's file, whose `category-0` makes the loop break at once and judge stale evidence (CI starts clean, so this is local-only) → `rm -f` the file before the loop"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/maestro/TC-02-02-full-width-entries.yaml:1 — the flow is named \"Each category entry spans the full width of the screen\" but only asserts that entries are visible, and the evidence is matched by the id in the JUnit name, so a pass of this flow counts as TC-02-02 evidence even if `junit/screen.xml` is never written (the script crashes, or the stack was never ready) → keep step 2 authoritative: name the flow's JUnit case so it cannot be read as the width check (for example \"TC-02-02 step 1 and entries present\") or make the width case's absence fail the run"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/check-full-width.js:15 — with expected = 0 (no deck labelled 3+/4+/5+) and no entries the check passes vacuously; `uiautomator` also clips bounds to the display, so an entry wider than the screen would still read 0–W (harmless for \"spans the width\" but not \"exactly\"); a side inset (cutout) would give a false failure → fail when `expected` is 0 or not a number; note the clipping in the header comment"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/DECISIONS.md:597 — DEC-48 part 3 rewrites the expected result of the reviewed TC-02-01/02 (\"three entries\") and part 2 departs from the story's technical note \"labels via i18n\"; both are defensible from the story's edge case and U03, but the first is the sort of change a reviewer of the TCs should see → keep it routine, and update the \"three entries\" wording in TC-02-01/02 or point them to DEC-48"
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/index.ts:13 — `Number.parseInt` returns NaN for a label that does not start with a digit and the sort order becomes undefined; `checkDeck` only requires a non-empty label → add a content check that the label matches /^\\d+\\+$/ or sort with a fallback"
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/maestro/TC-02-14-back-closes-app.yaml:13 — step 2 only asserts the screen is no longer visible; a crash on back would pass, and the TC says \"the home screen is shown\" → also assert the launcher (or that the app process is gone, `adb shell pidof`)"
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/unit/AC-02-01-3-new-category-from-data.test.tsx:38 — step 3 only checks `src/app/index.tsx` for single-digit labels like '3+' (/\\d\\+/); \"10+\" or a label in another file would pass → use /\\d+\\+/ (or drop the step; step 2 with the \"6+\" deck already proves the point)"
+      },
+      {
+        "id": "N8",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/index.ts:11 — `categories` is a bare string[] sorted apart from `decks`, so US-03-01 and US-02-02 will have to look the deck up again by label and sort twice → consider exporting the sorted decks (or an object with category and deck) now, while only one caller exists"
+      },
+      {
+        "id": "N9",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/index.tsx:9 — `role=\"heading\"` on the title is not in the story or a TC → drop it or trace it to a requirement"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": "TC-02-01 step 1 and TC-02-14 / TC-02-02 launch from cleared state; CI acceptance job pending"
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": "TC-02-01 step 2 (3+ only today, DEC-48, story edge case) plus the unit test ordering 5+/3+/4+; CI acceptance job pending"
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": "AC-02-01-3 (6+ deck registered first; shown last; mutation-tested)"
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": "AC-02-01-4 (rendered tree including navigation, third-colour detector, source and app.json scan; mutation-tested)"
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": "AC-02-01-5 (every RNSScreen stackAnimation is none, animated stack detector, source scan; mutation-tested)"
+      },
+      {
+        "n": 6,
+        "verdict": "met",
+        "note": "TC-02-02 step 2 via check-full-width.js (bounds against `wm size`, not hard-coded); see N1-N3; CI acceptance job pending"
+      },
+      {
+        "n": 7,
+        "verdict": "external",
+        "note": "MANUAL TC-02-03"
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Review of PR #6 (US-02-01), round 1, head 558d8ac. No blocking finding; 9 non-blocking ones.\n\n**Test evidence**\n- CI run 38620037412 on head 558d8ac. The Gates job passed (format, lint, types, unit tests). The \"Acceptance tests (Android 12 emulator)\" job was still pending when I checked, so criteria 1, 2 and 6 have no CI evidence yet. Merge should wait for that job and its og-test-results artifact. Local `yarn jest`, `tsc`, `lint` and `format:check` on 558d8ac are green (63 tests).\n- Every new test is picked up by `yarn test:acceptance`:\n  - The unit tests run through `jest-junit` and carry the id in the describe name: AC-02-01-3, -4 and -5.\n  - The three Maestro flows carry TC-02-01, TC-02-02 and TC-02-14 in their `name:`.\n  - `junit/screen.xml` carries \"TC-02-02 step 2\" and is inside the `test-results/**/*.xml` upload glob.\n- I mutation-tested a copy in the scratchpad:\n  - Removing the theme and `ThemeProvider` from `_layout.tsx` fails AC-02-01-4 step 1.\n  - Removing `animation: 'none'` fails AC-02-01-5 step 1.\n  - Removing the sort in `src/content/index.ts` fails AC-02-01-3 and `index.test.tsx`.\n  - So the unit tests do fail if the change is reverted.\n\n**Is DEC-48 routine?** Yes, defensible, with one caveat (N4).\n- Parts 1 and 2 (sort by age number, no i18n for the label) follow F02/F03/U03 and the story's \"only 3+ exists\" edge case.\n- Part 3 narrows the expected result of TC-02-01 (\"three entries\") to the decks that ship. It stays inside the story, which says \"the categories found in the content data\" and states the 3+-only edge case.\n- It is not a must/NFR deviation, a new dependency, or a data/schema change.\n\n**Does `scripts/check-full-width.js` prove full width on any device?**\n- Mostly yes. The screen width comes from `wm size` (override first) and each entry's bounds come from `uiautomator`, so nothing is tied to 1080 px. `app.json` locks portrait, so the natural-orientation width from `wm size` is the real one.\n- The gaps are listed in N1, N2 and N3. None breaks the 1080-px case.\n\n**Edge cases of the story**\n- \"Only 3+ exists\" is covered only at e2e level (Maestro `CATEGORY_COUNT` plus the `assertNotVisible` after the last entry). The unit tests use mocked decks.\n- Android back is covered by TC-02-14, but weakly (N6).\n- \"Saved data missing\" is covered by `clearState`. \"Unreadable data\" is untestable until storage exists and belongs to TC-02-09 / US-02-02.\n\n```\nREVIEW: findings\nSTORY: US-02-01\nIMPACT: `src/theme.ts`, the root `_layout.tsx` and the new `categories` export from `src/content` are the base for every later screen (US-03-01, US-02-02, US-02-03). `scripts/test-acceptance.sh` now adds the CATEGORIES and CATEGORY_COUNT env vars to every Maestro run and a device step that runs on all acceptance runs, so a failure there turns the whole acceptance job red. The existing TC-00/01 flows still find `content-title`, which the screen keeps.\nFINDINGS:\n  N1 scripts/test-acceptance.sh:257 — the hierarchy file `$OUT/maestro/TC-02-02-hierarchy.txt` is not removed before the polling loop, and the file is only rewritten when a dump succeeds; on a rerun with the same OG_RUN_DIR a failed or too-early dump leaves the previous run's file, whose `category-0` makes the loop break at once and judge stale evidence (CI starts clean, so this is local-only) → `rm -f` the file before the loop\n  N2 tests/maestro/TC-02-02-full-width-entries.yaml:1 — the flow is named \"Each category entry spans the full width of the screen\" but only asserts that entries are visible, and the evidence is matched by the id in the JUnit name, so a pass of this flow counts as TC-02-02 evidence even if `junit/screen.xml` is never written (the script crashes, or the stack was never ready) → keep step 2 authoritative: name the flow's JUnit case so it cannot be read as the width check (for example \"TC-02-02 step 1 and entries present\") or make the width case's absence fail the run\n  N3 scripts/check-full-width.js:15 — with expected = 0 (no deck labelled 3+/4+/5+) and no entries the check passes vacuously; `uiautomator` also clips bounds to the display, so an entry wider than the screen would still read 0–W (harmless for \"spans the width\" but not \"exactly\"); a side inset (cutout) would give a false failure → fail when `expected` is 0 or not a number; note the clipping in the header comment\n  N4 docs/specs/DECISIONS.md:597 — DEC-48 part 3 rewrites the expected result of the reviewed TC-02-01/02 (\"three entries\") and part 2 departs from the story's technical note \"labels via i18n\"; both are defensible from the story's edge case and U03, but the first is the sort of change a reviewer of the TCs should see → keep it routine, and update the \"three entries\" wording in TC-02-01/02 or point them to DEC-48\n  N5 src/content/index.ts:13 — `Number.parseInt` returns NaN for a label that does not start with a digit and the sort order becomes undefined; `checkDeck` only requires a non-empty label → add a content check that the label matches /^\\d+\\+$/ or sort with a fallback\n  N6 tests/maestro/TC-02-14-back-closes-app.yaml:13 — step 2 only asserts the screen is no longer visible; a crash on back would pass, and the TC says \"the home screen is shown\" → also assert the launcher (or that the app process is gone, `adb shell pidof`)\n  N7 tests/unit/AC-02-01-3-new-category-from-data.test.tsx:38 — step 3 only checks `src/app/index.tsx` for single-digit labels like '3+' (/\\d\\+/); \"10+\" or a label in another file would pass → use /\\d+\\+/ (or drop the step; step 2 with the \"6+\" deck already proves the point)\n  N8 src/content/index.ts:11 — `categories` is a bare string[] sorted apart from `decks`, so US-03-01 and US-02-02 will have to look the deck up again by label and sort twice → consider exporting the sorted decks (or an object with category and deck) now, while only one caller exists\n  N9 src/app/index.tsx:9 — `role=\"heading\"` on the title is not in the story or a TC → drop it or trace it to a requirement\nCRITERIA:\n  #1 met — TC-02-01 step 1 and TC-02-14 / TC-02-02 launch from cleared state; CI acceptance job pending\n  #2 met — TC-02-01 step 2 (3+ only today, DEC-48, story edge case) plus the unit test ordering 5+/3+/4+; CI acceptance job pending\n  #3 met — AC-02-01-3 (6+ deck registered first; shown last; mutation-tested)\n  #4 met — AC-02-01-4 (rendered tree including navigation, third-colour detector, source and app.json scan; mutation-tested)\n  #5 met — AC-02-01-5 (every RNSScreen stackAnimation is none, animated stack detector, source scan; mutation-tested)\n  #6 met — TC-02-02 step 2 via check-full-width.js (bounds against `wm size`, not hard-coded); see N1-N3; CI acceptance job pending\n  #7 external — MANUAL TC-02-03\n```\n"
+}

@@ -1,0 +1,95 @@
+{
+  "story": "US-02-02",
+  "attempt": 1,
+  "round": 2,
+  "sha": "ed010fd9555acbb22421700a2775ddfa79a55bad",
+  "reviewer": "spec",
+  "ts": "2026-10-15T13:02:33Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-02-02",
+    "impact": "src/app/index.tsx is the launch screen every flow starts on; it now imports cardType from the card route, so changing cardType/PADDING/CHARACTER_WIDTH in src/app/cards/[category].tsx resizes the continue entry too. scripts/test-acceptance.sh now launches and force-stops the app once more before TC-02-08 (reads only, no state written), and a failing colour check on that screen fails the whole acceptance run. cards.test.tsx now finds list entries through listEntry() because their text is no longer unique once the continue entry shows.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "PR #15 body — still describes round 1: Summary \"Kontynuuj 4+\" on one line, Changes \"sized like the entries\", Decisions uses DEC-59's old title, evidence cites run 2026-10-15_140122 \"30 of 30 pass\" while run 143215 on ed010fd has two failing colour checks → rewrite Summary/Changes/Decisions/evidence for ed010fd and run 143215, and state the colour-check result explicitly."
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:402 — locally, AC-02-01-4 step 4 and the new \"TC-02-08 step 2\" check both fail on 1/255-off rows (1251/1257) at the list's divider edges, outside the continue entry's bounds [0,265][1080,902]; \"main fails identically\" has no kept run on main (the last passing run, 2026-10-15_114726, has identical first-launch bounds) and CI acceptance on ed010fd is still in progress → check the CI acceptance result on ed010fd before merging; optionally keep a run of main as evidence for the environmental claim."
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:414 — the \"entry never showed\" fallback writes testsuite name \"continue-screen-colours\", but scripts/check-black-and-white.js:147 hard-codes \"category-screen-colours\" for both files, so the two JUnit files share one suite name and the name depends on which path ran → pass the suite name through too, or derive it from the output file."
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/index.tsx:9 — the category screen imports cardType from another route module ('./cards/[category]'), coupling two screens → move cardType (with PADDING/CHARACTER_WIDTH) to src/theme.ts or a small typography module."
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/__tests__/continue.test.tsx:141 — fontSize 64 is asserted only at Jest's default window width, so the width-based shrink that fixed B1 is never exercised; the test also leaves the multi-line layout unasserted (only numberOfLines undefined is checked) → add a case with a narrow mocked useWindowDimensions (e.g. ~320 dp, Kompakt) and expect fontSize < 64."
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/DECISIONS.md:721 — DEC-59 now states a behaviour (last-category readable but that deck unreadable → entry shown, opens a fresh shuffle) that no unit test or flow covers → add a unit case in continue.test.tsx: mockSaved last-category '\"4+\"' plus an unreadable deck-4+, expect continue-entry, press it, expect card-0."
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/app/__tests__/continue.test.tsx:88 — drawOrder() still walks the rendered tree by hand (round-1 code N1); it is generic now and the Maestro `below` assertions cover position on the device → acceptable; could rely on those plus a simpler check."
+      },
+      {
+        "id": "N8",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/specs/DECISIONS.md:721 — DEC-59 entry edited in place; acceptable only because DEC-59 was introduced in this unmerged PR (DECISIONS is append-only once merged) → none needed; noted for traceability."
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Round 2 review of PR #15 (US-02-02), range 2324806..ed010fd. I found no blocking items. The device now draws the category on the continue entry, and every acceptance criterion has passing unit tests and Maestro evidence on this exact head. (B1 fixed: run 143215 on ed010fd, screenshots show \"Kontynuuj\" over \"4+\"/\"3+\", hierarchy confirms both Texts; spec N1–N4 fixed/added; code N1 partly, N2 deferred, N3 fixed. Local colour checks fail on divider-edge rows outside the continue entry's bounds — accepted as environmental; CI acceptance on ed010fd was still in progress.)\n\n```\nREVIEW: findings\nSTORY: US-02-02\nIMPACT: src/app/index.tsx is the launch screen every flow starts on; it now imports cardType from the card route, so changing cardType/PADDING/CHARACTER_WIDTH in src/app/cards/[category].tsx resizes the continue entry too. scripts/test-acceptance.sh now launches and force-stops the app once more before TC-02-08 (reads only, no state written), and a failing colour check on that screen fails the whole acceptance run. cards.test.tsx now finds list entries through listEntry() because their text is no longer unique once the continue entry shows.\nFINDINGS:\n  N1 PR #15 body — still describes round 1: Summary \"Kontynuuj 4+\" on one line, Changes \"sized like the entries\", Decisions uses DEC-59's old title, evidence cites run 2026-10-15_140122 \"30 of 30 pass\" while run 143215 on ed010fd has two failing colour checks → rewrite Summary/Changes/Decisions/evidence for ed010fd and run 143215, and state the colour-check result explicitly.\n  N2 scripts/test-acceptance.sh:402 — locally, AC-02-01-4 step 4 and the new \"TC-02-08 step 2\" check both fail on 1/255-off rows (1251/1257) at the list's divider edges, outside the continue entry's bounds [0,265][1080,902]; \"main fails identically\" has no kept run on main (the last passing run, 2026-10-15_114726, has identical first-launch bounds) and CI acceptance on ed010fd is still in progress → check the CI acceptance result on ed010fd before merging; optionally keep a run of main as evidence for the environmental claim.\n  N3 scripts/test-acceptance.sh:414 — the \"entry never showed\" fallback writes testsuite name \"continue-screen-colours\", but scripts/check-black-and-white.js:147 hard-codes \"category-screen-colours\" for both files, so the two JUnit files share one suite name and the name depends on which path ran → pass the suite name through too, or derive it from the output file.\n  N4 src/app/index.tsx:9 — the category screen imports cardType from another route module ('./cards/[category]'), coupling two screens → move cardType (with PADDING/CHARACTER_WIDTH) to src/theme.ts or a small typography module.\n  N5 src/app/__tests__/continue.test.tsx:141 — fontSize 64 is asserted only at Jest's default window width, so the width-based shrink that fixed B1 is never exercised; the test also leaves the multi-line layout unasserted (only numberOfLines undefined is checked) → add a case with a narrow mocked useWindowDimensions (e.g. ~320 dp, Kompakt) and expect fontSize < 64.\n  N6 docs/specs/DECISIONS.md:721 — DEC-59 now states a behaviour (last-category readable but that deck unreadable → entry shown, opens a fresh shuffle) that no unit test or flow covers → add a unit case in continue.test.tsx: mockSaved last-category '\"4+\"' plus an unreadable deck-4+, expect continue-entry, press it, expect card-0.\n  N7 src/app/__tests__/continue.test.tsx:88 — drawOrder() still walks the rendered tree by hand (round-1 code N1); it is generic now and the Maestro `below` assertions cover position on the device → acceptable; could rely on those plus a simpler check.\n  N8 docs/specs/DECISIONS.md:721 — DEC-59 entry edited in place; acceptable only because DEC-59 was introduced in this unmerged PR (DECISIONS is append-only once merged) → none needed; noted for traceability.\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 met\n```\n"
+}

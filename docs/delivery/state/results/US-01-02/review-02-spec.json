@@ -1,0 +1,124 @@
+{
+  "story": "US-01-02",
+  "attempt": 1,
+  "round": 2,
+  "sha": "dbfde5b3c6003c6fd924ab8df6941a83e2832e26",
+  "reviewer": "spec",
+  "ts": "2026-10-14T17:25:11Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-01-02",
+    "impact": "The fix rewrites the 3+ deck data, the age-suitability record and the AC-01-02-4 test; the MOD-03 screens that read src/content will show these texts, and US-01-03/US-01-04 inherit the record layout (nine cells after the id, a near-miss column) and the DEC-47 open-question rule, so their records must follow the same format or AC tests modelled on this one will fail. The shared checkDecks gate in src/content/checks.ts is unchanged in this range, so nothing else that uses it can break.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:198 — 3p-17 says the moon \"is sometimes round and sometimes thin\" (pl \"raz jest okrągłe, a raz cienkie\") while record line 34 claims \"the question now says how it looks\"; the verifiable check is generous → reword to \"looks sometimes round, sometimes thin\" / \"wygląda raz na okrągły, a raz na cienki\", or correct the record note"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/delivery/content-checks/US-01-02-3-plus.md:20 — near-miss cells of 3p-03/25/28/39/48/50 (lines 20,42,45,56,65,67) list the question the slot used to hold, which is history and not a near miss; 3p-05 \"a spoon\" and 3p-21 \"a rainbow\" (lines 22,38) give no reason, though DEC-47 asks why each is ruled out; 3p-04 (line 21) names only one → drop the history notes, give each near miss its reason"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/unit/AC-01-02-4-age-suitability-record.test.js:25 — OFFERS_OPTIONS only catches \"czy\"/\"or\"; a Polish \"albo\"/\"lub\" either/or passes step 5 whenever the English text avoids \"or\" → add albo|lub to the pl pattern"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:330 — 3p-28 near misses leave out the hermit crab (krab pustelnik: carries a home on its back, has feelers); unlikely from a 3-year-old → add it to the record row with the reason it is ruled out"
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:90 — 3p-08 \"which part of the body do we see with\": a parent could pedantically say \"the brain\"; not in the near-miss cell → note it in the record (a child-level question; the eyes are the organ)"
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:294 — 3p-25 (filling a watering can) is labelled popular-science but is everyday/nature content; relabelling would still leave 11 popular-science → relabel or swap for a real popular-science fact"
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:234 — 3p-20 \"pora roku\"/\"season\" is an abstract word for a 3-year-old; the known-words pass is generous → the owner should confirm at the DEC-26 review, or replace it"
+      },
+      {
+        "id": "N8",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/delivery/content-checks/US-01-02-3-plus.md:60 — 3p-43 rules out the balloon because it \"does not bounce\", which is inaccurate → rule it out because it is not kicked on a pitch / not a ball"
+      },
+      {
+        "id": "N9",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "src/content/decks/3-plus.json:270 — 3p-23 English \"What white thing falls from the clouds in winter and we go sledging on it?\" is clumsy → \"…that we go sledging on?\""
+      },
+      {
+        "id": "N10",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "test-runs/2026-10-14_190107/run.json:1 — the loop's run report lists every AC-01-02-* as skipped although its junit shows them passing (the same in runs 160342 and 182139), yet the PR body cites this run as \"pass\"; the PR impact block is stale (\"not run on this head\", 8-cell rows) → fix the junit-to-test-case mapping in the run tooling (outside this diff) and refresh the PR impact block; CI og-test-results on dbfde5b is green for all AC-01-02-*"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 6,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 7,
+        "verdict": "met",
+        "note": ""
+      }
+    ],
+    "stray": []
+  },
+  "raw": "## Spec-compliance review: US-01-02, PR #4, second retry round (fix range 06b43b6..dbfde5b)\n\n**Verdict: COMPLIANT.** Nothing blocking. I found 10 non-blocking points.\n\nI checked all 50 questions in both languages against the four Q29 checks, MOD-01-F04/F06/F07/F14 and DEC-47 option c:\n- **Options:** none of the 50 questions offers options in either language. There is no either/or, \"czy\", \"or\", \"albo\" or \"lub\" anywhere in the deck.\n- **Second correct answers:** I found no genuinely correct second answer that the near-miss cells missed.\n- **Polish/English meaning:** no real mismatches. \"łap\"/\"legs\" (3p-03), \"boisko\"/\"playing field\" (3p-43) and \"z wiejskiego podwórka\"/\"farm animal\" (3p-37) mean the same thing.\n- **Answer grammar:** the Polish answers agree grammatically with their questions, e.g. \"Białego.\", \"Oczami.\", \"Na zielonym.\"\n- **Content kinds:** 13 educational, 12 popular-science, 13 nature, 12 trivia, so each is at least 5.\n\n### DEC-47 and the decision log\n- DEC-47 in `/Users/sulo/workspace/knowledge-quiz/docs/specs/DECISIONS.md` says \"Option c\" and is decided by the product owner. Its content matches the ruling: open questions only, no options in the text, near misses recorded and justified per row, 4+/5+ under the same rule, DEC-46 format unchanged. The `Affects` field now also lists MOD-03-U02, DSC-04-04, SRC-01-17 and SRC-01-18.\n- The owner's actual question and answer are not stored in the repo, so I matched DEC-47 against your brief.\n- **Append-only against main holds:** `git diff origin/main...dbfde5b -- docs/specs/DECISIONS.md` has no removed lines, only DEC-46 and DEC-47 added. DEC-47 was reworded inside the PR (commits d3a77eb, 9c9996d, c2800ad), but it never reached main, so no confirmed entry was edited.\n\n### Evidence\n- **CI on dbfde5b:** run 38603546684 (\"Acceptance tests (Android 12 emulator)\") finished with success. Artifact `og-test-results`:\n  - unit tests: 53, 0 failures, 0 skipped\n  - release-apk: 7, 0 failures\n  - Maestro: 3+1 flows, 0 failures\n- **Every required test is green:**\n  - AC-01-02-1 (4 tests)\n  - AC-01-02-2 (4)\n  - AC-01-02-3 (5)\n  - AC-01-02-4 (5, including the new step 4 near-miss check and step 5 no-options check)\n  - AC-01-02-5 (16)\n  - AC-01-02-6 (3)\n  - AC-01-02-7 (unit step plus release-bundle step 2)\n  - TC-01-02 is absent from the artifact. That is correct: DEC-44 and DEC-46 defer it to US-03-01.\n- **Locally:** `npx jest tests/unit` gives 8 suites and 40 tests, all passing.\n- **PR body:** its \"Age-suitability record\" section is byte-identical to `/Users/sulo/workspace/knowledge-quiz/docs/delivery/content-checks/US-01-02-3-plus.md`, which I confirmed with a diff.\n- **Scope:** the fix range touches only the deck, the record, the AC-01-02-4 test and doc, and DECISIONS. No out-of-scope or constitution issues.\n\n### Acceptance criteria\n| # | Verdict | Evidence |\n| --- | --- | --- |\n| 1 | met | AC-01-02-1, green in CI |\n| 2 | met | AC-01-02-2, green |\n| 3 | met | AC-01-02-3, green (13/12/13/12) |\n| 4 | met | record in the PR body plus AC-01-02-4 steps 1–5, green |\n| 5 | met | AC-01-02-5, 16 breakage tests, green |\n| 6 | met | AC-01-02-6, green |\n| 7 | met | AC-01-02-7 unit test and release-bundle step, green; TC-01-02 deferred by DEC-44/46 |\n\n### Non-blocking findings\n- **N1:** 3p-17 (deck line 198, record line 34) says the moon \"is sometimes round and sometimes thin\" (\"raz jest okrągłe, a raz cienkie\"). The record claims \"the question now says how it looks\", but it still says \"is\". The verifiable check is generous here.\n- **N2:** several near-miss cells don't do what DEC-47 asks (\"why each is ruled out\"):\n  - 3p-03, 3p-25, 3p-28, 3p-39, 3p-48 and 3p-50 (lines 20, 42, 45, 56, 65, 67) list the question the slot used to hold, which is history, not a near miss.\n  - 3p-05 \"a spoon\" and 3p-21 \"a rainbow\" (lines 22, 38) give no reason.\n  - 3p-04 (line 21) has only one near miss.\n- **N3:** the test's `OFFERS_OPTIONS` (test file line 25) only catches \"czy\" in Polish and \"or\" in English. A Polish \"albo\"/\"lub\" either/or slips through whenever the English text avoids \"or\".\n- **N4:** 3p-28 (deck line 330) doesn't list the hermit crab (krab pustelnik) as a near miss. A 3-year-old is unlikely to say it.\n- **N5:** 3p-08 (deck line 90): a parent could say \"the brain\" sees, which is pedantic. It isn't in the cell.\n- **N6:** 3p-25 (deck line 294), filling a watering can, is labelled `popular-science` but is everyday or nature content. Relabelling it would still leave 11 popular-science questions, above the minimum of 5.\n- **N7:** 3p-20 (deck line 234): \"pora roku\"/\"season\" is an abstract word for a 3-year-old, so the \"known words\" pass is generous.\n- **N8:** the 3p-43 record row (line 60) says a balloon \"does not bounce\", which is weak reasoning.\n- **N9:** 3p-23 (deck line 270): the English \"falls … and we go sledging on it\" is clumsy.\n- **N10:** the loop's run report `test-runs/2026-10-14_190107/run.json` lists every AC-01-02-* as skipped, even though its junit files show them passing. The earlier runs 160342 and 182139 have the same mismatch, so it is tooling outside this diff. The PR body still cites this run as \"pass\", and its impact block still reads \"not run on this head\" with 8-cell row wording.\n\n```\nREVIEW: findings\nSTORY: US-01-02\nIMPACT: The fix rewrites the 3+ deck data, the age-suitability record and the AC-01-02-4 test; the MOD-03 screens that read src/content will show these texts, and US-01-03/US-01-04 inherit the record layout (nine cells after the id, a near-miss column) and the DEC-47 open-question rule, so their records must follow the same format or AC tests modelled on this one will fail. The shared checkDecks gate in src/content/checks.ts is unchanged in this range, so nothing else that uses it can break.\nFINDINGS:\n  N1 src/content/decks/3-plus.json:198 — 3p-17 says the moon \"is sometimes round and sometimes thin\" (pl \"raz jest okrągłe, a raz cienkie\") while record line 34 claims \"the question now says how it looks\"; the verifiable check is generous → reword to \"looks sometimes round, sometimes thin\" / \"wygląda raz na okrągły, a raz na cienki\", or correct the record note\n  N2 docs/delivery/content-checks/US-01-02-3-plus.md:20 — near-miss cells of 3p-03/25/28/39/48/50 (lines 20,42,45,56,65,67) list the question the slot used to hold, which is history and not a near miss; 3p-05 \"a spoon\" and 3p-21 \"a rainbow\" (lines 22,38) give no reason, though DEC-47 asks why each is ruled out; 3p-04 (line 21) names only one → drop the history notes, give each near miss its reason\n  N3 tests/unit/AC-01-02-4-age-suitability-record.test.js:25 — OFFERS_OPTIONS only catches \"czy\"/\"or\"; a Polish \"albo\"/\"lub\" either/or passes step 5 whenever the English text avoids \"or\" → add albo|lub to the pl pattern\n  N4 src/content/decks/3-plus.json:330 — 3p-28 near misses leave out the hermit crab (krab pustelnik: carries a home on its back, has feelers); unlikely from a 3-year-old → add it to the record row with the reason it is ruled out\n  N5 src/content/decks/3-plus.json:90 — 3p-08 \"which part of the body do we see with\": a parent could pedantically say \"the brain\"; not in the near-miss cell → note it in the record (a child-level question; the eyes are the organ)\n  N6 src/content/decks/3-plus.json:294 — 3p-25 (filling a watering can) is labelled popular-science but is everyday/nature content; relabelling would still leave 11 popular-science → relabel or swap for a real popular-science fact\n  N7 src/content/decks/3-plus.json:234 — 3p-20 \"pora roku\"/\"season\" is an abstract word for a 3-year-old; the known-words pass is generous → the owner should confirm at the DEC-26 review, or replace it\n  N8 docs/delivery/content-checks/US-01-02-3-plus.md:60 — 3p-43 rules out the balloon because it \"does not bounce\", which is inaccurate → rule it out because it is not kicked on a pitch / not a ball\n  N9 src/content/decks/3-plus.json:270 — 3p-23 English \"What white thing falls from the clouds in winter and we go sledging on it?\" is clumsy → \"…that we go sledging on?\"\n  N10 test-runs/2026-10-14_190107/run.json:1 — the loop's run report lists every AC-01-02-* as skipped although its junit shows them passing (the same in runs 160342 and 182139), yet the PR body cites this run as \"pass\"; the PR impact block is stale (\"not run on this head\", 8-cell rows) → fix the junit-to-test-case mapping in the run tooling (outside this diff) and refresh the PR impact block; CI og-test-results on dbfde5b is green for all AC-01-02-*\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 met\n  #5 met\n  #6 met\n  #7 met\n```\n"
+}

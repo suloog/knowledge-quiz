@@ -1,0 +1,59 @@
+{
+  "n": 1,
+  "attempt": 1,
+  "ts": "2026-10-15T09:02:10Z",
+  "story": "US-03-03",
+  "mode": "implement",
+  "parsed": {
+    "result": "ready",
+    "story": "US-03-03",
+    "branch": "feature/US-03-03",
+    "commits": [
+      "8316459 fix(storage): save through a temp file and never throw [US-03-03]",
+      "8eb0c89 feat(cards): end card with again and categories [US-03-03]",
+      "763f75b test(acceptance): end card flows TC-03-12..TC-03-15 [US-03-03]"
+    ],
+    "decisions": [
+      "DEC-56 routine End card: a finished deck stays finished",
+      "again reshuffles, categories goes back (replaces DEC-55's restart)",
+      "DEC-57 routine UI strings in a Polish and English table in src/strings.json, following the device language"
+    ],
+    "evidence": [
+      "#1 End card after the 50th answer and a touch, offering \"again\" and \"categories\" — TC-03-12 pass (tests/maestro/TC-03-12-end-card-after-last.yaml: step 1 the saved deck has 49/50 seen, step 2 the end card with \"Talia skończona\", \"Jeszcze raz\", \"Kategorie\"); unit tests in src/app/__tests__/cards.test.tsx (end card, last answer stays until touched, English words); edge case \"reopen shows the end card\" — TC-03-15 pass, plus unit tests in cards.test.tsx and progress.test.ts",
+      "#2 \"Again\" starts over in a new shuffled order, all 50 unseen — TC-03-13 pass (flow shows card-0, answer hidden) plus the script's \"TC-03-13 step 2\" check of the saved deck, pass (0 of 50 seen, all 50 ids, an order different from before); unit tests in cards.test.tsx and progress.test.ts restartDeck",
+      "#3 \"Categories\" shows the category screen — TC-03-14 pass; unit test in cards.test.tsx (category screen shown, router.canGoBack() false, so no duplicate)"
+    ],
+    "tests": {
+      "run": "/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-15_104834",
+      "pass": 20,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 0,
+      "manual_tests": [
+        "none"
+      ]
+    },
+    "derived_tests": [],
+    "preexisting": "none — before this branch the deck started a new shuffle after its last card (DEC-55 placeholder); the deck save format and markSeen were reused unchanged",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test ok (35 suites, 210 tests, coverage threshold met)"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "notes": "Storage fix taken from the US-03-02 review as the brief allowed (commit 8316459): save writes a temp file and moves it over the saved one, and a failed write is not remembered instead of crashing. A kill at the wrong moment can leave no saved deck (a new shuffle follows), never a partial one. No DEC or criterion traces this change.\nFlows TC-03-12..15 start from a saved 3+ deck with 49 of 50 answers revealed, written as root by scripts/test-acceptance.sh (run_end_card_flow). New subflow: tests/maestro/subflows/end-card.yaml. The end card is a state of the card screen, not a new route.\nClosing the app on the revealed last answer, before the next touch, also reopens on the end card (all cards are already seen) — recorded in DEC-56.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [],
+      "blocked": []
+    },
+    "critical_decisions": []
+  },
+  "raw": "US-03-03 ready. End card built; whole acceptance suite passed on 763f75b, clean tree: 20 pass, 0 fail, 0 blocked. Finished deck stays finished (DEC-56 replaces DEC-55's restart; DEC-55 not edited). UI words from a pl/en table following the device language (DEC-57), no library. Storage fix from the US-03-02 review (temp file + move; a failed write is not remembered, no crash) — not traced to any criterion or DEC, allowed by the brief. Nothing pushed; no AI attribution.\n\n```\nRESULT: ready\nSTORY: US-03-03\nBRANCH: feature/US-03-03\nCOMMITS: 8316459 fix(storage): save through a temp file and never throw [US-03-03]; 8eb0c89 feat(cards): end card with again and categories [US-03-03]; 763f75b test(acceptance): end card flows TC-03-12..TC-03-15 [US-03-03]\nDECISIONS: DEC-56 routine End card: a finished deck stays finished; again reshuffles, categories goes back (replaces DEC-55's restart); DEC-57 routine UI strings in a Polish and English table in src/strings.json, following the device language\nEVIDENCE:\n  #1 End card after the 50th answer and a touch, offering \"again\" and \"categories\" — TC-03-12 pass (tests/maestro/TC-03-12-end-card-after-last.yaml: step 1 the saved deck has 49/50 seen, step 2 the end card with \"Talia skończona\", \"Jeszcze raz\", \"Kategorie\"); unit tests in src/app/__tests__/cards.test.tsx (end card, last answer stays until touched, English words); edge case \"reopen shows the end card\" — TC-03-15 pass, plus unit tests in cards.test.tsx and progress.test.ts\n  #2 \"Again\" starts over in a new shuffled order, all 50 unseen — TC-03-13 pass (flow shows card-0, answer hidden) plus the script's \"TC-03-13 step 2\" check of the saved deck, pass (0 of 50 seen, all 50 ids, an order different from before); unit tests in cards.test.tsx and progress.test.ts restartDeck\n  #3 \"Categories\" shows the category screen — TC-03-14 pass; unit test in cards.test.tsx (category screen shown, router.canGoBack() false, so no duplicate)\nTESTS: run=/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-15_104834 pass=20 fail=0 blocked=0 manual=0 manual_tests=none\nDERIVED_TESTS: none\nPREEXISTING: none — before this branch the deck started a new shuffle after its last card (DEC-55 placeholder); the deck save format and markSeen were reused unchanged\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test ok (35 suites, 210 tests, coverage threshold met)\nENV_KEYS: none\nMIGRATION: no\nNOTES: Storage fix taken from the US-03-02 review as the brief allowed (commit 8316459): save writes a temp file and moves it over the saved one, and a failed write is not remembered instead of crashing. A kill at the wrong moment can leave no saved deck (a new shuffle follows), never a partial one. No DEC or criterion traces this change.\nFlows TC-03-12..15 start from a saved 3+ deck with 49 of 50 answers revealed, written as root by scripts/test-acceptance.sh (run_end_card_flow). New subflow: tests/maestro/subflows/end-card.yaml. The end card is a state of the card screen, not a new route.\nClosing the app on the revealed last answer, before the next touch, also reopens on the end card (all cards are already seen) — recorded in DEC-56.\n```\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}

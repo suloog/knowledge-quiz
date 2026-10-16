@@ -1,0 +1,105 @@
+{
+  "n": 2,
+  "attempt": 1,
+  "ts": "2026-10-14T19:32:04Z",
+  "story": "US-02-01",
+  "mode": "fix",
+  "parsed": {
+    "result": "needs_decision",
+    "story": "US-02-01",
+    "branch": "feature/US-02-01",
+    "commits": [
+      "e6b2747 fix(categories): rules in even whole device pixels [US-02-01]",
+      "5ae68f0 test(categories): check the screen's pixels on the device [US-02-01]",
+      "ecc6635 test(categories): labels of every shipped deck, by age [US-02-01]",
+      "6c4a842 chore(categories): wip, waiting for DEC-48 [US-02-01]"
+    ],
+    "decisions": [
+      "DEC-48 critical Category screen: order by age",
+      "4+ and 5+ on screen, and the full TC-02-01/02 check, deferred to US-01-03 and US-01-04"
+    ],
+    "question": "DEC-48",
+    "evidence": [
+      "#1 Every launch opens on the category screen — TC-02-01 step 1 (maestro/report.xml, pass); TC-02-14 pass",
+      "#2 Lists the content data's categories in order 3+, 4+, 5+ — TC-02-01 step 2 pass for the shipped decks (3+ only today; 4+ and 5+ pending DEC-48); AC-02-01-3 (Jest) and src/content/__tests__/categories.test.ts prove age order with a label that has no age last",
+      "#3 A category added to the content data appears with no screen change — AC-02-01-3 steps 1-3 (junit/unit.xml, pass)",
+      "#4 Only pure black and white; a test fails on any other colour — AC-02-01-4 steps 1-3 (Jest, pass) and step 4 on the device (junit/screen-colours.xml, pass; it fails on the old 2 dp rules); src/__tests__/theme.test.ts proves rules are an even whole number of device pixels",
+      "#5 Nothing animates; a test fails if an animation is enabled — AC-02-01-5 steps 1-3 (junit/unit.xml, pass)",
+      "#6 Each category entry spans the full width — TC-02-02 flow pass, and TC-02-02 step 2 (junit/screen.xml, pass: entry bounds 0-1080 of 1080)",
+      "#7 Screen within 3 s on the Mudita Kompakt — MANUAL: TC-02-03 is manual-only"
+    ],
+    "tests": {
+      "run": "/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-14_212832",
+      "pass": 7,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 1,
+      "manual_tests": [
+        "TC-02-03"
+      ]
+    },
+    "derived_tests": [
+      "AC-02-01-3",
+      "AC-02-01-4 (step 4 added: device screenshot)",
+      "AC-02-01-5"
+    ],
+    "preexisting": "criteria #1-#6 implemented in earlier commits on this branch (ad39b69..558d8ac); this round changed only the rule width, the tests and DEC-48",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn jest ok (65 tests passed)",
+      "commit hook ok"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "findings": [
+      "spec-B2 fixed e6b2747 (rule width) + 5ae68f0 (device check junit/screen-colours.xml \"AC-02-01-4 step 4 — …\", skipped/blocked on a one-colour frame)",
+      "spec-B1 fixed 6c4a842 (DEC-48 reclassed critical, scope effect reduction (deferred), put to the owner",
+      "no code change)",
+      "spec-N1 fixed ecc6635 (TC-02-01 flow name and comments state the deferral)",
+      "spec-N2 fixed 5ae68f0 (expected labels come from all shipped decks sorted by age, regex-escaped",
+      "this change sits in that commit, which also holds test-acceptance.sh)",
+      "spec-N4/code-N5 fixed ecc6635 (a label with no leading age sorts last, with a unit test)",
+      "code-N1 fixed 5ae68f0 (hierarchy file removed before polling)",
+      "code-N3 fixed ecc6635 (check-full-width fails when 0 or a non-number is expected, and its header notes the clipping)"
+    ],
+    "notes": "In this local run.json AC-02-01-3/4/5 show as skipped because the local collector reads only Maestro reports. Their Jest cases (junit/unit.xml, 0 failures) and screen-colours.xml carry the AC ids for CI. In CI the screenshot check will report skipped (blocked) until the black-frame GPU issue is fixed, so #4's device evidence comes only from local runs for now. The PR body must list TC-02-03 and TC-02-04 (the Kompakt look) as not verified by the loop.",
+    "ask": {
+      "summary": "Can US-02-01 merge showing only 3+ (the one deck shipped), with 4+, 5+ and the full TC-02-01/02 check deferred to US-01-03 and US-01-04?",
+      "context": "The must MOD-02-F02 says the screen lists 3+, 4+ and 5+, and TC-02-01 and TC-02-02 expect three entries. Only the 3+ deck exists today (US-01-02). 4+ and 5+ come with US-01-03 and US-01-04.\n\nThe screen builds its list from the shipped decks, sorted by age, so 4+ and 5+ will appear with no code change. The same flows will then check all three. The story's edge case already says only 3+ shows while it is the only deck. Details: DEC-48 in docs/specs/DECISIONS.md.",
+      "points": [],
+      "options": [
+        {
+          "id": "a",
+          "label": "Merge now with 3+ only; full check when 4+ and 5+ land",
+          "detail": "CI runs TC-02-01/02 on every PR and expects every shipped deck in age order, so the 4+ and 5+ PRs cannot merge unless their deck shows. A line naming TC-02-01/02 as their evidence is added to US-01-03 and US-01-04. Until then MOD-02-F02 is proven for 3+ only."
+        },
+        {
+          "id": "b",
+          "label": "Hold US-02-01 until US-01-03 and US-01-04 have merged",
+          "detail": "The 4+ and 5+ decks go first, and this story then merges with TC-02-01/02 passing in full. Cost: US-02-02, US-02-03 and US-03-01 to US-03-04 all depend on US-02-01 and wait behind two content stories of 50 checked questions each."
+        }
+      ],
+      "recommended": "a",
+      "why": "What is missing is content, not screen code: the screen already lists whatever decks ship, youngest first. CI re-runs TC-02-01/02 on every PR, so 4+ and 5+ cannot land without passing them, and the whole category and card work is not held up."
+    },
+    "ask_problems": [],
+    "question_text": "Can US-02-01 merge showing only 3+ (the one deck shipped), with 4+, 5+ and the full TC-02-01/02 check deferred to US-01-03 and US-01-04?\n\nThe must MOD-02-F02 says the screen lists 3+, 4+ and 5+, and TC-02-01 and TC-02-02 expect three entries. Only the 3+ deck exists today (US-01-02). 4+ and 5+ come with US-01-03 and US-01-04.\n\nThe screen builds its list from the shipped decks, sorted by age, so 4+ and 5+ will appear with no code change. The same flows will then check all three. The story's edge case already says only 3+ shows while it is the only deck. Details: DEC-48 in docs/specs/DECISIONS.md.\n\na) Merge now with 3+ only; full check when 4+ and 5+ land — CI runs TC-02-01/02 on every PR and expects every shipped deck in age order, so the 4+ and 5+ PRs cannot merge unless their deck shows. A line naming TC-02-01/02 as their evidence is added to US-01-03 and US-01-04. Until then MOD-02-F02 is proven for 3+ only. (recommended)\nb) Hold US-02-01 until US-01-03 and US-01-04 have merged — The 4+ and 5+ decks go first, and this story then merges with TC-02-01/02 passing in full. Cost: US-02-02, US-02-03 and US-03-01 to US-03-04 all depend on US-02-01 and wait behind two content stories of 50 checked questions each.\n\nWhy a: What is missing is content, not screen code: the screen already lists whatever decks ship, youngest first. CI re-runs TC-02-01/02 on every PR, so 4+ and 5+ cannot land without passing them, and the whole category and card work is not held up.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [
+        "#7 Screen within 3 s on the Mudita Kompakt — MANUAL: TC-02-03 is manual-only"
+      ],
+      "blocked": []
+    },
+    "critical_decisions": [
+      "DEC-48 critical Category screen: order by age"
+    ]
+  },
+  "raw": "Fix round 1 on US-02-01 is done, and the story is parked on DEC-48 waiting for the owner.\n\nB2 is fixed and committed with a device-level check. Measuring on the local API 32 emulator (density 2.625) showed that pixel rounding alone is not enough. Android draws a border along its centre line, so any odd number of pixels gets grey edges too:\n- 2 dp (5.25 px) left a #808080 row on each side of every rule, at rows 260, 265, 615 and 620, as the review found.\n- `PixelRatio.roundToNearestPixel(2)` (5 px) still left grey rows (259/264).\n- 3 px also left them.\n- 4 px and 6 px came out crisp.\n\nSo `ruleWidth` in `src/theme.ts` is now an even whole number of device pixels, about 2 dp (6 px on this emulator). Both rules in `src/app/index.tsx` use it.\n\nThe new screenshot check `scripts/check-black-and-white.js` was proven three ways:\n- **Fixed head:** it passes.\n- **Old 2 dp code:** it fails and reports exactly rows 260, 265, 615 and 620 (#808080).\n- **Solid black frame:** it writes JUnit `<skipped>` with a \"blocked by the environment\" message and exits 0. That is the case for CI's black screenshots.\n\nB1: no code was changed for it. DEC-48 is reclassed as critical, with scope effect \"reduction (deferred)\" and status \"to confirm with the client\". It was only ever on this branch, so the diff from main stays append-only.\n\nThe whole acceptance suite ran on the final head 6c4a842 with a clean tree. I started the local emulator (Medium_Phone, API 32) myself and stopped it afterwards. `scripts/test-acceptance.sh` exited 0.\n\nRESULT: needs_decision\nSTORY: US-02-01\nBRANCH: feature/US-02-01\nCOMMITS: e6b2747 fix(categories): rules in even whole device pixels [US-02-01]; 5ae68f0 test(categories): check the screen's pixels on the device [US-02-01]; ecc6635 test(categories): labels of every shipped deck, by age [US-02-01]; 6c4a842 chore(categories): wip, waiting for DEC-48 [US-02-01]\nDECISIONS: DEC-48 critical Category screen: order by age; 4+ and 5+ on screen, and the full TC-02-01/02 check, deferred to US-01-03 and US-01-04\nQUESTION: DEC-48\nASK_SUMMARY: Can US-02-01 merge showing only 3+ (the one deck shipped), with 4+, 5+ and the full TC-02-01/02 check deferred to US-01-03 and US-01-04?\nASK_CONTEXT: The must MOD-02-F02 says the screen lists 3+, 4+ and 5+, and TC-02-01 and TC-02-02 expect three entries. Only the 3+ deck exists today (US-01-02). 4+ and 5+ come with US-01-03 and US-01-04.\n\nThe screen builds its list from the shipped decks, sorted by age, so 4+ and 5+ will appear with no code change. The same flows will then check all three. The story's edge case already says only 3+ shows while it is the only deck. Details: DEC-48 in docs/specs/DECISIONS.md.\nASK_OPTION a: Merge now with 3+ only; full check when 4+ and 5+ land | CI runs TC-02-01/02 on every PR and expects every shipped deck in age order, so the 4+ and 5+ PRs cannot merge unless their deck shows. A line naming TC-02-01/02 as their evidence is added to US-01-03 and US-01-04. Until then MOD-02-F02 is proven for 3+ only.\nASK_OPTION b: Hold US-02-01 until US-01-03 and US-01-04 have merged | The 4+ and 5+ decks go first, and this story then merges with TC-02-01/02 passing in full. Cost: US-02-02, US-02-03 and US-03-01 to US-03-04 all depend on US-02-01 and wait behind two content stories of 50 checked questions each.\nASK_RECOMMEND: a\nASK_WHY: What is missing is content, not screen code: the screen already lists whatever decks ship, youngest first. CI re-runs TC-02-01/02 on every PR, so 4+ and 5+ cannot land without passing them, and the whole category and card work is not held up.\nEVIDENCE:\n  #1 Every launch opens on the category screen — TC-02-01 step 1 (maestro/report.xml, pass); TC-02-14 pass\n  #2 Lists the content data's categories in order 3+, 4+, 5+ — TC-02-01 step 2 pass for the shipped decks (3+ only today; 4+ and 5+ pending DEC-48); AC-02-01-3 (Jest) and src/content/__tests__/categories.test.ts prove age order with a label that has no age last\n  #3 A category added to the content data appears with no screen change — AC-02-01-3 steps 1-3 (junit/unit.xml, pass)\n  #4 Only pure black and white; a test fails on any other colour — AC-02-01-4 steps 1-3 (Jest, pass) and step 4 on the device (junit/screen-colours.xml, pass; it fails on the old 2 dp rules); src/__tests__/theme.test.ts proves rules are an even whole number of device pixels\n  #5 Nothing animates; a test fails if an animation is enabled — AC-02-01-5 steps 1-3 (junit/unit.xml, pass)\n  #6 Each category entry spans the full width — TC-02-02 flow pass, and TC-02-02 step 2 (junit/screen.xml, pass: entry bounds 0-1080 of 1080)\n  #7 Screen within 3 s on the Mudita Kompakt — MANUAL: TC-02-03 is manual-only\nTESTS: run=/Users/sulo/workspace/knowledge-quiz/test-runs/2026-10-14_212832 pass=7 fail=0 blocked=0 manual=1 manual_tests=TC-02-03\nDERIVED_TESTS: AC-02-01-3; AC-02-01-4 (step 4 added: device screenshot); AC-02-01-5\nPREEXISTING: criteria #1-#6 implemented in earlier commits on this branch (ad39b69..558d8ac); this round changed only the rule width, the tests and DEC-48\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn jest ok (65 tests passed); commit hook ok\nENV_KEYS: none\nMIGRATION: no\nFINDINGS: spec-B2 fixed e6b2747 (rule width) + 5ae68f0 (device check junit/screen-colours.xml \"AC-02-01-4 step 4 — …\", skipped/blocked on a one-colour frame); spec-B1 fixed 6c4a842 (DEC-48 reclassed critical, scope effect reduction (deferred), put to the owner; no code change); spec-N1 fixed ecc6635 (TC-02-01 flow name and comments state the deferral); spec-N2 fixed 5ae68f0 (expected labels come from all shipped decks sorted by age, regex-escaped; this change sits in that commit, which also holds test-acceptance.sh); spec-N4/code-N5 fixed ecc6635 (a label with no leading age sorts last, with a unit test); code-N1 fixed 5ae68f0 (hierarchy file removed before polling); code-N3 fixed ecc6635 (check-full-width fails when 0 or a non-number is expected, and its header notes the clipping)\nNOTES: In this local run.json AC-02-01-3/4/5 show as skipped because the local collector reads only Maestro reports. Their Jest cases (junit/unit.xml, 0 failures) and screen-colours.xml carry the AC ids for CI. In CI the screenshot check will report skipped (blocked) until the black-frame GPU issue is fixed, so #4's device evidence comes only from local runs for now. The PR body must list TC-02-03 and TC-02-04 (the Kompakt look) as not verified by the loop.\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}

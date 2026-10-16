@@ -1,0 +1,81 @@
+{
+  "story": "US-00-01",
+  "attempt": 1,
+  "round": 2,
+  "sha": "0cbc66b5c88fd71825a5dfd49a599d31e957475b",
+  "reviewer": "spec",
+  "ts": "2026-10-14T08:31:50Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-00-01",
+    "impact": "scripts/test-acceptance.sh is the one command CI's workflow runs for every later story, and scripts/stack.sh is the README's start command it launches; a change to how the stack is started or stopped affects every future PR's CI run and every local acceptance run. eslint.config.mjs now applies Expo/React/hooks/TS rules with --max-warnings 0, so later stories' code is held to rules that did not run before.",
+    "findings": [
+      {
+        "id": "B1",
+        "blocking": true,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:37 — `yarn -s stack &` makes STACK_PID yarn's; yarn 1 forwards SIGTERM to its `sh -c` child and exits, so on Linux (dash) stack.sh's cleanup never runs — CI run 38533073362's stack.log has no \"[stack] stopping the bundler/Gradle daemon\" (round-1 run had them) and the runner reaps orphans; locally on Linux Metro/Gradle/stack.sh stay running after `yarn test:acceptance` and the next run's readiness check can hit the stale Metro+app; `wait` at :43 no longer waits for cleanup → launch `bash scripts/stack.sh` directly (what `yarn stack` runs) or make the package script `exec bash scripts/stack.sh`"
+      },
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:55 — readiness (Metro up + `pidof` app) is satisfied by an app process left from an earlier run, so TC-00-01 can pass before the new APK is installed; the 100634 run reused an emulator with the app installed (TC-00-01 precondition \"without the app installed\" not met) → force-stop/uninstall the app before starting the stack"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "package.json:51 — @typescript-eslint/eslint-plugin and @typescript-eslint/parser are no longer referenced (eslint-config-expo brings its own) → remove them"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/stack.sh:93 — the mktemp emulator console file is never removed → delete it in cleanup, or accept the leak since its path is printed"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": ".github/workflows/acceptance.yml:51 — CI installs dependencies before `yarn test:acceptance`, so stack.sh's fresh-clone install path is evidenced only locally; fine, but commit 0cbc66b's \"so a fresh clone runs\" is about local runs only"
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "tests/maestro/TC-00-03-path-through-every-layer.yaml — TC-00-03 failed on CI at 993eed5 and passes at 0cbc66b with no change to the flow, screen or content, so `launchApp: clearState: true` on API 31/swiftshader may be flaky → watch subsequent runs"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "external",
+        "note": "MANUAL TC-00-02 (CI run 38533073362 on head 0cbc66b is green and uploaded og-test-results with maestro/report.xml + junit/unit.xml)"
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "external",
+        "note": "MANUAL TC-00-04 (all four gates exit 0 on the head in this review)"
+      }
+    ],
+    "stray": []
+  },
+  "raw": "## Spec-compliance review, round 2: US-00-01 (PR #1, head 0cbc66b)\n\nAll three round-1 blocking items are fixed. One of the fix commits (c15cf8a) broke something else: on Linux, stopping the stack no longer works, and CI shows it.\n\n### Round-1 items\n- **code B1, eslint.config.mjs: fixed.** The config now spreads `eslint-config-expo/flat.js` (line 2, line 8). I checked by piping a probe file through eslint on stdin, so no repo file was written. It reports `react-hooks/rules-of-hooks` (error), `@typescript-eslint/no-unused-vars` and `prettier/prettier`. `yarn lint` (now with `--max-warnings 0`) exits 0 on the head.\n- **spec B1, scripts/stack.sh:93-115: fixed.** `adb wait-for-device` is gone. I ran a copy of stack.sh against fake adb and emulator binaries in the scratchpad:\n  - Emulator that dies at once: exits 1 after about 1 s, says \"exited while booting\" and prints the console tail.\n  - Emulator that never boots (loop shortened in the copy): exits 1 with \"did not finish booting\", prints the tail, and kills the emulator it started.\n  - Neither CI nor the local run exercises this path, since both reuse an emulator that is already running.\n- **spec B2, criterion #1 \"from a fresh clone\": fixed.** test-runs/2026-10-14_100634/stack.log shows a fresh clone of 0cbc66b:\n  - `[stack] installing dependencies`, the Gradle build, `Installing … app-debug.apk`, `Opening …`, then two bundles served. It finished with acceptance exit=0.\n  - The screenshot step-02-first-screen.png shows \"Knowledge Quiz\" on the first screen.\n  - One gap: the run reused the running Medium_Phone emulator, which still had the app from run 095018. So TC-00-01's precondition \"without the app installed\" was not met (see N1).\n- **CI on the head (API 31): green.** Run 38533073362 on 0cbc66b is a success:\n  - TC-00-01 and TC-00-03 pass.\n  - `og-test-results` holds `maestro/report.xml` (both TCs by name) and `junit/unit.xml`.\n  - The round-1 CI run 38531190069 (993eed5) had failed TC-00-03 (\"content-title is visible\" false after 2 minutes). Nothing in the fix diff touches that flow, so it may be flaky on API 31 (N5).\n\n### Regression from the fix\n**B1: scripts/test-acceptance.sh:37 (`yarn -s stack … &`) and :43 (`wait \"$STACK_PID\"`).** Commit c15cf8a changed `bash scripts/stack.sh &` to `yarn -s stack &`, so `STACK_PID` is now yarn's PID.\n- **What yarn does:** Yarn 1.22.22 passes SIGTERM on to its `sh -c` child and then exits at once (lib/cli.js:78990).\n- **Linux:** `/bin/sh` there is dash, which receives the signal and dies, while `bash scripts/stack.sh` and Metro are left orphaned. stack.sh's cleanup trap never runs.\n- **CI proves it:**\n  - The round-1 CI stack.log ends with `[stack] stopping the bundler` and `[stack] stopping the Gradle daemon`.\n  - The round-2 CI stack.log has neither, and the runner prints \"Cleaning up orphan processes\".\n- **macOS:** the cleanup does run, but `wait` returns before it finishes, so Jest starts while it is still going.\n- **Failing scenario:** on a Linux developer machine, `yarn test:acceptance` exits and leaves Metro on :8081, the Gradle daemon and stack.sh running. That breaks TC-00-01's cleanup (\"nothing of it keeps running\"). The next run's readiness check also finds the old Metro and the old app's pid, so Maestro can run against the stale build.\n- **Fix:** go back to `bash scripts/stack.sh >\"$OUT/stack.log\" 2>&1 &`. That is exactly what `yarn stack` runs (package.json `\"stack\": \"bash scripts/stack.sh\"`), so CI still runs the README's command. Alternatively, change the script to `exec bash scripts/stack.sh` and send the signal to the real child.\n\n### Non-blocking\n- **N1, scripts/test-acceptance.sh:55-62.** Readiness means \"Metro answers and `pidof $APP_ID` is non-empty\". An app process left from an earlier run satisfies the pidof check. Metro comes up before `Installing …`, so TC-00-01 can pass before the new APK is installed and opened. This is possible locally (the 100634 run reused an emulator with the app installed), not on CI's fresh emulator. Fix: `adb shell am force-stop` / `pm clear` the app before starting the stack, or uninstall it as TC-00-01's precondition asks.\n- **N2, package.json:51-52.** `@typescript-eslint/eslint-plugin` and `@typescript-eslint/parser` are no longer imported anywhere; eslint-config-expo brings its own. Remove them.\n- **N3, scripts/stack.sh:93.** The temp file `kq-emulator.XXXXXX` is never removed, so one is left behind per boot. Acceptable since its path is printed; remove it in `cleanup` if wanted.\n- **N4, .github/workflows/acceptance.yml:51-52.** The \"Install dependencies\" step runs before `yarn test:acceptance`, so CI never takes stack.sh's install path. Criterion #1's fresh-clone install is evidenced only by the local run. That is fine, but the commit message \"so a fresh clone runs\" describes local behaviour, not CI.\n- **N5, tests/maestro/TC-00-03-path-through-every-layer.yaml.** TC-00-03 failed on CI at 993eed5 and passes at 0cbc66b, and no fix commit touches the flow, `src/app/index.tsx` or `src/content`. One green run on the head does not rule out flakiness of `launchApp: clearState: true` on API 31 with swiftshader. Watch the next runs.\n\n### Out-of-scope and constitution checks\n- **Out of scope:** none. Dropping `newArchEnabled` from app.json and the content-test change are foundation config and tests, not product features.\n- **Constitution:** no violation. Stack, testing tools (Jest, RNTL, Maestro) and gates are as the constitution says. All four gates (`format:check`, `lint`, `tsc`, `test`) exit 0 on the head, with 100% line coverage.\n\n### Edge cases\n- **Failing acceptance test → red run, artifact still uploaded:** met. Run 38531190069 was red with both artifacts uploaded, and acceptance.yml:69 has `if: always()`.\n- **No JUnit report → upload step fails:** met by config, acceptance.yml:74 `if-no-files-found: error`. Not exercised.\n- **Start command on a machine missing the stack's services:** met. stack.sh lists the missing tools. With the round-1 fix it boots the emulator or fails with a reason, verified with fakes. It does leave processes running when stopped through `yarn` on Linux (B1).\n\n```\nREVIEW: findings\nSTORY: US-00-01\nIMPACT: scripts/test-acceptance.sh is the one command CI's workflow runs for every later story, and scripts/stack.sh is the README's start command it launches; a change to how the stack is started or stopped affects every future PR's CI run and every local acceptance run. eslint.config.mjs now applies Expo/React/hooks/TS rules with --max-warnings 0, so later stories' code is held to rules that did not run before.\nFINDINGS:\n  B1 scripts/test-acceptance.sh:37 — `yarn -s stack &` makes STACK_PID yarn's; yarn 1 forwards SIGTERM to its `sh -c` child and exits, so on Linux (dash) stack.sh's cleanup never runs — CI run 38533073362's stack.log has no \"[stack] stopping the bundler/Gradle daemon\" (round-1 run had them) and the runner reaps orphans; locally on Linux Metro/Gradle/stack.sh stay running after `yarn test:acceptance` and the next run's readiness check can hit the stale Metro+app; `wait` at :43 no longer waits for cleanup → launch `bash scripts/stack.sh` directly (what `yarn stack` runs) or make the package script `exec bash scripts/stack.sh`\n  N1 scripts/test-acceptance.sh:55 — readiness (Metro up + `pidof` app) is satisfied by an app process left from an earlier run, so TC-00-01 can pass before the new APK is installed; the 100634 run reused an emulator with the app installed (TC-00-01 precondition \"without the app installed\" not met) → force-stop/uninstall the app before starting the stack\n  N2 package.json:51 — @typescript-eslint/eslint-plugin and @typescript-eslint/parser are no longer referenced (eslint-config-expo brings its own) → remove them\n  N3 scripts/stack.sh:93 — the mktemp emulator console file is never removed → delete it in cleanup, or accept the leak since its path is printed\n  N4 .github/workflows/acceptance.yml:51 — CI installs dependencies before `yarn test:acceptance`, so stack.sh's fresh-clone install path is evidenced only locally; fine, but commit 0cbc66b's \"so a fresh clone runs\" is about local runs only\n  N5 tests/maestro/TC-00-03-path-through-every-layer.yaml — TC-00-03 failed on CI at 993eed5 and passes at 0cbc66b with no change to the flow, screen or content, so `launchApp: clearState: true` on API 31/swiftshader may be flaky → watch subsequent runs\nCRITERIA:\n  #1 met\n  #2 external — MANUAL TC-00-02 (CI run 38533073362 on head 0cbc66b is green and uploaded og-test-results with maestro/report.xml + junit/unit.xml)\n  #3 met\n  #4 external — MANUAL TC-00-04 (all four gates exit 0 on the head in this review)\n```\n"
+}

@@ -1,0 +1,80 @@
+{
+  "n": 5,
+  "attempt": 1,
+  "ts": "2026-10-14T16:25:06Z",
+  "story": "US-01-02",
+  "mode": "fix",
+  "parsed": {
+    "result": "ready",
+    "story": "US-01-02",
+    "branch": "feature/US-01-02",
+    "commits": [
+      "d3a77eb fix(content): ask every 3+ question with a near-miss answer as an either/or [US-01-02]",
+      "06b43b6 test(content): one record row per 3+ question, no more and no repeats [US-01-02]"
+    ],
+    "decisions": [
+      "DEC-47 routine 3+ questions with a possible near-miss answer are asked as either/or"
+    ],
+    "evidence": [
+      "#1 50 questions, one answer each in pl and en — tests/unit/AC-01-02-1-50-questions-one-answer.test.ts (junit/unit.xml, all steps pass)",
+      "#2 question ≤100 / answer ≤60 chars per language — tests/unit/AC-01-02-2-length-limits.test.ts (pass; longest question now 94)",
+      "#3 each of four kinds ≥5 times — tests/unit/AC-01-02-3-four-kinds.test.ts (pass; 13/13/12/12)",
+      "#4 age-suitability check recorded per question — docs/delivery/content-checks/US-01-02-3-plus.md + tests/unit/AC-01-02-4-age-suitability-record.test.js (pass; now also asserts row count = deck length and unique ids; a duplicated row was confirmed to fail step 1)",
+      "#5 all content checks pass, breaking any fails the suite — tests/unit/AC-01-02-5-content-checks.test.ts (pass)",
+      "#6 new question or category is a data-only change — tests/unit/AC-01-02-6-content-is-data.test.js (pass)",
+      "#7 content ships inside the app — AC-01-02-7 step 2 on the release APK's embedded bundle (junit/release.xml pass) + tests/unit/AC-01-02-7-content-ships-inside.test.js (pass); TC-01-02 runs in US-03-01 per DEC-44/DEC-46"
+    ],
+    "tests": {
+      "run": "test-runs/2026-10-14_182139",
+      "pass": 4,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 0,
+      "manual_tests": [
+        "none"
+      ]
+    },
+    "derived_tests": [
+      "AC-01-02-1",
+      "AC-01-02-2",
+      "AC-01-02-3",
+      "AC-01-02-4",
+      "AC-01-02-5",
+      "AC-01-02-6",
+      "AC-01-02-7"
+    ],
+    "preexisting": "the whole story from earlier rounds on this branch (deck, checks, record, derived tests); this round changed content wording, the record and the AC-01-02-4 test only",
+    "gates": [
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn format:check ok",
+      "yarn test ok (15 suites, 51 tests)",
+      "commit hook ok"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "findings": [
+      "B1 3p-48 scarf/komin fixed d3a77eb (either/or szalik czy skarpetki / a scarf or socks)",
+      "root fix near-miss open questions fixed d3a77eb (26 open questions made either/or, 4 kept open with reasons in the record, DEC-47)",
+      "answer-position bias fixed d3a77eb (answer second in 24 of 46, pl and en alike)",
+      "3p-45 weather fixed d3a77eb (bajkę czy godzinę / a cartoon or the time)",
+      "3p-25 en wording fixed d3a77eb (What rises above a pot of very hot water: snow or steam?)",
+      "N7 row count and unique ids fixed 06b43b6 (AC-01-02-4 step 1 plus its derived spec)",
+      "N6 punctuation normalisation refused: left out per the brief, not done",
+      "N9 code message text refused: left out per the brief, not done",
+      "vocabulary edges refused: left out per the brief, not done"
+    ],
+    "notes": "Rows changed (36): either/or 3p-04,06,08,09,10,11,14,15,16,17,22,24,25,26,27,29,31,32,34,37,38,40,42,43,48,50; answer moved second 3p-01,03,12,20,28,33,39,44,45,49; new answer text 3p-15 \"Topi się.\"/\"It melts.\", 3p-32 en \"Wings.\". Open: 3p-02, 07, 13, 36.\nFull suite on 06b43b6, emulator API 32 (AVD Medium_Phone) started and stopped by me; one run, no SIGSEGV; run.json snapshot true, dirty false, changed_during_run false.\nrun.json skips the 7 AC-01-02 tests and TC-01-02 because the collector does not read Jest/shell JUnit; junit/unit.xml 51/51 and junit/release.xml 7/7 passed. CI JUnit on the pushed head is the evidence (tests.evidence: ci).",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [],
+      "blocked": []
+    },
+    "critical_decisions": []
+  },
+  "raw": "I fixed the open-question problem for the whole deck this time, not row by row. 46 of the 50 questions in the 3+ deck are now either/or questions with one clearly wrong option, and only 4 stay open. The whole acceptance suite passed on the new head, 06b43b6, with no crash on TC-01-01, so there was only one run.\n\n**How the questions changed**\n- The correct option is second in 24 of the 46 either/or questions and first in 22. The order is the same in Polish and English.\n- The 4 open questions are 3p-02 (number of eyes), 3p-07 (fingers on one hand, counting the thumb), 3p-13 (the number after one) and 3p-36 (what a hen lays).\n- The record keeps its column count. It now has a short list under the table saying why each of the 4 has no other correct answer. Its \"One answer\" definition now states the either/or rule and the varied answer position.\n- All rules still hold: 50 questions, one answer string per language, the longest question 94 characters, kinds 13/13/12/12 as before, no repeated question text.\n- I recorded the rule as DEC-47 (routine): \"3+ questions with a possible near-miss answer are asked as either/or\". DEC-46 stands and the data format did not change.\n\n**Commits** (not pushed, tree clean)\n- d3a77eb fix(content): ask every 3+ question with a near-miss answer as an either/or [US-01-02]\n- 06b43b6 test(content): one record row per 3+ question, no more and no repeats [US-01-02]\n\n**Rows changed (36, deck and record together)**\n- New either/or questions: 3p-04, 06, 08, 09, 10, 11, 14, 15, 16, 17, 22, 24, 25, 26, 27, 29, 31, 32, 34, 37, 38, 40, 42, 43, 48, 50.\n- Options swapped so the answer comes second: 3p-01, 03, 12, 20, 28, 33, 39, 44, 45, 49.\n- Answers that changed with their question: 3p-15 is now \"Topi się.\" / \"It melts.\", and 3p-32 en is now \"Wings.\"\n\n**About the local run**\nThe collector does not read Jest or shell JUnit reports. So `run.json` lists the seven AC-01-02 tests and TC-01-02 as skipped, the same as in the previous rounds. They did run and pass: `junit/unit.xml` has 51/51, including every AC-01-02-1…7 step, and `junit/release.xml` has 7/7, including AC-01-02-7 step 2. With `tests.evidence: ci`, the counting run is CI's JUnit report on the pushed head, where these names carry their ids.\n\nI started the API 32 emulator (AVD Medium_Phone) myself and stopped it after the run.\n\n```\nRESULT: ready\nSTORY: US-01-02\nBRANCH: feature/US-01-02\nCOMMITS: d3a77eb fix(content): ask every 3+ question with a near-miss answer as an either/or [US-01-02]; 06b43b6 test(content): one record row per 3+ question, no more and no repeats [US-01-02]\nDECISIONS: DEC-47 routine 3+ questions with a possible near-miss answer are asked as either/or\nEVIDENCE:\n  #1 50 questions, one answer each in pl and en — tests/unit/AC-01-02-1-50-questions-one-answer.test.ts (junit/unit.xml, all steps pass)\n  #2 question ≤100 / answer ≤60 chars per language — tests/unit/AC-01-02-2-length-limits.test.ts (pass; longest question now 94)\n  #3 each of four kinds ≥5 times — tests/unit/AC-01-02-3-four-kinds.test.ts (pass; 13/13/12/12)\n  #4 age-suitability check recorded per question — docs/delivery/content-checks/US-01-02-3-plus.md + tests/unit/AC-01-02-4-age-suitability-record.test.js (pass; now also asserts row count = deck length and unique ids; a duplicated row was confirmed to fail step 1)\n  #5 all content checks pass, breaking any fails the suite — tests/unit/AC-01-02-5-content-checks.test.ts (pass)\n  #6 new question or category is a data-only change — tests/unit/AC-01-02-6-content-is-data.test.js (pass)\n  #7 content ships inside the app — AC-01-02-7 step 2 on the release APK's embedded bundle (junit/release.xml pass) + tests/unit/AC-01-02-7-content-ships-inside.test.js (pass); TC-01-02 runs in US-03-01 per DEC-44/DEC-46\nTESTS: run=test-runs/2026-10-14_182139 pass=4 fail=0 blocked=0 manual=0 manual_tests=none\nDERIVED_TESTS: AC-01-02-1; AC-01-02-2; AC-01-02-3; AC-01-02-4; AC-01-02-5; AC-01-02-6; AC-01-02-7\nPREEXISTING: the whole story from earlier rounds on this branch (deck, checks, record, derived tests); this round changed content wording, the record and the AC-01-02-4 test only\nGATES: yarn lint ok; yarn tsc ok; yarn format:check ok; yarn test ok (15 suites, 51 tests); commit hook ok\nENV_KEYS: none\nMIGRATION: no\nFINDINGS: B1 3p-48 scarf/komin fixed d3a77eb (either/or szalik czy skarpetki / a scarf or socks); root fix near-miss open questions fixed d3a77eb (26 open questions made either/or, 4 kept open with reasons in the record, DEC-47); answer-position bias fixed d3a77eb (answer second in 24 of 46, pl and en alike); 3p-45 weather fixed d3a77eb (bajkę czy godzinę / a cartoon or the time); 3p-25 en wording fixed d3a77eb (What rises above a pot of very hot water: snow or steam?); N7 row count and unique ids fixed 06b43b6 (AC-01-02-4 step 1 plus its derived spec); N6 punctuation normalisation refused: left out per the brief, not done; N9 code message text refused: left out per the brief, not done; vocabulary edges refused: left out per the brief, not done\nNOTES: Rows changed (36): either/or 3p-04,06,08,09,10,11,14,15,16,17,22,24,25,26,27,29,31,32,34,37,38,40,42,43,48,50; answer moved second 3p-01,03,12,20,28,33,39,44,45,49; new answer text 3p-15 \"Topi się.\"/\"It melts.\", 3p-32 en \"Wings.\". Open: 3p-02, 07, 13, 36.\nFull suite on 06b43b6, emulator API 32 (AVD Medium_Phone) started and stopped by me; one run, no SIGSEGV; run.json snapshot true, dirty false, changed_during_run false.\nrun.json skips the 7 AC-01-02 tests and TC-01-02 because the collector does not read Jest/shell JUnit; junit/unit.xml 51/51 and junit/release.xml 7/7 passed. CI JUnit on the pushed head is the evidence (tests.evidence: ci).\n```\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}

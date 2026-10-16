@@ -1,0 +1,100 @@
+{
+  "story": "US-01-01",
+  "attempt": 1,
+  "round": 3,
+  "sha": "e83aaeff9d6c57dfba201aa417b5eae8f1751090",
+  "reviewer": "code",
+  "ts": "2026-10-14T12:12:02Z",
+  "parsed": {
+    "review": "findings",
+    "story": "US-01-01",
+    "impact": "`plugins/withReleaseSigning.js` is applied through `app.json` on every `expo prebuild`. It changes how every release build resolves its upload key: the README's manual release build, and the acceptance script's throwaway-key build. `scripts/test-acceptance.sh` is what CI and `yarn test:acceptance` run (device preflight, dependency install, keytool). Debug builds and `yarn stack` are unaffected. The risk is a stray exported `KQ_UPLOAD_*` overriding the real key in a manual release build, which DEC-45 accepts.",
+    "findings": [
+      {
+        "id": "N1",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:53-61,183-186 — preflight failures (no device, yarn install failed) exit before `write_junit`, and the Maestro-missing branch records one case only, so CI/og see no report or an incomplete one instead of the cause → record a failing case and write the JUnit before exiting"
+      },
+      {
+        "id": "N2",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:45-56 — with no SDK found, `ADB` is `/platform-tools/adb` and the error wrongly says \"no device attached\" → check `[ -x \"$ADB\" ]` first and say the SDK was not found"
+      },
+      {
+        "id": "N3",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:136 — DEC-45 precedence has no runtime evidence, only a source-text unit test → add `-PKQ_UPLOAD_KEY_ALIAS=decoy-from-property` to the gradlew call so the build only succeeds and shows the throwaway DN if the environment wins"
+      },
+      {
+        "id": "N4",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "docs/delivery/tests/AC-01-01-5-signed-release-apk.md (Test data) and the PR body — the Test data row still says Gradle properties only, and the PR body still cites run 120331 on f06b45e and says properties-or-env → update both to env-first and run 140555 on e83aaef"
+      },
+      {
+        "id": "N5",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "scripts/test-acceptance.sh:53 — any attached device passes the preflight, so a physical phone or a non-API-31 emulator gets the app uninstalled and airplane mode toggled → filter on `emulator-*` serials and fail on multiple devices"
+      },
+      {
+        "id": "N6",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "test-runs/2026-10-14_140555/run.json — AC-01-01-1, AC-01-01-3 and AC-01-01-5 show skipped although their JUnit cases pass → confirm on the CI re-run that the aggregator credits them, and rename the cases if it does not"
+      },
+      {
+        "id": "N7",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "README.md:42-46 — awkward wrapping and wording of the emulator note → reflow it and say \"start the emulator yourself; one booted by `yarn stack` is stopped with it\""
+      },
+      {
+        "id": "N8",
+        "blocking": false,
+        "security": false,
+        "tags": [],
+        "text": "plugins/withReleaseSigning.js:19 — per-variable precedence means a single stray `KQ_UPLOAD_*` env var mixes with the properties and gives a confusing signing failure; accepted in DEC-45, informational only"
+      }
+    ],
+    "criteria": [
+      {
+        "n": 1,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 2,
+        "verdict": "external",
+        "note": "MANUAL TC-01-03 (Kompakt); emulator part met (TC-01-01 passes locally; CI red from a runner image-install flake, needs a re-run)"
+      },
+      {
+        "n": 3,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 4,
+        "verdict": "met",
+        "note": ""
+      },
+      {
+        "n": 5,
+        "verdict": "met",
+        "note": ""
+      }
+    ],
+    "stray": []
+  },
+  "raw": "Round 3 review of PR #3 (US-01-01), fix range b9a4b6d..e83aaef. B1 is fixed and nothing blocking is left. CI on e83aaef is red, but because of a runner flake, not the diff.\n\n**B1 verified**\n- `/Users/sulo/workspace/knowledge-quiz/plugins/withReleaseSigning.js:19` now reads `System.getenv(name) ?: findProperty(name)`.\n- Every `KQ_UPLOAD_*` read goes through `kqUpload` (the signingConfig block and the `whenReady` missing-key check), so the order holds everywhere.\n- Groovy's elvis treats an empty env var as unset and falls back to the property. That is harmless.\n- The unit test (`plugins/__tests__/withReleaseSigning.test.js`) asserts the lookup order is exactly `['System.getenv(name)', 'findProperty(name)']` and that no `KQ_UPLOAD_*` is read outside `kqUpload`. It fails if the two are swapped back. Jest on `plugins/` passes locally (9/9).\n- The script passes the throwaway key only as env vars (`scripts/test-acceptance.sh:134-136`).\n- keytool now takes the password via `-storepass:env` and `-keypass:env` (line 126-129). Both options work: the local run generated the key and the build was signed by it. The password is no longer in any argv.\n- The fix broke nothing I could find. Local run `test-runs/2026-10-14_140555` (API 32): the 4 shell cases, 3 debug Maestro flows, the offline Maestro flow and 15 Jest tests all pass, and the log shows the dependency install ran first.\n\n**CI on e83aaef: red, infrastructure only**\n- Job `38561630611` failed after 1m45s during \"Install Android SDK\": `Error on ZipFile unknown archive` while installing `system-images;android-31;google_apis;x86_64`.\n- The emulator never booted, `yarn test:acceptance` never ran, and the artifact upload then failed with \"No files were found\" (a follow-on error).\n- Nothing in the diff caused this. A re-run is needed to get CI evidence on this head. The previous head's CI run passed.\n\n**Findings (all non-blocking)**\n- N1: the preflight exits (device check, line 53-56; `yarn install`, line 61) and the Maestro-missing branch leave no failed case in the report. The first two exit before `write_junit` runs. The Maestro-missing branch records one case only (the AC-01-01-4 precondition) and skips the debug flows and the POST case silently. In CI the upload step then reports \"no files found\" instead of the real reason. Fix: record a failing case and call `write_junit` before exiting. Also, `status=1` at line 186 is redundant after `record`.\n- N2: `scripts/test-acceptance.sh:45-56`. When no SDK is found, `ADB` becomes `/platform-tools/adb`, `adb devices` yields nothing, and the message says \"no Android device is attached\". Fix: check `[ -x \"$ADB\" ]` first and say \"Android SDK not found\".\n- N3: DEC-45 precedence is only evidenced by matching the Groovy source text. No test exercises a conflict between env and property.\n  - Cheap end-to-end check: add `-PKQ_UPLOAD_KEY_ALIAS=decoy-from-property` to the `./gradlew assembleRelease` call at line 136.\n  - If env wins, the build still succeeds and `apksigner` still shows the throwaway DN. If the property won, the build would fail on the missing alias.\n  - It also protects against a developer's real key in `~/.gradle/gradle.properties`. I judged step 2 of AC-01-01-5 to be a \"read the configuration\" step that the unit test covers, hence non-blocking.\n- N4: stale text.\n  - `docs/delivery/tests/AC-01-01-5-signed-release-apk.md` (Test data table) still describes the key as \"named by the Gradle properties `KQ_UPLOAD_*`\" only; step 2 now says the environment wins.\n  - The PR body \"Changes\" and \"Acceptance evidence\" sections still cite `test-runs/2026-10-14_120331` on f06b45e, with no mention of DEC-45 or the env-first order. The PR needs updating to run `140555` on e83aaef.\n- N5: the preflight accepts any attached device, including a physical phone or an API 34 emulator. The script then uninstalls the app and toggles airplane mode on it. The README and AC say \"Android 12 emulator\" but nothing checks the API level or an `emulator-*` serial. Fix: filter on `emulator-` serials, or fail loudly when multiple devices are attached.\n- N6: in the local `run.json`, AC-01-01-1, AC-01-01-3 and AC-01-01-5 show `skipped` although `junit/release.xml` and `junit/unit.xml` list passing cases carrying those IDs. Only the Maestro-backed tests (AC-01-01-4, TC-*) are credited. I could not tell whether the aggregator reads JUnit in CI. Check that the re-run's `og-test-results` credits them. If not, the case names are the likely cause.\n- N7: `README.md:42-46` has an awkward line break (\"(and stops). Each Maestro\" then a new line), and \"must not be one the stack booted (and stops)\" is clumsy. Suggested wording: \"start the emulator yourself; one booted by `yarn stack` is stopped with it.\"\n- N8: DEC-45 records the accepted cost that a stray exported `KQ_UPLOAD_*` overrides the real key per variable. A single stray alias plus a real key in `gradle.properties` gives a confusing signing failure, not a clear message. This is documented and accepted, so informational only.\n\n**Acceptance criteria (story US-01-01)**\n- Criterion 1 (versions recorded): met. The AC-01-01-1 Jest tests pass.\n- Criterion 2 (installs and starts on an Android 12 emulator and on the Kompakt): the emulator half is met. TC-01-01 passes locally. The Kompakt half is external, MANUAL TC-01-03. CI evidence on this head is pending a re-run (see above).\n- Criterion 3 (no network permission): met. Manifest unit tests pass, and `aapt` on the built release APK shows none of the three permissions.\n- Criterion 4 (runs with the network off): met locally. The AC-01-01-4 flow passes with Metro stopped, `adb reverse` removed, and no bundler lookups in logcat.\n- Criterion 5 (signed release APK, key outside the repo): met. The APK is signed by the throwaway key and not the debug key, the build without `KQ_UPLOAD_*` fails and names the properties, and the env-first order is in place.\n\nREVIEW: findings\nSTORY: US-01-01\nIMPACT: `plugins/withReleaseSigning.js` is applied through `app.json` on every `expo prebuild`. It changes how every release build resolves its upload key: the README's manual release build, and the acceptance script's throwaway-key build. `scripts/test-acceptance.sh` is what CI and `yarn test:acceptance` run (device preflight, dependency install, keytool). Debug builds and `yarn stack` are unaffected. The risk is a stray exported `KQ_UPLOAD_*` overriding the real key in a manual release build, which DEC-45 accepts.\nFINDINGS:\n  N1 scripts/test-acceptance.sh:53-61,183-186 — preflight failures (no device, yarn install failed) exit before `write_junit`, and the Maestro-missing branch records one case only, so CI/og see no report or an incomplete one instead of the cause → record a failing case and write the JUnit before exiting\n  N2 scripts/test-acceptance.sh:45-56 — with no SDK found, `ADB` is `/platform-tools/adb` and the error wrongly says \"no device attached\" → check `[ -x \"$ADB\" ]` first and say the SDK was not found\n  N3 scripts/test-acceptance.sh:136 — DEC-45 precedence has no runtime evidence, only a source-text unit test → add `-PKQ_UPLOAD_KEY_ALIAS=decoy-from-property` to the gradlew call so the build only succeeds and shows the throwaway DN if the environment wins\n  N4 docs/delivery/tests/AC-01-01-5-signed-release-apk.md (Test data) and the PR body — the Test data row still says Gradle properties only, and the PR body still cites run 120331 on f06b45e and says properties-or-env → update both to env-first and run 140555 on e83aaef\n  N5 scripts/test-acceptance.sh:53 — any attached device passes the preflight, so a physical phone or a non-API-31 emulator gets the app uninstalled and airplane mode toggled → filter on `emulator-*` serials and fail on multiple devices\n  N6 test-runs/2026-10-14_140555/run.json — AC-01-01-1, AC-01-01-3 and AC-01-01-5 show skipped although their JUnit cases pass → confirm on the CI re-run that the aggregator credits them, and rename the cases if it does not\n  N7 README.md:42-46 — awkward wrapping and wording of the emulator note → reflow it and say \"start the emulator yourself; one booted by `yarn stack` is stopped with it\"\n  N8 plugins/withReleaseSigning.js:19 — per-variable precedence means a single stray `KQ_UPLOAD_*` env var mixes with the properties and gives a confusing signing failure; accepted in DEC-45, informational only\nCRITERIA:\n  #1 met\n  #2 external — MANUAL TC-01-03 (Kompakt); emulator part met (TC-01-01 passes locally; CI red from a runner image-install flake, needs a re-run)\n  #3 met\n  #4 met\n  #5 met\n"
+}
