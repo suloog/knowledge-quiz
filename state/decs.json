@@ -198,5 +198,13 @@
     "title": "Illustration acceptance flows: saved 3+ deck written with the needed question first; device language switched mid-flow without a framework restart",
     "file": "docs/specs/DECISIONS.md",
     "ts": "2026-10-15T22:09:34Z"
+  },
+  {
+    "dec": "DEC-67",
+    "story": "US-02-03",
+    "attempt": 1,
+    "title": "TC-03-22 switches to English with the in-app control; the device-language helper of DEC-66 is removed",
+    "file": "docs/specs/DECISIONS.md",
+    "ts": "2026-10-16T05:42:19Z"
   }
 ]

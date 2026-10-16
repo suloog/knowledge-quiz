@@ -2,80 +2,37 @@
   "story": "US-02-03",
   "attempt": 1,
   "round": 1,
-  "sha": "334163a890d85f751eb13568242f9b29376ee610",
+  "sha": "02b70c248a94e293960aff5dcc2c45fc82c43927",
   "reviewer": "spec",
-  "ts": "2026-10-15T17:27:06Z",
+  "ts": "2026-10-16T07:27:53Z",
   "parsed": {
-    "review": "findings",
+    "review": "clean",
     "story": "US-02-03",
-    "impact": "The diff replaces module-level t() in src/i18n.ts with a LanguageProvider/useLanguage hook in src/i18n.tsx and makes appContent.title per-language. Main's US-02-02 continue entry (src/app/index.tsx) still imports the removed t, so the merge breaks the build or leaves the entry in the device language. The acceptance script's CONTENT_TITLE and locale handling, which all release Maestro flows use (TC-00-03, US-02-02's TC-02-05..09), also changed and conflict with main.",
-    "findings": [
-      {
-        "id": "B1",
-        "blocking": true,
-        "security": false,
-        "tags": [],
-        "text": "src/i18n.tsx:1 — PR conflicts with main (US-02-02 #15): main's src/app/index.tsx imports the deleted module-level `t` from '@/i18n' for the continue entry; after the merge either the build breaks or, on a Polish device with 3+ used, switching to English still shows \"Kontynuuj\", breaking #3 and MOD-02-F10 → merge main, move the continue entry text and accessibilityLabel onto useLanguage().t, resolve strings.json/test-acceptance.sh/cards.test.tsx/check-black-and-white.js, add a unit test that the continue entry follows the switch"
-      },
-      {
-        "id": "B2",
-        "blocking": true,
-        "security": false,
-        "tags": [],
-        "text": "tests/maestro/TC-02-12-switch-survives-restart.yaml:63 — no acceptance.yml run exists on any commit of this PR (CONFLICTING blocks pull_request CI), the 334163a local run was killed in the release build, and the last real run (a58279b) failed TC-02-12 and AC-02-01-4 (NFR-07 grey rows); the fixes in 0c968ff/334163a are unproven → after B1, get CI green on the new head with TC-02-10..13, AC-02-01-4, TC-00-03 and TC-02-05..09 in og-test-results"
-      },
-      {
-        "id": "N1",
-        "blocking": false,
-        "security": false,
-        "tags": [],
-        "text": "docs/specs/DECISIONS.md:736 — DEC-61 \"Decided by: product owner\" does not name Maciej, whom the constitution requires for content-schema changes; \"Scope effect: within scope (proposed option)\" and the \"Why\" line still read as the open question; the entry is new in this PR, so correct it before merge"
-      },
-      {
-        "id": "N2",
-        "blocking": false,
-        "security": false,
-        "tags": [],
-        "text": "src/app/__tests__/cards.test.tsx:536 — the #4 unit test reveals one card and checks card-1, not three revealed and the 4th card as the criterion states (Maestro TC-02-13 does cover it)"
-      },
-      {
-        "id": "N3",
-        "blocking": false,
-        "security": false,
-        "tags": [],
-        "text": "app.json:3 — the launcher label expo.name stays \"Knowledge Quiz\" on a Polish device; outside the app UI and outside DEC-61, noted for the owner"
-      },
-      {
-        "id": "N4",
-        "blocking": false,
-        "security": false,
-        "tags": [],
-        "text": "tests/maestro/TC-02-12-switch-survives-restart.yaml:64 — step 3 matches \"‹ Categories\" by text alone under a Pressable with accessibilityLabel; not yet confirmed on a run; scope it with id + text like TC-03-17"
-      }
-    ],
+    "impact": "Rebase onto fdf40ea kept all four criteria green on 02b70c2 (CI 38864147603, nothing failing); main's continue entry and illustrations follow the chosen language; DECISIONS.md is main's file byte for byte plus appended entries.",
+    "findings": [],
     "criteria": [
       {
         "n": 1,
-        "verdict": "missing",
-        "note": "TC-02-10 passed only at a58279b; no CI acceptance.yml run on the head 334163a (the PR conflicts with main), so rebase and get og-test-results for the head"
+        "verdict": "met",
+        "note": ""
       },
       {
         "n": 2,
-        "verdict": "missing",
-        "note": "TC-02-11 (de-DE) passed only at a58279b; no CI run on the head; needs og-test-results on the head"
+        "verdict": "met",
+        "note": ""
       },
       {
         "n": 3,
-        "verdict": "missing",
-        "note": "TC-02-12 failed at a58279b (step 3 return-control assertion); the fix in 334163a has never run; needs a green TC-02-12 in CI on the head (and the continue entry following the switch after merging main, B1)"
+        "verdict": "met",
+        "note": ""
       },
       {
         "n": 4,
-        "verdict": "missing",
-        "note": "TC-02-13 passed only at a58279b, before the 0c968ff layout change; needs a green TC-02-13 in CI on the head"
+        "verdict": "met",
+        "note": ""
       }
     ],
     "stray": []
   },
-  "raw": "## Spec compliance review: PR #16 / US-02-03, round 1 (`origin/main...334163a`)\n\n**Verdict: NOT COMPLIANT.** The code does what the story asks, but none of the four criteria has acceptance evidence on the PR head. CI never ran because the PR conflicts with main. Merging main also brings in a continue entry that this diff leaves outside the language switch.\n\nWhat I ran on 334163a: `jest` gave 35 suites and 241 tests, all passing. `tsc` was clean.\n\n### What I found on CI and the local runs\n- **No CI on the head.** `gh pr view 16` shows `mergeable: CONFLICTING`, `mergeStateStatus: DIRTY` and an empty `statusCheckRollup`. `gh run list --workflow acceptance.yml` has no run for `feature/US-02-03` at all. GitHub does not run `pull_request` workflows on a PR that conflicts with its base.\n- **Main has moved.** It now holds US-02-02 (8be3641, #15), which changed `src/app/index.tsx`, `src/strings.json`, `scripts/test-acceptance.sh`, `src/app/__tests__/cards.test.tsx` and `scripts/check-black-and-white.js`.\n- **Local run on the head did not finish.** `test-runs/2026-10-15_192018` (commit 334163a) was killed during the release build (`Terminated: 15` in `acceptance.log`), so it has no results.\n- **Earlier local run had two failures, not one.** `test-runs/2026-10-15_185912` (commit a58279b):\n  - AC-02-01-4 step 4: \"row 419: 540 px of #FDFDFD; row 781: 1080 px of #020202\".\n  - TC-02-12: `Assertion is false: \"‹ Categories\", id: return-control is visible`.\n  - The fixes (0c968ff and 334163a) have never had a passing run. The PR body does mention both.\n\n### Criteria, requirements and edge case\n\n| Item | Verdict | Evidence |\n| --- | --- | --- |\n| #1 Polish device: Polish, Polish active | Code met; evidence missing on head | `src/language.ts:7-11,21-24`, `src/app/index.tsx:24-54`; unit `index.test.tsx:82`; Maestro TC-02-10 passed only at a58279b |\n| #2 Other device language: English | Code met; evidence missing on head | `index.test.tsx:96` (de_DE, en_US), `language.test.ts:37`; Maestro TC-02-11 (de-DE) passed only at a58279b |\n| #3 Switch and restart: all English, questions included | Code met; evidence missing on head | `src/i18n.tsx:23-28`; `index.test.tsx:113,128`; `cards.test.tsx:522,553`; Maestro TC-02-12 **failed** at a58279b, fix not run |\n| #4 Decks kept: resumes at the 4th card in the new language | Code met; evidence missing on head | The switch never touches deck state; `cards.test.tsx:536`; Maestro TC-02-13 (3 reveals, compares saved deck state) passed only at a58279b |\n| MOD-02-F10 (whole app switches) | Met in this diff; at risk after merge (B1) | Category screen, cards, end card and return control all read `useLanguage` |\n| MOD-02-F11 (first language from the device) | Met | `startLanguage` / `deviceLanguage` |\n| MOD-02-F12 (choice remembered) | Met | `saveLanguage` goes through the one persistence module (`src/storage.ts`) |\n| MOD-02-F13 (decks kept on switch) | Met | Decks are saved as ids; the language is not part of deck state |\n| MOD-02-U04 (switch shows the active language) | Met | Inverted and bold active half, `accessibilityState.checked`; asserted in TC-02-10/11/12 |\n| NFR-04 (redraw only on change) | Met | `i18n.tsx:25` returns early on the active language; `index.test.tsx:136` |\n| NFR-07 (black and white only) | Unverified | AC-02-01-4 failed at a58279b; the 0c968ff fix has not run |\n| Edge case: saved language missing or unreadable → device language | Met and tested | `language.ts:23`; `language.test.ts:37,49`; `index.test.tsx:145`; corrupt file → `storage.load` returns undefined (`storage.test.ts`) |\n\n- **Out of scope:** no violations. There is no settings screen and no third language. The script and flow changes are the TC-03-05 handover that DEC-52 planned.\n- **Constitution:**\n  - The diff adds no literal strings; \"Polski\" and \"English\" come from `strings.json`.\n  - Colours come from theme tokens only, and nothing new is animated.\n  - Storage goes through `src/storage.ts`.\n  - The content schema change (the title) is recorded in DEC-61. See N1 for who approved it.\n\n### Findings\n\n**B1 – the merge conflict, and the continue entry it brings in**\n- **Where:** `src/i18n.tsx`, which replaces `src/i18n.ts`, and `src/app/index.tsx`.\n- **Scenario:** main's `src/app/index.tsx` (from US-02-02) does `import { t } from '@/i18n'` and draws the continue entry with `t('continue')` (\"Kontynuuj\"), including its `accessibilityLabel`. This PR deletes that module-level `t`.\n  - If the conflict is resolved by keeping main's import, the build breaks.\n  - If the resolution only restores some `t` export, the continue entry stays in the device language. Then on a Polish device with 3+ used, switching to English still shows \"Kontynuuj\", which breaks #3 (\"every text … is in English\") and MOD-02-F10.\n- **Fix:** merge main into the branch. Move the continue entry and its label onto `useLanguage().t`. Resolve the conflicts in `strings.json`, `scripts/test-acceptance.sh`, `cards.test.tsx` and `check-black-and-white.js`. Add a unit test in `continue.test.tsx` that the continue entry is in English after a switch.\n\n**B2 – no acceptance evidence on the head**\n- **Where:** `tests/maestro/TC-02-10…13`, plus AC-02-01-4.\n- **Scenario:** CI's `acceptance.yml` has never run on any commit of this PR, and the only local run on 334163a stopped during the release build. TC-02-12 (#3) and AC-02-01-4 (NFR-07) last ran red. #1, #2 and #4 last passed only on a58279b, before the layout change in 0c968ff.\n- **Fix:** after B1, push so CI runs. TC-02-10…13, AC-02-01-4, TC-00-03 and US-02-02's TC-02-05…09 must all be green in the `og-test-results` artifact for the new head.\n\n**N1 – DEC-61 entry wording** (`docs/specs/DECISIONS.md:736-741`)\n- \"Decided by: product owner\" does not name Maciej, although the constitution requires content-schema changes to be approved by Maciej.\n- \"Scope effect: within scope (proposed option)\" and the \"Why\" line (\"Either way it is the product owner's call\") still read as the open question.\n- The entry is new in this PR, so it can still be corrected before merge.\n\n**N2 – unit test reveals one card, not three** (`src/app/__tests__/cards.test.tsx:536`)\n- The #4 unit test reveals one card and checks `card-1`, while the criterion states three revealed and the 4th card. Maestro TC-02-13 does the full three-card path, so this is only a mismatch with the criterion's wording.\n\n**N3 – launcher name stays English** (`app.json` `expo.name`)\n- The launcher label is \"Knowledge Quiz\" in both languages. DEC-61 covers only the title on the category screen. This is outside the app UI; flagging it for the owner to know.\n\n**N4 – unconfirmed TC-02-12 step 3 fix** (`tests/maestro/TC-02-12-switch-survives-restart.yaml:63-65`)\n- The fix matches the return control's drawn text, \"‹ Categories\", without an id. That only works if the child text node is exposed in the hierarchy under the Pressable that has `accessibilityLabel`.\n- It has not been confirmed on any run. Scoping it to the control (an `id` plus the text, as TC-03-17 does) would make it explicit.\n\n```\nREVIEW: findings\nSTORY: US-02-03\nIMPACT: The diff replaces module-level t() in src/i18n.ts with a LanguageProvider/useLanguage hook in src/i18n.tsx and makes appContent.title per-language. Main's US-02-02 continue entry (src/app/index.tsx) still imports the removed t, so the merge breaks the build or leaves the entry in the device language. The acceptance script's CONTENT_TITLE and locale handling, which all release Maestro flows use (TC-00-03, US-02-02's TC-02-05..09), also changed and conflict with main.\nFINDINGS:\n  B1 src/i18n.tsx:1 — PR conflicts with main (US-02-02 #15): main's src/app/index.tsx imports the deleted module-level `t` from '@/i18n' for the continue entry; after the merge either the build breaks or, on a Polish device with 3+ used, switching to English still shows \"Kontynuuj\", breaking #3 and MOD-02-F10 → merge main, move the continue entry text and accessibilityLabel onto useLanguage().t, resolve strings.json/test-acceptance.sh/cards.test.tsx/check-black-and-white.js, add a unit test that the continue entry follows the switch\n  B2 tests/maestro/TC-02-12-switch-survives-restart.yaml:63 — no acceptance.yml run exists on any commit of this PR (CONFLICTING blocks pull_request CI), the 334163a local run was killed in the release build, and the last real run (a58279b) failed TC-02-12 and AC-02-01-4 (NFR-07 grey rows); the fixes in 0c968ff/334163a are unproven → after B1, get CI green on the new head with TC-02-10..13, AC-02-01-4, TC-00-03 and TC-02-05..09 in og-test-results\n  N1 docs/specs/DECISIONS.md:736 — DEC-61 \"Decided by: product owner\" does not name Maciej, whom the constitution requires for content-schema changes; \"Scope effect: within scope (proposed option)\" and the \"Why\" line still read as the open question; the entry is new in this PR, so correct it before merge\n  N2 src/app/__tests__/cards.test.tsx:536 — the #4 unit test reveals one card and checks card-1, not three revealed and the 4th card as the criterion states (Maestro TC-02-13 does cover it)\n  N3 app.json:3 — the launcher label expo.name stays \"Knowledge Quiz\" on a Polish device; outside the app UI and outside DEC-61, noted for the owner\n  N4 tests/maestro/TC-02-12-switch-survives-restart.yaml:64 — step 3 matches \"‹ Categories\" by text alone under a Pressable with accessibilityLabel; not yet confirmed on a run; scope it with id + text like TC-03-17\nCRITERIA:\n  #1 missing — TC-02-10 passed only at a58279b; no CI acceptance.yml run on the head 334163a (the PR conflicts with main), so rebase and get og-test-results for the head\n  #2 missing — TC-02-11 (de-DE) passed only at a58279b; no CI run on the head; needs og-test-results on the head\n  #3 missing — TC-02-12 failed at a58279b (step 3 return-control assertion); the fix in 334163a has never run; needs a green TC-02-12 in CI on the head (and the continue entry following the switch after merging main, B1)\n  #4 missing — TC-02-13 passed only at a58279b, before the 0c968ff layout change; needs a green TC-02-13 in CI on the head\n```\n"
+  "raw": "PR #16 (US-02-03) compliant on 02b70c2 after the rebase. CI run 38864147603 on 02b70c2: both jobs pass; og-test-results: unit 261/0, every suite failures=\"0\"; TC-02-10..13, TC-03-05, TC-03-20..22 pass; TC-02-08 continue-screen-colours passed in CI. Continue entry and illustrations follow the chosen language. DECISIONS.md first 755 lines byte-identical to origin/main (cmp); DEC-60/61/64/67 appended; DEC-67 correctly routine. Statuses consistent. Notes (non-blocking): DECISIONS.md not in number order (correct for append-only); continue entry's language behaviour covered by a unit test only.\n\n```\nREVIEW: clean\nSTORY: US-02-03\nIMPACT: Rebase onto fdf40ea kept all four criteria green on 02b70c2 (CI 38864147603, nothing failing); main's continue entry and illustrations follow the chosen language; DECISIONS.md is main's file byte for byte plus appended entries.\nFINDINGS:\nCRITERIA:\n  #1 met\n  #2 met\n  #3 met\n  #4 met\n```\n"
 }

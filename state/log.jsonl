@@ -260,3 +260,13 @@
 {"ts": "2026-10-16T03:12:06Z", "event": "report_committed", "sha": "fdf40eaec042cc538c74112c036313a8e927a332", "session": "b5e5a4dd-4a3f-46d3-8247-54e6065170df"}
 {"ts": "2026-10-16T03:12:27Z", "event": "final_posted", "session": "b5e5a4dd-4a3f-46d3-8247-54e6065170df"}
 {"ts": "2026-10-16T03:12:27Z", "event": "loop_end", "why": "scope done — 12 merged, US-02-03 failed", "session": "b5e5a4dd-4a3f-46d3-8247-54e6065170df"}
+{"ts": "2026-10-16T05:32:43Z", "event": "story_reset", "story": "US-02-03", "mode": "resume", "by": "sulo", "via": "viewer", "session": "0811fcaa-1d7c-4ea0-83f3-d685a8a6e3bc"}
+{"ts": "2026-10-16T05:38:16Z", "event": "move_start", "story": "US-02-03", "kind": "update", "from_sha": "33390cdea06036b3f84fa2b3db62e392a83e7ce0", "consistent": true, "session": "0811fcaa-1d7c-4ea0-83f3-d685a8a6e3bc"}
+{"ts": "2026-10-16T06:56:53Z", "event": "result_saved", "story": "US-02-03", "n": 5, "attempt": 1, "mode": "update", "result": "ready", "session": "0811fcaa-1d7c-4ea0-83f3-d685a8a6e3bc"}
+{"ts": "2026-10-16T06:56:53Z", "event": "decision", "story": "US-02-03", "dec": "DEC-67", "class": "auto", "critical": false, "title": "TC-03-22 switches to English with the in-app control", "result": 5, "session": "0811fcaa-1d7c-4ea0-83f3-d685a8a6e3bc"}
+{"ts": "2026-10-16T06:56:56Z", "event": "updated", "story": "US-02-03", "pr": "https://github.com/suloog/knowledge-quiz/pull/16", "onto": "origin/main", "conflicts": true, "sha": "33390cdea06036b3f84fa2b3db62e392a83e7ce0", "from_sha": "33390cdea06036b3f84fa2b3db62e392a83e7ce0", "consistent": true, "session": "0811fcaa-1d7c-4ea0-83f3-d685a8a6e3bc"}
+{"ts": "2026-10-16T07:22:12Z", "event": "review_start", "story": "US-02-03", "round": 4, "sha": "02b70c248a94e293960aff5dcc2c45fc82c43927", "session": "0811fcaa-1d7c-4ea0-83f3-d685a8a6e3bc"}
+{"ts": "2026-10-16T07:27:53Z", "event": "review_round", "story": "US-02-03", "n": 1, "sha": "02b70c248a94e293960aff5dcc2c45fc82c43927", "reviewers": ["code", "spec"], "counted": "reviews", "blocking": 0, "nonblocking": 2, "security": 0, "session": "0811fcaa-1d7c-4ea0-83f3-d685a8a6e3bc"}
+{"ts": "2026-10-16T07:27:53Z", "event": "review_end", "story": "US-02-03", "rounds": 4, "sha": "02b70c248a94e293960aff5dcc2c45fc82c43927", "session": "0811fcaa-1d7c-4ea0-83f3-d685a8a6e3bc"}
+{"ts": "2026-10-16T07:27:53Z", "event": "test_end", "story": "US-02-03", "pass": 37, "fail": 0, "blocked": 0, "manual": 0, "run": "test-runs/2026-10-16_074449", "session": "0811fcaa-1d7c-4ea0-83f3-d685a8a6e3bc"}
+{"ts": "2026-10-16T07:28:21Z", "event": "merge_pending", "story": "US-02-03", "pr": "https://github.com/suloog/knowledge-quiz/pull/16", "reason": "owner", "why": "og-delivery reads manual_tests=none as a manual test", "session": "0811fcaa-1d7c-4ea0-83f3-d685a8a6e3bc"}
