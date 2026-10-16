@@ -753,3 +753,51 @@
 - **Scope effect:** within scope
 - **Resolves:** —
 - **Status:** accepted
+
+## [DEC-60] Language switch: two-part Polski | English control under the title, choice kept in app state and saved under language
+
+- **Date:** 2026-10-15
+- **Decided by:** developer (delivery loop)
+- **Source:** implementation (`US-02-03`)
+- **Affects:** `US-02-03`, `MOD-02-F10`, `MOD-02-F11`, `MOD-02-F12`, `MOD-02-F13`, `MOD-02-U04`, `DEC-33`, `DEC-52`, `DEC-57`, `TC-02-10`, `TC-02-11`, `TC-02-12`, `TC-02-13`, `TC-03-05`
+- **Decision:** The switch is a full-width row under the title on the category screen with two halves, "Polski" and "English" — each language named in itself, the same in both app languages, through the string table of `DEC-57`. The active half is drawn inverted, white on black and bold (`MOD-02-U04`), and is announced as the checked one of a radio group labelled "Język" / "Language". Text 20 pt, a touch target about 59 dp high, no animation. The app's language lives in React state at the root layout (`LanguageProvider` in `src/i18n.tsx`). It starts as the language last chosen, saved under `language` in the one persistence module (`src/storage.ts`), or the device's language (`DEC-33`) when nothing was saved or the saved value is not "pl" or "en". Choosing a language saves it at once and redraws the screen once; choosing the active one does nothing (`NFR-04`). Every screen reads the language from there: the cards' questions and answers, and the app's own words. This replaces `DEC-52`'s device-only language. The decks are saved as question ids, so a switch leaves every deck's order and position as they are (`MOD-02-F13`). The acceptance flows run as the test cases are written: `TC-03-05` switches on the category screen instead of setting the device to English, and `TC-02-11` runs on the device set to German. `scripts/test-acceptance.sh` gives the flows the string table and the 3+ deck's questions and answers in both languages.
+- **Why:** The simplest switch that shows the active language without an icon or a menu, and two choices fit one row on the Kompakt. A language named in itself is what a parent who does not read the other language looks for. State at the root re-renders every screen on a switch with no library added; the persistence module already holds what the app remembers.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
+
+## [DEC-61] The app title on the category screen in Polish and English
+
+- **Date:** 2026-10-15
+- **Decided by:** Maciej (product owner, confirmed 2026-10-15)
+- **Source:** implementation (`US-02-03`)
+- **Affects:** `US-02-03`, `MOD-02-F10`, `TC-02-10`, `TC-02-11`, `TC-02-12`, `TC-00-03`, `src/content/app.json`, `DEC-48`
+- **Decision:** Option a — Title in both languages: "Quiz wiedzy" / "Knowledge Quiz". The content data's title holds both languages ("Quiz wiedzy" in Polish, "Knowledge Quiz" in English) and follows the language switch; `TC-00-03` then reads the title in the app's language. (Asked before: keep "Knowledge Quiz" as the app's name in both languages, like the category labels (`MOD-02-U03`) — not taken.)
+- **Why:** `US-02-03#1` asks for every text on the screen in the chosen language, and the title is one of them; giving the content data's title two languages is a schema change the constitution leaves to Maciej, who chose it.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
+
+## [DEC-64] The category screen fits a 640 dp high screen: the list entries give up their spacing first
+
+- **Date:** 2026-10-15
+- **Decided by:** developer (delivery loop)
+- **Source:** implementation (`US-02-03`)
+- **Affects:** `US-02-03`, `US-02-02`, `MOD-02-F02`, `MOD-02-F05`, `MOD-02-U01`, `DEC-59`, `DEC-60`, `TC-02-06`
+- **Decision:** The category screen does not scroll, so everything on it must fit the window. With the language switch (`DEC-60`) under the title and the continue entry (`DEC-59`) shown, the 5+ entry fell below the bottom of the 320 × 640 dp Android 12 emulator the acceptance tests run on (CI run 38781983403, `TC-02-06`). Each category entry now keeps its name's size and gives up only the space above and below it (24 dp each side, shrinking as far as needed); the continue entry drops the outer 12 dp around its two lines, which keep their own 12 dp. On a screen with room to spare nothing changes: the entries are as tall as before. No type size changes.
+- **Why:** The smallest change that keeps every entry reachable and every text as large as it was: the screen's look stays the same wherever it fitted before, and the sizes the earlier decisions set for a child to read and touch are not reduced.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
+
+## [DEC-67] TC-03-22 switches to English with the in-app control; the device-language helper of DEC-66 is removed
+
+- **Date:** 2026-10-16
+- **Decided by:** developer (delivery loop)
+- **Source:** implementation (`US-02-03`, rebased onto `US-03-05`)
+- **Affects:** `US-02-03`, `US-03-05`, `TC-03-22`, `DEC-60`, `DEC-66`
+- **Decision:** With the language switch (`DEC-60`) the app no longer follows the device's language once a language is chosen, so `TC-03-22` step 2 switches to English the way a parent does: back on the category screen, the "English" half of the switch, then 3+ again, where the illustrated question is still the first unseen card. The mid-flow change of the device's language that `DEC-66` used until `US-02-03` landed is removed: `scripts/SetLocale.java`, its build in `scripts/test-acceptance.sh` (javac, d8) and the `/locale` request of `scripts/illustration-server.js`. Everything else `DEC-66` set stays: the saved 3+ deck written with the needed question first and the picture found on the screen pixel for pixel.
+- **Why:** `DEC-66` named this step as the one to change once the switch existed. It tests the illustration through the language a parent actually chooses, and drops a test-only tool that changed the device's configuration in the middle of a flow.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted

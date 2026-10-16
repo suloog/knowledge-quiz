@@ -590,6 +590,54 @@ describe('Illustrations (US-03-05)', () => {
       height: 72,
     });
   });
+
+  it('switched to English in the app, the same question shows the same illustration (#4, US-02-03)', async () => {
+    await renderRouter(routes);
+    await fireEvent.press(screen.getByTestId('language-en'));
+    await fireEvent.press(listEntry('3+'));
+    await act(async () => {
+      jest.advanceTimersByTime(TOUCH_GUARD_MS + 100);
+    });
+    await touch();
+    await touch();
+
+    expect(screen.getByTestId('question')).toHaveTextContent(
+      'Second question?',
+    );
+    expect(screen.getByTestId('illustration')).toHaveProp(
+      'source',
+      illustrations['hand.png'],
+    );
+  });
+});
+
+describe('The cards in the language chosen on the category screen (US-02-03)', () => {
+  cardSetUp();
+
+  it('switched to English, the question and answer are in English, also after a restart (#3)', async () => {
+    await renderRouter(routes);
+    await fireEvent.press(screen.getByTestId('language-en'));
+    await restartApp();
+    await openCards();
+
+    expect(screen.getByTestId('return-control')).toHaveTextContent(
+      '‹ Categories',
+    );
+    expect(screen.getByTestId('question')).toHaveTextContent('First question?');
+    await touch();
+    expect(screen.getByTestId('answer')).toHaveTextContent('First answer.');
+  });
+
+  it('the end card follows the chosen language (MOD-02-F10)', async () => {
+    mockSaved.set('deck-3+', JSON.stringify({ order: ['q1', 'q2'], seen: 2 }));
+    await renderRouter(routes);
+    await fireEvent.press(screen.getByTestId('language-en'));
+    await fireEvent.press(listEntry('3+'));
+
+    expect(screen.getByTestId('deck-finished')).toHaveTextContent(
+      'The deck is finished',
+    );
+  });
 });
 
 describe('cardType — the largest type, unless the longest word would not fit a line (DEC-53)', () => {

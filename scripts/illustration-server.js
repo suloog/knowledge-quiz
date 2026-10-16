@@ -1,18 +1,14 @@
 // What the illustration flows (TC-03-20…TC-03-22) need from the device while they run, and Maestro
-// cannot give: whether a question's illustration is on the screen pixel for pixel, and a change of
-// the device's language in the middle of a flow. Run by scripts/test-acceptance.sh.
+// cannot give: whether a question's illustration is on the screen pixel for pixel. Run by
+// scripts/test-acceptance.sh.
 //
-//   node scripts/illustration-server.js <adb> <port> <evidence dir> <set-locale dex on the device>
+//   node scripts/illustration-server.js <adb> <port> <evidence dir>
 //
 // GET /illustration/<file>/<name> takes a screenshot (`screencap`, raw) and looks in it for the
 // shipped picture src/content/illustrations/<file>, every one of its pixels the same #000000 or
 // #FFFFFF: shown at one image pixel to one screen pixel, as the app draws it, it is there exactly or
 // not at all — a scaled, smoothed or other picture is not found. Answers, and keeps as evidence in
 // <evidence dir>/<name>.json, { found, x, y, width, height }.
-//
-// GET /locale/<tag> sets the device's language (scripts/SetLocale.java, run as the shell) and answers
-// { locale, applied } once the system's configuration has it — until the language switch (US-02-03)
-// the app follows the device's language (DEC-52). The app reads it when it starts.
 //
 // It listens on the host's loopback only: Maestro runs a flow's scripts on the host.
 const { execFileSync } = require('child_process');
@@ -21,13 +17,10 @@ const http = require('http');
 const path = require('path');
 const { readPng } = require('../tests/unit/support/png');
 
-const [adb, port, dir, dex] = process.argv.slice(2);
+const [adb, port, dir] = process.argv.slice(2);
 const ILLUSTRATIONS = path.join(__dirname, '../src/content/illustrations');
 
 fs.mkdirSync(dir, { recursive: true });
-
-const shell = command =>
-  execFileSync(adb, ['shell', command], { encoding: 'utf8' });
 
 // The screen's pixels, black (0), white (1) or anything else (2), from a raw RGBA_8888 screencap:
 // a 12-byte header, or 16 with the colour space (Android 9 and newer).
@@ -80,17 +73,6 @@ const find = file => {
   return undefined;
 };
 
-const setLocale = tag => {
-  const [language, region] = tag.split('-');
-  shell(`CLASSPATH=${dex} app_process / SetLocale ${tag}`);
-  for (let i = 0; i < 30; i++) {
-    if (shell('am get-config').includes(`-${language}-r${region}-`))
-      return true;
-    execFileSync('sleep', ['1']);
-  }
-  return false;
-};
-
 const answer = (request, response) => {
   const [what, ...rest] = decodeURIComponent(request.url)
     .split('/')
@@ -104,9 +86,6 @@ const answer = (request, response) => {
       JSON.stringify(result, null, 2),
     );
     return result;
-  }
-  if (what === 'locale' && /^[a-z]{2}-[A-Z]{2}$/.test(rest[0] || '')) {
-    return { locale: rest[0], applied: setLocale(rest[0]) };
   }
   return undefined;
 };

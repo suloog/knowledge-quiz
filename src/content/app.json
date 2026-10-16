@@ -1,3 +1,6 @@
 {
-  "title": "Knowledge Quiz"
+  "title": {
+    "pl": "Quiz wiedzy",
+    "en": "Knowledge Quiz"
+  }
 }

@@ -14,19 +14,21 @@
 #    by Metro;
 # 3. every other flow (TC-00-03, TC-01-01, AC-01-01-4 offline, and any new flow by default) against
 #    that release APK, installed on the device with Metro stopped. The flows tagged
-#    `device-language` (the cards, TC-03-01…TC-03-05, TC-03-07…TC-03-10, TC-03-16, TC-03-17, and the continue
-#    entry, TC-02-05…TC-02-07) run after the others, on
-#    the device set to Polish — their test data — and TC-03-05 once more on the device set to
-#    English: until the language switch (US-02-03) the app follows the device's language (DEC-52).
+#    `device-language` (the cards, TC-03-01…TC-03-05, TC-03-07…TC-03-10, TC-03-16, TC-03-17, the
+#    continue entry, TC-02-05…TC-02-07, and the language switch, TC-02-10 and TC-02-12) run after
+#    the others, on the device set to Polish — their test data; TC-02-11 (tagged
+#    `other-device-language`) runs last, on the device set to German (DEC-60). Every one of these
+#    flows is given the app's own words (STRINGS) and the 3+ deck's questions and answers in both
+#    languages, for the language switch (US-02-03).
 #    TC-03-11 (tagged `saved-deck`) runs on its own, still in Polish, after its saved deck has been
 #    made unreadable as root (DEC-55); so does each of TC-03-12…TC-03-15 (the end card, also tagged
 #    `saved-deck`), after its saved deck has been written one card from its end (DEC-56); so do TC-02-08
 #    (`saved-deck`: the 3+ deck saved finished and used last) and TC-02-09 (`saved-deck`: every saved
 #    file made unreadable), each after its saved data has been written as root (DEC-59); so does each of
 #    TC-03-20…TC-03-22 (the illustrations, tagged `illustration`), after its saved 3+ deck has been
-#    written with the question it needs first, TC-03-22 switching the device to English in the middle
-#    of its flow (DEC-66). TC-03-18 and
-#    TC-03-19 (tagged `deck-state`) run after the Polish flows, still in Polish, with
+#    written with the question it needs first, TC-03-22 switching to English with the app's own
+#    switch (DEC-67). TC-03-18,
+#    TC-03-19 and TC-02-13 (tagged `deck-state`) run after the Polish flows, still in Polish, with
 #    scripts/saved-deck-server.js reading the saved 3+ deck from the device as root while they run
 #    (DECK_STATE_URL), for the app state their steps note (DEC-58). The device's
 #    language is set as root (system locale property and setting, then a restart of the Android framework) and
@@ -49,12 +51,12 @@
 #   maestro/report.xml           — Maestro on the debug build (TC-00-01), evidence under maestro/
 #   maestro/report-release.xml   — Maestro on the release build (all other flows), evidence under
 #                                  maestro/release/
-#   maestro/report-release-pl.xml, maestro/report-release-en.xml
+#   maestro/report-release-pl.xml, maestro/report-release-de.xml
 #                                — the `device-language` flows on the device set to Polish, and
-#                                  TC-03-05 on it set to English; evidence under maestro/release-pl/
-#                                  and maestro/release-en/
+#                                  TC-02-11 on it set to German; evidence under maestro/release-pl/
+#                                  and maestro/release-de/
 #   maestro/report-release-deck-state.xml
-#                                — TC-03-18, TC-03-19 on the device set to Polish; evidence under
+#                                — TC-03-18, TC-03-19, TC-02-13 on the device set to Polish; evidence under
 #                                  maestro/release-deck-state/, the saved deck each step read beside it
 #   maestro/report-release-saved-deck.xml
 #                                — TC-03-11, evidence (the saved deck before and after) under
@@ -85,7 +87,6 @@ mkdir -p "$OUT/junit" "$OUT/maestro" "$OUT/release"
 OUT="$(cd "$OUT" && pwd)"
 
 APP_ID="$(node -p "require('./app.json').expo.android.package")"
-CONTENT_TITLE="$(node -p "require('./src/content/app.json').title")"
 # TC-02-01, TC-02-02: the categories expected on screen, in order — the labels MOD-02-F02 names,
 # literally "3+", "4+", "5+" (DEC-48), then any other label the shipped decks hold, by its leading
 # age — as Maestro patterns (3\+), comma-separated (CATEGORIES), and how many (CATEGORY_COUNT).
@@ -175,12 +176,71 @@ write_junit() {
 }
 
 # ------------------------------------------------------- the device's language
+# TC-00-03 and the flows that wait on the title: the app's title in the language the app opens in on
+# first launch — Polish on a device set to Polish, English on any other (DEC-33, DEC-61) —
+# read from src/content/app.json for the device's current language (CONTENT_TITLE).
+device_locale() {
+  local tag
+  tag="$("$ADB" shell getprop persist.sys.locale 2>/dev/null | tr -d '\r')"
+  [ -n "$tag" ] || tag="$("$ADB" shell getprop ro.product.locale 2>/dev/null | tr -d '\r')"
+  printf '%s' "${tag:-en-US}"
+}
+content_title() {
+  local language=en
+  case "$(device_locale)" in pl*) language=pl ;; esac
+  node -p "require('./src/content/app.json').title['$language']"
+}
+# What the language switch's flows check against (US-02-03): the app's own words in both languages
+# (STRINGS, src/strings.json), the app's title in both (TITLES, src/content/app.json; DEC-61) and
+# the 3+ deck's questions and answers in each, in the deck's order (JSON lists).
+LANGUAGE_ARGS=(
+  -e STRINGS="$(node -p "JSON.stringify(require('./src/strings.json'))")"
+  -e TITLES="$(node -p "JSON.stringify(require('./src/content/app.json').title)")"
+  -e PL_QUESTIONS="$(node -p "JSON.stringify(require('./src/content/decks/3-plus.json').questions.map(q => q.pl.question))")"
+  -e EN_QUESTIONS="$(node -p "JSON.stringify(require('./src/content/decks/3-plus.json').questions.map(q => q.en.question))")"
+  -e EN_ANSWERS="$(node -p "JSON.stringify(require('./src/content/decks/3-plus.json').questions.map(q => q.en.answer))")"
+)
+# blocked <what failed>: why a group of flows could not run. A device that is no longer attached
+# (an emulator lost mid-run) is said as such, not mistaken for an image that cannot be rooted.
+blocked() {
+  if [ "$("$ADB" get-state 2>/dev/null)" != device ]; then
+    say "BLOCKED: $1 (the device is no longer attached: lost mid-run)"
+  else
+    say "BLOCKED: $1 (adb root needs an emulator image without Google Play)"
+  fi
+}
+# device_back: before each group of flows that needs root, the device attached, booted and rooted.
+# An emulator that dropped off adb mid-run (on CI its adbd restarted under load, unrooted, and the
+# groups after it were all blocked within a second) is waited for, up to three minutes, and rooted
+# again, so the groups after it still run. Nothing is re-run: a flow that failed while it was gone
+# stays failed. An image that cannot be rooted is not waited on: the group says so as blocked.
+device_back() {
+  local _
+  if [ "$("$ADB" get-state 2>/dev/null)" != device ]; then
+    say "the device is no longer attached: waiting for it (up to 3 minutes)"
+    for _ in $(seq 1 90); do
+      [ "$("$ADB" get-state 2>/dev/null)" = device ] && break
+      sleep 2
+    done
+  fi
+  for _ in $(seq 1 60); do
+    [ "$("$ADB" shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = 1 ] && break
+    sleep 2
+  done
+  [ "$("$ADB" shell id -u 2>/dev/null | tr -d '\r')" = 0 ] && return 0
+  "$ADB" root >/dev/null 2>&1 || return 1
+  for _ in $(seq 1 15); do
+    [ "$("$ADB" shell id -u 2>/dev/null | tr -d '\r')" = 0 ] && return 0
+    sleep 1
+  done
+  return 1
+}
 # set_device_locale <pl-PL|en-US…>: the device's system language, as root (an emulator image
 # without Google Play): the locale property and the system_locales setting, then a restart of the
 # Android framework, waited out until the new configuration is in force and the package manager
 # answers again. The setting wins over the property when the framework starts, and a language
-# changed in the running system (Settings, or SetLocale in TC-03-22) leaves it written; the
-# restart waits until the settings file on disk has changed, or it would lose the new value.
+# changed in the running system (Settings) leaves it written; the restart waits until the
+# settings file on disk has changed, or it would lose the new value.
 set_device_locale() {
   local tag="$1" config settings_file=/data/system/users/0/settings_system.xml before
   config="-$(printf '%s' "${tag%%-*}")-r$(printf '%s' "${tag#*-}")-"
@@ -207,14 +267,15 @@ set_device_locale() {
   return 1
 }
 # run_language_flows <locale> <language> <report> <output dir> <maestro arguments…>: the flows on
-# the device set to that language, given the 3+ deck's questions and answers in it (TC-03-05).
+# the device set to that language, given the 3+ deck's questions and answers in it (TC-03-07) and
+# LANGUAGE_ARGS.
 run_language_flows() {
   local tag="$1" language="$2" report="$3" dir="$4"
   shift 4
   say "maestro flows on the release build, the device set to $tag"
   if ! set_device_locale "$tag"; then
     # No results: the collector counts these flows as not run (blocked), not failed.
-    say "BLOCKED: could not set the device's language to $tag (adb root needs an emulator image without Google Play)"
+    blocked "could not set the device's language to $tag"
     return
   fi
   if ! "$MAESTRO" test \
@@ -226,23 +287,24 @@ run_language_flows() {
     -e LANGUAGE="$language" \
     -e CARD_QUESTIONS="$(node -p "JSON.stringify(require('./src/content/decks/3-plus.json').questions.map(q => q['$language'].question))")" \
     -e CARD_ANSWERS="$(node -p "JSON.stringify(require('./src/content/decks/3-plus.json').questions.map(q => q['$language'].answer))")" \
+    "${LANGUAGE_ARGS[@]}" \
     "$@"; then
     status=1
   fi
 }
 
-# run_deck_state_flows <report> <output dir>: TC-03-18, TC-03-19 — the flows tagged `deck-state`,
+# run_deck_state_flows <report> <output dir>: TC-03-18, TC-03-19, TC-02-13 — the flows tagged `deck-state`,
 # with scripts/saved-deck-server.js on the host's loopback reading the saved 3+ deck from the device
 # as root whenever a step notes the app state (DECK_STATE_URL); what it read is kept in the output
 # dir, named after the step. The release build has no app-state bridge (DEC-55, DEC-58). Needs the
 # device rooted and set to Polish, as run_language_flows leaves it.
 run_deck_state_flows() {
   local report="$1" dir="$2" port=8765 server
-  say "TC-03-18, TC-03-19: the flows that note the saved deck, read from the device as root"
+  say "TC-03-18, TC-03-19, TC-02-13: the flows that note the saved deck, read from the device as root"
   mkdir -p "$dir"
   if [ "$("$ADB" shell id -u 2>/dev/null | tr -d '\r')" != 0 ]; then
     # No results: the collector counts these flows as not run (blocked), not failed.
-    say "BLOCKED: could not read the saved deck as root (adb root needs an emulator image without Google Play)"
+    blocked "could not read the saved deck as root"
     return
   fi
   node scripts/saved-deck-server.js "$ADB" "$APP_ID" "$port" "$dir" &
@@ -258,6 +320,7 @@ run_deck_state_flows() {
     --include-tags deck-state \
     -e APP_ID="$APP_ID" \
     -e DECK_STATE_URL="http://127.0.0.1:$port" \
+    "${LANGUAGE_ARGS[@]}" \
     tests/maestro; then
     status=1
   fi
@@ -280,7 +343,7 @@ run_saved_deck_flow() {
   if [ "$("$ADB" shell id -u 2>/dev/null | tr -d '\r')" != 0 ] || [ -z "$owner" ] ||
     ! "$ADB" shell "mkdir -p $files && printf '%s' '{order: [3p-0' >$files/deck-3%2B.json && chown -R $owner:$owner $files && restorecon -R $files"; then
     # No results: the collector counts the flow as not run (blocked), not failed.
-    say "BLOCKED: could not replace the saved deck as root (adb root needs an emulator image without Google Play)"
+    blocked "could not replace the saved deck as root"
     return
   fi
   "$ADB" shell cat "$files/deck-3%2B.json" >"$dir/saved-deck-before.txt" 2>&1
@@ -320,7 +383,7 @@ run_end_card_flow() {
     ! "$ADB" push "$dir/saved-deck-written.json" /data/local/tmp/kq-deck.json >/dev/null 2>&1 ||
     ! "$ADB" shell "mkdir -p $files && cp /data/local/tmp/kq-deck.json $files/deck-3%2B.json && rm /data/local/tmp/kq-deck.json && chown -R $owner:$owner $files && restorecon -R $files"; then
     # No results: the collector counts the flow as not run (blocked), not failed.
-    say "BLOCKED: could not write the saved deck as root (adb root needs an emulator image without Google Play)"
+    blocked "could not write the saved deck as root"
     return
   fi
   "$ADB" shell cat "$files/deck-3%2B.json" >"$dir/saved-deck-before.json" 2>&1
@@ -404,7 +467,7 @@ run_continue_finished_flow() {
   printf '"3+"' >"$dir/last-category.json"
   if ! write_app_files "$dir" deck-3%2B.json last-category.json; then
     # No results: the collector counts the flow as not run (blocked), not failed.
-    say "BLOCKED: could not write the saved data as root (adb root needs an emulator image without Google Play)"
+    blocked "could not write the saved data as root"
     return
   fi
   while read -r arg; do args+=(-e "$arg"); done < <(node -e '
@@ -465,7 +528,7 @@ run_unreadable_data_flow() {
     console.log(encodeURIComponent(require(`./src/content/decks/${f}`).category))')
   if ! write_app_files "$dir" "${names[@]}"; then
     # No results: the collector counts the flow as not run (blocked), not failed.
-    say "BLOCKED: could not replace the saved data as root (adb root needs an emulator image without Google Play)"
+    blocked "could not replace the saved data as root"
     return
   fi
   if ! "$MAESTRO" test \
@@ -484,25 +547,14 @@ run_unreadable_data_flow() {
 # question without an illustration; TC-03-21, TC-03-22: the first with one), and read back for the
 # flow: the question in Polish and English (QUESTION, QUESTION_PL, QUESTION_EN) and its picture's file
 # (ILLUSTRATION), with every shipped picture's file (ILLUSTRATIONS). scripts/illustration-server.js
-# runs on the host's loopback (ILLUSTRATION_URL) to look for a picture on the screen and, for
-# TC-03-22, to set the device's language, through scripts/SetLocale.java compiled here (javac, d8).
-# The release build has no app-state bridge (DEC-55). Needs the device rooted and set to Polish, as
-# run_language_flows leaves it; TC-03-22 leaves it set to English.
+# runs on the host's loopback (ILLUSTRATION_URL) to look for a picture on the screen; TC-03-22
+# switches to English with the app's own switch (DEC-67). The release build has no app-state bridge
+# (DEC-55). Needs the device rooted and set to Polish, as run_language_flows leaves it.
 run_illustration_flows() {
-  local dir="$1" port=8766 dex=/data/local/tmp/kq-set-locale.dex classes server flow name tc first args
+  local dir="$1" port=8766 server flow name tc first args
   say "TC-03-20…TC-03-22: the illustrations, each on the saved 3+ deck with its question first"
   mkdir -p "$dir"
-  classes="$(mktemp -d "${RUNNER_TEMP:-${TMPDIR:-/tmp}}/kq-set-locale.XXXXXX")"
-  if ! javac --release 8 -d "$classes" scripts/SetLocale.java >"$dir/set-locale-build.log" 2>&1 ||
-    ! "$BUILD_TOOLS/d8" --min-api 31 --output "$classes" "$classes/SetLocale.class" >>"$dir/set-locale-build.log" 2>&1 ||
-    ! "$ADB" push "$classes/classes.dex" "$dex" >>"$dir/set-locale-build.log" 2>&1; then
-    rm -rf "$classes"
-    # No results: the collector counts these flows as not run (blocked), not failed.
-    say "BLOCKED: could not build the language switch for the device (set-locale-build.log)"
-    return
-  fi
-  rm -rf "$classes"
-  node scripts/illustration-server.js "$ADB" "$port" "$dir" "$dex" &
+  node scripts/illustration-server.js "$ADB" "$port" "$dir" &
   server=$!
   for _ in $(seq 1 20); do
     curl -s "http://127.0.0.1:$port/" >/dev/null 2>&1 && break
@@ -553,7 +605,6 @@ run_illustration_flows() {
   done
   kill "$server" 2>/dev/null || true
   wait "$server" 2>/dev/null || true
-  "$ADB" shell rm -f "$dex" >/dev/null 2>&1 || true
 }
 
 # ---------------------------------------------------------------- 1. release APK
@@ -675,7 +726,7 @@ else
       --test-output-dir "$OUT/maestro" \
       --include-tags debug-build \
       -e APP_ID="$APP_ID" \
-      -e CONTENT_TITLE="$CONTENT_TITLE" \
+      -e CONTENT_TITLE="$(content_title)" \
       tests/maestro; then
       status=1
     fi
@@ -724,9 +775,9 @@ else
         --format JUNIT \
         --output "$OUT/maestro/report-release.xml" \
         --test-output-dir "$OUT/maestro/release" \
-        --exclude-tags debug-build,device-language,saved-deck,deck-state,illustration \
+        --exclude-tags debug-build,device-language,other-device-language,saved-deck,deck-state,illustration \
         -e APP_ID="$APP_ID" \
-        -e CONTENT_TITLE="$CONTENT_TITLE" \
+        -e CONTENT_TITLE="$(content_title)" \
         ${CATEGORY_ARGS[@]+"${CATEGORY_ARGS[@]}"} \
         tests/maestro; then
         status=1
@@ -772,28 +823,34 @@ else
       fi
       rm -f "$OUT/maestro/AC-02-01-4-screen.raw"
 
-      # TC-03-01…TC-03-05, TC-03-07…TC-03-11: the cards, with the device set to Polish (their test
-      # data); TC-03-05 again with it set to English. The app reads the device's language when it
-      # starts (DEC-52).
+      # TC-03-01…TC-03-05, TC-03-07…TC-03-11 (the cards), TC-02-10, TC-02-12, TC-02-13 (the language
+      # switch): with the device set to Polish, their test data; TC-02-11 with it set to German. On
+      # first launch the app takes the device's language (MOD-02-F11).
       original_locale="$("$ADB" shell settings get system system_locales | tr -d '\r')"
       original_locale="${original_locale%%,*}"
       [ "$original_locale" != null ] || original_locale=""
-      [ -n "$original_locale" ] || original_locale="$("$ADB" shell getprop persist.sys.locale | tr -d '\r')"
-      [ -n "$original_locale" ] || original_locale="$("$ADB" shell getprop ro.product.locale | tr -d '\r')"
-      [ -n "$original_locale" ] || original_locale=en-US
+      [ -n "$original_locale" ] || original_locale="$(device_locale)"
       run_language_flows pl-PL pl "$OUT/maestro/report-release-pl.xml" "$OUT/maestro/release-pl" \
         --include-tags device-language tests/maestro
+      # Each group after the first waits for the device, should it have dropped off (device_back).
+      device_back
       run_deck_state_flows "$OUT/maestro/report-release-deck-state.xml" "$OUT/maestro/release-deck-state"
+      device_back
       run_saved_deck_flow "$OUT/maestro/report-release-saved-deck.xml" "$OUT/maestro/release-saved-deck"
       for flow in tests/maestro/TC-03-1[2-5]-*.yaml; do
         name="$(basename "$flow" .yaml)"
+        device_back
         run_end_card_flow "$flow" "$OUT/maestro/report-release-${name%%-[a-z]*}.xml" "$OUT/maestro/release-end-card/${name%%-[a-z]*}"
       done
+      device_back
       run_continue_finished_flow "$OUT/maestro/report-release-TC-02-08.xml" "$OUT/maestro/release-continue/TC-02-08"
+      device_back
       run_unreadable_data_flow "$OUT/maestro/report-release-TC-02-09.xml" "$OUT/maestro/release-continue/TC-02-09"
+      device_back
       run_illustration_flows "$OUT/maestro/release-illustrations"
-      run_language_flows en-US en "$OUT/maestro/report-release-en.xml" "$OUT/maestro/release-en" \
-        tests/maestro/TC-03-05-cards-in-chosen-language.yaml
+      device_back
+      run_language_flows de-DE en "$OUT/maestro/report-release-de.xml" "$OUT/maestro/release-de" \
+        --include-tags other-device-language tests/maestro
       say "putting the device's language back to $original_locale"
       set_device_locale "$original_locale" || say "WARNING: could not put the device's language back to $original_locale"
       "$ADB" unroot >/dev/null 2>&1 || true

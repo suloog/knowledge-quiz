@@ -1,11 +1,14 @@
+import { LanguageProvider } from '@/i18n';
 import { navigationTheme, stackScreenOptions } from '@/theme';
 import { Stack, ThemeProvider } from 'expo-router';
 
 const RootLayout = () => {
   return (
-    <ThemeProvider value={navigationTheme}>
-      <Stack screenOptions={stackScreenOptions} />
-    </ThemeProvider>
+    <LanguageProvider>
+      <ThemeProvider value={navigationTheme}>
+        <Stack screenOptions={stackScreenOptions} />
+      </ThemeProvider>
+    </LanguageProvider>
   );
 };
 

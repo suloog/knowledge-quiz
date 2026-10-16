@@ -3,11 +3,10 @@ name: TC-03-22 A question shows the same illustration in both languages
 # Run by scripts/test-acceptance.sh alone, on the device set to Polish, after it has written as root
 # the saved 3+ deck with an illustrated question first and nothing seen — the release build has no
 # app-state bridge to bring a question to the front (DEC-55) — and read it back (QUESTION_PL,
-# QUESTION_EN and its picture's file, ILLUSTRATION). Until the language switch (US-02-03) the app
-# follows the device's language (DEC-52): step 2 switches to English by setting the device's
-# language through scripts/illustration-server.js (ILLUSTRATION_URL), which also looks for the
-# picture on the screen, pixel for pixel — found in both languages, it is the same shipped file,
-# with nothing drawn into it.
+# QUESTION_EN and its picture's file, ILLUSTRATION). Step 2 switches to English with the language
+# switch on the category screen (US-02-03, DEC-67). scripts/illustration-server.js (ILLUSTRATION_URL)
+# looks for the picture on the screen, pixel for pixel — found in both languages, it is the same
+# shipped file, with nothing drawn into it.
 tags:
   - illustration
 ---
@@ -30,19 +29,16 @@ tags:
     condition: ${output.polish.found}
     label: the picture is on the screen in Polish, pixel for pixel
 - takeScreenshot: step-01-illustration-in-polish
-# Step 2 — switch to English and open the same question: the same illustration. Its answer was not
-# revealed, so it is still the first unseen card of 3+ (DEC-38). The app reads the device's language
-# when it starts, so it is started again.
-- evalScript: ${output.locale = JSON.parse(http.get(ILLUSTRATION_URL + '/locale/en-US').body)}
-- assertTrue:
-    condition: ${output.locale.applied}
-    label: the device is set to English
-- stopApp
-- launchApp
-- extendedWaitUntil:
-    visible:
-      id: category-screen
-    timeout: 120000
+# Step 2 — back on the category screen, switch to English and open the same question: the same
+# illustration. Its answer was not revealed, so it is still the first unseen card of 3+ (DEC-38).
+- back
+- assertVisible:
+    id: category-screen
+- tapOn:
+    id: language-en
+- assertVisible:
+    id: language-en
+    checked: true
 - tapOn:
     id: category-0
 - assertVisible:

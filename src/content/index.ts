@@ -1,8 +1,10 @@
 import app from './app.json';
+import type { Language } from './deck';
 import { decks } from './decks';
 
+// The app's title, in Polish and English, follows the language switch (DEC-61).
 export type AppContent = {
-  title: string;
+  title: Record<Language, string>;
 };
 
 export const appContent: AppContent = app;

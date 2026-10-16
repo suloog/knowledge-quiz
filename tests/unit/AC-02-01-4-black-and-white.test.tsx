@@ -5,6 +5,7 @@ import { render, screen } from '@testing-library/react-native';
 import { renderRouter } from 'expo-router/testing-library';
 import RootLayout from '../../src/app/_layout';
 import CategoriesScreen from '../../src/app/index';
+import { LanguageProvider } from '../../src/i18n';
 import { type HostNode, coloursOf, hostNodes } from './support/app-tree';
 import { appSources, readSource } from './support/sources';
 
@@ -29,10 +30,12 @@ describe('AC-02-01-4 Every element on the category screen is pure black or pure 
 
   it('step 2 — an element in a third colour is reported', async () => {
     await render(
-      <View>
-        <CategoriesScreen />
-        <View testID="grey" style={{ backgroundColor: '#808080' }} />
-      </View>,
+      <LanguageProvider>
+        <View>
+          <CategoriesScreen />
+          <View testID="grey" style={{ backgroundColor: '#808080' }} />
+        </View>
+      </LanguageProvider>,
     );
 
     expect(otherColours(hostNodes(screen.toJSON()))).toEqual([
