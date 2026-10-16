@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "status": "finishing",
+  "status": "finished",
   "language": "en",
   "input": "no-tests",
   "base": "main",
@@ -103,7 +103,7 @@
     "thread_ts": "1791962854.992019",
     "verbosity": "milestones",
     "commands": "limited",
-    "last_read_ts": "1792108590.190869"
+    "last_read_ts": "1792120342.610919"
   },
   "youtrack": {
     "sync_state": false

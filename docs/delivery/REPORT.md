@@ -1,21 +1,21 @@
 # Delivery report — knowledge-quiz
 
-> Generated 2026-10-16 03:11 UTC by `og-delivery report`.
+> Generated 2026-10-16 08:20 UTC by `og-delivery report`.
 > Tokens are attributed to a story phase by time, from the Claude Code transcripts (subagents included). Cost is the API list-price equivalent; a subscription is billed differently.
 
 ## Summary
 
-- Stories: 13 (done 12, failed 1, skipped 0, waiting on the owner 0, not started 0)
-- Time: 43:41 h, of which waiting 10:15 h
+- Stories: 13 (done 13, failed 0, skipped 0, waiting on the owner 0, not started 0)
+- Time: 48:02 h, of which waiting 10:15 h
 - Claude Code sessions in the loop: 19; waiting windows: 14
-- Tokens (loop): input 0.01M, cache write 19.98M, cache read 535.34M, output 1.29M
-- Cost (API equivalent): loop $242.09; before the loop $16.82
-- Output tokens of 14 session(s) are Claude Code's own count per model, spread over their responses by how much each wrote: the transcripts under-record output (their cache counters are exact)
-- ⚠ 5 session(s) have no figure from Claude Code (run with `/loop`, not by the driver): their output tokens come from the transcripts, which under-record them — their cost here is a lower bound
-- Claude Code's own figure for the 24 sessions the driver ran: $60.63 — 299% off the count above: check this script's price table against the current list prices
+- Tokens (loop): input 0.01M, cache write 21.34M, cache read 550.18M, output 1.31M
+- Cost (API equivalent): loop $252.11; before the loop $16.82
+- Output tokens of 15 session(s) are Claude Code's own count per model, spread over their responses by how much each wrote: the transcripts under-record output (their cache counters are exact)
+- ⚠ 4 session(s) have no figure from Claude Code (run with `/loop`, not by the driver): their output tokens come from the transcripts, which under-record them — their cost here is a lower bound
+- Claude Code's own figure for the 25 sessions the driver ran: $62.20 — 305% off the count above: check this script's price table against the current list prices
 - Other Claude Code sessions in this repository during the run (not counted): $1.99
 - Prices: API list prices per million tokens as of 2026-10-09; cache writes at 1.25× (5 min) and 2× (1 h) of input.
-- Actions recorded by the hooks: 3676 (shell 3374, files written 120, agents started 105) — `ledger.jsonl` in the live state
+- Actions recorded by the hooks: 3681 (shell 3378, files written 120, agents started 105) — `ledger.jsonl` in the live state
 
 ## Open items
 
@@ -33,7 +33,7 @@
 - US-03-02 — reconciled
 - US-03-03 — reconciled
 - US-02-02 — reconciled — merged by the owner on GitHub
-- US-02-03 failed: CI fix round handed back without evidence on 33390cd: TC-02-06 layout fixed (DEC-64), the acceptance script now waits for a dropped emulator; CI's emulator dropped off adb mid-suite, so TC-02-11..13 never ran
+- US-02-03 — reconciled after rebase
 - US-03-05 — manual acceptance: TC-03-23
 - US-03-05 — reconciled
 - US-03-01 · DEC-52 — a critical decision the loop made by itself (Cards follow the device language until the in-app switch (US-02-03)): confirm it
@@ -57,24 +57,24 @@
 | `US-03-03` | done | https://github.com/suloog/knowledge-quiz/pull/13 | 0:21 | 0:20 (1) | 0:00 | 0:01 | 0:03 | 0:47 | 0.01M | $7.06 | 1 | 20/0/0/0 | a person, on GitHub | claude-opus-5-5 · medium |
 | `US-03-04` | done | https://github.com/suloog/knowledge-quiz/pull/14 | 0:30 | 0:23 (1) | 0:00 | 0:01 | 0:00 | 0:55 | 0.02M | $8.75 | 1 | 24/0/0/0 | the loop | claude-opus-5-5 · medium |
 | `US-02-02` | done | https://github.com/suloog/knowledge-quiz/pull/15 | 0:47 | 0:41 (2) | 0:00 | 0:01 | 5:04 | 6:35 | 0.20M | $17.94 | 5 | 30/0/0/0 | a person, on GitHub | claude-opus-5-5 · medium |
-| `US-02-03` | failed | https://github.com/suloog/knowledge-quiz/pull/16 | 1:41 | 0:43 (2) | 0:00 | 2:26 | 4:01 | 8:52 | 0.25M | $24.83 | 7 | 34/0/0/0 | — | claude-opus-5-5 · medium |
+| `US-02-03` | done | https://github.com/suloog/knowledge-quiz/pull/16 | 1:41 | 0:48 (3) | 0:00 | 4:16 | 11:39 | 18:26 | 0.26M | $34.26 | 7 | 37/0/0/0 | a person, on GitHub | claude-opus-5-5 · medium |
 | `US-03-05` | done | https://github.com/suloog/knowledge-quiz/pull/17 | 7:38 | 0:04 (1) | 0:00 | 0:01 | 5:57 | 13:42 | 0.42M | $41.05 | 6 | 33/0/1/1 | a person, on GitHub | claude-opus-5-5 · medium → claude-opus-5-5 · high |
 
 ## Cost by model
 
 | Model | Responses | Input | Cache write | Cache read | Output | Cost |
 | --- | --- | --- | --- | --- | --- | --- |
-| `claude-opus-5-5` | 3747 | 0.01M | 18.35M | 524.29M | 1.23M | $236.27 |
-| `claude-sonnet-5-5` | 344 | 0.00M | 1.63M | 11.05M | 0.06M | $5.82 |
+| `claude-opus-5-5` | 3869 | 0.01M | 19.67M | 538.92M | 1.25M | $246.17 |
+| `claude-sonnet-5-5` | 353 | 0.00M | 1.67M | 11.27M | 0.06M | $5.94 |
 
 ## Cost by agent
 
 | Agent | Responses | Output | Cost | Share | Answered by |
 | --- | --- | --- | --- | --- | --- |
-| orchestrator | 895 | 0.67M | $112.02 | 46% | `claude-opus-5-5` |
-| og:story-implementer | 2020 | 0.46M | $94.42 | 39% | `claude-opus-5-5` |
-| og:spec-compliance-reviewer | 805 | 0.09M | $28.81 | 12% | `claude-opus-5-5` |
-| og:code-reviewer | 344 | 0.06M | $5.82 | 2% | `claude-sonnet-5-5` |
+| orchestrator | 924 | 0.69M | $116.83 | 46% | `claude-opus-5-5` |
+| og:story-implementer | 2098 | 0.46M | $99.27 | 39% | `claude-opus-5-5` |
+| og:spec-compliance-reviewer | 820 | 0.09M | $29.06 | 12% | `claude-opus-5-5` |
+| og:code-reviewer | 353 | 0.06M | $5.94 | 2% | `claude-sonnet-5-5` |
 | general-purpose | 10 | 0.00M | $0.51 | 0% | `claude-opus-5-5` |
 | claude | 17 | 0.00M | $0.50 | 0% | `claude-opus-5-5` |
 
@@ -93,6 +93,7 @@
 | `US-03-03` | https://github.com/suloog/knowledge-quiz/pull/13 | a person, on GitHub | og-delivery reads manual_tests=none as a manual test named none |
 | `US-03-04` | https://github.com/suloog/knowledge-quiz/pull/14 | the loop | — |
 | `US-02-02` | https://github.com/suloog/knowledge-quiz/pull/15 | a person, on GitHub | acceptance tests: manual-only to run by hand: none (og-delivery reads the implementer's MANUAL_TESTS: none as a test named 'none'; CI green on ed010fd, TC-02-05..08 pass, review clean in round 2) |
+| `US-02-03` | https://github.com/suloog/knowledge-quiz/pull/16 | a person, on GitHub | og-delivery reads manual_tests=none as a manual test |
 | `US-03-05` | https://github.com/suloog/knowledge-quiz/pull/17 | a person, on GitHub | TC-03-23 (legibility on the Mudita Kompakt) is manual-only; one evidence line from an earlier result is UNEVIDENCED (the full local run did not finish) — CI run 38822653443 is green on every automated test |
 
 ## Review rounds
@@ -125,6 +126,7 @@
 | `US-02-03` | 1 | code, spec | 5 | 8 | 0 |
 | `US-02-03` | 2 | code, spec | 0 | 10 | 0 |
 | `US-03-05` | 1 | code, spec | 0 | 18 | 0 |
+| `US-02-03` | 1 | code, spec | 0 | 2 | 0 |
 
 ## Decisions
 
@@ -165,6 +167,7 @@
 | `DEC-64` | `US-02-03` | auto | The category screen fits a 640 dp high screen: the list entries give up their spacing first | — |
 | `DEC-65` | `US-03-05` | auto | Illustrations: five 1-bit silhouettes on five questions, drawn one image pixel to one screen pixel below the question | — |
 | `DEC-66` | `US-03-05` | auto | Illustration acceptance flows: saved 3+ deck written with the needed question first | — |
+| `DEC-67` | `US-02-03` | auto | TC-03-22 switches to English with the in-app control | — |
 
 ## Waiting
 

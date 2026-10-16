@@ -1,0 +1,69 @@
+{
+  "n": 5,
+  "attempt": 1,
+  "ts": "2026-10-16T06:56:53Z",
+  "story": "US-02-03",
+  "mode": "update",
+  "parsed": {
+    "result": "ready",
+    "story": "US-02-03",
+    "branch": "feature/US-02-03",
+    "commits": [
+      "28bf30b feat(categories): switch the app between Polish and English [US-02-03]",
+      "0e75cee fix(categories): switch halves grow with larger system text [US-02-03]",
+      "aed0e77 test(categories): #4 reveals three 3+ cards before the switch [US-02-03]",
+      "d71d200 refactor(categories): language names held once [US-02-03]",
+      "eb7b043 docs(specs): DEC-61 records Maciej's decision [US-02-03]",
+      "9ef31bf test(categories): TC-02-12 scopes the return words [US-02-03]",
+      "7f19e86 docs(specs): US-02-03 done [US-02-03] [skip ci]",
+      "caeab1f fix(categories): every entry fits a 640 dp screen [US-02-03]",
+      "2a6bbe1 test(acceptance): report a lost device, name TC-02-13 [US-02-03]",
+      "74694c0 test(acceptance): wait for a dropped device between groups [US-02-03]",
+      "02b70c2 test(acceptance): TC-03-22 switches with the in-app control [US-02-03] (new head 02b70c2)"
+    ],
+    "decisions": [
+      "DEC-60 routine Language switch: two-part Polski | English control under the title, choice kept in app state and saved under language",
+      "DEC-61 critical The app title on the category screen in Polish and English",
+      "DEC-64 routine The category screen fits a 640 dp high screen: the list entries give up their spacing first",
+      "DEC-67 routine TC-03-22 switches to English with the in-app control",
+      "the device-language helper of DEC-66 is removed"
+    ],
+    "evidence": [
+      "#1 Polish device: Polish texts, Polish active — TC-02-10 pass (test-runs/2026-10-16_074449)",
+      "#2 Other device language: English on first open — TC-02-11 pass (device set to de-DE)",
+      "#3 Switch to English survives a restart, questions included — TC-02-12 pass; TC-03-05 pass",
+      "#4 Decks kept: 3+ resumes at its fourth card in the new language — TC-02-13 pass"
+    ],
+    "tests": {
+      "run": "test-runs/2026-10-16_074449",
+      "pass": 37,
+      "fail": 0,
+      "blocked": 0,
+      "manual": 0
+    },
+    "derived_tests": [],
+    "preexisting": "all four criteria were met on the branch before the update (old head 33390cd); the rebase carried them over",
+    "gates": [
+      "yarn format:check ok",
+      "yarn lint ok",
+      "yarn tsc ok",
+      "yarn test ok (39 suites, 261 tests)"
+    ],
+    "env_keys": "none",
+    "migration": false,
+    "notes": "test-acceptance.sh exited 1 locally on TC-02-08 step 2 (continue-screen-colours.xml) — see above; watch CI on the pushed head.",
+    "evidence_gaps": {
+      "unevidenced": [],
+      "manual": [],
+      "blocked": []
+    },
+    "critical_decisions": [
+      "DEC-61 critical The app title on the category screen in Polish and English"
+    ]
+  },
+  "raw": "feature/US-02-03 rebased onto origin/main (fdf40ea); new head 02b70c2, not pushed. Gates green. Collected local run 37 pass, 0 fail, 0 blocked, but scripts/test-acceptance.sh exited 1 on junit/continue-screen-colours.xml (TC-02-08 step 2, NFR-07): grey glyph-edge pixels at the bottoms of \"3+\", \"4+\", \"5+\" on the local emulator (48 px navigation bar → DEC-64 shrinks entry padding to 0 → glyph bottoms fall inside the checker's 8 dp margin). CI's emulator has no navigation bar and passed this check on 33390cd (run 38813886857) with the same category-screen code. Old merge commit 2b92bfc squashed with its 5 earlier commits into 28bf30b; 9 later commits cherry-picked; new commit 02b70c2 (DEC-67).\n\n```\nRESULT: ready\nSTORY: US-02-03\nBRANCH: feature/US-02-03\nCOMMITS: 28bf30b feat(categories): switch the app between Polish and English [US-02-03]; 0e75cee fix(categories): switch halves grow with larger system text [US-02-03]; aed0e77 test(categories): #4 reveals three 3+ cards before the switch [US-02-03]; d71d200 refactor(categories): language names held once [US-02-03]; eb7b043 docs(specs): DEC-61 records Maciej's decision [US-02-03]; 9ef31bf test(categories): TC-02-12 scopes the return words [US-02-03]; 7f19e86 docs(specs): US-02-03 done [US-02-03] [skip ci]; caeab1f fix(categories): every entry fits a 640 dp screen [US-02-03]; 2a6bbe1 test(acceptance): report a lost device, name TC-02-13 [US-02-03]; 74694c0 test(acceptance): wait for a dropped device between groups [US-02-03]; 02b70c2 test(acceptance): TC-03-22 switches with the in-app control [US-02-03] (new head 02b70c2)\nDECISIONS: DEC-60 routine Language switch: two-part Polski | English control under the title, choice kept in app state and saved under language; DEC-61 critical The app title on the category screen in Polish and English; DEC-64 routine The category screen fits a 640 dp high screen: the list entries give up their spacing first; DEC-67 routine TC-03-22 switches to English with the in-app control; the device-language helper of DEC-66 is removed\nEVIDENCE:\n  #1 Polish device: Polish texts, Polish active — TC-02-10 pass (test-runs/2026-10-16_074449)\n  #2 Other device language: English on first open — TC-02-11 pass (device set to de-DE)\n  #3 Switch to English survives a restart, questions included — TC-02-12 pass; TC-03-05 pass\n  #4 Decks kept: 3+ resumes at its fourth card in the new language — TC-02-13 pass\nTESTS: run=test-runs/2026-10-16_074449 pass=37 fail=0 blocked=0 manual=0\nDERIVED_TESTS: none\nPREEXISTING: all four criteria were met on the branch before the update (old head 33390cd); the rebase carried them over\nGATES: yarn format:check ok; yarn lint ok; yarn tsc ok; yarn test ok (39 suites, 261 tests)\nENV_KEYS: none\nMIGRATION: no\nNOTES: conflicts: yes. DECISIONS.md: main's file byte-identical, then DEC-60/61/64, then new DEC-67. BACKLOG.md: main's rows kept, US-02-03 done. cards/[category].tsx: main's illustration lookup kept, question text from useLanguage() instead of deviceLanguage(). cards.test.tsx: both blocks kept plus an English-switch test with an illustration. test-acceptance.sh: both sides kept. DEC-67: TC-03-22 step 2 taps language-en; scripts/SetLocale.java and the /locale request of illustration-server.js removed.\nNOTES: test-acceptance.sh exited 1 locally on TC-02-08 step 2 (continue-screen-colours.xml) — see above; watch CI on the pushed head.\n```\n",
+  "evidence": [
+    "run.json",
+    "repo-before.json"
+  ]
+}
