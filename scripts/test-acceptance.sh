@@ -26,8 +26,8 @@
 #    (`saved-deck`: the 3+ deck saved finished and used last) and TC-02-09 (`saved-deck`: every saved
 #    file made unreadable), each after its saved data has been written as root (DEC-59); so does each of
 #    TC-03-20…TC-03-22 (the illustrations, tagged `illustration`), after its saved 3+ deck has been
-#    written with the question it needs first, TC-03-22 switching the device to English in the middle
-#    of its flow (DEC-66). TC-03-18,
+#    written with the question it needs first, TC-03-22 switching to English with the app's own
+#    switch (DEC-67). TC-03-18,
 #    TC-03-19 and TC-02-13 (tagged `deck-state`) run after the Polish flows, still in Polish, with
 #    scripts/saved-deck-server.js reading the saved 3+ deck from the device as root while they run
 #    (DECK_STATE_URL), for the app state their steps note (DEC-58). The device's
@@ -239,8 +239,8 @@ device_back() {
 # without Google Play): the locale property and the system_locales setting, then a restart of the
 # Android framework, waited out until the new configuration is in force and the package manager
 # answers again. The setting wins over the property when the framework starts, and a language
-# changed in the running system (Settings, or SetLocale in TC-03-22) leaves it written; the
-# restart waits until the settings file on disk has changed, or it would lose the new value.
+# changed in the running system (Settings) leaves it written; the restart waits until the
+# settings file on disk has changed, or it would lose the new value.
 set_device_locale() {
   local tag="$1" config settings_file=/data/system/users/0/settings_system.xml before
   config="-$(printf '%s' "${tag%%-*}")-r$(printf '%s' "${tag#*-}")-"
@@ -547,25 +547,14 @@ run_unreadable_data_flow() {
 # question without an illustration; TC-03-21, TC-03-22: the first with one), and read back for the
 # flow: the question in Polish and English (QUESTION, QUESTION_PL, QUESTION_EN) and its picture's file
 # (ILLUSTRATION), with every shipped picture's file (ILLUSTRATIONS). scripts/illustration-server.js
-# runs on the host's loopback (ILLUSTRATION_URL) to look for a picture on the screen and, for
-# TC-03-22, to set the device's language, through scripts/SetLocale.java compiled here (javac, d8).
-# The release build has no app-state bridge (DEC-55). Needs the device rooted and set to Polish, as
-# run_language_flows leaves it; TC-03-22 leaves it set to English.
+# runs on the host's loopback (ILLUSTRATION_URL) to look for a picture on the screen; TC-03-22
+# switches to English with the app's own switch (DEC-67). The release build has no app-state bridge
+# (DEC-55). Needs the device rooted and set to Polish, as run_language_flows leaves it.
 run_illustration_flows() {
-  local dir="$1" port=8766 dex=/data/local/tmp/kq-set-locale.dex classes server flow name tc first args
+  local dir="$1" port=8766 server flow name tc first args
   say "TC-03-20…TC-03-22: the illustrations, each on the saved 3+ deck with its question first"
   mkdir -p "$dir"
-  classes="$(mktemp -d "${RUNNER_TEMP:-${TMPDIR:-/tmp}}/kq-set-locale.XXXXXX")"
-  if ! javac --release 8 -d "$classes" scripts/SetLocale.java >"$dir/set-locale-build.log" 2>&1 ||
-    ! "$BUILD_TOOLS/d8" --min-api 31 --output "$classes" "$classes/SetLocale.class" >>"$dir/set-locale-build.log" 2>&1 ||
-    ! "$ADB" push "$classes/classes.dex" "$dex" >>"$dir/set-locale-build.log" 2>&1; then
-    rm -rf "$classes"
-    # No results: the collector counts these flows as not run (blocked), not failed.
-    say "BLOCKED: could not build the language switch for the device (set-locale-build.log)"
-    return
-  fi
-  rm -rf "$classes"
-  node scripts/illustration-server.js "$ADB" "$port" "$dir" "$dex" &
+  node scripts/illustration-server.js "$ADB" "$port" "$dir" &
   server=$!
   for _ in $(seq 1 20); do
     curl -s "http://127.0.0.1:$port/" >/dev/null 2>&1 && break
@@ -616,7 +605,6 @@ run_illustration_flows() {
   done
   kill "$server" 2>/dev/null || true
   wait "$server" 2>/dev/null || true
-  "$ADB" shell rm -f "$dex" >/dev/null 2>&1 || true
 }
 
 # ---------------------------------------------------------------- 1. release APK

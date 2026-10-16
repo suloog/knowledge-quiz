@@ -789,3 +789,15 @@
 - **Scope effect:** within scope
 - **Resolves:** —
 - **Status:** accepted
+
+## [DEC-67] TC-03-22 switches to English with the in-app control; the device-language helper of DEC-66 is removed
+
+- **Date:** 2026-10-16
+- **Decided by:** developer (delivery loop)
+- **Source:** implementation (`US-02-03`, rebased onto `US-03-05`)
+- **Affects:** `US-02-03`, `US-03-05`, `TC-03-22`, `DEC-60`, `DEC-66`
+- **Decision:** With the language switch (`DEC-60`) the app no longer follows the device's language once a language is chosen, so `TC-03-22` step 2 switches to English the way a parent does: back on the category screen, the "English" half of the switch, then 3+ again, where the illustrated question is still the first unseen card. The mid-flow change of the device's language that `DEC-66` used until `US-02-03` landed is removed: `scripts/SetLocale.java`, its build in `scripts/test-acceptance.sh` (javac, d8) and the `/locale` request of `scripts/illustration-server.js`. Everything else `DEC-66` set stays: the saved 3+ deck written with the needed question first and the picture found on the screen pixel for pixel.
+- **Why:** `DEC-66` named this step as the one to change once the switch existed. It tests the illustration through the language a parent actually chooses, and drops a test-only tool that changed the device's configuration in the middle of a flow.
+- **Scope effect:** within scope
+- **Resolves:** —
+- **Status:** accepted
